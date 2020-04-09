@@ -31,15 +31,83 @@
 #' @author Florence Combes, Samuel Wieczorek
 #' @examples 
 #' require(Matrix)
-#' exprsFile <- system.file("extdata", "Exp1_R25_pept.txt", package="DAPARdata")
-#' metadataFile <- system.file("extdata", "samples_Exp1_R25.txt", package="DAPARdata")
-#' metadata = utils::read.table(metadataFile, header=TRUE, sep="\t", as.is=TRUE)
+#' data.file <- system.file("extdata", "Exp1_R25_pept.txt", package="DAPARdata")
+#' data <- read.table(exprsFile, header=TRUE, sep="\t", as.is=TRUE, stringsAsFactors = FALSE)
+#' sample.file <- system.file("extdata", "samples_Exp1_R25.txt", package="DAPARdata")
+#' sample <- read.table(sampleFile, header=TRUE, sep="\t", as.is=TRUE, stringsAsFactors = FALSE)
 #' indExpData <- c(56:61)
-#' indFData <- c(1:55,62:71)
 #' keyid <- 'Sequence'
-#' createMSnset(exprsFile, metadata,indExpData,  indFData, keyid, indexForOriginOfValue = NULL, typeOfData = "peptide")
-#' @importFrom MSnbase MSnSet
-#' @importFrom utils read.table
+#' createMSnset(data, sample,indExpData,  keyid, indexForOriginOfValue = NULL, typeOfData = "peptide")
+#' @importFrom Features
 #' @export
-
+createFeatures <- function(data,
+                           sample=NULL,
+                           indExpData,
+                           keyId=NULL,
+                           indexForOriginOfValue = NULL,
+                           logTransform=FALSE, 
+                           forceNA=FALSE,
+                           typeOfData=NULL,
+                           parentProtId = NULL){
+  
+  
+  if (is.null(keyId)) {
+    obj <- readFeatures(data, 
+                        ecol=indExpData, 
+                        name='original')
+  } else {
+    obj <- readFeatures(data, 
+                        ecol=indExpData, 
+                        name='original',
+                        fnames = keyId)
+  }
+  
+  
+  ## Encoding the sample data
+  sample <- lapply(sample,function(x){ gsub(".", "_", x, fixed=TRUE)})
+  colData(obj)@listData <- sample
+  
+  
+  ## Replace all '.' by '_' in names
+  #colnames(fd) <- gsub(".", "_", colnames(data)[indFData], fixed=TRUE)
+  #colnames(Intensity) <- gsub(".", "_", colnames(data)[indExpData], fixed=TRUE)
+  
+  
+  if (isTRUE(forceNA)) {
+    obj <- zeroIsNA(obj,seq_along(obj))
+  }
+  
+  
+  if (isTRUE(logTransform)) {
+    obj <- addAssay(obj, logTransform(obj[['original']]),name = "original_log")
+    obj <- addAssayLinkOneToOne(obj, from = "original", to = "original_log")
+  }
+  
+  
+  daparVersion <- if (length(grep('DAPAR', installed.packages())) > 0) {
+    installed.packages()["DAPAR","Version"]
+  } else {
+    'NA'
+  }
+  
+  ProstarVersion <- if (length(grep('Prostar2', installed.packages())) > 0) {
+    installed.packages()["Prostar2","Version"]
+  } else {
+    'NA'
+  }
+  
+  metadata(obj) <- list(versions = list(Prostar_Version = ProstarVersion,
+                                        DAPAR_Version = daparVersion),
+                        parentProtId = parentProtId,
+                        params = list(),
+                        typeOfData = typeOfData,
+                        originOfValues = NULL,
+                        RawPValues = FALSE
+  )
+  
+  
+  obj <- addOriginOfValue(obj,indexForOriginOfValue)
+  
+  return(obj)
+}
 
