@@ -42,6 +42,9 @@ setMEC <- function(origin, qData,conds){
 #' of values with tags such as MEC, POV
 #' @author Samuel Wieczorek
 #' @examples 
+#' @importFrom methods as
+#' @import MultiAssayExperiment
+#' @import SummarizedExperiment
 #' @export
 addOriginOfValues <- function(obj, i, namesOrigin=NULL){
   
@@ -54,9 +57,9 @@ addOriginOfValues <- function(obj, i, namesOrigin=NULL){
   {
     OriginOfValues <- rowData(obj[[i]])[,namesOrigin]
   } else {   
-    OriginOfValues <- DataFrame(matrix(rep("unknown", nrow(assay(obj,i))*nrow(colData(obj))), 
+    OriginOfValues <- MultiAssayExperiment::DataFrame(matrix(rep("unknown", nrow(assay(obj,i))*nrow(SummarizedExperiment::colData(obj))), 
                                         nrow=nrow(assay(obj,i)),
-                                        ncol=nrow(colData(obj))))
+                                        ncol=nrow(SummarizedExperiment::colData(obj))))
   }
   
   ## Identification of all NA as POV
@@ -68,13 +71,13 @@ addOriginOfValues <- function(obj, i, namesOrigin=NULL){
   }
   
   #rownames(OriginOfValues) <- rownames(Biobase::fData(obj))
-  colnames(OriginOfValues) <- paste0("OriginOfValue_",rownames(colData(obj)))
+  colnames(OriginOfValues) <- paste0("OriginOfValue_",rownames(SummarizedExperiment::colData(obj)))
   colnames(OriginOfValues) <- gsub(".", "_", colnames(OriginOfValues), fixed=TRUE)
   
   
   OriginOfValues <- setMEC(origin = OriginOfValues, 
                            qData = assay(obj[['original']]), 
-                           conds = colData(obj)$Condition)
+                           conds = SummarizedExperiment::colData(obj)$Condition)
   
   
   return(OriginOfValues)
@@ -109,16 +112,18 @@ addOriginOfValues <- function(obj, i, namesOrigin=NULL){
 #' @return An instance of class \code{Features}.
 #' @author Samuel Wieczorek
 #' @examples 
-#' data.file <- system.file("extdata", "Exp1_R25_pept.txt", package="DAPARdata")
-#' data <- read.table(exprsFile, header=TRUE, sep="\t", as.is=TRUE, stringsAsFactors = FALSE)
-#' sample.file <- system.file("extdata", "samples_Exp1_R25.txt", package="DAPARdata")
-#' sample <- read.table(sampleFile, header=TRUE, sep="\t", as.is=TRUE, stringsAsFactors = FALSE)
+#' data.file <- system.file("extdata", "Exp1_R25_pept.txt", package="DAPARdata2")
+#' data <- read.table(data.file, header=TRUE, sep="\t", as.is=TRUE, stringsAsFactors = FALSE)
+#' sample.file <- system.file("extdata", "samples_Exp1_R25.txt", package="DAPARdata2")
+#' sample <- read.table(sample.file, header=TRUE, sep="\t", as.is=TRUE, stringsAsFactors = FALSE)
 #' indExpData <- c(56:61)
 #' namesOrigin <- colnames(data)[43:48]
 #' parentId <- 'Protein_group_IDs'
 #' keyid <- 'Sequence'
 #' ft <- createFeatures(data, sample,indExpData,  keyId = keyid, namesOrigin = namesOrigin, typeOfData = "peptide", parentProtId = parentId, forceNA=TRUE)
 #' @import Features
+#' @importFrom utils installed.packages
+#' @import SummarizedExperiment
 #' @export
 createFeatures <- function(data,
                            sample=NULL,
@@ -145,7 +150,7 @@ createFeatures <- function(data,
   
   ## Encoding the sample data
   sample <- lapply(sample,function(x){ gsub(".", "_", x, fixed=TRUE)})
-  colData(obj)@listData <- sample
+  SummarizedExperiment::colData(obj)@listData <- sample
   
   
   ## Replace all '.' by '_' in names
@@ -154,7 +159,7 @@ createFeatures <- function(data,
   
   # As the function addOribingOfValues is based on the presence of NA in quanti data,
   # if forceNA is not set as TRUE, the previous function cannot ben run
-  origin <- DataFrame()
+  origin <- MultiAssayExperiment::DataFrame()
   if (isTRUE(forceNA)) {
     obj <- zeroIsNA(obj,seq_along(obj))
     origin <- addOriginOfValues(obj, 1, namesOrigin)
@@ -186,6 +191,7 @@ createFeatures <- function(data,
   metadata(obj) <- list(versions = list(Prostar_Version = ProstarVersion,
                                         DAPAR_Version = daparVersion),
                         parentProtId = parentProtId,
+                        keyId = keyId,
                         params = list(),
                         typeOfData = typeOfData,
                         RawPValues = FALSE,

@@ -1,4 +1,4 @@
 library(testthat)
-library(DAPAR)
+library(DAPAR2)
 
-test_check("DAPAR")
+test_check("DAPAR2")

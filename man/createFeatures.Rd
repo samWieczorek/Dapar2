@@ -51,10 +51,10 @@ single tabulated-like file for quantitative and meta-data and a dataframe
 for the samples description.
 }
 \examples{
-data.file <- system.file("extdata", "Exp1_R25_pept.txt", package="DAPARdata")
-data <- read.table(exprsFile, header=TRUE, sep="\t", as.is=TRUE, stringsAsFactors = FALSE)
-sample.file <- system.file("extdata", "samples_Exp1_R25.txt", package="DAPARdata")
-sample <- read.table(sampleFile, header=TRUE, sep="\t", as.is=TRUE, stringsAsFactors = FALSE)
+data.file <- system.file("extdata", "Exp1_R25_pept.txt", package="DAPARdata2")
+data <- read.table(data.file, header=TRUE, sep="\t", as.is=TRUE, stringsAsFactors = FALSE)
+sample.file <- system.file("extdata", "samples_Exp1_R25.txt", package="DAPARdata2")
+sample <- read.table(sample.file, header=TRUE, sep="\t", as.is=TRUE, stringsAsFactors = FALSE)
 indExpData <- c(56:61)
 namesOrigin <- colnames(data)[43:48]
 parentId <- 'Protein_group_IDs'
