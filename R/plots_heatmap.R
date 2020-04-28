@@ -4,7 +4,7 @@
 #'
 #' @title This function is a wrapper to \code{\link{heatmap.2}} that displays
 #' a numeric matrix
-#' @param qData A dataframe of umeric values
+#' @param qData A dataframe of numeric values
 #' @param distance The distance used by the clustering algorithm to compute
 #' the dendrogram. See \code{help(heatmap.2)}
 #' @param cluster the clustering algorithm used to build the dendrogram.
@@ -36,8 +36,8 @@ heatmapD <- function(qData, distance="euclidean", cluster="complete", dendro = F
   #     stop("Param clustering is not correct.")
   #     return (NULL)
   # }
-
-
+  
+  
   # if (isTRUE(dendro) && getNumberOfEmptyLines(qData) != 0)  {
   #     stop("Your dataset contains empty lines: the dendrogram cannot
   # be computed.
@@ -54,8 +54,8 @@ heatmapD <- function(qData, distance="euclidean", cluster="complete", dendro = F
              seq(-2, 0.5, length=100),
              seq(0.5, 6, length=100))
   heatmap.color <- grDevices::colorRampPalette(c("green", "red"))(n = 1000)
-
-
+  
+  
   if (dendro){ .dendro = "row"} else {.dendro = "none"}
   p <- gplots::heatmap.2(
     x=t(.data),
@@ -82,7 +82,7 @@ heatmapD <- function(qData, distance="euclidean", cluster="complete", dendro = F
     lhei = c(1.5, 9),
     lwid = c(1.5, 4),
     lmat = rbind(4:3, 2:1)
-
+    
   )
   #    }
 }
