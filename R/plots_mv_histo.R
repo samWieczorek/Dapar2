@@ -16,7 +16,7 @@
 #' mvHisto_HC(qData, conds, showValues=TRUE)
 #' @export
 #' @import highcharter
-mvHisto_HC <- function(qData, conds, showValues=FALSE, palette = NULL){
+mvHisto_HC <- function(qData, conds, showValues = FALSE, palette = NULL){
   
   palette <- BuildPalette(conds, palette)
  
