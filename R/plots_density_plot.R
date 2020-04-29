@@ -1,10 +1,12 @@
 #' Densityplot of quantitative proteomics data over samples. 
 #' 
 #' @title Builds a densityplot from a dataframe
-#' @param obj numeric matrix
+#' @param qData numeric matrix
+#' @param pData DataFrame
 #' @param legend A vector of the conditions (one condition 
 #' per sample).
-#' @param palette xxx
+#' @param palette A vector of HEX Code colors (one color 
+#' per condition).
 #' @return A density plot
 #' @author Samuel Wieczorek, Enora Fremy
 #' @examples 
