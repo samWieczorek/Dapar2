@@ -31,24 +31,26 @@
 #' @author Samuel Wieczorek, Enora Fremy
 #' @examples
 #' \donttest{
+#' library(Features)
+#' library(DAPAR)
+#' library(DT)
+#' library(highcharter)
 #' utils::data(Exp1_R25_pept, package='DAPARdata2')
-#' obj <- Exp1_R25_pept[1:1000]
-#' keepThat <- mvFilterGetIndices(obj, 'wholeMatrix', ncol(obj))
-#' obj <- mvFilterFromIndices(obj, keepThat)
-#' qData <- Biobase::exprs(obj)
-#' sTab <- Biobase::pData(obj)
-#' data <- limmaCompleteTest(qData,sTab)
-#' df <- data.frame(x=data$logFC, y = -log10(data$P_Value),index = as.character(rownames(obj)))
+#' obj <- Features::filterNA(Exp1_R25_pept,i='original') # remove all rows with NAs
+#' qData <- assay(obj[['original']])
+#' pData <- as.data.frame(colData(obj))
+#' data <- limmaCompleteTest(qData,pData)
+#' df <- data.frame(x=data$logFC, y = -log10(data$P_Value),index = as.character(rownames(qData)))
 #' colnames(df) <- c("x", "y", "index")
 #' tooltipSlot <- c("Sequence", "Score")
-#' df <- cbind(df,Biobase::fData(obj)[tooltipSlot])
+#' df <- cbind(df,rowData(obj[['original']])[tooltipSlot])
 #' colnames(df) <- gsub(".", "_", colnames(df), fixed=TRUE)
 #' if (ncol(df) > 3){
 #'     colnames(df)[4:ncol(df)] <- 
 #'     paste("tooltip_", colnames(df)[4:ncol(df)], sep="")}
 #' hc_clickFunction <- JS("function(event) {Shiny.onInputChange('eventPointClicked', [this.index]+'_'+ [this.series.name]);}")
-#' cond <- c("25fmol", "10fmol")
-#' diffAnaVolcanoplot_rCharts(df, 2.5, 1, cond,hc_clickFunction) 
+#' cond <- unique(colData(obj)[['Condition']])
+#' diffAnaVolcanoplot_rCharts(df, 2.5, 1, cond, hc_clickFunction) 
 #' }
 #' @export
 #' @import highcharter
