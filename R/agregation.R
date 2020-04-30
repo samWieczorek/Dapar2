@@ -297,7 +297,7 @@ GetNbPeptidesUsed <- function(X, qPepData){
 #' n <- inner.sum(assay(Exp1_R25_pept[['original_log']], X$all))
 #' @export
 inner.sum <- function(qPepData, X){
-  pepData[is.na(qPepData)] <- 0
+  qPepData[is.na(qPepData)] <- 0
   Mp <- t(X) %*% qPepData
   return(Mp)
 }
@@ -307,17 +307,48 @@ inner.sum <- function(qPepData, X){
 #' Method to xxxxx
 #' 
 #' @title xxxx 
-#' @param pepData A data.frame of quantitative data
+#' @param qPepData A data.frame of quantitative data
+#' @param X An adjacency matrix
+#' @return xxxxx
+#' @author Samuel Wieczorek
+#' utils::data(Exp1_R25_pept, package='DAPARdata2')
+#' PG <- rowData(Exp1_R25_pept[['original_log']])[,metadata(Exp1_R25_pept)$parentProtId]
+#' names <- names((Exp1_R25_pept[['original_log']]))
+#' X <- BuildListAdjacencyMatrices(PG, names, type=c('All'))
+#' inner.mean(assay(Exp1_R25_pept[['original_log']], X$all)
+#' @export
+inner.mean <- function(qPepData, X){
+  Mp <- inner.sum(qPepData, X)
+  Mp <- Mp / GetNbPeptidesUsed(X, qPepData)
+  
+  return(Mp)
+}
+
+
+
+
+
+#' Method to xxxxx
+#' 
+#' @title xxxx 
+#' @param qPepData A data.frame of quantitative data
 #' @param X An adjacency matrix
 #' @param method xxxxx
 #' @param n xxxxx
 #' @return xxxxx
 #' @author Samuel Wieczorek
 #' @export
+#' @example 
+#' utils::data(Exp1_R25_pept, package='DAPARdata2')
+#' PG <- rowData(Exp1_R25_pept[['original_log']])[,metadata(Exp1_R25_pept)$parentProtId]
+#' names <- names((Exp1_R25_pept[['original_log']]))
+#' qPepData <- assay(Exp1_R25_pept[['original_log']])
+#' X <- BuildListAdjacencyMatrices(PG, names, type=c('All'))
+#' inner.aggregate.topn(qPepData, X$all)
 #' @importFrom stats median
-inner.aggregate.topn <-function(pepData,X, method='Mean', n=10){
+inner.aggregate.topn <-function(qPepData, X, method='Mean', n=10){
   
-  med <- apply(pepData, 1, median)
+  med <- apply(qPepData, 1, median)
   xmed <- as(X * med, "dgCMatrix")
   for (c in 1:ncol(X)){
     v <- order(xmed[,c],decreasing=TRUE)[1:n]
@@ -331,13 +362,139 @@ inner.aggregate.topn <-function(pepData,X, method='Mean', n=10){
   
   Mp <- NULL
   switch(method,
-         Mean= Mp <- inner.mean(pepData, X),
-         Sum= Mp <- inner.sum(pepData, X)
+         Mean = Mp <- inner.mean(qPepData, X),
+         Sum = Mp <- inner.sum(qPepData, X)
   )
   
   return(Mp)
 }
 
+
+
+
+
+
+#' Method to xxxxx
+#' 
+#' @title xxxx 
+#' @param qPepData xxxxx
+#' @param X xxxx
+#' @param init.method xxx
+#' @param method xxx
+#' @param n xxxx
+#' @return xxxxx
+#' @author Samuel Wieczorek
+#' utils::data(Exp1_R25_pept, package='DAPARdata2')
+#' PG <- rowData(Exp1_R25_pept[['original_log']])[,metadata(Exp1_R25_pept)$parentProtId]
+#' names <- names((Exp1_R25_pept[['original_log']]))
+#' qPepData <- assay(Exp1_R25_pept[['original_log']])
+#' X <- BuildListAdjacencyMatrices(PG, names, type=c('All'))
+#' inner.aggregate.iter(qPepData, X$all)
+#' @export
+inner.aggregate.iter <- function(qPepData, X, init.method='Sum', method='Mean', n=NULL){
+  
+  if (!(init.method %in% c("Sum", "Mean"))) {
+    warning("Wrong parameter init.method")
+    return(NULL)
+  }
+  
+  if (!(method %in% c("onlyN", "Mean"))){
+    warning("Wrong parameter method")
+    return(NULL)
+  }
+  
+  
+  if (method=='onlyN' && is.null(n)){
+    warning("Parameter n is null")
+    return(NULL)
+  }
+  
+  yprot <- NULL
+  switch(init.method,
+         Sum= yprot <- inner.sum(qPepData, X),
+         Mean= yprot <- inner.mean(qPepData, X)
+  )
+  conv <- 1
+  
+  while(conv > 10**(-10)){
+    mean.prot <- rowMeans(as.matrix(yprot), na.rm = TRUE)
+    mean.prot[is.na(mean.prot)] <- 0
+    
+    X.tmp <- mean.prot*X
+    X.new <- X.tmp/rowSums(as.matrix(X.tmp), na.rm = TRUE)
+    X.new[is.na(X.new)] <- 0
+    
+    # l'appel ? la fonction ci-dessous d?pend des param?tres choisis par l'utilisateur
+    switch(method,
+           Mean = yprot <- inner.mean(qPepData, X.new),
+           onlyN = yprot <- inner.aggregate.topn(qPepData,X.new,'Mean', n)
+    )
+    
+    mean.prot.new <- rowMeans(as.matrix(yprot), na.rm = TRUE)
+    mean.prot.new[is.na(mean.prot.new)] <- 0
+    
+    conv <- mean(abs(mean.prot.new - mean.prot))
+    print(paste0("conv : ", conv))
+  }
+  return(as.matrix(yprot))
+}
+
+
+
+#' Method to finalize the aggregation process
+#' 
+#' @title Finalizes the aggregation process 
+#' @param obj.pep A peptide object of class \code{MSnset}
+#' @param qPepDataNoLog A data.frame of quantitative data not logged of peptides
+#' @param X An adjacency matrix in which lines and columns correspond 
+#' respectively to peptides and proteins.
+#' @param qProtData A dataframe which have the same dimensions of qPepDataNoLog and contains
+#' the computed quantitativev alues of proteins
+#' @return A protein object of class \code{SummarizedExperiment}
+#' @author Samuel Wieczorek
+#' @export
+#' @importFrom utils installed.packages
+finalizeAggregation <- function(obj.pep, qPepDataNoLog, qProtData, X){
+  
+  qProtData <- as.matrix(qProtData)
+  X <- as.matrix(X)
+  qProtData[qProtData==0] <- NA
+  qProtData[is.nan(qProtData)] <- NA
+  qProtData[is.infinite(qProtData)] <-NA
+  
+  temp <- GetDetailedNbPeptidesUsed(X, pepData)
+  
+  pepSharedUsed <- as.matrix(temp$nShared)
+  colnames(pepSharedUsed) <- paste("pepShared.used.", colnames(pepData), sep="")
+  rownames(pepSharedUsed) <- colnames(X)
+  
+  pepSpecUsed <- as.matrix(temp$nSpec)
+  colnames(pepSpecUsed) <- paste("pepSpec.used.", colnames(pepData), sep="")
+  rownames(pepSpecUsed) <- colnames(X)
+  
+  pepTotalUsed <- as.matrix(GetNbPeptidesUsed(X, pepData))
+  colnames(pepTotalUsed) <- paste("pepTotal.used.", colnames(pepData), sep="")
+  rownames(pepTotalUsed) <- colnames(X)
+  
+  n <- GetDetailedNbPeptides(X)
+  
+  fd <- data.frame(colnames(X), 
+                   nPepTotal = n$nTotal,
+                   nPepShared = n$nShared, 
+                   nPepSpec = n$nSpec, 
+                   pepSpecUsed, 
+                   pepSharedUsed, 
+                   pepTotalUsed)
+  
+  obj.prot <- MSnSet(exprs = log2(protData), 
+                     fData = fd, 
+                     pData = Biobase::pData(obj.pep))
+  obj.prot@experimentData@other <- obj.pep@experimentData@other
+  obj.prot@experimentData@other$typeOfData <-"protein"
+  #obj.prot <- addOriginOfValue(obj.prot)
+  obj.prot@experimentData@other$OriginOfValues <- NULL
+  return (obj.prot)
+}
 
 ##########################################################################################################################
 
@@ -421,70 +578,7 @@ aggregateIterParallel <- function(obj.pep, X, init.method='Sum', method='Mean', 
 }
 
 
-#' Method to xxxxx
-#' 
-#' @title xxxx 
-#' @param pepData xxxxx
-#' @param X xxxx
-#' @param init.method xxx
-#' @param method xxx
-#' @param n xxxx
-#' @return xxxxx
-#' @author Samuel Wieczorek
-#' utils::data(Exp1_R25_pept, package='DAPARdata')
-#' protID <- "Protein_group_IDs"
-#' obj.pep <- Exp1_R25_pept[1:1000]
-#' X <- BuildAdjacencyMatrix(obj.pep, protID, FALSE)
-#' DAPAR::inner.aggregate.iter(exprs(obj.pep), X)
-#' @export
-inner.aggregate.iter <- function(pepData, X,init.method='Sum', method='Mean', n=NULL){
-  
-  
-  if (!(init.method %in% c("Sum", "Mean"))) {
-    warning("Wrong parameter init.method")
-    return(NULL)
-  }
-  
-  if (!(method %in% c("onlyN", "Mean"))){
-    warning("Wrong parameter method")
-    return(NULL)
-  }
-  
-  
-  if (method=='onlyN' && is.null(n)){
-    warning("Parameter n is null")
-    return(NULL)
-  }
-  
-  yprot <- NULL
-  switch(init.method,
-         Sum= yprot <- inner.sum(pepData, X),
-         Mean= yprot <- inner.mean(pepData, X)
-  )
-  conv <- 1
-  
-  while(conv > 10**(-10)){
-    mean.prot <- rowMeans(as.matrix(yprot), na.rm = TRUE)
-    mean.prot[is.na(mean.prot)] <- 0
-    
-    X.tmp <- mean.prot*X
-    X.new <- X.tmp/rowSums(as.matrix(X.tmp), na.rm = TRUE)
-    X.new[is.na(X.new)] <- 0
-    
-    # l'appel ? la fonction ci-dessous d?pend des param?tres choisis par l'utilisateur
-    switch(method,
-           Mean = yprot <- inner.mean(pepData, X.new),
-           onlyN = yprot <- inner.aggregate.topn(pepData,X.new,'Mean', n)
-    )
-    
-    mean.prot.new <- rowMeans(as.matrix(yprot), na.rm = TRUE)
-    mean.prot.new[is.na(mean.prot.new)] <- 0
-    
-    conv <- mean(abs(mean.prot.new - mean.prot))
-    print(paste0("conv : ", conv))
-  }
-  return(as.matrix(yprot))
-}
+
 
 
 
@@ -599,63 +693,6 @@ aggregateTopn <- function(obj.pep,X,  method='Mean', n=10){
 
 
 
-#' Method to finalize the aggregation process
-#' 
-#' @title Finalizes the aggregation process 
-#' @param obj.pep A peptide object of class \code{MSnset}
-#' @param pepData xxxx
-#' @param X An adjacency matrix in which lines and columns correspond 
-#' respectively to peptides and proteins.
-#' @param protData xxxxx
-#' @param lib.loc A list of two items (lib.loc$Prostar.loc and lib.loc$DAPAR.loc) to provide the 
-#' location of the installed packages
-#' @return A protein object of class \code{MSnset}
-#' @author Samuel Wieczorek
-#' @export
-#' @importFrom utils installed.packages
-finalizeAggregation <- function(obj.pep, pepData, protData, X, lib.loc=NULL){
-  
-  protData <- as.matrix(protData)
-  X <- as.matrix(X)
-  protData[protData==0] <- NA
-  protData[is.nan(protData)] <- NA
-  protData[is.infinite(protData)] <-NA
-  
-  temp <- GetDetailedNbPeptidesUsed(X, pepData)
-  
-  pepSharedUsed <- as.matrix(temp$nShared)
-  colnames(pepSharedUsed) <- paste("pepShared.used.", colnames(pepData), sep="")
-  rownames(pepSharedUsed) <- colnames(X)
-  
-  pepSpecUsed <- as.matrix(temp$nSpec)
-  colnames(pepSpecUsed) <- paste("pepSpec.used.", colnames(pepData), sep="")
-  rownames(pepSpecUsed) <- colnames(X)
-  
-  pepTotalUsed <- as.matrix(GetNbPeptidesUsed(X, pepData))
-  colnames(pepTotalUsed) <- paste("pepTotal.used.", colnames(pepData), sep="")
-  rownames(pepTotalUsed) <- colnames(X)
-  
-  n <- GetDetailedNbPeptides(X)
-  
-  fd <- data.frame(colnames(X), 
-                   nPepTotal = n$nTotal,
-                   nPepShared = n$nShared, 
-                   nPepSpec = n$nSpec, 
-                   pepSpecUsed, 
-                   pepSharedUsed, 
-                   pepTotalUsed)
-  
-  obj.prot <- MSnSet(exprs = log2(protData), 
-                     fData = fd, 
-                     pData = Biobase::pData(obj.pep))
-  obj.prot@experimentData@other <- obj.pep@experimentData@other
-  obj.prot@experimentData@other$typeOfData <-"protein"
-  #obj.prot <- addOriginOfValue(obj.prot)
-  obj.prot@experimentData@other$OriginOfValues <- NULL
-  obj.prot@experimentData@other$Prostar_Version <- utils::installed.packages(lib.loc = lib.loc$Prostar.loc)["Prostar","Version"]
-  obj.prot@experimentData@other$DAPAR_Version <- utils::installed.packages(lib.loc = lib.loc$DAPAR.loc)["DAPAR","Version"]
-  return (obj.prot)
-}
 
 
 
