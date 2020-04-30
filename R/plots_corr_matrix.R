@@ -13,9 +13,9 @@
 #' @examples
 #' utils::data(Exp1_R25_pept, package='DAPARdata2')
 #' qData <- assay(Exp1_R25_pept[['original']])[1:1000,]
-#' names <- colData(Exp1_R25_pept)
+#' names <- paste0(names$Condition, '_', names$Bio.Rep)
 #' res <- cor(qData,use = 'pairwise.complete.obs')
-#' corrMatrixD_HC(res)
+#' corrMatrixD_HC(res, names)
 #' @importFrom dplyr tbl_df mutate left_join
 #' @importFrom tidyr gather
 #' @import highcharter
