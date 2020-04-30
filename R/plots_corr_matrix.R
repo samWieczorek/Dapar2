@@ -12,8 +12,8 @@
 #' @author Samuel Wieczorek, Enora Fremy
 #' @examples
 #' utils::data(Exp1_R25_pept, package='DAPARdata2')
-#' qData <- assay(Exp1_R25_pept[['original']])[1:1000,]
-#' names <- paste0(names$Condition, '_', names$Bio.Rep)
+#' qData <- assay(Exp1_R25_pept[['original']])
+#' names <- colnames(qData)
 #' res <- cor(qData,use = 'pairwise.complete.obs')
 #' corrMatrixD_HC(res, names)
 #' @importFrom dplyr tbl_df mutate left_join
@@ -22,9 +22,9 @@
 #' @importFrom DT JS
 #' @importFrom tibble tibble
 #' @export
-corrMatrixD_HC <- function(qData, names = NULL, rate = 0.5) {
+corrMatrixD_HC <- function(res, names = NULL, rate = 0.5) {
   
-  df <- as.data.frame(qData)
+  df <- as.data.frame(res)
   
   if (!is.null(names)){
       colnames(df) <- names
@@ -46,7 +46,7 @@ corrMatrixD_HC <- function(qData, names = NULL, rate = 0.5) {
                                     yid = seq(length(y)) - 1), by = "y")
   
   ds <- df %>% 
-    dplyr::select_("xid", "yid", "dist") %>% 
+    dplyr::select("xid", "yid", "dist") %>% 
     highcharter::list_parse2()
   
   fntltp <- DT::JS("function(){
