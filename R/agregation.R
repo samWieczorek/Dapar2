@@ -1,41 +1,41 @@
-
-
-
-
-#' Method to create a binary matrix with proteins in columns and peptides 
-#' in lines on a \code{MSnSet} object (peptides)
 #' 
-#' @title Function matrix of appartenance group
-#' @param pg A vector of xxxxx
-#' @param names The names of peptides xxxx
-#' @param unique A boolean to indicate whether only the unique peptides must 
-#' be considered (TRUE) or if the shared peptides have to 
-#' be integrated (FALSE).
-#' @return A binary matrix  
-#' @author Samuel Wieczorek
-#' @examples
-#' utils::data(Exp1_R25_pept, package='DAPARdata2')
-#' PG <- rowData(Exp1_R25_pept[['original']])[,metadata(Exp1_R25_pept)$parentProtId]
-#' names <- names((Exp1_R25_pept[['original']]))
-#' X <- BuildAdjacencyMatrix(PG, names, TRUE)
-#' @export
-BuildAdjacencyMatrix <- function(pg, names, unique=FALSE){
-  PG.l <- strsplit(as.character(pg), split=";", fixed=TRUE)
-  
-  t <- table(data.frame(A=rep(seq_along(PG.l), lengths(PG.l)), B=unlist(PG.l)))
-  
-  if (unique == TRUE){
-    ll <- which(rowSums(t)>1)
-    if (length(ll) > 0) {
-      t[ll,] <- 0
-    }
-  }
-  
-  X <- Matrix::Matrix(t, dimnames = list(names, colnames(t))
-  )
-  
-  return(X)
-}
+#' 
+#' 
+#' 
+#' #' Method to create a binary matrix with proteins in columns and peptides 
+#' #' in lines on a \code{MSnSet} object (peptides)
+#' #' 
+#' #' @title Function matrix of appartenance group
+#' #' @param pg A vector of xxxxx
+#' #' @param names The names of peptides xxxx
+#' #' @param unique A boolean to indicate whether only the unique peptides must 
+#' #' be considered (TRUE) or if the shared peptides have to 
+#' #' be integrated (FALSE).
+#' #' @return A binary matrix  
+#' #' @author Samuel Wieczorek
+#' #' @examples
+#' #' utils::data(Exp1_R25_pept, package='DAPARdata2')
+#' #' PG <- rowData(Exp1_R25_pept[['original']])[,metadata(Exp1_R25_pept)$parentProtId]
+#' #' names <- names((Exp1_R25_pept[['original']]))
+#' #' X <- BuildAdjacencyMatrix(PG, names, TRUE)
+#' #' @export
+#' BuildAdjacencyMatrix <- function(pg, names, unique=FALSE){
+#'   PG.l <- strsplit(as.character(pg), split=";", fixed=TRUE)
+#'   
+#'   t <- table(data.frame(A=rep(seq_along(PG.l), lengths(PG.l)), B=unlist(PG.l)))
+#'   
+#'   if (unique == TRUE){
+#'     ll <- which(rowSums(t)>1)
+#'     if (length(ll) > 0) {
+#'       t[ll,] <- 0
+#'     }
+#'   }
+#'   
+#'   X <- Matrix::Matrix(t, dimnames = list(names, colnames(t))
+#'   )
+#'   
+#'   return(X)
+#' }
 
 
 
@@ -223,15 +223,24 @@ GraphPepProt <- function(mat){
 #' qPepData <- assay(Exp1_R25_pept,'original_log')
 #' PG <- rowData(Exp1_R25_pept[['original_log']])[,metadata(Exp1_R25_pept)$parentProtId]
 #' names <- names((Exp1_R25_pept[['original_log']]))
-#' X.list <- BuildListAdjacencyMatrices(PG, names, type=c('Shared', 'Specific'))
+#' X.list <- BuildListAdjacencyMatrices(PG, names, type=c('All', 'Shared', 'Specific'))
 #' n <- GetDetailedNbPeptidesUsed(X.list, qPepData)
 #' @export
 GetDetailedNbPeptidesUsed <- function(X.list, qPepData){
+  res <- list()
+  
   qPepData[!is.na(qPepData)] <- 1
   qPepData[is.na(qPepData)] <- 0
   
-  return(list(nShared=t(X.list$onlyShared) %*% qPepData, 
-              nSpec=t(X.list$onlySpec) %*% qPepData))
+  
+  if (!is.null(X.list$all))
+    res$nAll <- t(X.list$all) %*% qPepData
+  if (!is.null(X.list$all))
+    res$nShared <- t(X.list$onlyShared) %*% qPepData
+  if (!is.null(X.list$all))
+    res$nSpec <- t(X.list$onlySpec) %*% qPepData
+  
+  return(res)
 }
 
 
@@ -257,28 +266,6 @@ GetDetailedNbPeptides <- function(X.list){
 }
 
 
-
-#' Method to compute the number of quantified peptides used for aggregating each protein
-#' 
-#' @title Computes the number of peptides used for aggregating each protein 
-#' @param X An adjacency matrix
-#' @param qPepData A data.frame of quantitative data
-#' @return A data.frame
-#' @author Samuel Wieczorek
-#' @example
-#' utils::data(Exp1_R25_pept, package='DAPARdata2')
-#' PG <- rowData(Exp1_R25_pept[['original_log']])[,metadata(Exp1_R25_pept)$parentProtId]
-#' names <- names((Exp1_R25_pept[['original_log']]))
-#' X <- BuildListAdjacencyMatrices(PG, names, type=c('All'))
-#' n <- GetNbPeptidesUsed(X$all,assay(Exp1_R25_pept[['original_log']]))
-#' @export
-GetNbPeptidesUsed <- function(X, qPepData){
-  qPepData[!is.na(qPepData)] <- 1
-  qPepData[is.na(qPepData)] <- 0
-  pep <- t(X) %*% qPepData
-  
-  return(pep)
-}
 
 
 
@@ -441,44 +428,423 @@ inner.aggregate.iter <- function(qPepData, X, init.method='Sum', method='Mean', 
 
 
 
+
+#' This function computes the intensity of proteins based on the sum of the 
+#' intensities of their peptides.
+#' 
+#' @title Compute the intensity of proteins with the sum of the intensities
+#' of their peptides.
+#' @param qPepData A matrix of intensities of peptides
+#' @param X An adjacency matrix in which lines and columns correspond 
+#' respectively to peptides and proteins.
+#' @return A matrix of intensities of proteins
+#' @author Alexia Dorffer, Samuel Wieczorek
+#' @examples
+#' utils::data(Exp1_R25_pept, package='DAPARdata2')
+#' PG <- rowData(Exp1_R25_pept[['original_log']])[,metadata(Exp1_R25_pept)$parentProtId]
+#' names <- names((Exp1_R25_pept[['original_log']]))
+#' X <- BuildAdjacencyMatrix(PG, names, TRUE)
+#' aggSum(assay(Exp1_R25_pept,2), X)
+#' @export
+aggSum <- function(qPepData, X){
+  qPepData <- 2^(qPepData)
+  protData <- inner.sum(qPepData, X)
+  #obj.prot <- finalizeAggregation(obj.pep, pepData, protData, X)
+  return(protData)
+}
+
+
+
+#' This function computes the intensity of proteins as the mean of the 
+#' intensities of their peptides.
+#' 
+#' @title Compute the intensity of proteins as the mean of the intensities
+#' of their peptides.
+#' @param qPepData A matrix of intensities of peptides
+#' @param X An adjacency matrix in which lines and columns correspond 
+#' respectively to peptides and proteins.
+#' @return A matrix of intensities of proteins
+#' @author Alexia Dorffer
+#' @examples
+#' utils::data(Exp1_R25_pept, package='DAPARdata2')
+#' PG <- rowData(Exp1_R25_pept[['original_log']])[,metadata(Exp1_R25_pept)$parentProtId]
+#' names <- names((Exp1_R25_pept[['original_log']]))
+#' X <- BuildAdjacencyMatrix(PG, names, TRUE)
+#' aggMean(assay(Exp1_R25_pept,2), X)
+#' @export
+aggMean <- function(qPepData, X){
+  pepData <- 2^(qPepData)
+  protData <- inner.mean(pepData, X)
+  #obj.prot <- finalizeAggregation(obj.pep, pepData, protData, X)
+  return(protData)
+}
+
+
+
+
+#' Method to xxxxx
+#' 
+#' @title xxxx 
+#' @param qPepData xxxxx
+#' @param X xxxx
+#' @param conditions xxxx
+#' @param init.method xxxxx
+#' @param method xxxxx
+#' @param n xxxx
+#' @return xxxxx
+#' @author Samuel Wieczorek
+#' @examples
+#' utils::data(Exp1_R25_pept, package='DAPARdata2')
+#' PG <- rowData(Exp1_R25_pept[['original_log']][1:1000,])[,metadata(Exp1_R25_pept)$parentProtId]
+#' names <- names((Exp1_R25_pept[['original_log']][1:1000]))
+#' X <- BuildAdjacencyMatrix(PG, names, TRUE)
+#' conditions <- colData(Exp1_R25_pept)@listData$Condition
+#' aggIterParallel(assay(Exp1_R25_pept,2)[1:1000,], X, conditions)
+#' @export
+#' @importFrom doParallel registerDoParallel
+#' @import foreach
+aggIterParallel <- function(qPepData, X, conditions=NULL, init.method='Sum', method='Mean', n=NULL){
+  if (is.null(conditions)){
+    warning('The parameter conds is NULL: the aggregation cannot be process.')
+    return(NULL)
+  }
+  require(doParallel)
+  doParallel::registerDoParallel()
+  
+  qPepData <- 2^(qPepData)
+  protData <- matrix(rep(0,ncol(X)*nrow(X)), nrow=ncol(X))
+  
+  protData <- foreach(cond = 1:length(unique(conditions)), .combine=cbind) %dopar% {
+    condsIndices <- which(conditions == unique(conditions)[cond])
+    qData <- qPepData[,condsIndices]
+    inner.aggregate.iter(qData, X, init.method, method, n)
+  }
+  
+  protData <- protData[,colnames(qPepData)]
+  #obj.prot <- finalizeAggregation(obj.pep, qData.pep, protData, X)
+  
+  return(protData)
+  
+}
+
+
+
+
+#' Method to xxxxx
+#' 
+#' @title xxxx 
+#' @param qPepData xxxxx
+#' @param X xxxx
+#' @param conditions xxx
+#' @param init.method xxxxx
+#' @param method xxxxx
+#' @param n xxxx
+#' @return A protein object of class \code{MSnset}
+#' @author Samuel Wieczorek
+#' @examples
+#' utils::data(Exp1_R25_pept, package='DAPARdata2')
+#' PG <- rowData(Exp1_R25_pept[['original_log']][1:1000,])[,metadata(Exp1_R25_pept)$parentProtId]
+#' names <- names((Exp1_R25_pept[['original_log']][1:1000]))
+#' X <- BuildAdjacencyMatrix(PG, names, TRUE)
+#' conditions <- colData(Exp1_R25_pept)@listData$Condition
+#' aggIter(assay(Exp1_R25_pept,2)[1:1000,], X, conditions)
+#' @export
+aggIter <- function(qPepData, X, conditions=NULL, init.method='Sum', method='Mean', n=NULL){
+  if (is.null(conditions)){
+    warning('The parameter conds is NULL: the aggregation cannot be process.')
+    return(NULL)
+  }
+  
+  ### a reproduire iterativement pour chaque condition
+  # Initialisation: presque aucune d?pendance ? l'initialisation prendre "sum overall" et  matAdj = X par simplicit?
+  #X <- as.matrix(X)
+  qPepData <- 2^(qPepData)
+  
+  protData <- matrix(rep(0,ncol(X)*ncol(qPepData)), nrow=ncol(X))
+  
+  for (cond in unique(conditions)){
+    condsIndices <- which(conditions == cond)
+    qData <- qPepData[,condsIndices]
+    protData[,condsIndices]  <- inner.aggregate.iter(qData, X, init.method, method, n)
+  }
+  #obj.prot <- finalizeAggregation(obj.pep, qData.pep, protData, X)
+  return(protData)
+
+}
+
+
+
+
+#' This function computes the intensity of proteins as the sum of the 
+#' intensities of their n best peptides.
+#' 
+#' @title Compute the intensity of proteins as the sum of the 
+#' intensities of their n best peptides.
+#' @param qPepData A matrix of intensities of peptides
+#' @param X An adjacency matrix in which lines and columns correspond 
+#' respectively to peptides and proteins.
+#' @param method xxx
+#' @param n The maximum number of peptides used to aggregate a protein.
+#' @return A matrix of intensities of proteins
+#' @author Alexia Dorffer, Samuel Wieczorek
+#' @examples
+#' utils::data(Exp1_R25_pept, package='DAPARdata2')
+#' PG <- rowData(Exp1_R25_pept[['original_log']][1:1000,])[,metadata(Exp1_R25_pept)$parentProtId]
+#' names <- names((Exp1_R25_pept[['original_log']][1:1000]))
+#' X <- BuildAdjacencyMatrix(PG, names, TRUE)
+#' aggTopn(assay(Exp1_R25_pept,2)[1:1000,], X, n=3)
+#' @export
+aggTopn <- function(qPepData, X,  method='Mean', n=10){
+  qPepData <- 2^(qPepData)
+  
+  protData <- inner.aggregate.topn(qPepData, X, method=method, n)
+  
+  #obj.prot <- finalizeAggregation(obj.pep, pepData, protData, X)
+  return(protData)
+}
+
+
+
+
+
+##' @title Aggreagate quantitative features.
+##' 
+##' @description
+##' This function takes a matrix of quantitative features `x` and a
+##' factor (of length equal to `nrow(x)`) defining subsets, and
+##' applies a user-defined function to aggregate each subset into a
+##' vector of quantitative values. This function is the same as aggregate_by_vector
+##'
+##' User-defined functions must thus return a vector of length equal
+##' to `ncol(x)`. Examples thereof are
+##'
+##' - [medianPolish()] to fits an additive model (two way decomposition)
+##'   using Tukey's median polish_ procedure using
+##'   [stats::medpolish()];
+##'
+##' - [robustSummary()] to calculate a robust aggregation using
+##'   [MASS::rlm()];
+##'
+##' - [base::colMeans()] to use the mean of each column;
+##'
+##' - [base::colSums()] to use the sum of each column;
+##'
+##' - [matrixStats::colMedians()] to use the median of each column.
+##'
+##' @param qPepData xxxx. 
+##' @param X Axxxxx.
+##' @param FUN A `function` to be applied to the subsets of `x`.
+##' @param ... Additional arguments passed to `FUN`.
+##' @return A new `matrix` of dimensions `ncol(x)` and `length(INDEX)`
+##'     with `dimnames` equal to `colnames(x)` and `INDEX`.
+##' 
+##' @author Samuel Wieczorek
+##'
+##' @family Quantitative feature aggregation
+##' 
+##' @export
+aggregate_with_matAdj <- function(qPepData, X, FUN, ...){
+  res <- do.call(FUN, list(qPepData, X, ...))
+  res
+}
+
+
+
+
+##' @title Aggregate an assay's quantitative features which take into account
+##' the peptides shared between proteins
+##'
+##' @description
+##' 
+##' This function aggregates the quantitative features of an assay,
+##' applying an aggregation function (`fun`) to sets of features as
+##' defined by the `fcol` feature variable. The new assay's features
+##' will be named based on the unique `fcol` values.
+##' This function is largely inspired by xxxx . The difference is that it provides
+##' a mean to take into account the peptides shared between proteins.
+##'
+##'
+##' @param object An instance of class [Features].
+##'
+##' @param i The index or name of the assay which features will be
+##'     aggregated the create the new assay.
+##'
+##' @param X.list An adjacency matrix as computed by xxxxx.
+##'
+##' @param typeMatAdj xxx
+##' 
+##' @param name A `character(1)` naming the new assay. Default is
+##'     `newAssay`. Note that the function will fail if there's
+##'     already an assay with `name`.
+##'
+##' @param fun A function used for quantitative feature
+##'     aggregation. See Details for examples.
+##'
+##' @param ... Additional parameters passed the `fun`.
+##'
+##' @return A `Features` object with an additional assay.
+##'
+##' @details
+##'
+##' Aggregation is performed by a function that takes a matrix as
+##' input and returns a xxxxx. Examples
+##' thereof are
+##'
+##' - [DAPAR2:aggSum()] to use the sum of each column (default);
+##'
+##' - [DAPAR2:aggMean()] to use the sum of each column;
+##'
+##' - [DAPAR2:aggIter()] to use the mean of each column;
+##'
+##' - [DAPAR2:aggIterParallel()] same as previous function but use parallelism.
+##'
+##' - [DAPAR::aggTopn] to use the sum of each column;
+##'
+#' 
+#' @seealso The *Features* vignette provides an extended example and
+#'     the *Processing* vignette, for a complete quantitative
+#'     proteomics data processing pipeline.
+#' 
+#' @aliases aggregateFeatures aggregateFeatures,Features-method
+#'
+#' @name aggregateFeatures
+#'
+#' @rdname Features-aggregate_dapar
+#'
+#' @importFrom MsCoreUtils aggregate_by_vector robustSummary
+#'
+#' @examples
+#' utils::data(Exp1_R25_pept, package='DAPARdata2')
+#' PG <- rowData(Exp1_R25_pept[['original_log']])[,metadata(Exp1_R25_pept)$parentProtId]
+#' names <- names((Exp1_R25_pept[['original_log']]))
+#' X <- BuildAdjacencyMatrix(PG, names, TRUE)
+#' X.list <- BuildListAdjacencyMatrices(PG, names, type=c('All','Shared', 'Specific'))
+#' conditions <- colData(Exp1_R25_pept)@listData$Condition
+#' aggregateFeatures_sam(Exp1_R25_pept,2, X.list, 'All', 'aggregated', aggSum)
+#' @export aggregateFeatures_sam
+##-------------------------------------------------------------------------
+# setMethod("aggregateFeatures_sam", "Features",
+#           function(object, i, X, name = "newAssay",
+#                    fun = aggSum, ...)
+#             .aggregateFeatures_sam(object, i, fcol, name, fun, ...))
+
+
+aggregateFeatures_sam <- function(object, i, X.list, typeMatAdj, name, fun, ...) {
+  if (isEmpty(object))
+    return(object)
+  if (name %in% names(object))
+    stop("There's already an assay named '", name, "'.")
+  if (missing(X))
+    stop("'X' is required.")    
+  if (missing(i))
+    i <- main_assay(object)
+  
+  assay_i <- assay(object, i)
+  rowdata_i <- rowData(object[[i]])
+
+  
+  ## Message about NA values is quant/row data
+  has_na <- character()
+  if (anyNA(assay_i))
+    has_na <- c(has_na, "quantitative")
+  if (anyNA(rowdata_i, recursive = TRUE))
+    has_na <- c(has_na, "row")
+  if (length(has_na)) {
+    msg <- paste(paste("Your", paste(has_na, collapse = " and "),
+                       " data contain missing values."),
+                 "Please read the relevant section(s) in the",
+                 "aggregateFeatures manual page regarding the",
+                 "effects of missing values on data aggregation.")
+    message(paste(strwrap(msg), collapse = "\n"))
+  }
+  
+  #aggregated_assay <- aggregate_by_vector(assay_i, groupBy, fun, ...)
+  X <- NULL
+  switch(typeMatAdj,
+        All = X <- X.list$all,
+        Shared = X <- X.list$onlyShared,
+        Specific = X <- X.list$onlySpecific
+        )
+  aggregated_assay <- aggregate_with_matAdj(assay_i, X, fun, ...)
+  
+  
+  # aggregated_rowdata <- Features::reduceDataFrame(rowdata_i, rowdata_i[[fcol]],
+  #                                                 simplify = TRUE, drop = TRUE,
+  #                                                 count = TRUE)
+  ## correspond aux fData des proteines nouvellement creees
+  aggregated_rowdata <- rowdata_Aggregation_sam(qPepData, X.list)
+  
+  # 
+   se <- SummarizedExperiment(aggregated_assay,
+                              rowData = aggregated_rowdata[rownames(aggregated_assay), ])
+  
+  # hits <- findMatches(rownames(aggregated_assay), groupBy)
+   # rownames(aggregated_assay) : correspond au nom des proteines nouvellement creees
+   # groupBy : correspond aaux id des peptides d'origine ?
+   #hits <- findMatches(rownames(aggregated_assay), groupBy)
+   ## from et to forment la definition du graphe pepetide-protein
+   test <- which(as.matrix(X.list$all)==1, arr.ind=TRUE)
+   
+   from <- test[,'col']
+   to <- test[,'row']
+   hits <- Hits(from=from, to=to, nLnode=length(from), nRnode=nrow(X.list$all),sort.by.query=TRUE)
+   
+   elementMetadata(hits)$names_from <- rownames(assay_i)[hits@to]
+   elementMetadata(hits)$names_to <- colnames(X.list$all)[hits@from]
+  
+   
+   assayLinks <- AssayLink(name = name,
+                           from = ifelse(is.character(i), i, names(object)[i]),
+                           fcol = fcol,
+                           hits = hits)
+   addAssay(object,
+            se,
+            name = name,
+            assayLinks = assayLinks)
+   
+}
+
+
+
+
+
+
 #' Method to finalize the aggregation process
 #' 
 #' @title Finalizes the aggregation process 
-#' @param obj.pep A peptide object of class \code{MSnset}
-#' @param qPepDataNoLog A data.frame of quantitative data not logged of peptides
+#' @param qPepData A data.frame of quantitative data not logged of peptides
 #' @param X An adjacency matrix in which lines and columns correspond 
 #' respectively to peptides and proteins.
-#' @param qProtData A dataframe which have the same dimensions of qPepDataNoLog and contains
-#' the computed quantitativev alues of proteins
 #' @return A protein object of class \code{SummarizedExperiment}
 #' @author Samuel Wieczorek
 #' @export
-#' @importFrom utils installed.packages
-finalizeAggregation <- function(obj.pep, qPepDataNoLog, qProtData, X){
+#' @examples
+#' utils::data(Exp1_R25_pept, package='DAPARdata2')
+#' PG <- rowData(Exp1_R25_pept[['original_log']])[,metadata(Exp1_R25_pept)$parentProtId]
+#' names <- names((Exp1_R25_pept[['original_log']]))
+#' X.list <- BuildListAdjacencyMatrices(PG, names, type=c('All','Shared', 'Specific'))
+#' rowdata_Aggregation_sam(assay(Exp1_R25_pept,2), X.list)
+rowdata_Aggregation_sam <- function(qPepData, X.list){
   
-  qProtData <- as.matrix(qProtData)
-  X <- as.matrix(X)
-  qProtData[qProtData==0] <- NA
-  qProtData[is.nan(qProtData)] <- NA
-  qProtData[is.infinite(qProtData)] <-NA
+  #X <- as.matrix(X)
   
-  temp <- GetDetailedNbPeptidesUsed(X, pepData)
+  temp <- GetDetailedNbPeptidesUsed(X.list, qPepData)
   
   pepSharedUsed <- as.matrix(temp$nShared)
-  colnames(pepSharedUsed) <- paste("pepShared.used.", colnames(pepData), sep="")
-  rownames(pepSharedUsed) <- colnames(X)
+  colnames(pepSharedUsed) <- paste("pepShared.used.", colnames(qPepData), sep="")
+  rownames(pepSharedUsed) <- colnames(X.list$onlyShared)
   
   pepSpecUsed <- as.matrix(temp$nSpec)
-  colnames(pepSpecUsed) <- paste("pepSpec.used.", colnames(pepData), sep="")
-  rownames(pepSpecUsed) <- colnames(X)
+  colnames(pepSpecUsed) <- paste("pepSpec.used.", colnames(qPepData), sep="")
+  rownames(pepSpecUsed) <- colnames(X.list$onlySpec)
   
-  pepTotalUsed <- as.matrix(GetNbPeptidesUsed(X, pepData))
-  colnames(pepTotalUsed) <- paste("pepTotal.used.", colnames(pepData), sep="")
-  rownames(pepTotalUsed) <- colnames(X)
+  pepTotalUsed <- as.matrix(temp$nAll)
+  colnames(pepTotalUsed) <- paste("pepTotal.used.", colnames(qPepData), sep="")
+  rownames(pepTotalUsed) <- colnames(X.list$all)
   
-  n <- GetDetailedNbPeptides(X)
+  n <- GetDetailedNbPeptides(X.list)
   
-  fd <- data.frame(colnames(X), 
+  fd <- data.frame(colnames(X.list$all), 
                    nPepTotal = n$nTotal,
                    nPepShared = n$nShared, 
                    nPepSpec = n$nSpec, 
@@ -486,14 +852,15 @@ finalizeAggregation <- function(obj.pep, qPepDataNoLog, qProtData, X){
                    pepSharedUsed, 
                    pepTotalUsed)
   
-  obj.prot <- MSnSet(exprs = log2(protData), 
-                     fData = fd, 
-                     pData = Biobase::pData(obj.pep))
-  obj.prot@experimentData@other <- obj.pep@experimentData@other
-  obj.prot@experimentData@other$typeOfData <-"protein"
-  #obj.prot <- addOriginOfValue(obj.prot)
-  obj.prot@experimentData@other$OriginOfValues <- NULL
-  return (obj.prot)
+  # obj.prot <- MSnSet(exprs = log2(protData), 
+  #                    fData = fd, 
+  #                    pData = Biobase::pData(obj.pep))
+  # 
+  # obj.prot@experimentData@other <- obj.pep@experimentData@other
+  # obj.prot@experimentData@other$typeOfData <-"protein"
+  # #obj.prot <- addOriginOfValue(obj.prot)
+  # obj.prot@experimentData@other$OriginOfValues <- NULL
+  return (fd)
 }
 
 ##########################################################################################################################
@@ -511,141 +878,6 @@ finalizeAggregation <- function(obj.pep, qPepDataNoLog, qProtData, X){
 
 
 
-#' This function computes the intensity of proteins based on the sum of the 
-#' intensities of their peptides.
-#' 
-#' @title Compute the intensity of proteins with the sum of the intensities
-#' of their peptides.
-#' @param obj.pep A matrix of intensities of peptides
-#' @param X An adjacency matrix in which lines and columns correspond 
-#' respectively to peptides and proteins.
-#' @return A matrix of intensities of proteins
-#' @author Alexia Dorffer, Samuel Wieczorek
-#' @examples
-#' utils::data(Exp1_R25_pept, package='DAPARdata2')
-#' PG <- rowData(Exp1_R25_pept[['original_log']])[,metadata(Exp1_R25_pept)$parentProtId]
-#' names <- names((Exp1_R25_pept[['original_log']]))
-#' X <- BuildAdjacencyMatrix(PG, names, TRUE)
-#' aggregateSum(obj.pep, X)
-#' @export
-aggregateSum <- function(obj.pep, X){
-  pepData <- 2^(Biobase::exprs(obj.pep))
-  protData <- inner.sum(pepData, X)
-  obj.prot <- finalizeAggregation(obj.pep, pepData, protData, X)
-  return(obj.prot)
-}
-
-
-
-#' Method to xxxxx
-#' 
-#' @title xxxx 
-#' @param obj.pep xxxxx
-#' @param X xxxx
-#' @param init.method xxxxx
-#' @param method xxxxx
-#' @param n xxxx
-#' @return xxxxx
-#' @author Samuel Wieczorek
-#' @examples
-#' utils::data(Exp1_R25_pept, package='DAPARdata')
-#' protID <- "Protein_group_IDs"
-#' obj.pep <- Exp1_R25_pept[1:1000]
-#' X <- BuildAdjacencyMatrix(obj.pep, protID, FALSE)
-#' aggregateIterParallel(obj.pep, X)
-#' @export
-#' @importFrom doParallel registerDoParallel
-#' @import foreach
-aggregateIterParallel <- function(obj.pep, X, init.method='Sum', method='Mean', n=NULL){
-  
-  doParallel::registerDoParallel()
-  
-  qData.pep <- 2^(Biobase::exprs(obj.pep))
-  protData <- matrix(rep(0,ncol(X)*nrow(X)), nrow=ncol(X))
-  
-  protData <- foreach(cond=1:length(unique(Biobase::pData(obj.pep)$Condition)), .combine=cbind, .packages = "MSnbase") %dopar% {
-    
-    condsIndices <- which(Biobase::pData(obj.pep)$Condition == unique(Biobase::pData(obj.pep)$Condition)[cond])
-    qData <- qData.pep[,condsIndices]
-    DAPAR::inner.aggregate.iter(qData, X, init.method, method, n)
-  }
-  
-  protData <- protData[,colnames(Biobase::exprs(obj.pep))]
-  obj.prot <- finalizeAggregation(obj.pep, qData.pep, protData, X)
-  
-  return(obj.prot)
-  
-}
-
-
-
-
-
-
-#' Method to xxxxx
-#' 
-#' @title xxxx 
-#' @param obj.pep xxxxx
-#' @param X xxxx
-#' @param init.method xxxxx
-#' @param method xxxxx
-#' @param n xxxx
-#' @return A protein object of class \code{MSnset}
-#' @author Samuel Wieczorek
-#' @examples
-#' utils::data(Exp1_R25_pept, package='DAPARdata')
-#' protID <- "Protein_group_IDs"
-#' X <- BuildAdjacencyMatrix(Exp1_R25_pept[1:1000], protID, FALSE)
-#' aggregateIter(Exp1_R25_pept[1:1000],X=X)
-#' @export
-aggregateIter <- function(obj.pep, X, init.method='Sum', method='Mean', n=NULL){
-  
-  ### a reproduire iterativement pour chaque condition
-  # Initialisation: presque aucune d?pendance ? l'initialisation prendre "sum overall" et  matAdj = X par simplicit?
-  #X <- as.matrix(X)
-  qData.pep <- 2^(Biobase::exprs(obj.pep))
-  
-  protData <- matrix(rep(0,ncol(X)*ncol(obj.pep)), nrow=ncol(X))
-  
-  for (cond in unique(pData(obj.pep)$Condition)){
-    condsIndices <- which(pData(obj.pep)$Condition == cond)
-    qData <- qData.pep[,condsIndices]
-    print(paste0("Condition ", cond))
-    protData[,condsIndices]  <- inner.aggregate.iter(qData, X, init.method, method, n)
-  }
-  obj.prot <- finalizeAggregation(obj.pep, qData.pep, protData, X)
-  return(obj.prot)
-  
-  #return(yprot)
-}
-
-
-
-
-
-#' This function computes the intensity of proteins as the mean of the 
-#' intensities of their peptides.
-#' 
-#' @title Compute the intensity of proteins as the mean of the intensities
-#' of their peptides.
-#' @param obj.pep A peptide object of class \code{MSnset}
-#' @param X An adjacency matrix in which lines and columns correspond 
-#' respectively to peptides and proteins.
-#' @return A matrix of intensities of proteins
-#' @author Alexia Dorffer
-#' @examples
-#' utils::data(Exp1_R25_pept, package='DAPARdata')
-#' obj.pep <- Exp1_R25_pept[1:1000]
-#' protID <- "Protein_group_IDs"
-#' X <- BuildAdjacencyMatrix(obj.pep, protID, FALSE)
-#' aggregateMean(obj.pep, X)
-#' @export
-aggregateMean <- function(obj.pep, X){
-  pepData <- 2^(Biobase::exprs(obj.pep))
-  protData <- inner.mean(pepData, X)
-  obj.prot <- finalizeAggregation(obj.pep, pepData, protData, X)
-  return(obj.prot)
-}
 
 
 
@@ -662,33 +894,20 @@ aggregateMean <- function(obj.pep, X){
 
 
 
-#' This function computes the intensity of proteins as the sum of the 
-#' intensities of their n best peptides.
-#' 
-#' @title Compute the intensity of proteins as the sum of the 
-#' intensities of their n best peptides.
-#' @param obj.pep A matrix of intensities of peptides
-#' @param X An adjacency matrix in which lines and columns correspond 
-#' respectively to peptides and proteins.
-#' @param method xxx
-#' @param n The maximum number of peptides used to aggregate a protein.
-#' @return A matrix of intensities of proteins
-#' @author Alexia Dorffer, Samuel Wieczorek
-#' @examples
-#' utils::data(Exp1_R25_pept, package='DAPARdata')
-#' obj.pep <- Exp1_R25_pept[1:1000]
-#' protID <- "Protein_group_IDs"
-#' X <- BuildAdjacencyMatrix(obj.pep, protID, FALSE)
-#' DAPAR::aggregateTopn(obj.pep, X, n=3)
-#' @export
-aggregateTopn <- function(obj.pep,X,  method='Mean', n=10){
-  pepData <- 2^(Biobase::exprs(obj.pep))
-  
-  protData <- inner.aggregate.topn(pepData, X, method=method, n)
-  
-  obj.prot <- finalizeAggregation(obj.pep, pepData, protData, X)
-  return(obj.prot)
-}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
