@@ -61,6 +61,7 @@ BuildListAdjacencyMatrices <- function(pg, names, type = c('All', 'Shared', 'Spe
   Xshared <- Xspec <- Xall <- NULL
   
   PG.l <- strsplit(as.character(pg), split=";", fixed=TRUE)
+  PG.l <- strsplit(as.character(pg), split=",", fixed=TRUE)
   t <- table(data.frame(A=rep(seq_along(PG.l), lengths(PG.l)), B=unlist(PG.l)))
   
   #compute the matrix with all peptides
@@ -283,7 +284,7 @@ GetDetailedNbPeptides <- function(X.list){
 #' X <- BuildListAdjacencyMatrices(PG, names, type=c('All'))
 #' n <- inner.sum(assay(Exp1_R25_pept[['original_log']], X$all))
 #' @export
-inner.sum <- function(qPepData, X){
+inner.sum <- function(qPepData, X, na.rm=TRUE){
   qPepData[is.na(qPepData)] <- 0
   Mp <- t(X) %*% qPepData
   return(Mp)
@@ -446,9 +447,9 @@ inner.aggregate.iter <- function(qPepData, X, init.method='Sum', method='Mean', 
 #' X <- BuildAdjacencyMatrix(PG, names, TRUE)
 #' aggSum(assay(Exp1_R25_pept,2), X)
 #' @export
-aggSum <- function(qPepData, X){
-  qPepData <- 2^(qPepData)
-  protData <- inner.sum(qPepData, X)
+aggSum <- function(qPepData, X, ...){
+  #qPepData <- 2^(qPepData)
+  protData <- inner.sum(qPepData, X,...)
   #obj.prot <- finalizeAggregation(obj.pep, pepData, protData, X)
   return(protData)
 }
@@ -473,8 +474,8 @@ aggSum <- function(qPepData, X){
 #' aggMean(assay(Exp1_R25_pept,2), X)
 #' @export
 aggMean <- function(qPepData, X){
-  pepData <- 2^(qPepData)
-  protData <- inner.mean(pepData, X)
+  #qPpepData <- 2^(qPepData)
+  protData <- inner.mean(qPpepData, X)
   #obj.prot <- finalizeAggregation(obj.pep, pepData, protData, X)
   return(protData)
 }
@@ -511,7 +512,7 @@ aggIterParallel <- function(qPepData, X, conditions=NULL, init.method='Sum', met
   require(doParallel)
   doParallel::registerDoParallel()
   
-  qPepData <- 2^(qPepData)
+  #qPepData <- 2^(qPepData)
   protData <- matrix(rep(0,ncol(X)*nrow(X)), nrow=ncol(X))
   
   protData <- foreach(cond = 1:length(unique(conditions)), .combine=cbind) %dopar% {
@@ -558,7 +559,7 @@ aggIter <- function(qPepData, X, conditions=NULL, init.method='Sum', method='Mea
   ### a reproduire iterativement pour chaque condition
   # Initialisation: presque aucune d?pendance ? l'initialisation prendre "sum overall" et  matAdj = X par simplicit?
   #X <- as.matrix(X)
-  qPepData <- 2^(qPepData)
+  #qPepData <- 2^(qPepData)
   
   protData <- matrix(rep(0,ncol(X)*ncol(qPepData)), nrow=ncol(X))
   
@@ -595,7 +596,7 @@ aggIter <- function(qPepData, X, conditions=NULL, init.method='Sum', method='Mea
 #' aggTopn(assay(Exp1_R25_pept,2)[1:1000,], X, n=3)
 #' @export
 aggTopn <- function(qPepData, X,  method='Mean', n=10){
-  qPepData <- 2^(qPepData)
+  #qPepData <- 2^(qPepData)
   
   protData <- inner.aggregate.topn(qPepData, X, method=method, n)
   
@@ -734,8 +735,8 @@ aggregateFeatures_sam <- function(object, i, X.list, typeMatAdj, name, fun, ...)
     return(object)
   if (name %in% names(object))
     stop("There's already an assay named '", name, "'.")
-  if (missing(X))
-    stop("'X' is required.")    
+  if (missing(X.list))
+    stop("'X.list' is required.")    
   if (missing(i))
     i <- main_assay(object)
   
