@@ -60,7 +60,8 @@
 BuildListAdjacencyMatrices <- function(pg, names, type = c('All', 'Shared', 'Specific')){
   Xshared <- Xspec <- Xall <- NULL
   
-  PG.l <- strsplit(as.character(pg), split=";", fixed=TRUE)
+  # the separator that is allowed is ','
+  pg <- gsub(";", ",", as.character(pg), fixed=TRUE)
   PG.l <- strsplit(as.character(pg), split=",", fixed=TRUE)
   t <- table(data.frame(A=rep(seq_along(PG.l), lengths(PG.l)), B=unlist(PG.l)))
   
@@ -677,6 +678,9 @@ aggregate_with_matAdj <- function(qPepData, X, FUN, ...){
 ##' @param name A `character(1)` naming the new assay. Default is
 ##'     `newAssay`. Note that the function will fail if there's
 ##'     already an assay with `name`.
+##'     
+##' @param meta.names A vector of character strings that are the metadata of the peptides which needs to be aggregated
+##' and kept in the protein dataset
 ##'
 ##' @param fun A function used for quantitative feature
 ##'     aggregation. See Details for examples.
@@ -721,7 +725,7 @@ aggregate_with_matAdj <- function(qPepData, X, FUN, ...){
 #' X <- BuildAdjacencyMatrix(PG, names, TRUE)
 #' X.list <- BuildListAdjacencyMatrices(PG, names, type=c('All','Shared', 'Specific'))
 #' conditions <- colData(Exp1_R25_pept)@listData$Condition
-#' aggregateFeatures_sam(Exp1_R25_pept,2, X.list, 'All', 'aggregated', aggSum)
+#' aggregateFeatures_sam(Exp1_R25_pept,2, X.list, typeMatAdj = 'All', name='aggregated', meta.names = 'Sequence', aggSum)
 #' @export aggregateFeatures_sam
 ##-------------------------------------------------------------------------
 # setMethod("aggregateFeatures_sam", "Features",
@@ -730,7 +734,7 @@ aggregate_with_matAdj <- function(qPepData, X, FUN, ...){
 #             .aggregateFeatures_sam(object, i, fcol, name, fun, ...))
 
 
-aggregateFeatures_sam <- function(object, i, X.list, typeMatAdj, name, fun, ...) {
+aggregateFeatures_sam <- function(object, i, X.list, typeMatAdj, name, meta.names = NULL, fun, ...) {
   if (isEmpty(object))
     return(object)
   if (name %in% names(object))
@@ -773,8 +777,11 @@ aggregateFeatures_sam <- function(object, i, X.list, typeMatAdj, name, fun, ...)
   #                                                 simplify = TRUE, drop = TRUE,
   #                                                 count = TRUE)
   ## correspond aux fData des proteines nouvellement creees
-  aggregated_rowdata <- rowdata_Aggregation_sam(qPepData, X.list)
-  
+  aggregated_rowdata <- rowdata_stats_Aggregation_sam(assay_i, X.list)
+  if (!is.null(meta.names)){
+  aggregated_rowdata <- cbind(aggregated_rowdata, aggMetadata_sam(rowdata_i, meta.names, X))
+  }
+
   # 
    se <- SummarizedExperiment(aggregated_assay,
                               rowData = aggregated_rowdata[rownames(aggregated_assay), ])
@@ -825,7 +832,7 @@ aggregateFeatures_sam <- function(object, i, X.list, typeMatAdj, name, fun, ...)
 #' names <- names((Exp1_R25_pept[['original_log']]))
 #' X.list <- BuildListAdjacencyMatrices(PG, names, type=c('All','Shared', 'Specific'))
 #' rowdata_Aggregation_sam(assay(Exp1_R25_pept,2), X.list)
-rowdata_Aggregation_sam <- function(qPepData, X.list){
+rowdata_stats_Aggregation_sam <- function(qPepData, X.list){
   
   #X <- as.matrix(X)
   
@@ -852,67 +859,13 @@ rowdata_Aggregation_sam <- function(qPepData, X.list){
                    pepSpecUsed, 
                    pepSharedUsed, 
                    pepTotalUsed)
-  
-  # obj.prot <- MSnSet(exprs = log2(protData), 
-  #                    fData = fd, 
-  #                    pData = Biobase::pData(obj.pep))
-  # 
-  # obj.prot@experimentData@other <- obj.pep@experimentData@other
+
+
   # obj.prot@experimentData@other$typeOfData <-"protein"
   # #obj.prot <- addOriginOfValue(obj.prot)
   # obj.prot@experimentData@other$OriginOfValues <- NULL
   return (fd)
 }
-
-##########################################################################################################################
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -922,39 +875,40 @@ rowdata_Aggregation_sam <- function(qPepData, X.list){
 #' 
 #' @title creates a column for the protein dataset after agregation by
 #'  using the previous peptide dataset.
-#' @param peptideData A data.frame of meta data of peptides. It is the fData 
+#' @param pepMetadata A data.frame of meta data of peptides. It is the fData 
 #' of the MSnset object.
-#' @param matAdj The adjacency matrix used to agregate the peptides data.
-#' @param columnName The name of the column in fData(peptides_MSnset) that 
+#' @param names The name of the column in fData(peptides_MSnset) that 
 #' the user wants to keep in the new protein data.frame.
-#' @param proteinNames The names of the protein in the new dataset (i.e. rownames)
+#' @param matAdj The adjacency matrix used to agregate the peptides data.
 #' @return A vector
 #' @author Samuel Wieczorek
 #' @examples
 #' utils::data(Exp1_R25_pept, package='DAPARdata2')
-#' PG <- rowData(Exp1_R25_pept[['original']])[,metadata(Exp1_R25_pept)$parentProtId]
-#' names <- names((Exp1_R25_pept[['original']]))
-#' M <- BuildAdjacencyMatrix(PG, names, TRUE)
-#' data <- Biobase::fData(obj.pep)
-#' protData <- DAPAR::aggregateMean(obj.pep, M)
-#' name <- "Protein_group_IDs"
-#' proteinNames <- rownames(Biobase::fData(protData))
-#' BuildColumnToProteinDataset(data, M, name,proteinNames )
+#' PG <- rowData(Exp1_R25_pept[['original_log']])[,metadata(Exp1_R25_pept)$parentProtId]
+#' names <- names((Exp1_R25_pept[['original_log']]))
+#' X.list <- BuildListAdjacencyMatrices(PG, names, type=c('All','Shared', 'Specific'))
+#' X <- X.list$all
+#' aggMetadata(rowData(Exp1_R25_pept[['original_log']]), c('Sequence', 'Proteins'), X)
 #' @export
-BuildColumnToProteinDataset <- function(peptideData, matAdj, columnName, proteinNames){
-  nbProt <- ncol(matAdj)
-  newCol <- rep("", nbProt)
-  
-  #print(head(rownames(peptideData)))
-  i <- 1
+aggMetadata_sam <- function(pepMetadata, names, X){
+  nbProt <- ncol(X)
+  res <- setNames(data.frame(matrix(ncol = length(names), nrow = 0), stringsAsFactors = FALSE), names)
+  proteinNames <- colnames(X)
   for (p in proteinNames){
-    listeIndicePeptides <- names(which(matAdj[,p] == 1))
-    listeData <- unique(as.character(peptideData[listeIndicePeptides,columnName], ";"))
-    newCol[i] <- paste0(listeData, collapse = ", ")
-    i <- i +1
+    listeIndicePeptides <- names(which(X[,p] == 1))
+    listeData <- pepMetadata[listeIndicePeptides,names]
+    listeData <- lapply(listeData, function(x){ gsub(pattern = "\\s", replacement = "", x = unlist(strsplit(x, ',')))})
+    
+    res <- setNames(rbind(res, as.data.frame(lapply(listeData, function(x){paste0(unique(x),collapse=', ')}), 
+                                            byCol = TRUE,
+                                            stringsAsFactors = FALSE)
+                          ), names)
   }
-  return(newCol)
+  return(res)
 }
+
+##########################################################################################################################
+
 
 
 #' This function creates a column for the protein dataset after agregation 
@@ -989,15 +943,17 @@ BuildColumnToProteinDataset <- function(peptideData, matAdj, columnName, protein
 BuildColumnToProteinDataset_par <- function(peptideData, matAdj, columnName, proteinNames){
   doParallel::registerDoParallel()
   
-  nbProt <- ncol(matAdj)
-  newCol <- rep("", nbProt)
-  i <- 1
-  newCol <- foreach (i=1:length(proteinNames), .combine=rbind) %dopar% {
+  nbProt <- ncol(X)
+  res <- setNames(data.frame(matrix(ncol = length(names), nrow = 0), stringsAsFactors = FALSE), names)
+  proteinNames <- colnames(X)
+  
+
+  res <- foreach (i=1:length(proteinNames), .combine=rbind) %dopar% {
     listeIndicePeptides <- names(which(matAdj[,proteinNames[i]] == 1))
     listeData <- unique(as.character(peptideData[listeIndicePeptides,columnName], ";"))
     paste0(listeData, collapse = ", ")
   }
-  return(as.vector(newCol))
+  return(res)
 }
 
 
