@@ -879,7 +879,7 @@ rowdata_stats_Aggregation_sam <- function(qPepData, X.list){
 #' of the MSnset object.
 #' @param names The name of the column in fData(peptides_MSnset) that 
 #' the user wants to keep in the new protein data.frame.
-#' @param matAdj The adjacency matrix used to agregate the peptides data.
+#' @param X The adjacency matrix used to agregate the peptides data.
 #' @return A vector
 #' @author Samuel Wieczorek
 #' @examples
@@ -888,21 +888,32 @@ rowdata_stats_Aggregation_sam <- function(qPepData, X.list){
 #' names <- names((Exp1_R25_pept[['original_log']]))
 #' X.list <- BuildListAdjacencyMatrices(PG, names, type=c('All','Shared', 'Specific'))
 #' X <- X.list$all
-#' aggMetadata(rowData(Exp1_R25_pept[['original_log']]), c('Sequence', 'Proteins'), X)
+#' ft <- aggMetadata_sam(rowData(Exp1_R25_pept[['original_log']]), c('Sequence', 'Proteins'), X)
 #' @export
-aggMetadata_sam <- function(pepMetadata, names, X){
+aggMetadata_sam <- function(pepMetadata, names, X, simplify=TRUE){
+  
+  if(length(simplify)==1){
+    if(isTRUE(simplify))
+       simplify <- rep(TRUE,length(names))
+    else 
+      simplify <- rep(FALSE,length(names))
+  } else if (length(simplify) != length(names)){
+    warning('The length of parameter simplify must be equal to the length of the vector names. Abort.')
+    return(NULL)
+  }
+  
+  
   nbProt <- ncol(X)
   res <- setNames(data.frame(matrix(ncol = length(names), nrow = 0), stringsAsFactors = FALSE), names)
   proteinNames <- colnames(X)
-  for (p in proteinNames){
-    listeIndicePeptides <- names(which(X[,p] == 1))
+  
+  for (i in 1:length(proteinNames)){
+    listeIndicePeptides <- names(which(X[,proteinNames[i]] == 1))
     listeData <- pepMetadata[listeIndicePeptides,names]
     listeData <- lapply(listeData, function(x){ gsub(pattern = "\\s", replacement = "", x = unlist(strsplit(x, ',')))})
     
-    res <- setNames(rbind(res, as.data.frame(lapply(listeData, function(x){paste0(unique(x),collapse=', ')}), 
-                                            byCol = TRUE,
-                                            stringsAsFactors = FALSE)
-                          ), names)
+    line <- mapply(function(listeData, simplify) {if(isTRUE(simplify)) paste0(unique(listeData),collapse=', ') else paste0(listeData,collapse=', ')}, listeData, simplify)
+    res <- setNames(rbind(res, data.frame(as.list(line))), names)
   }
   return(res)
 }
@@ -919,11 +930,11 @@ aggMetadata_sam <- function(pepMetadata, names, X){
 #'  using the previous peptide dataset.
 #' @param peptideData A data.frame of meta data of peptides. It is the fData 
 #' of the MSnset object.
-#' @param matAdj The adjacency matrix used to agregate the peptides data.
-#' @param columnName The name of the column in fData(peptides_MSnset) that 
+#' @param names The name of the column in fData(peptides_MSnset) that 
 #' the user wants to keep in the new protein data.frame.
-#' @param proteinNames The names of the protein in the new dataset (i.e. rownames)
-#' @return A vector
+#' @param X The adjacency matrix used to agregate the peptides data.
+#' @param simplify The names of the protein in the new dataset (i.e. rownames)
+#' @return A data frame
 #' @author Samuel Wieczorek
 #' @examples
 #' \dontrun{
@@ -940,8 +951,18 @@ aggMetadata_sam <- function(pepMetadata, names, X){
 #' @export
 #' @import foreach
 #' @importFrom doParallel registerDoParallel 
-BuildColumnToProteinDataset_par <- function(peptideData, matAdj, columnName, proteinNames){
+aggMetadata_parallel_sam <- function(peptideData, names, X, simplify=TRUE){
   doParallel::registerDoParallel()
+  
+  if(length(simplify)==1){
+    if(isTRUE(simplify))
+       simplify <- rep(TRUE,length(names))
+       else 
+         simplify <- rep(FALSE,length(names))
+  } else if (length(simplify) != length(names)){
+    warning('The length of parameter simplify must be equal to the length of the vector names. Abort.')
+    return(NULL)
+  }
   
   nbProt <- ncol(X)
   res <- setNames(data.frame(matrix(ncol = length(names), nrow = 0), stringsAsFactors = FALSE), names)
@@ -949,9 +970,12 @@ BuildColumnToProteinDataset_par <- function(peptideData, matAdj, columnName, pro
   
 
   res <- foreach (i=1:length(proteinNames), .combine=rbind) %dopar% {
-    listeIndicePeptides <- names(which(matAdj[,proteinNames[i]] == 1))
-    listeData <- unique(as.character(peptideData[listeIndicePeptides,columnName], ";"))
-    paste0(listeData, collapse = ", ")
+    listeIndicePeptides <- names(which(X[,proteinNames[i]] == 1))
+    listeData <- pepMetadata[listeIndicePeptides,names]
+    listeData <- lapply(listeData, function(x){ gsub(pattern = "\\s", replacement = "", x = unlist(strsplit(x, ',')))})
+    
+    line <- mapply(function(listeData, simplify) {if(isTRUE(simplify)) paste0(unique(listeData),collapse=', ') else paste0(listeData,collapse=', ')}, listeData, simplify)
+    setNames(rbind(res, data.frame(as.list(line))), names)
   }
   return(res)
 }
