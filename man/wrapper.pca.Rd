@@ -4,7 +4,7 @@
 \alias{wrapper.pca}
 \title{Compute the PCA}
 \usage{
-wrapper.pca(qData, var.scaling = TRUE, ncp = NULL)
+wrapper.pca(qData, condition, var.scaling = TRUE, ncp = NULL)
 }
 \arguments{
 \item{var.scaling}{The dimensions to plot}
@@ -23,8 +23,8 @@ Compute the PCA
 library(FactoMineR)
 utils::data(Exp1_R25_pept, package='DAPARdata2')
 qData <- assay(Exp1_R25_pept[['original']])
-res.pca <- wrapper.pca(qData)
-
+condition <- colData(Exp1_R25_pept)@listData[["Condition"]]
+res.pca <- wrapper.pca(qData, condition)
 }
 \author{
 Samuel Wieczorek, Enora Fremy

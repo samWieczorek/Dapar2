@@ -17,9 +17,12 @@ This function computes the connex components of a graph, represented by an adjac
 }
 \examples{
 utils::data(Exp1_R25_pept, package='DAPARdata2')
-plist <- rowData(Exp1_R25_pept[['original_log']][1:1000,])[,metadata(Exp1_R25_pept)$parentProtId]
-names <- names(Exp1_R25_pept[['original_log']])[1:1000]
-X.list <- BuildListAdjacencyMatrices(plist, names, type=c('All', 'Shared', 'Spec'))
+obj <- Exp1_R25_pept[1:1000,]
+obj <- addListAdjacencyMatrices(obj, 2)
+X.all <- GetAdjMat(obj, 2, 'all')
+X.onlyShared <- GetAdjMat(obj, 2, 'onlyShared')
+X.onlySpec <- GetAdjMat(obj, 2, 'onlySpec')
+X.list <- list(all=GetAdjMat(obj, 2, 'all'), onlySHared = GetAdjMat(obj, 2, 'onlyShared'), onlySpec = GetAdjMat(obj, 2, 'onlyShared'))
 cc <- ComputeConnexComposants(X.list)
 
 }

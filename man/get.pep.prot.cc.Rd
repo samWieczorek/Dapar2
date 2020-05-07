@@ -17,10 +17,10 @@ Method to build the list of connex composant of an adjacency matrix
 }
 \examples{
 utils::data(Exp1_R25_pept, package='DAPARdata2') 
-plist <- rowData(Exp1_R25_pept[['original_log']][1:1000,])[,metadata(Exp1_R25_pept)$parentProtId]
-names <- names(Exp1_R25_pept[['original_log']])[1:1000]
-X.list <- BuildListAdjacencyMatrices(plist, names, type=c('All'))
-ll <- get.pep.prot.cc(X.list$all)
+obj <- Exp1_R25_pept[1:1000,]
+obj <- addListAdjacencyMatrices(obj, 2)
+X <- GetAdjMat(obj, 2, 'all')
+ll <- get.pep.prot.cc(X)
 
 }
 \author{

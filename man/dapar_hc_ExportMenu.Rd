@@ -15,7 +15,7 @@ dapar_hc_ExportMenu(hc, filename)
 A contextual menu for highcharts plots
 }
 \description{
-Customise the contextual menu of highcharts plots.
+Customised contextual menu of highcharts plots
 }
 \examples{
 library("highcharter")
@@ -23,6 +23,7 @@ hc <- highchart()
 hc_chart(hc,type = "line") 
 hc_add_series(hc,data = c(29, 71, 40))
 dapar_hc_ExportMenu(hc,filename='foo')
+
 }
 \author{
 Samuel Wieczorek

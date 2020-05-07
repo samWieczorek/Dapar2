@@ -22,6 +22,7 @@ utils::data(Exp1_R25_pept, package='DAPARdata2')
 obj <- Exp1_R25_pept
 data <- rowData(Exp1_R25_pept[['original']])[,metadata(Exp1_R25_pept)$OriginOfValues]
 is.OfType(as.data.frame(data@listData), "MEC")
+
 }
 \author{
 Samuel Wieczorek

@@ -13,12 +13,13 @@ nEmptyLines(qData)
 An integer
 }
 \description{
-Returns the number of empty lines in a matrix.
+Returns the number of empty lines in the data
 }
 \examples{
 utils::data(Exp1_R25_pept, package='DAPARdata2')
 qData <- assay(Exp1_R25_pept,1)
 nEmptyLines(qData)
+
 }
 \author{
 Samuel Wieczorek
