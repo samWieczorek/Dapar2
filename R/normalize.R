@@ -27,12 +27,12 @@
 #' utils::data(Exp1_R25_pept, package='DAPARdata2')
 #' obj <- Exp1_R25_pept[['original']]
 #' conds <- colData(Exp1_R25_pept)[["Condition"]]
-#' wrapper.normalizeD(obj, "GlobalQuantileAlignment")
-#' wrapper.normalizeD(obj, "SumByColumns", conds, type="within conditions")
-#' wrapper.normalizeD(obj, "QuantileCentering", conds, type="within conditions")
-#' wrapper.normalizeD(obj, "MeanCentering", conds, type="within conditions")
-#' wrapper.normalizeD(obj, "vsn", conds, type="within conditions")
-#' wrapper.normalizeD(obj, "LOESS", conds, type="within conditions")
+#' r<-wrapper.normalizeD(obj, "GlobalQuantileAlignment")
+#' r<-wrapper.normalizeD(obj, "SumByColumns", conds, type="within conditions")
+#' r<-wrapper.normalizeD(obj, "QuantileCentering", conds, type="within conditions")
+#' r<-wrapper.normalizeD(obj, "MeanCentering", conds, type="overall")
+#' r<-wrapper.normalizeD(obj, "vsn", conds, type="within conditions")
+#' r<-wrapper.normalizeD(obj, "LOESS", conds, type="within conditions")
 #' @export
 
 wrapper.normalizeD <- function(obj, method, 
@@ -57,6 +57,9 @@ wrapper.normalizeD <- function(obj, method,
     return (NULL)
   }
   
+  metadata(obj)$params$normalizationMethod <- method
+  if (method != "GlobalQuantileAlignment") { metadata(obj)$params$normalizationType <- type }
+  
   qData <- assay(obj)
   #msg_method <- paste("Normalisation using method =", method,  sep="")
   #msg_type <- paste("With type =", type,  sep="")
@@ -79,11 +82,13 @@ wrapper.normalizeD <- function(obj, method,
          },
          QuantileCentering = {
            e <- QuantileCentering(qData, conds, type, subset.norm, quantile)
+           metadata(obj)$params$normalizationQuantile <- quantile
            #msg_quantile <- paste("With quantile =", quantile,  sep="")
            #obj@processingData@processing <- c(obj@processingData@processing, msg_method, msg_type, msg_quantile)
          },
          MeanCentering = {
            e <- MeanCentering(qData,  conds, type, subset.norm, scaling)
+           metadata(obj)$params$normalizationScaling <- scaling
            #msg_scaling <- paste("With scaling =", scaling,  sep="")
            #obj@processingData@processing <- c(obj@processingData@processing, msg_method, msg_type, msg_scaling)
          },
@@ -93,6 +98,7 @@ wrapper.normalizeD <- function(obj, method,
          },
          LOESS = {
            e <- LOESS(qData, conds, type, span)
+           metadata(obj)$params$normalizationSpan <- span
            #msg_loess <- paste("With span =", span,  sep="")
            #obj@processingData@processing <- c(obj@processingData@processing, msg_method, msg_type, msg_loess)
          }
@@ -100,13 +106,6 @@ wrapper.normalizeD <- function(obj, method,
   rownames(e) <- rownames(qData)
   colnames(e) <- colnames(qData)
   assay(obj) <- e
-  
-  ##### Fill only spe params ... ####
-  metadata(obj)$params$normalizationMethod <- method
-  metadata(obj)$params$normalizationType <- type
-  metadata(obj)$params$normalizationQuantile <- quantile
-  metadata(obj)$params$normalizationScaling <- scaling
-  metadata(obj)$params$normalizationSpan <- span
   
   return(obj)
 }
