@@ -10,6 +10,8 @@
 #' @return A histogram
 #' @author Samuel Wieczorek
 #' @examples
+#' library(DAPAR)
+#' library(highcharter)
 #' utils::data(Exp1_R25_pept, package='DAPARdata2')
 #' qData <- assay(Exp1_R25_pept[['original_log']])
 #' conds <- colData(Exp1_R25_pept)@listData$Condition

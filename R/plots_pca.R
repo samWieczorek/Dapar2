@@ -18,16 +18,18 @@
 #' library(FactoMineR)
 #' utils::data(Exp1_R25_pept, package='DAPARdata2')
 #' qData <- assay(Exp1_R25_pept[['original']])
-#' res.pca <- wrapper.pca(qData)
-#' 
+#' condition <- colData(Exp1_R25_pept)@listData[["Condition"]]
+#' res.pca <- wrapper.pca(qData, condition)
 #' @importFrom FactoMineR PCA
 #' @importFrom stats na.omit
 #' 
 #' @export
-wrapper.pca <- function(qData, var.scaling=TRUE, ncp=NULL){
+wrapper.pca <- function(qData, condition, var.scaling=TRUE, ncp=NULL){
   
   if (is.null(var.scaling)) {var.scaling <- TRUE}
+
   if (length(which(is.na(qData))) > 0){ qData <- stats::na.omit(qData) }
+
   
   if (is.null(ncp)){
     nmax <- 12
@@ -36,7 +38,7 @@ wrapper.pca <- function(qData, var.scaling=TRUE, ncp=NULL){
     n <- dim(y)[2] # If too big, take the number of conditions.
     
     if (n > nmax){
-      n <- length(unique(Biobase::pData(obj)$Condition))
+      n <- length(unique(condition))
     }
     
     ncp <- min(n, nmax)
