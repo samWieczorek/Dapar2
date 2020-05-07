@@ -24,9 +24,8 @@ License: Artistic-2.0
 VignetteBuilder: knitr
 Depends: R (>= 3.6.3)
 Suggests: testthat, BiocStyle, knitr
-Imports: Features,  methods, MsCoreUtils, SummarizedExperiment, MultiAssayExperiment, RColorBrewer, FactoMineR, factoextra, DT, doParallel, dplyr, foreach, gplots, highcharter, tibble, tidyr
-biocViews: Proteomics, Normalization, Preprocessing, MassSpectrometry, Matrix
-        QualityControl, GO, DataImport
+Imports: Features,  methods, MsCoreUtils, SummarizedExperiment, MultiAssayExperiment, preprocessCore, RColorBrewer, FactoMineR, factoextra, DT, doParallel, dplyr, foreach, gplots, highcharter, tibble, tidyr, visNetwork, Matrix
+biocViews: Proteomics, Normalization, Preprocessing, MassSpectrometry, QualityControl, GO, DataImport
 NeedsCompilation: no
 RoxygenNote: 7.1.0
 Packaged: 2017-10-13 11:13:04 UTC; sw175264

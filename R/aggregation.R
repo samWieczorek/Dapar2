@@ -32,7 +32,7 @@ addListAdjacencyMatrices <- function(obj, i){
   
   object_i <- obj[[i]]
   # A vector of proteins ids. The length of this vector is equal to the number of peptides one wants to aggregate, 
-  #' each line of it correspond to a peptide. Each element of this vector is either one element or a combination of elements seperated by a comma.
+  # each line of it correspond to a peptide. Each element of this vector is either one element or a combination of elements seperated by a comma.
   plist <- rowData(object_i)[,metadata(obj)$parentProtId]
   
   # A vector of names of peptides (a unique Id). The size of this vector is equal to the size of the parameter 'plist'.
@@ -247,9 +247,10 @@ GraphPepProt_hc <- function(X, type = 'all'){
 #' @author Samuel Wieczorek
 #' 
 #' @examples
+#' library(Features)
 #' utils::data(Exp1_R25_pept, package='DAPARdata2')
 #' obj <- Exp1_R25_pept[1:1000,]
-#' qPepData <- assay(obj,'original_log')
+#' qPepData <- assay(obj,2)
 #' obj <- addListAdjacencyMatrices(obj, 2)
 #' X <- GetAdjMat(obj, 2, 'all')
 #' n <- GetNbPeptidesUsed(qPepData, X)
@@ -277,7 +278,7 @@ GetNbPeptidesUsed <- function(qPepData, X){
 #' 
 #' @param qPepData A data.frame of quantitative data
 #' 
-#' @seealso The function 'BuildListAdjacencyMatrices'.
+#' @seealso The function 'addListAdjacencyMatrices'.
 #' 
 #' @return A list of three items:
 #' * nAll: the number of pall eptides used for aggregation,
@@ -286,10 +287,11 @@ GetNbPeptidesUsed <- function(qPepData, X){
 #' 
 #' @author Samuel Wieczorek
 #' 
-#' @examples 
+#' @examples
+#' library(Features)
 #' utils::data(Exp1_R25_pept, package='DAPARdata2')
 #' obj <- Exp1_R25_pept[1:1000,]
-#' qPepData <- assay(obj,'original_log')
+#' qPepData <- assay(obj,2)
 #' obj <- addListAdjacencyMatrices(obj, 2)
 #' X <- GetAdjMat(obj, 2, 'all')
 #' n <- GetDetailedNbPeptidesUsed(X, qPepData)
@@ -850,6 +852,7 @@ aggregate_with_matAdj <- function(qPepData, X, FUN, ...){
 #' @importFrom MsCoreUtils aggregate_by_vector robustSummary
 #'
 #' @examples
+#' library(S4Vectors)
 #' utils::data(Exp1_R25_pept, package='DAPARdata2')
 #' obj <- Exp1_R25_pept[1:1000,]
 #' aggregateFeatures_sam(obj,2, aggType= 'all', name='aggregated', meta.names = 'Sequence', aggSum)
@@ -887,13 +890,10 @@ aggregateFeatures_sam <- function(object, i, aggType='all', name, meta.names = N
   if (is.null(metadata(object_i)$list.matAdj) || is.null(metadata(object_i)$list.matAdj[[aggType]])){
     ## by default, all three types of matrices are computed once for all and stored in the metadata slot of the SE. 
     ## This reduces the future computations
-    plist <- rowData(object_i)[,metadata(object)$parentProtId]
-    names <- names(object_i)
-    X.list <- BuildListAdjacencyMatrices(plist, names)
-    metadata(object_i)$list.matAdj <- X.list
+    object <- addListAdjacencyMatrices(object, i)
   }
   
-  X <- metadata(object_i)$list.matAdj[[aggType]]
+  X <- metadata(object[[i]])$list.matAdj[[aggType]]
   
   
   ## Message about NA values is quant/row data
@@ -941,10 +941,10 @@ aggregateFeatures_sam <- function(object, i, aggType='all', name, meta.names = N
   
   ## The following code is used to build the hits object originally built with findMatches
   ## in the class Features. The vectors from and to are built explicitly with the 'which' function
-  test <- which(as.matrix(X.list$all)==1, arr.ind=TRUE)
+  test <- which(as.matrix(X)==1, arr.ind=TRUE)
   from <- test[,'col']
   to <- test[,'row']
-  hits <- Hits(from=from, 
+  hits <- S4Vectors::Hits(from=from, 
                to=to, 
                nLnode=length(from), 
                nRnode=nrow(X),
@@ -957,7 +957,7 @@ aggregateFeatures_sam <- function(object, i, aggType='all', name, meta.names = N
    
    assayLinks <- AssayLink(name = name,
                            from = ifelse(is.character(i), i, names(object)[i]),
-                           fcol = fcol,
+                           fcol = metadata(object)$parentProtId,
                            hits = hits)
    addAssay(object,
             se,

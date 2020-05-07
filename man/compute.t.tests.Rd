@@ -27,6 +27,9 @@ the pvalue of all the comparisons (one column for one comparison). The names of 
 are identical and correspond to the description of the comparison.
 }
 \description{
+
+}
+\details{
 This function is xxxxxx
 }
 \examples{

@@ -171,6 +171,7 @@ wrapper.normalizeD <- function(obj, method,...,
 #' @return A normalized numeric matrix
 #' @author Samuel Wieczorek, Thomas Burger, Helene Borges, Anais Courtier, Enora Fremy
 #' @examples
+#' library(Features)
 #' utils::data(Exp1_R25_pept, package='DAPARdata2')
 #' qData <- assay(Exp1_R25_pept[['original']])
 #' normalized <- GlobalQuantileAlignment(qData)
@@ -191,6 +192,7 @@ GlobalQuantileAlignment <- function(qData) {
 #' @author Samuel Wieczorek, Thomas Burger, Helene Borges, Anais Courtier, Enora Fremy
 #' @examples
 #' utils::data(Exp1_R25_pept, package='DAPARdata2')
+#' library(Features)
 #' qData <- assay(Exp1_R25_pept[['original']])
 #' conds <- colData(Exp1_R25_pept)[["Condition"]]
 #' normalized <- SumByColumns(qData, conds, type="overall")
@@ -296,7 +298,7 @@ MeanCentering <- function(qData, conds=NULL, type=NULL, subset.norm=NULL, scalin
     .temp <- sweep(qData, 2, meanOverSamples)
     if (scaling){
       qData <- scale(qData,center=FALSE, scale=TRUE)
-      attr(qData),"scaled:scale")<-NULL
+      attr(qData,"scaled:scale")<-NULL
     }
     cCond <- NULL
     for (l in unique(conds)) {

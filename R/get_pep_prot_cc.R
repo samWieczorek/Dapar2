@@ -11,9 +11,12 @@
 #' 
 #' @examples 
 #' utils::data(Exp1_R25_pept, package='DAPARdata2')
-#' plist <- rowData(Exp1_R25_pept[['original_log']][1:1000,])[,metadata(Exp1_R25_pept)$parentProtId]
-#' names <- names(Exp1_R25_pept[['original_log']])[1:1000]
-#' X.list <- BuildListAdjacencyMatrices(plist, names, type=c('All', 'Shared', 'Spec'))
+#' obj <- Exp1_R25_pept[1:1000,]
+#' obj <- addListAdjacencyMatrices(obj, 2)
+#' X.all <- GetAdjMat(obj, 2, 'all')
+#' X.onlyShared <- GetAdjMat(obj, 2, 'onlyShared')
+#' X.onlySpec <- GetAdjMat(obj, 2, 'onlySpec')
+#' X.list <- list(all=GetAdjMat(obj, 2, 'all'), onlySHared = GetAdjMat(obj, 2, 'onlyShared'), onlySpec = GetAdjMat(obj, 2, 'onlyShared'))
 #' cc <- ComputeConnexComposants(X.list)
 #' 
 #' @export
@@ -56,10 +59,10 @@ ComputeConnexComposants <- function(X.list=NULL){
 #' 
 #' @examples
 #' utils::data(Exp1_R25_pept, package='DAPARdata2') 
-#' plist <- rowData(Exp1_R25_pept[['original_log']][1:1000,])[,metadata(Exp1_R25_pept)$parentProtId]
-#' names <- names(Exp1_R25_pept[['original_log']])[1:1000]
-#' X.list <- BuildListAdjacencyMatrices(plist, names, type=c('All'))
-#' ll <- get.pep.prot.cc(X.list$all)
+#' obj <- Exp1_R25_pept[1:1000,]
+#' obj <- addListAdjacencyMatrices(obj, 2)
+#' X <- GetAdjMat(obj, 2, 'all')
+#' ll <- get.pep.prot.cc(X)
 #' 
 #' @export
 #' 
@@ -155,11 +158,11 @@ get.pep.prot.cc <- function(X){
 #' 
 #' @examples
 #' utils::data(Exp1_R25_pept, package='DAPARdata2') 
-#' plist <- rowData(Exp1_R25_pept[['original_log']][1:1000,])[,metadata(Exp1_R25_pept)$parentProtId]
-#' names <- names(Exp1_R25_pept[['original_log']])[1:1000]
-#' X.list <- BuildListAdjacencyMatrices(plist, names, type=c('All'))
-#' ll <- get.pep.prot.cc(X.list$all)
-#' g <- buildGraph(ll[[1]], X.list$all)
+#' obj <- Exp1_R25_pept[1:1000,]
+#' obj <- addListAdjacencyMatrices(obj, 2)
+#' X <- GetAdjMat(obj, 2, 'all')
+#' ll <- get.pep.prot.cc(X)
+#' g <- buildGraph(ll[[1]], X)
 #' 
 #' @export
 #' 
@@ -214,10 +217,10 @@ buildGraph <- function(The.CC, X){
 #' 
 #' @examples
 #' utils::data(Exp1_R25_pept, package='DAPARdata2') 
-#' plist <- rowData(Exp1_R25_pept[['original_log']][1:1000,])[,metadata(Exp1_R25_pept)$parentProtId]
-#' names <- names(Exp1_R25_pept[['original_log']])[1:1000]
-#' X.list <- BuildListAdjacencyMatrices(plist, names, type=c('All'))
-#' ll <- get.pep.prot.cc(X$list$all)
+#' obj <- Exp1_R25_pept[1:1000,]
+#' obj <- addListAdjacencyMatrices(obj, 2)
+#' X <- GetAdjMat(obj, 2, 'all')
+#' ll <- get.pep.prot.cc(X)
 #' g <- buildGraph(ll[[1]], X)
 #' display.CC.visNet(g)
 #' 
@@ -264,10 +267,10 @@ display.CC.visNet <- function(g,
 #' 
 #' @examples
 #' utils::data(Exp1_R25_pept, package='DAPARdata2') 
-#' plist <- rowData(Exp1_R25_pept[['original_log']][1:1000,])[,metadata(Exp1_R25_pept)$parentProtId]
-#' names <- names(Exp1_R25_pept[['original_log']])[1:1000]
-#' X.list <- BuildListAdjacencyMatrices(plist, names, type=c('All'))
-#' ll <- get.pep.prot.cc(X.list$all)
+#' obj <- Exp1_R25_pept[1:1000,]
+#' obj <- addListAdjacencyMatrices(obj, 2)
+#' X <- GetAdjMat(obj, 2, 'all')
+#' ll <- get.pep.prot.cc(X)
 #' plotJitterCC(ll)
 #' 
 #' @export

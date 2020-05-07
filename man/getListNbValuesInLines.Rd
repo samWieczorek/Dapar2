@@ -17,11 +17,12 @@ getListNbValuesInLines(obj, i, type = "wholeMatrix")
 An integer
 }
 \description{
-Returns the possible number of values in lines in a matrix.
+Returns the possible number of values in lines in the data
 }
 \examples{
 utils::data(Exp1_R25_pept, package='DAPARdata2')
 getListNbValuesInLines(Exp1_R25_pept, 1)
+
 }
 \author{
 Samuel Wieczorek

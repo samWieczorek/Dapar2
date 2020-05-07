@@ -17,7 +17,7 @@ dapar_hc_chart(hc, chartType, zoomType = "None", width = 0, height = 0)
 A highchart plot
 }
 \description{
-Customise the resetZoomButton of highcharts plots.
+Customised resetZoomButton of highcharts plots
 }
 \examples{
 library("highcharter")
@@ -25,6 +25,7 @@ hc <- highchart()
 hc_chart(hc,type = "line") 
 hc_add_series(hc,data = c(29, 71, 40))
 dapar_hc_ExportMenu(hc,filename='foo')
+
 }
 \author{
 Samuel Wieczorek

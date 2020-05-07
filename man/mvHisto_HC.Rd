@@ -23,8 +23,10 @@ A histogram
 This method plots a histogram of missing values.
 }
 \examples{
+library(DAPAR)
+library(highcharter)
 utils::data(Exp1_R25_pept, package='DAPARdata2')
-qData <- assay(Exp1_R25_pept[['original_log']])
+qData <- assay(Exp1_R25_pept[[2]])
 conds <- colData(Exp1_R25_pept)@listData$Condition
 mvHisto_HC(qData, conds, showValues=TRUE)
 }

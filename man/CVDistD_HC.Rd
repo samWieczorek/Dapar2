@@ -27,6 +27,8 @@ The CV is calculated for each condition present in the dataset
 (see the slot \code{'Condition'} in the \code{colData()} DataFrame)
 }
 \examples{
+library(Features)
+library(SummarizedExperiment)
 utils::data(Exp1_R25_pept, package='DAPARdata2')
 qData <- assay(Exp1_R25_pept[['original']])[1:10,]
 conds <- colData(Exp1_R25_pept)@listData[["Condition"]]
