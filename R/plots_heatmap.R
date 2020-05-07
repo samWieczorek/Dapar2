@@ -4,14 +4,21 @@
 #'
 #' @title This function is a wrapper to \code{\link{heatmap.2}} that displays
 #' a numeric matrix
+#' 
 #' @param qData A dataframe of numeric values
+#' 
 #' @param distance The distance used by the clustering algorithm to compute
 #' the dendrogram. See \code{help(heatmap.2)}
+#' 
 #' @param cluster the clustering algorithm used to build the dendrogram.
 #' See \code{help(heatmap.2)}
+#' 
 #' @param dendro A boolean to indicate if the dendrogram has to be displayed
+#' 
 #' @return A heatmap
+#' 
 #' @author Samuel Wieczorek
+#' 
 #' @examples
 #' \dontrun{
 #' utils::data(Exp1_R25_pept, package='DAPARdata2')
@@ -19,10 +26,14 @@
 #' qData <- assay(ft[['original_log']])[1:1000,]
 #' heatmapD(qData)
 #' }
+#' 
 #' @importFrom grDevices colorRampPalette
 #' @importFrom gplots heatmap.2
+#' @importFrom stats dist hclust
 #' @import graphics
+#' 
 #' @export
+#' 
 heatmapD <- function(qData, distance="euclidean", cluster="complete", dendro = FALSE){
   ##Check parameters
   # paramdist <- c("euclidean", "manhattan")

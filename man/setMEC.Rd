@@ -19,6 +19,9 @@ An instance of class \code{DataFrame} which is an update of the parameter names 
 \description{
 Sets the MEC tag in the origin parameter
 }
+\examples{
+
+}
 \author{
 Samuel Wieczorek
 }

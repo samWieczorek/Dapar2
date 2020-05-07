@@ -45,7 +45,7 @@ named index and allows to retrieve the right row to show in the tooltip.}
 An interactive volcanoplot
 }
 \description{
-Plots an interactive volcanoplot after the differential analysis.
+#' Plots an interactive volcanoplot after the differential analysis.
 Typically, the log of Fold Change is represented on the X-axis and the
 log10 of the p-value is drawn on the Y-axis. When the \code{threshold_pVal}
 and the \code{threshold_logFC} are set, two lines are drawn respectively on
@@ -77,6 +77,7 @@ hc_clickFunction <- JS("function(event) {Shiny.onInputChange('eventPointClicked'
 cond <- unique(colData(obj)[['Condition']])
 diffAnaVolcanoplot_rCharts(df, 2.5, 1, cond, hc_clickFunction) 
 }
+
 }
 \author{
 Samuel Wieczorek, Enora Fremy

@@ -3,22 +3,31 @@
 #' Compute the PCA
 #' 
 #' @title Compute the PCA
+#' 
 #' @param obj numeric matrix
+#' 
 #' @param var.scaling The dimensions to plot
+#' 
 #' @param ncp Number of dimensions kept in the results
+#' 
 #' @return A list including eigenvalues of obj
+#' 
 #' @author Samuel Wieczorek, Enora Fremy
+#' 
 #' @examples
 #' library(FactoMineR)
 #' utils::data(Exp1_R25_pept, package='DAPARdata2')
 #' qData <- assay(Exp1_R25_pept[['original']])
 #' res.pca <- wrapper.pca(qData)
+#' 
 #' @importFrom FactoMineR PCA
+#' @importFrom stats na.omit
+#' 
 #' @export
 wrapper.pca <- function(qData, var.scaling=TRUE, ncp=NULL){
   
   if (is.null(var.scaling)) {var.scaling <- TRUE}
-  if (length(which(is.na(qData))) > 0){ qData <- na.omit(qData) }
+  if (length(which(is.na(qData))) > 0){ qData <- stats::na.omit(qData) }
   
   if (is.null(ncp)){
     nmax <- 12

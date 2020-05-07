@@ -20,6 +20,14 @@ A matrix of intensities of proteins
 This function computes the intensity of proteins as the mean of the 
 intensities of their peptides.
 }
+\examples{
+utils::data(Exp1_R25_pept, package='DAPARdata2')
+plist <- rowData(Exp1_R25_pept[['original']][1:1000,])[1:1000,metadata(Exp1_R25_pept)$parentProtId]
+names <- names(Exp1_R25_pept[['original']])[1:1000]
+X.list <- BuildListAdjacencyMatrices(plist, names, type=c('All'))
+aggMean(assay(Exp1_R25_pept[['original']])[1:1000,], X$all)
+
+}
 \author{
 Alexia Dorffer
 }

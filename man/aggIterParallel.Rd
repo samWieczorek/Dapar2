@@ -33,6 +33,15 @@ A matrix of intensities of proteins
 \description{
 Method to aggregate peptides into proteins with the iterative approach with use of parallelism.
 }
+\examples{
+utils::data(Exp1_R25_pept, package='DAPARdata2')
+plist <- rowData(Exp1_R25_pept[['original_log']][1:1000,])[,metadata(Exp1_R25_pept)$parentProtId]
+names <- names(Exp1_R25_pept[['original_log']])[1:1000]
+X.list <- BuildListAdjacencyMatrices(plist, names, type=c('All'))
+conditions <- colData(Exp1_R25_pept)@listData$Condition
+aggIterParallel(assay(Exp1_R25_pept,2)[1:1000,], X.list$all, conditions)
+
+}
 \author{
 Samuel Wieczorek
 }

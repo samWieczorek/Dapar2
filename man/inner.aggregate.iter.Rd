@@ -29,6 +29,15 @@ A  matrix containing the quantitative aggregated data for proteins.
 \description{
 Method to aggregate peptides into proteins with the iterative approach.
 }
+\examples{
+utils::data(Exp1_R25_pept, package='DAPARdata2')
+plist <- rowData(Exp1_R25_pept[['original']][1:1000,])[1:1000,metadata(Exp1_R25_pept)$parentProtId]
+names <- names(Exp1_R25_pept[['original']])[1:1000]
+X.list <- BuildListAdjacencyMatrices(plist, names, type=c('All'))
+X <- BuildListAdjacencyMatrices(PG, names, type=c('All'))
+qPepData <- assay(Exp1_R25_pept[['original_log']][1:1000,])
+inner.aggregate.iter(qPepData, X$all)
+}
 \author{
 Samuel Wieczorek, Thomas Burger
 }

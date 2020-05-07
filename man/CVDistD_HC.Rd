@@ -11,8 +11,7 @@ CVDistD_HC(qData, conds = NULL, palette = NULL)
 
 \item{conds}{A vector of the conditions (one condition per sample).}
 
-\item{palette}{A vector of HEX Code colors (one color 
-per condition).}
+\item{palette}{A vector of HEX Code colors (one color per condition).}
 }
 \value{
 A density plot
@@ -22,11 +21,17 @@ Builds a densityplot of the CV of entities in numeric matrix.
 The CV is calculated for each condition present in the dataset
 (see the slot \code{'Condition'} in the \code{colData()} DataFrame)
 }
+\details{
+Builds a densityplot of the CV of entities in numeric matrix.
+The CV is calculated for each condition present in the dataset
+(see the slot \code{'Condition'} in the \code{colData()} DataFrame)
+}
 \examples{
 utils::data(Exp1_R25_pept, package='DAPARdata2')
 qData <- assay(Exp1_R25_pept[['original']])[1:10,]
 conds <- colData(Exp1_R25_pept)@listData[["Condition"]]
 CVDistD_HC(qData, conds)
+
 }
 \seealso{
 \code{\link{densityPlotD}}.

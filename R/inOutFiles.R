@@ -1,12 +1,21 @@
 #' Sets the MEC tag in the origin parameter
+#' 
 #' @title Sets the MEC tag in the OriginOfValues
+#' 
 #' @param origin xxxxx
+#' 
 #' @param qData xxxxxx
+#' 
 #' @param conds xxxxxxx
+#' 
 #' @return An instance of class \code{DataFrame} which is an update of the parameter names origin
+#' 
 #' @author Samuel Wieczorek
+#' 
 #' @examples 
+#' 
 #' @export
+#' 
 setMEC <- function(origin, qData,conds){
   
   #if (is.null( obj@experimentData@other$OriginOfValues)){return()}
@@ -33,18 +42,28 @@ setMEC <- function(origin, qData,conds){
 
 
 #' Sets the MEC tag in the origin parameter
+#' 
 #' @title Sets the MEC tag in the OriginOfValues
+#' 
 #' @param obj An object of class \code{Features}
+#' 
 #' @param i The indice of the assay in obj to be used to build the Origin of values. Generally, it is the first one
+#' 
 #' @param namesOrigin A list of names which are known to contain method of identification of peptides.Thoses names must figure in
 #' the colnames of the rowData of an assay
+#' 
 #' @return An instance of class \code{DataFrame} Which has the same dimensions as the quantitaive datas (assay) ans contains the origin
 #' of values with tags such as MEC, POV
+#' 
 #' @author Samuel Wieczorek
+#' 
 #' @examples 
+#' 
 #' @importFrom methods as
+#' 
 #' @import MultiAssayExperiment
 #' @import SummarizedExperiment
+#' 
 #' @export
 addOriginOfValues <- function(obj, i, namesOrigin=NULL){
   
@@ -70,7 +89,6 @@ addOriginOfValues <- function(obj, i, namesOrigin=NULL){
     OriginOfValues <- as(tmp, 'DataFrame')
   }
   
-  #rownames(OriginOfValues) <- rownames(Biobase::fData(obj))
   colnames(OriginOfValues) <- paste0("OriginOfValue_",rownames(SummarizedExperiment::colData(obj)))
   colnames(OriginOfValues) <- gsub(".", "_", colnames(OriginOfValues), fixed=TRUE)
   
@@ -93,24 +111,35 @@ addOriginOfValues <- function(obj, i, namesOrigin=NULL){
 #' for the samples description.
 #' 
 #' @title Creates an object of class \code{MSnSet} from text file
+#' 
 #' @param data The name of a tab-separated file that contains the data.
+#' 
 #' @param sample A dataframe describing the samples (in lines).
+#' 
 #' @param indExpData A vector of string where each element is the name
 #' of a column in designTable that have to be integrated in
-#' the \code{fData()} table
-#' of the \code{MSnSet} object.
+#' the \code{fData()} table of the \code{MSnSet} object.
+#' 
 #' @param keyId The indice of the column containing the ID of entities 
 #' (peptides or proteins)
+#' 
 #' @param namesOrigin xxxxxxxxxxx
+#' 
 #' @param logTransform A boolean value to indicate if the data have to be
 #' log-transformed (Default is FALSE)
+#' 
 #' @param forceNA A boolean value to indicate if the 0 and NaN values of
 #' intensity have to be replaced by NA (Default is FALSE)
+#' 
 #' @param typeOfData A string that indicates whether the dataset is about
+#' 
 #' @param parentProtId For peptide entities, a string which is the name of a column in rowData. It contains the id of parent
 #' proteins and is used to generate adjacency matrix and process to aggregation.
+#' 
 #' @return An instance of class \code{Features}.
+#' 
 #' @author Samuel Wieczorek
+#' 
 #' @examples 
 #' data.file <- system.file("extdata", "Exp1_R25_pept.txt", package="DAPARdata2")
 #' data <- read.table(data.file, header=TRUE, sep="\t", as.is=TRUE, stringsAsFactors = FALSE)
@@ -121,10 +150,13 @@ addOriginOfValues <- function(obj, i, namesOrigin=NULL){
 #' parentId <- 'Protein_group_IDs'
 #' keyid <- 'Sequence'
 #' ft <- createFeatures(data, sample,indExpData,  keyId = keyid, namesOrigin = namesOrigin, typeOfData = "peptide", parentProtId = parentId, forceNA=TRUE)
+#' 
 #' @import Features
 #' @importFrom utils installed.packages
 #' @import SummarizedExperiment
+#' 
 #' @export
+#' 
 createFeatures <- function(data,
                            sample=NULL,
                            indExpData,

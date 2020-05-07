@@ -11,11 +11,9 @@ densityPlotD_HC(qData, pData, legend = NULL, palette = NULL)
 
 \item{pData}{DataFrame}
 
-\item{legend}{A vector of the conditions (one condition 
-per sample).}
+\item{legend}{A vector of the conditions (one condition per sample).}
 
-\item{palette}{A vector of HEX Code colors (one color 
-per condition).}
+\item{palette}{A vector of HEX Code colors (one color per condition).}
 }
 \value{
 A density plot
@@ -29,6 +27,7 @@ qData <- assay(Exp1_R25_pept[['original']])
 pData <- colData(Exp1_R25_pept)
 legend <- colData(Exp1_R25_pept)@listData[["Condition"]]
 densityPlotD_HC(qData, pData)
+
 }
 \author{
 Samuel Wieczorek, Enora Fremy

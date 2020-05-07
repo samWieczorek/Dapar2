@@ -21,7 +21,7 @@ A list of three adjacency matrices. 1 - the matrix contains all peptides (shared
 the matrix contains only the peptides shared between proteins, 3 - the matrix contains only specific peptides.
 }
 \description{
-All teh matrices have the same dimensions. The first matrix correspond to all the peptides, the second one contains 
+All the matrices have the same dimensions. The first matrix correspond to all the peptides, the second one contains 
 only the peptides shared with several proteins and the last matrix contains only the specific peptides. These matrices are useful 
 is one aggregate with only a certain type of peptides or all of them.
 }
@@ -33,14 +33,13 @@ is one aggregate with only a certain type of peptides or all of them.
 #' @param pg A vector of xxxxx
 #' @param names The names of peptides xxxx
 #' @param unique A boolean to indicate whether only the unique peptides must 
-#' be considered (TRUE) or if the shared peptides have to 
-#' be integrated (FALSE).
+#' be considered (TRUE) or if the shared peptides have to be integrated (FALSE).
 #' @return A binary matrix  
 #' @author Samuel Wieczorek
 #' @examples
 #' utils::data(Exp1_R25_pept, package='DAPARdata2')
 #' PG <- rowData(Exp1_R25_pept[['original']])[,metadata(Exp1_R25_pept)$parentProtId]
-#' names <- names((Exp1_R25_pept[['original']]))
+#' names <- names(Exp1_R25_pept[['original']]))
 #' X <- BuildAdjacencyMatrix(PG, names, TRUE)
 #' @export
 BuildAdjacencyMatrix <- function(pg, names, unique=FALSE){
@@ -65,9 +64,10 @@ in lines.
 }
 \examples{
 utils::data(Exp1_R25_pept, package='DAPARdata2')
-plist <- rowData(Exp1_R25_pept[['original']][1:1000,])[1:1000,metadata(Exp1_R25_pept)$parentProtId]
-names <- names((Exp1_R25_pept[['original']])[1:1000])
+plist <- rowData(Exp1_R25_pept[['original']])[1:1000,metadata(Exp1_R25_pept)$parentProtId]
+names <- names(Exp1_R25_pept[['original']])[1:1000]
 X <- BuildListAdjacencyMatrices(plist, names, type=c('All', 'Shared', 'Specific'))
+
 }
 \author{
 Samuel Wieczorek

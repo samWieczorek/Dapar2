@@ -1,81 +1,48 @@
-#' 
-#' 
-#' 
-#' 
-#' #' Method to create a binary matrix with proteins in columns and peptides 
-#' #' in lines on a \code{MSnSet} object (peptides)
-#' #' 
-#' #' @title Function matrix of appartenance group
-#' #' @param pg A vector of xxxxx
-#' #' @param names The names of peptides xxxx
-#' #' @param unique A boolean to indicate whether only the unique peptides must 
-#' #' be considered (TRUE) or if the shared peptides have to 
-#' #' be integrated (FALSE).
-#' #' @return A binary matrix  
-#' #' @author Samuel Wieczorek
-#' #' @examples
-#' #' utils::data(Exp1_R25_pept, package='DAPARdata2')
-#' #' PG <- rowData(Exp1_R25_pept[['original']])[,metadata(Exp1_R25_pept)$parentProtId]
-#' #' names <- names((Exp1_R25_pept[['original']]))
-#' #' X <- BuildAdjacencyMatrix(PG, names, TRUE)
-#' #' @export
-#' BuildAdjacencyMatrix <- function(pg, names, unique=FALSE){
-#'   PG.l <- strsplit(as.character(pg), split=";", fixed=TRUE)
-#'   
-#'   t <- table(data.frame(A=rep(seq_along(PG.l), lengths(PG.l)), B=unlist(PG.l)))
-#'   
-#'   if (unique == TRUE){
-#'     ll <- which(rowSums(t)>1)
-#'     if (length(ll) > 0) {
-#'       t[ll,] <- 0
-#'     }
-#'   }
-#'   
-#'   X <- Matrix::Matrix(t, dimnames = list(names, colnames(t))
-#'   )
-#'   
-#'   return(X)
-#' }
 
-
-
-#' Method to create a list of three binary matrices with proteins in columns and peptides 
-#' in lines.
+#' Method to create a list of three binary matrices with proteins in columns and peptides in lines.
 #' 
 #' @title Function matrix of appartenance group
 #' 
-#' @description All teh matrices have the same dimensions. The first matrix correspond to all the peptides, the second one contains 
+#' @description All the matrices have the same dimensions. The first matrix correspond to all the peptides, the second one contains 
 #' only the peptides shared with several proteins and the last matrix contains only the specific peptides. These matrices are useful 
-#' is one aggregate with only a certain type of peptides or all of them.
+#' is one aggregate with only a certain type of peptides or all of them. The list of matrices is stored in the slot 'xxx' of the metadata of the argument
+#' obj (class 'SummarizedExperiment')
 #' 
-#' @param plist A vector of proteins ids. The length of this vector is equal to the number of peptides one wants to aggregate, each line of it correspond
-#' to a peptide. Each element of this vector is either one element or a combination of elements seperated by a comma.
+#' @param obj An object of class 'Features' 
 #' 
-#' @param names A vector of names of peptides (a unique Id). The size of this vector is equal to the size of the parameter 'plist'.
+#' @param i The indice of the dataset (class 'SumarizedExperiment') in the list of 'obj' on which to apply the aggregation. 
 #' 
-#' @param type  A vector of type of adjacency matrices to include in the return value. Values are : 'All' for 
-#' the matrix containing all peptides, 'Shared' for the matrix which contains only the shared peptides v=between proteins,
-#' 'Specific' for the matrix which contains only the specific peptides. Default value for type is all these three matrices.
-#' 
-#' @return A list of three adjacency matrices. 1 - the matrix contains all peptides (shared and specific), 2 - 
-#' the matrix contains only the peptides shared between proteins, 3 - the matrix contains only specific peptides.
+#' @return AN object of class 'Features'
 #' 
 #' @author Samuel Wieczorek
 #' 
 #' @examples
 #' utils::data(Exp1_R25_pept, package='DAPARdata2')
-#' plist <- rowData(Exp1_R25_pept[['original']][1:1000,])[1:1000,metadata(Exp1_R25_pept)$parentProtId]
-#' names <- names((Exp1_R25_pept[['original']])[1:1000])
-#' X <- BuildListAdjacencyMatrices(plist, names, type=c('All', 'Shared', 'Specific'))
+#' obj <- Exp1_R25_pept[1:1000,]
+#' obj <- addListAdjacencyMatrices(obj, 2)
+#' 
 #' @export
-BuildListAdjacencyMatrices <- function(plist, names, type = c('All', 'Shared', 'Specific')){
+#' 
+addListAdjacencyMatrices <- function(obj, i){
+  
+  if(missing(obj))
+    stop("'i' is missing.")
+  if(missing(i))
+    stop("'i' is missing.")
+  
+  object_i <- obj[[i]]
+  # A vector of proteins ids. The length of this vector is equal to the number of peptides one wants to aggregate, 
+  #' each line of it correspond to a peptide. Each element of this vector is either one element or a combination of elements seperated by a comma.
+  plist <- rowData(object_i)[,metadata(obj)$parentProtId]
+  
+  # A vector of names of peptides (a unique Id). The size of this vector is equal to the size of the parameter 'plist'.
+  names <- names(object_i)
+  
   
   if (length(plist) != length(names)){
     warning("The parameters 'plist' and 'names' must have the same length. Abort.")
     return(NULL)
   }
-  
-  
   
   Xshared <- Xspec <- Xall <- NULL
   
@@ -85,35 +52,64 @@ BuildListAdjacencyMatrices <- function(plist, names, type = c('All', 'Shared', '
   t <- table(data.frame(A=rep(seq_along(PG.l), lengths(PG.l)), B=unlist(PG.l)))
   
   #compute the matrix with all peptides
-  if (!is.na(match('All', type))){
     Xall <- Matrix::Matrix(t, sparse=T,dimnames = list(names, colnames(t)))
-  }
-  
+
   #compute the matrix with only shared peptides
-  if (!is.na(match('Shared', type))){
     tmpShared <- t
     ll <- which(rowSums(tmpShared)==1)
     if (length(ll) > 0) {
       tmpShared[ll,] <- 0
     }
     Xshared <- Matrix::Matrix(tmpShared, sparse=T, dimnames = list(names, colnames(t)))
-  }
-  
+
   #compute the matrix with only specific peptides
-  if (!is.na(match('Specific', type))){
     tmpSpec <- t
     ll <- which(rowSums(tmpSpec)>1)
     if (length(ll) > 0) {
       tmpSpec[ll,] <- 0
     }
     Xspec <- Matrix::Matrix(tmpSpec, sparse=T, dimnames = list(names, colnames(t)))
-  }
+
+    
   x.list <- list(all = Xall, onlyShared = Xshared, onlySpec = Xspec)
-  return (x.list)
+  
+  metadata(obj[[i]])$list.matAdj <- x.list
+  return (obj)
 }
 
 
 
+#' @title Get an adjacency matrix from a Features object
+#' 
+#' @description Get an adjacency matrix from a Features object
+#' 
+#' @param obj An object of class 'Features' 
+#' 
+#' @param i The indice of the dataset (class 'SumarizedExperiment') in the list of 'obj' on which to apply the aggregation. 
+#' 
+#' @param type The type of matrix. Available values are 'all', 'onlySepc' and 'onlyShared'. Default value is 'all'.
+#' 
+#' @return An adjacency matrix
+#' 
+#' @author Samuel Wieczorek
+#' 
+#' @examples
+#' utils::data(Exp1_R25_pept, package='DAPARdata2')
+#' obj <- Exp1_R25_pept[1:1000,]
+#' obj <- addListAdjacencyMatrices(obj, 2)
+#' X <- GetAdjMat(obj, 2, 'all')
+#' 
+#' @export
+#' 
+GetAdjMat <- function(obj, i, type='all'){
+  if (is.null(metadata(obj[[i]])$list.matAdj))
+    stop("Adjacency matrix is not present")
+  if (is.null(metadata(obj[[i]])$list.matAdj[[type]]))
+    stop("Adjacency matrix of type '",type, "' is not present")
+  
+  return(metadata(obj[[i]])$list.matAdj[[type]])
+  
+}
 
 
 
@@ -138,11 +134,13 @@ BuildListAdjacencyMatrices <- function(plist, names, type = c('All', 'Shared', '
 #' 
 #' @examples
 #' utils::data(Exp1_R25_pept, package='DAPARdata2')
-#' plist <- rowData(Exp1_R25_pept[['original']][1:1000,])[1:1000,metadata(Exp1_R25_pept)$parentProtId]
-#' names <- names((Exp1_R25_pept[['original']])[1:1000])
-#' X <- BuildListAdjacencyMatrices(plist, names, type=c('All', 'Shared', 'Specific'))
-#' matAdjStats(X$all)
+#' obj <- Exp1_R25_pept[1:1000,]
+#' obj <- addListAdjacencyMatrices(obj, 2)
+#' X <- GetAdjMat(obj, 2, 'all')
+#' matAdjStats(X)
+#' 
 #' @export
+#' 
 matAdjStats <- function(X){
   if (is.null(X)){
     warning('The adjacency matrix is NULL.')
@@ -178,28 +176,6 @@ matAdjStats <- function(X){
 
 
 
-#' #' This function computes the number of peptides used to aggregate proteins.
-#' #' 
-#' #' @title Compute the number of peptides used to aggregate proteins
-#' #' @param M A "valued" adjacency matrix in which lines and columns correspond 
-#' #' respectively to peptides and proteins.
-#' #' @return A vector of boolean which is the adjacency matrix 
-#' #' but with NA values if they exist in the intensity matrix.
-#' #' @author Alexia Dorffer
-#' #' @examples
-#' #' utils::data(Exp1_R25_pept, package='DAPARdata2')
-#' #' PG <- rowData(Exp1_R25_pept[['original']])[,metadata(Exp1_R25_pept)$parentProtId]
-#' #' names <- names((Exp1_R25_pept[['original']]))
-#' #' X <- BuildAdjacencyMatrix(PG, names, TRUE)
-#' #' CountPep(X)
-#' #' @export
-#' CountPep <- function (M) {
-#'   z <- M
-#'   z[z!=0] <- 1
-#'   return(z)
-#' }
-
-
 
 #' Method to plot the disrtibution (histogram) of peptides w.r.t the proteins with proteins and peptides 
 #' in an adjacency matrix
@@ -216,15 +192,16 @@ matAdjStats <- function(X){
 #' @author Alexia Dorffer, Samuel Wieczorek
 #' 
 #' @examples
-#' utils::data(Exp1_R25_pept, package='DAPARdata2')
-#' plist <- rowData(Exp1_R25_pept[['original']][1:1000,])[1:1000,metadata(Exp1_R25_pept)$parentProtId]
-#' names <- names((Exp1_R25_pept[['original']])[1:1000])
-#' X <- BuildListAdjacencyMatrices(plist, names, type=c('All', 'Shared', 'Specific'))
-#' GraphPepProt_hc(X$all, 'all')
+#' utils::data(obj, package='DAPARdata2')
+#' obj <- Exp1_R25_pept[1:1000,]
+#' obj <- addListAdjacencyMatrices(obj, 2)
+#' X <- GetAdjMat(obj, 2, 'all')
+#' GraphPepProt_hc(X)
 #' 
 #' @import highcharter
 #' 
 #' @export
+#' 
 GraphPepProt_hc <- function(X, type = 'all'){
   if (is.null(X)){
     warning('The parameter mat is empty.')
@@ -234,7 +211,7 @@ GraphPepProt_hc <- function(X, type = 'all'){
   t <- t(X)
   t <- apply(X, 2, sum, na.rm=TRUE)
   tab <- table(t)
-  
+  conds <- names(tab)
   
   h1 <-  highchart() %>%
     dapar_hc_chart(chartType = "column") %>%
@@ -269,15 +246,16 @@ GraphPepProt_hc <- function(X, type = 'all'){
 #' 
 #' @author Samuel Wieczorek
 #' 
-#' @example 
+#' @examples
 #' utils::data(Exp1_R25_pept, package='DAPARdata2')
-#' qPepData <- assay(Exp1_R25_pept,'original_log')[1:1000,]
-#' plist <- rowData(Exp1_R25_pept[['original']][1:1000,])[1:1000,metadata(Exp1_R25_pept)$parentProtId]
-#' names <- names((Exp1_R25_pept[['original']])[1:1000])
-#' X.list <- BuildListAdjacencyMatrices(plist, names, type=c('All', 'Shared', 'Specific'))
-#' n <- GetNbPeptidesUsed(qPepData, X.list$all)
+#' obj <- Exp1_R25_pept[1:1000,]
+#' qPepData <- assay(obj,'original_log')
+#' obj <- addListAdjacencyMatrices(obj, 2)
+#' X <- GetAdjMat(obj, 2, 'all')
+#' n <- GetNbPeptidesUsed(qPepData, X)
 #' 
 #' @export
+#' 
 GetNbPeptidesUsed <- function(qPepData, X){
   qPepData[!is.na(qPepData)] <- 1
   qPepData[is.na(qPepData)] <- 0
@@ -295,7 +273,7 @@ GetNbPeptidesUsed <- function(qPepData, X){
 #' peptide quantitative dataset. Even if a peptide is part of a protein, if its value is NA, it do not be used
 #' for aggreation.
 #' 
-#' @param X.list A list of adjacency matrices.
+#' @param X An adjacency matrix.
 #' 
 #' @param qPepData A data.frame of quantitative data
 #' 
@@ -308,15 +286,16 @@ GetNbPeptidesUsed <- function(qPepData, X){
 #' 
 #' @author Samuel Wieczorek
 #' 
-#' @example 
+#' @examples 
 #' utils::data(Exp1_R25_pept, package='DAPARdata2')
-#' qPepData <- assay(Exp1_R25_pept,'original_log')[1:1000,]
-#' plist <- rowData(Exp1_R25_pept[['original']][1:1000,])[1:1000,metadata(Exp1_R25_pept)$parentProtId]
-#' names <- names((Exp1_R25_pept[['original']])[1:1000])
-#' X.list <- BuildListAdjacencyMatrices(plist, names, type=c('All', 'Shared', 'Specific'))
-#' n <- GetDetailedNbPeptidesUsed(X.list$all, qPepData)
+#' obj <- Exp1_R25_pept[1:1000,]
+#' qPepData <- assay(obj,'original_log')
+#' obj <- addListAdjacencyMatrices(obj, 2)
+#' X <- GetAdjMat(obj, 2, 'all')
+#' n <- GetDetailedNbPeptidesUsed(X, qPepData)
 #' 
 #' @export
+#' 
 GetDetailedNbPeptidesUsed <- function(X, qPepData){
   res <- NULL
   
@@ -332,7 +311,7 @@ GetDetailedNbPeptidesUsed <- function(X, qPepData){
 #' 
 #' @title Computes the detailed number of peptides for each protein 
 #' 
-#' @param X.list A list of adjacency matrices
+#' @param X An adjacency matrices
 #' 
 #' @return A data.frame containing the following vectors:
 #' * nTotal: The number of peptides for each protein,
@@ -346,12 +325,13 @@ GetDetailedNbPeptidesUsed <- function(X, qPepData){
 #' 
 #' @examples
 #' utils::data(Exp1_R25_pept, package='DAPARdata2')
-#' plist <- rowData(Exp1_R25_pept[['original']][1:1000,])[1:1000,metadata(Exp1_R25_pept)$parentProtId]
-#' names <- names((Exp1_R25_pept[['original']])[1:1000])
-#' X.list <- BuildListAdjacencyMatrices(plist, names, type=c('All', 'Shared', 'Specific'))
-#' n <- GetDetailedNbPeptides(X.list$all)
+#' obj <- Exp1_R25_pept[1:1000,]
+#' obj <- addListAdjacencyMatrices(obj, 2)
+#' X <- GetAdjMat(obj, 2, 'all')
+#' n <- GetDetailedNbPeptides(X)
 #' 
 #' @export
+#' 
 GetDetailedNbPeptides <- function(X){
   
   n <- rowSums(t(as.matrix(X)))
@@ -376,12 +356,12 @@ GetDetailedNbPeptides <- function(X){
 #' 
 #' @author Samuel Wieczorek
 #' 
-#' @example
+#' @examples
 #' utils::data(Exp1_R25_pept, package='DAPARdata2')
-#' plist <- rowData(Exp1_R25_pept[['original']][1:1000,])[1:1000,metadata(Exp1_R25_pept)$parentProtId]
-#' names <- names((Exp1_R25_pept[['original']])[1:1000])
-#' X.list <- BuildListAdjacencyMatrices(plist, names, type=c('All'))
-#' n <- inner.sum(assay(Exp1_R25_pept[['original_log']])[1:1000,], X.list$all)
+#' obj <- Exp1_R25_pept[1:1000,]
+#' obj <- addListAdjacencyMatrices(obj, 2)
+#' X <- GetAdjMat(obj, 2, 'all')
+#' n <- inner.sum(assay(obj[[2]]), X)
 
 inner.sum <- function(qPepData, X){
   qPepData[is.na(qPepData)] <- 0
@@ -403,16 +383,16 @@ inner.sum <- function(qPepData, X){
 #' 
 #' @author Samuel Wieczorek
 #' 
-#' @example
+#' @examples
 #' utils::data(Exp1_R25_pept, package='DAPARdata2')
-#' plist <- rowData(Exp1_R25_pept[['original']][1:1000,])[1:1000,metadata(Exp1_R25_pept)$parentProtId]
-#' names <- names((Exp1_R25_pept[['original']])[1:1000])
-#' X.list <- BuildListAdjacencyMatrices(plist, names, type=c('All'))
-#' inner.mean(assay(Exp1_R25_pept[['original_log']][1:1000,]), X.list$all)
+#' obj <- Exp1_R25_pept[1:1000,]
+#' obj <- addListAdjacencyMatrices(obj, 2)
+#' X <- GetAdjMat(obj, 2, 'all')
+#' inner.mean(assay(obj[[2]]), X)
 #' 
 inner.mean <- function(qPepData, X){
   Mp <- inner.sum(qPepData, X)
-  Mp <- Mp / GetNbPeptidesUsed(X, qPepData)
+  Mp <- Mp / GetNbPeptidesUsed(qPepData, X)
   
   return(Mp)
 }
@@ -437,12 +417,12 @@ inner.mean <- function(qPepData, X){
 #' 
 #' @author Samuel Wieczorek
 #' 
-#' @example 
+#' @examples 
 #' utils::data(Exp1_R25_pept, package='DAPARdata2')
-#' plist <- rowData(Exp1_R25_pept[['original']][1:1000,])[1:1000,metadata(Exp1_R25_pept)$parentProtId]
-#' names <- names((Exp1_R25_pept[['original']])[1:1000])
-#' X.list <- BuildListAdjacencyMatrices(plist, names, type=c('All'))
-#' inner.aggregate.topn(assay(Exp1_R25_pept[['original_log']][1:1000,]), X.list$all)
+#' obj <- Exp1_R25_pept[1:1000,]
+#' obj <- addListAdjacencyMatrices(obj, 2)
+#' X <- GetAdjMat(obj, 2, 'all')
+#' inner.aggregate.topn(assay(obj[[2]]), X, n=3)
 #' 
 #' @importFrom stats median
 inner.aggregate.topn <-function(qPepData, X, method='Mean', n=10){
@@ -491,14 +471,14 @@ inner.aggregate.topn <-function(qPepData, X, method='Mean', n=10){
 #' 
 #' @author Samuel Wieczorek, Thomas Burger
 #' 
-#' @example 
+#' @examples 
 #' utils::data(Exp1_R25_pept, package='DAPARdata2')
-#' plist <- rowData(Exp1_R25_pept[['original']][1:1000,])[1:1000,metadata(Exp1_R25_pept)$parentProtId]
-#' names <- names((Exp1_R25_pept[['original']])[1:1000])
-#' X.list <- BuildListAdjacencyMatrices(plist, names, type=c('All'))
-#' X <- BuildListAdjacencyMatrices(PG, names, type=c('All'))
-#' qPepData <- assay(Exp1_R25_pept[['original_log']][1:1000,])
-#' inner.aggregate.iter(qPepData, X$all)
+#' obj <- Exp1_R25_pept[1:1000,]
+#' obj <- addListAdjacencyMatrices(obj, 2)
+#' X <- GetAdjMat(obj, 2, 'all')
+#' qPepData <- assay(obj[[2]])
+#' inner.aggregate.iter(qPepData, X)
+#' 
 inner.aggregate.iter <- function(qPepData, X, init.method='Sum', method='Mean', n=NULL){
   
   if (!(init.method %in% c("Sum", "Mean"))) {
@@ -564,14 +544,15 @@ inner.aggregate.iter <- function(qPepData, X, init.method='Sum', method='Mean', 
 #' 
 #' @author Alexia Dorffer, Samuel Wieczorek
 #' 
-#' @example
+#' @examples
 #' utils::data(Exp1_R25_pept, package='DAPARdata2')
-#' plist <- rowData(Exp1_R25_pept[['original']][1:1000,])[1:1000,metadata(Exp1_R25_pept)$parentProtId]
-#' names <- names((Exp1_R25_pept[['original']])[1:1000])
-#' X.list <- BuildListAdjacencyMatrices(plist, names, type=c('All'))
-#' aggSum(assay(Exp1_R25_pept[['original']])[1:1000,], X$all)
+#' obj <- Exp1_R25_pept[1:1000,]
+#' obj <- addListAdjacencyMatrices(obj, 2)
+#' X <- GetAdjMat(obj, 2, 'all')
+#' aggSum(assay(obj[[2]]), X)
 #' 
 #' @export
+#' 
 aggSum <- function(qPepData, X){
   #qPepData <- 2^(qPepData)
   protData <- inner.sum(qPepData, X)
@@ -596,18 +577,18 @@ aggSum <- function(qPepData, X){
 #' 
 #' @author Alexia Dorffer
 #' 
-#' @example
+#' @examples 
 #' utils::data(Exp1_R25_pept, package='DAPARdata2')
-#' plist <- rowData(Exp1_R25_pept[['original']][1:1000,])[1:1000,metadata(Exp1_R25_pept)$parentProtId]
-#' names <- names((Exp1_R25_pept[['original']])[1:1000])
-#' X.list <- BuildListAdjacencyMatrices(plist, names, type=c('All'))
-#' aggMean(assay(Exp1_R25_pept[['original']])[1:1000,], X$all)
+#' obj <- Exp1_R25_pept[1:1000,]
+#' obj <- addListAdjacencyMatrices(obj, 2)
+#' X <- GetAdjMat(obj, 2, 'all')
+#' aggMean(assay(obj[[2]]), X)
 #' 
 #' @export
 #' 
 aggMean <- function(qPepData, X){
   #qPpepData <- 2^(qPepData)
-  protData <- inner.mean(qPpepData, X)
+  protData <- inner.mean(qPepData, X)
   return(protData)
 }
 
@@ -635,13 +616,13 @@ aggMean <- function(qPepData, X){
 #' 
 #' @author Samuel Wieczorek
 #' 
-#' @example
+#' @examples 
 #' utils::data(Exp1_R25_pept, package='DAPARdata2')
-#' plist <- rowData(Exp1_R25_pept[['original_log']][1:1000,])[,metadata(Exp1_R25_pept)$parentProtId]
-#' names <- names((Exp1_R25_pept[['original_log']][1:1000]))
-#' X.list <- BuildListAdjacencyMatrices(plist, names, type=c('All'))
-#' conditions <- colData(Exp1_R25_pept)@listData$Condition
-#' aggIterParallel(assay(Exp1_R25_pept,2)[1:1000,], X.list$all, conditions)
+#' obj <- Exp1_R25_pept[1:1000,]
+#' obj <- addListAdjacencyMatrices(obj, 2)
+#' X <- GetAdjMat(obj, 2, 'all')
+#' conditions <- colData(obj)$Condition
+#' aggIterParallel(assay(obj,2), X conditions)
 #' 
 #' @export
 #' 
@@ -653,7 +634,6 @@ aggIterParallel <- function(qPepData, X, conditions=NULL, init.method='Sum', met
     warning('The parameter conds is NULL: the aggregation cannot be process.')
     return(NULL)
   }
-  require(doParallel)
   doParallel::registerDoParallel()
   
   #qPepData <- 2^(qPepData)
@@ -692,13 +672,13 @@ aggIterParallel <- function(qPepData, X, conditions=NULL, init.method='Sum', met
 #' 
 #' @author Samuel Wieczorek
 #' 
-#' @example
+#' @examples 
 #' utils::data(Exp1_R25_pept, package='DAPARdata2')
-#' plist <- rowData(Exp1_R25_pept[['original_log']][1:1000,])[,metadata(Exp1_R25_pept)$parentProtId]
-#' names <- names((Exp1_R25_pept[['original_log']][1:1000]))
-#' X.list <- BuildListAdjacencyMatrices(plist, names, type=c('All'))
-#' conditions <- colData(Exp1_R25_pept)@listData$Condition
-#' aggIter(assay(Exp1_R25_pept,2)[1:1000,], X.list$all, conditions)
+#' obj <- Exp1_R25_pept[1:1000,]
+#' obj <- addListAdjacencyMatrices(obj, 2)
+#' X <- GetAdjMat(obj, 2, 'all')
+#' conditions <- colData(obj)$Condition
+#' aggIter(assay(obj,2), X, conditions)
 #' 
 #' @export
 aggIter <- function(qPepData, X, conditions=NULL, init.method='Sum', method='Mean', n=NULL){
@@ -742,14 +722,15 @@ aggIter <- function(qPepData, X, conditions=NULL, init.method='Sum', method='Mea
 #' 
 #' @author Alexia Dorffer, Samuel Wieczorek
 #' 
-#' @example
+#' @examples 
 #' utils::data(Exp1_R25_pept, package='DAPARdata2')
-#' plist <- rowData(Exp1_R25_pept[['original_log']][1:1000,])[,metadata(Exp1_R25_pept)$parentProtId]
-#' names <- names((Exp1_R25_pept[['original_log']][1:1000]))
-#' X.list <- BuildListAdjacencyMatrices(plist, names, type=c('All'))
-#' aggTopn(assay(Exp1_R25_pept,2)[1:1000,], X.list$all, n=3)
+#' obj <- Exp1_R25_pept[1:1000,]
+#' obj <- addListAdjacencyMatrices(obj, 2)
+#' X <- GetAdjMat(obj, 2, 'all')
+#' aggTopn(assay(obj,2), X, n=3)
 #' 
 #' @export
+#' 
 aggTopn <- function(qPepData, X,  method='Mean', n=10){
   #qPepData <- 2^(qPepData)
   
@@ -783,7 +764,7 @@ aggTopn <- function(qPepData, X,  method='Mean', n=10){
 #'
 #' @param qPepData xxxx. 
 #' 
-#' @param X Axxxxx.
+#' @param X An adjacency matrix.
 #' 
 #' @param FUN A `function` to be applied to the subsets of `x`.
 #' 
@@ -796,6 +777,7 @@ aggTopn <- function(qPepData, X,  method='Mean', n=10){
 #' @family Quantitative feature aggregation
 #' 
 #' @export
+#' 
 aggregate_with_matAdj <- function(qPepData, X, FUN, ...){
   res <- do.call(FUN, list(qPepData, X, ...))
   res
@@ -821,12 +803,11 @@ aggregate_with_matAdj <- function(qPepData, X, FUN, ...){
 #' @param i The index or name of the assay which features will be
 #'     aggregated the create the new assay.
 #'
-#' @param X.list An adjacency matrix as computed by xxxxx.
 #'
-#' @param typeMatAdj xxx
+#' @param aggType The type of peptides used for the aggregation. Possibla values are: 'all', 'onlyShared' and 'onlySPec'. This argument automatically
+#' selects the corresponding adjacency matrix.
 #' 
-#' @param name A `character(1)` naming the new assay. Default is
-#'     `newAssay`. Note that the function will fail if there's
+#' @param name A `character(1)` naming the new assay. Default is `newAssay`. Note that the function will fail if there's
 #'     already an assay with `name`.
 #'     
 #' @param meta.names A vector of character strings that are the metadata of the peptides which needs to be aggregated
@@ -868,13 +849,10 @@ aggregate_with_matAdj <- function(qPepData, X, FUN, ...){
 #'
 #' @importFrom MsCoreUtils aggregate_by_vector robustSummary
 #'
-#' @example
+#' @examples
 #' utils::data(Exp1_R25_pept, package='DAPARdata2')
-#' plist <- rowData(Exp1_R25_pept[['original_log']][1:1000,])[,metadata(Exp1_R25_pept)$parentProtId]
-#' names <- names(Exp1_R25_pept[['original_log']])[1:1000]
-#' X.list <- BuildListAdjacencyMatrices(plist, names, type=c('All'))
-#' conditions <- colData(Exp1_R25_pept)@listData$Condition
-#' aggregateFeatures_sam(Exp1_R25_pept,2, X.list$all, name='aggregated', meta.names = 'Sequence', aggSum)
+#' obj <- Exp1_R25_pept[1:1000,]
+#' aggregateFeatures_sam(obj,2, aggType= 'all', name='aggregated', meta.names = 'Sequence', aggSum)
 #' 
 #' @export aggregateFeatures_sam
 #' 
@@ -885,19 +863,38 @@ aggregate_with_matAdj <- function(qPepData, X, FUN, ...){
 #             .aggregateFeatures_sam(object, i, fcol, name, fun, ...))
 
 
-aggregateFeatures_sam <- function(object, i, X, name, meta.names = NULL, fun, ...) {
+aggregateFeatures_sam <- function(object, i, aggType='all', name, meta.names = NULL, fun, ...) {
   if (isEmpty(object))
     return(object)
   if (name %in% names(object))
     stop("There's already an assay named '", name, "'.")
-  if (missing(X))
-    stop("'X' is required.")    
+   if (missing(aggType))
+     stop("'aggType' is required.")    
   if (missing(i))
     i <- main_assay(object)
   
+  ## if the adjacency matrices are already present in the metadata of the SE, then load it
+  ## else build it
+  
   assay_i <- assay(object, i)
+  object_i <- object[[i]]
   rowdata_i <- rowData(object[[i]])
-
+  
+    if (!(aggType %in% c('all', 'onlyShared', 'onlySpec'))){
+      stop("Available values for 'typeMatAdj' are 'all', 'onlyShared', 'onlySpec'.")
+    }
+     
+  if (is.null(metadata(object_i)$list.matAdj) || is.null(metadata(object_i)$list.matAdj[[aggType]])){
+    ## by default, all three types of matrices are computed once for all and stored in the metadata slot of the SE. 
+    ## This reduces the future computations
+    plist <- rowData(object_i)[,metadata(object)$parentProtId]
+    names <- names(object_i)
+    X.list <- BuildListAdjacencyMatrices(plist, names)
+    metadata(object_i)$list.matAdj <- X.list
+  }
+  
+  X <- metadata(object_i)$list.matAdj[[aggType]]
+  
   
   ## Message about NA values is quant/row data
   has_na <- character()
@@ -989,12 +986,12 @@ aggregateFeatures_sam <- function(object, i, X, name, meta.names = NULL, fun, ..
 #' 
 #' @export
 #' 
-#' @example
+#' @examples
 #' utils::data(Exp1_R25_pept, package='DAPARdata2')
-#' plist <- rowData(Exp1_R25_pept[['original_log']][1:1000,])[,metadata(Exp1_R25_pept)$parentProtId]
-#' names <- names(Exp1_R25_pept[['original_log']])[1:1000]
-#' X.list <- BuildListAdjacencyMatrices(plist, names, type=c('All'))
-#' rowdata_stats_Aggregation_sam(assay(Exp1_R25_pept,2)[1:1000,], X.list$all)
+#' obj <- Exp1_R25_pept[1:1000,]
+#' obj <- addListAdjacencyMatrices(obj, 2)
+#' X <- GetAdjMat(obj, 2, 'all')
+#' rowdata_stats_Aggregation_sam(assay(obj,2), X)
 #' 
 rowdata_stats_Aggregation_sam <- function(qPepData, X){
   
@@ -1043,12 +1040,14 @@ rowdata_stats_Aggregation_sam <- function(qPepData, X){
 #' 
 #' @author Samuel Wieczorek
 #' 
-#' @example
+#' @examples
 #' utils::data(Exp1_R25_pept, package='DAPARdata2')
-#' plist <- rowData(Exp1_R25_pept[['original_log']][1:1000,])[,metadata(Exp1_R25_pept)$parentProtId]
-#' names <- names(Exp1_R25_pept[['original_log']])[1:1000]
-#' X.list <- BuildListAdjacencyMatrices(plist, names, type=c('All'))
-#' ft <- aggMetadata_sam(rowData(Exp1_R25_pept[['original_log']][1:1000,]), c('Sequence', 'Proteins'), X.list$all)
+#' obj <- Exp1_R25_pept[1:1000,]
+#' obj <- addListAdjacencyMatrices(obj, 2)
+#' X <- GetAdjMat(obj, 2, 'all')
+#' ft <- aggMetadata_sam(rowData(obj[[2]]), c('Sequence'), X)
+#' 
+#' @importFrom stats setNames
 #' 
 #' @export
 #' 
@@ -1066,16 +1065,33 @@ aggMetadata_sam <- function(pepMetadata, names, X, simplify=TRUE){
   
   
   nbProt <- ncol(X)
-  res <- setNames(data.frame(matrix(ncol = length(names), nrow = 0), stringsAsFactors = FALSE), names)
+  res <- stats::setNames(data.frame(matrix(ncol = length(names), nrow = 0), stringsAsFactors = FALSE), names)
   proteinNames <- colnames(X)
   
   for (i in 1:length(proteinNames)){
     listeIndicePeptides <- names(which(X[,proteinNames[i]] == 1))
     listeData <- pepMetadata[listeIndicePeptides,names]
-    listeData <- lapply(listeData, function(x){ gsub(pattern = "\\s", replacement = "", x = unlist(strsplit(x, ',')))})
     
-    line <- mapply(function(listeData, simplify) {if(isTRUE(simplify)) paste0(unique(listeData),collapse=', ') else paste0(listeData,collapse=', ')}, listeData, simplify)
-    res <- setNames(rbind(res, data.frame(as.list(line))), names)
+    if (length(names)==1){
+     # listeData <- setNames(DataFrame(matrix(pepMetadata[listeIndicePeptides,names])), names)
+      listeData <-gsub(pattern = "\\s", replacement = "", x = unlist(strsplit(listeData, ',')))
+      if(isTRUE(simplify)) {
+        line <- setNames(paste0(unique(listeData),collapse=', ') , names)
+      } else {
+        line <- setNames(paste0(listeData,collapse=', '), names)
+      }
+    } else {
+    listeData <- pepMetadata[listeIndicePeptides,names]
+    listeData <- lapply(listeData, function(x){ gsub(pattern = "\\s", replacement = "", x = unlist(strsplit(x, ',')))})
+    line <- mapply(function(listeData, simplify) {if(isTRUE(simplify)) 
+                                                    paste0(unique(listeData),collapse=', ') 
+                                                  else 
+                                                    paste0(listeData,collapse=', ')}, listeData, simplify)
+    
+    }
+    
+    
+    res <- stats::setNames(rbind(res, data.frame(as.list(line))), names)
   }
   return(res)
 }
@@ -1106,18 +1122,20 @@ aggMetadata_sam <- function(pepMetadata, names, X, simplify=TRUE){
 #' 
 #' @author Samuel Wieczorek
 #' 
-#' @example
+#' @examples
 #' utils::data(Exp1_R25_pept, package='DAPARdata2')
-#' plist <- rowData(Exp1_R25_pept[['original_log']][1:1000,])[,metadata(Exp1_R25_pept)$parentProtId]
-#' names <- names(Exp1_R25_pept[['original_log']])[1:1000]
-#' X.list <- BuildListAdjacencyMatrices(plist, names, type=c('All'))
-#' ft <- aggMetadata_sam(rowData(Exp1_R25_pept[['original_log']][1:1000,]), c('Sequence', 'Proteins'), X.list$all)
+#' obj <- Exp1_R25_pept[1:1000,]
+#' obj <- addListAdjacencyMatrices(obj, 2)
+#' X <- GetAdjMat(obj, 2, 'all')
+#' ft <- aggMetadata_parallel_sam(rowData(obj[[2]]), c('Sequence', 'Proteins'), X)
 #' 
 #' @export
 #' 
 #' @import foreach
 #' @importFrom doParallel registerDoParallel 
-aggMetadata_parallel_sam <- function(peptideData, names, X, simplify=TRUE){
+#' @importFrom stats setNames
+#' 
+aggMetadata_parallel_sam <- function(pepMetadata, names, X, simplify=TRUE){
   doParallel::registerDoParallel()
   
   if(length(simplify)==1){
@@ -1131,17 +1149,32 @@ aggMetadata_parallel_sam <- function(peptideData, names, X, simplify=TRUE){
   }
   
   nbProt <- ncol(X)
-  res <- setNames(data.frame(matrix(ncol = length(names), nrow = 0), stringsAsFactors = FALSE), names)
+  res <- stats::setNames(data.frame(matrix(ncol = length(names), nrow = 0), stringsAsFactors = FALSE), names)
   proteinNames <- colnames(X)
   
 
   res <- foreach (i=1:length(proteinNames), .combine=rbind) %dopar% {
     listeIndicePeptides <- names(which(X[,proteinNames[i]] == 1))
     listeData <- pepMetadata[listeIndicePeptides,names]
-    listeData <- lapply(listeData, function(x){ gsub(pattern = "\\s", replacement = "", x = unlist(strsplit(x, ',')))})
     
-    line <- mapply(function(listeData, simplify) {if(isTRUE(simplify)) paste0(unique(listeData),collapse=', ') else paste0(listeData,collapse=', ')}, listeData, simplify)
-    setNames(rbind(res, data.frame(as.list(line))), names)
+    if (length(names)==1){
+      # listeData <- setNames(DataFrame(matrix(pepMetadata[listeIndicePeptides,names])), names)
+      listeData <-gsub(pattern = "\\s", replacement = "", x = unlist(strsplit(listeData, ',')))
+      if(isTRUE(simplify)) {
+        line <- setNames(paste0(unique(listeData),collapse=', ') , names)
+      } else {
+        line <- setNames(paste0(listeData,collapse=', '), names)
+      }
+    } else {
+      listeData <- pepMetadata[listeIndicePeptides,names]
+      listeData <- lapply(listeData, function(x){ gsub(pattern = "\\s", replacement = "", x = unlist(strsplit(x, ',')))})
+      line <- mapply(function(listeData, simplify) {if(isTRUE(simplify)) 
+        paste0(unique(listeData),collapse=', ') 
+        else 
+          paste0(listeData,collapse=', ')}, listeData, simplify)
+    }
+    
+    stats::setNames(rbind(res, data.frame(as.list(line))), names)
   }
   return(res)
 }

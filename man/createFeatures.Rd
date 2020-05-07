@@ -23,8 +23,7 @@ createFeatures(
 
 \item{indExpData}{A vector of string where each element is the name
 of a column in designTable that have to be integrated in
-the \code{fData()} table
-of the \code{MSnSet} object.}
+the \code{fData()} table of the \code{MSnSet} object.}
 
 \item{keyId}{The indice of the column containing the ID of entities 
 (peptides or proteins)}
@@ -60,6 +59,7 @@ namesOrigin <- colnames(data)[43:48]
 parentId <- 'Protein_group_IDs'
 keyid <- 'Sequence'
 ft <- createFeatures(data, sample,indExpData,  keyId = keyid, namesOrigin = namesOrigin, typeOfData = "peptide", parentProtId = parentId, forceNA=TRUE)
+
 }
 \author{
 Samuel Wieczorek

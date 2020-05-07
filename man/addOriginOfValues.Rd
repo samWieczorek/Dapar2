@@ -21,6 +21,9 @@ of values with tags such as MEC, POV
 \description{
 Sets the MEC tag in the origin parameter
 }
+\examples{
+
+}
 \author{
 Samuel Wieczorek
 }

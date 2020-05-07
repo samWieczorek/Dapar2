@@ -56,6 +56,15 @@ thereof are
 
 - [DAPAR::aggTopn] to use the sum of each column;
 }
+\examples{
+utils::data(Exp1_R25_pept, package='DAPARdata2')
+plist <- rowData(Exp1_R25_pept[['original_log']][1:1000,])[,metadata(Exp1_R25_pept)$parentProtId]
+names <- names(Exp1_R25_pept[['original_log']])[1:1000]
+X.list <- BuildListAdjacencyMatrices(plist, names, type=c('All'))
+conditions <- colData(Exp1_R25_pept)@listData$Condition
+aggregateFeatures_sam(Exp1_R25_pept,2, X.list$all, name='aggregated', meta.names = 'Sequence', aggSum)
+
+}
 \seealso{
 The *Features* vignette provides an extended example and
     the *Processing* vignette, for a complete quantitative

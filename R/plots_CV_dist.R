@@ -2,22 +2,36 @@
 #' The CV is calculated for each condition present in the dataset
 #' (see the slot \code{'Condition'} in the \code{colData()} DataFrame)
 #' @title Distribution of CV of entities
+#' 
+#' @description 
+#' Builds a densityplot of the CV of entities in numeric matrix.
+#' The CV is calculated for each condition present in the dataset
+#' (see the slot \code{'Condition'} in the \code{colData()} DataFrame)
+#' 
 #' @param qData A numeric matrix that contains quantitative data.
+#' 
 #' @param conds A vector of the conditions (one condition per sample).
-#' @param palette A vector of HEX Code colors (one color 
-#' per condition).
+#' 
+#' @param palette A vector of HEX Code colors (one color per condition).
+#' 
 #' @return A density plot
+#' 
 #' @author Samuel Wieczorek, Enora Fremy
+#' 
 #' @seealso \code{\link{densityPlotD}}.
+#' 
 #' @examples
 #' utils::data(Exp1_R25_pept, package='DAPARdata2')
 #' qData <- assay(Exp1_R25_pept[['original']])[1:10,]
 #' conds <- colData(Exp1_R25_pept)@listData[["Condition"]]
 #' CVDistD_HC(qData, conds)
+#' 
 #' @importFrom RColorBrewer brewer.pal
 #' @import highcharter
 #' @importFrom DT JS
+#' 
 #' @export
+#' 
 CVDistD_HC <- function(qData, conds=NULL, palette = NULL){
   
   if (is.null(conds)) {return(NULL)}

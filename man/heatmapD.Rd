@@ -31,6 +31,7 @@ ft <- Exp1_R25_pept
 qData <- assay(ft[['original_log']])[1:1000,]
 heatmapD(qData)
 }
+
 }
 \author{
 Samuel Wieczorek

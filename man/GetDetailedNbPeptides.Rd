@@ -24,7 +24,7 @@ Method to compute the detailed number of peptides for each protein
 \examples{
 utils::data(Exp1_R25_pept, package='DAPARdata2')
 plist <- rowData(Exp1_R25_pept[['original']][1:1000,])[1:1000,metadata(Exp1_R25_pept)$parentProtId]
-names <- names((Exp1_R25_pept[['original']])[1:1000])
+names <- names(Exp1_R25_pept[['original']])[1:1000]
 X.list <- BuildListAdjacencyMatrices(plist, names, type=c('All', 'Shared', 'Specific'))
 n <- GetDetailedNbPeptides(X.list$all)
 

@@ -1,4 +1,8 @@
-#' Plots an interactive volcanoplot after the differential analysis.
+
+#' 
+#' @title Volcanoplot of the differential analysis
+#' 
+#' @description #' Plots an interactive volcanoplot after the differential analysis.
 #' Typically, the log of Fold Change is represented on the X-axis and the
 #' log10 of the p-value is drawn on the Y-axis. When the \code{threshold_pVal}
 #' and the \code{threshold_logFC} are set, two lines are drawn respectively on
@@ -7,7 +11,6 @@
 #' customizable tooltip appears when the user put the mouse's pointer over 
 #' a point of the scatter plot.
 #' 
-#' @title Volcanoplot of the differential analysis
 #' @param df A dataframe which contains the following slots :
 #' x : a vector of the log(fold change) values of the differential analysis,
 #' y : a vector of the p-value values returned by the differential analysis.
@@ -16,19 +19,28 @@
 #' to FALSE. There may be additional slots which will be used to show 
 #' informations in the tooltip. The name of these slots must begin with the 
 #' prefix "tooltip_". It will be automatically removed in the plot.
+#' 
 #' @param threshold_pVal A floating number which represents the p-value that
 #' separates differential and non-differential data.
+#' 
 #' @param threshold_logFC A floating number which represents the log of the
 #' Fold Change that separates differential and non-differential data.
+#' 
 #' @param conditions A list of the names of condition 1 and 2 used for the
 #' differential analysis.
+#' 
 #' @param clickFunction A string that contains a JavaScript function used to 
 #' show info from slots in df. The variable this.index refers to the slot 
 #' named index and allows to retrieve the right row to show in the tooltip.
+#' 
 #' @param palette xxx
+#' 
 #' @param swap A boolean that indicates if the conditions have been swaped
+#' 
 #' @return An interactive volcanoplot
+#' 
 #' @author Samuel Wieczorek, Enora Fremy
+#' 
 #' @examples
 #' \donttest{
 #' library(Features)
@@ -52,8 +64,11 @@
 #' cond <- unique(colData(obj)[['Condition']])
 #' diffAnaVolcanoplot_rCharts(df, 2.5, 1, cond, hc_clickFunction) 
 #' }
+#' 
 #' @export
+#' 
 #' @import highcharter
+#' 
 diffAnaVolcanoplot_rCharts <- function(df, 
                                        threshold_pVal=1e-60, 
                                        threshold_logFC=0, 

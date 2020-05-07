@@ -42,7 +42,7 @@ in an adjacency matrix
 \examples{
 utils::data(Exp1_R25_pept, package='DAPARdata2')
 plist <- rowData(Exp1_R25_pept[['original']][1:1000,])[1:1000,metadata(Exp1_R25_pept)$parentProtId]
-names <- names((Exp1_R25_pept[['original']])[1:1000])
+names <- names(Exp1_R25_pept[['original']])[1:1000]
 X <- BuildListAdjacencyMatrices(plist, names, type=c('All', 'Shared', 'Specific'))
 GraphPepProt_hc(X$all, 'all')
 
