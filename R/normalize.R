@@ -1,3 +1,35 @@
+
+setGeneric("normalizeD", function(object, ...) standardGeneric("normalizeD"))
+
+
+#' @exportMethod normalizeD
+setMethod("normalizeD", "SummarizedExperiment",
+          function(object,
+                   method,
+                   conds,
+                   type,
+                   ...) {
+            df <- wrapper.normalizeD(object, method, conds, type, ...)
+            df
+          })
+
+
+
+#' @rdname Features-dapar-normalization
+setMethod("normalizeD", "Features",
+          function(object, i, name = "normalizedAssay", ...) {
+            if (missing(i))
+              stop("Provide index or name of assay to be processed")
+            if (length(i) != 1)
+              stop("Only one assay to be processed at a time")
+            if (is.numeric(i)) i <- names(object)[[i]]
+            object <- addAssay(object,
+                               normalizeD(object[[i]], method, conds, type, ...),
+                               name)
+            addAssayLinkOneToOne(object, from = i, to = name)
+          })
+
+
 #' Provides several methods to normalize quantitative data from a numeric matrix.
 #' They are organized in six main families : GlobalQuantileAlignement, sumByColumns, QuantileCentering, MeanCentering, LOESS, vsn
 #' For the first family, there is no type.
