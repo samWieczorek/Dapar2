@@ -98,18 +98,48 @@ addListAdjacencyMatrices <- function(obj, i){
 #' obj <- Exp1_R25_pept[1:1000,]
 #' obj <- addListAdjacencyMatrices(obj, 2)
 #' X <- GetAdjMat(obj, 2, 'all')
+#
+#'  
+#' X <- GetAdjMat(obj[[2]], type='all')
 #' 
 #' @export
 #' 
-GetAdjMat <- function(obj, i, type='all'){
-  if (is.null(metadata(obj[[i]])$list.matAdj))
-    stop("Adjacency matrix is not present")
-  if (is.null(metadata(obj[[i]])$list.matAdj[[type]]))
-    stop("Adjacency matrix of type '",type, "' is not present")
+GetAdjMat <- function(obj, i=NULL, type='all'){
+  res <- NULL
   
-  return(metadata(obj[[i]])$list.matAdj[[type]])
+  if (is.null(i)){
+    if (is.null(metadata(obj)$list.matAdj)){
+      #warning("Adjacency matrix is not present")
+      return(NULL)
+    }
+    
+    if (is.null(metadata(obj)$list.matAdj[[type]])){
+      # warning("Adjacency matrix of type '",type, "' is not present")
+      return(NULL)
+    }
+    
+    res <-metadata(obj)$list.matAdj[[type]]
+  } else {
+    
+   if (is.numeric(i)) i <- names(obj)[[i]]
+  
+    if (is.null(metadata(obj[[i]])$list.matAdj)){
+    # warning("Adjacency matrix is not present")
+      return(NULL)
+    }
+  
+    if (is.null(metadata(obj[[i]])$list.matAdj[[type]])){
+    # warning("Adjacency matrix of type '",type, "' is not present")
+    return(NULL)
+    }
+  
+   res <- metadata(obj[[i]])$list.matAdj[[type]]
+  }
+  
+  return(res)
   
 }
+
 
 
 

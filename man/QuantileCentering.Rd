@@ -15,8 +15,14 @@ QuantileCentering(
 \arguments{
 \item{qData}{A numeric matrix.}
 
+\item{conds}{xxx}
+
 \item{type}{"overall" (shift all the sample distributions at once) or
 "within conditions" (shift the sample distributions within each condition at a time).}
+
+\item{subset.norm}{A vector of index indicating rows to be used for normalization}
+
+\item{quantile}{A float that corresponds to the quantile used to align the data.}
 }
 \value{
 A normalized numeric matrix
@@ -28,7 +34,7 @@ Normalisation QuantileCentering
 utils::data(Exp1_R25_pept, package='DAPARdata2')
 qData <- assay(Exp1_R25_pept[['original']])
 conds <- colData(Exp1_R25_pept)[['Condition']]
-normalized <- QuantileCentering(qData, conds, type="overall")
+normalized <- QuantileCentering(qData, conds, type="within conditions", subset.norm=1:10)
 }
 \author{
 Samuel Wieczorek, Thomas Burger, Helene Borges, Anais Courtier, Enora Fremy
