@@ -2,146 +2,195 @@
 ##########
 
 
-## Build design matrix X
-# X <- as.matrix(BuildAdjacencyMatrix(obj, 'Protein_group_IDs', unique = FALSE))
-# X.spec <- as.matrix(BuildAdjacencyMatrix(obj, 'Protein_group_IDs', unique = TRUE))
-# 
-# y <- exprs(obj)
-# y <- y[rownames(X), ]
-# n1 <- n2 <- 3
-# n <- n1+n2 # number of samples in c1 and c2
-# 
-# ## Keep track of proteins that are lost in aggregation step
-# unsup.prot <- !(colnames(X) %in% colnames(X.spec))
-# q <- nrow(X) # Number of peptides
-# p <- ncol(X) # Number of proteins
-# 
-# 
-# # Two ways to compute it (function groupttest below)
-# peptide.spec.based.tmp <- apply(X.spec, 2, FUN=function(mask) t.test(x=as.vector(y[mask == 1, 1:n1]), y=as.vector(y[mask == 1, -(1:n1)]), var.equal=TRUE)$p.value)
-# peptide.spec.based.tmp <- groupttest(X.spec,y)
-# 
-# # then:
-# peptide.spec.based.pv <- rep(1, ncol(X))
-# peptide.spec.based.pv[!unsup.prot] <- peptide.spec.based.tmp
-# 
-
-
-
-
-
-# groupttest <- function(MatAdj, expr){
-#   nProt <- dim(MatAdj)[2]
-#   res <- rep(0,nProt)
-#   
-#   for(i in 1:nProt){
-#     #print(i)
-#     index <- names(which(MatAdj[,i]==1))
-#     if(length(index)== 0){
-#       res[i] <- 1
-#     } else{
-#       peptidestotest <- expr[index,]
-#       if(length(index)== 1){
-#         res[i] <- t.test(x=peptidestotest[1:3], y=peptidestotest[-(1:3)], var.equal=TRUE)$p.value
-#       } else{
-#         res[i] <- t.test(x=peptidestotest[,1:3], y=peptidestotest[,-(1:3)], var.equal=TRUE)$p.value
-#       }
-#     }
-#   }
-#   return(res)
-# }  
-
-
-
-
-
-#' This function is xxxxxx
+#' @title Features compute group t-tests
 #'
-#' @title xxxxxx
-#' @param MatAdj xxxxx.
-#' @param cond1 xxxx.
-#' @param cond2 xxxx.
+#' @description
+#'
+#' This manual page describes the computation of statistical test using [Features] objects. In the following
+#' functions, if `object` is of class `Features`, and optional assay
+#' index or name `i` can be specified to define the assay (by name of
+#' index) on which to oerate.
+#'
+#' The following functions are currently available:
+#'
+#' - `compute.t.test(object, base = 2, i, pc = 0)` log-transforms (with
+#'   an optional pseudocount offset) the assay(s).
+#'
+#' - `compute.group.t.test(object, method, i)` normalises the assay(s) according
+#'   to `method` (see Details).
 #' 
-#' @return xxxxx
-#' 
-#' @author Thomas Burger, Samuel Wieczorek
+#'
+#' @details
+#'
+#'
+#' @param  object An object of class `Features` or `SummarizedExperiment`.
+#'
+#' @param i A numeric vector or a character vector giving the index or the 
+#'     name, respectively, of the assay(s) to be processed.
+#'
+#' @param name A `character(1)` naming the new assay name. Defaults
+#'     are `ttestAssay`.
+#'
+#' @param sampleTab xxxxxxx
+#'
+#' @param ... Additional parameters passed to inner functions.
+#'
 #' @examples
-#' utils::data(Exp1_R25_pept, package='DAPARdata')
-#' obj <- Exp1_R25_pept
-#' protID <- "Protein_group_IDs"
-#' keepThat <-  mvFilterGetIndices(obj, 'wholeMatrix', ncol(obj))
-#' obj <- mvFilterFromIndices(obj, keepThat)
-#' X.spec <- BuildAdjacencyMatrix(obj, protID,  unique = TRUE)
-#' qData <- Biobase::exprs(obj)
-#' gttest <- groupttest(X.spec, qData[,1:3], qData[,4:6])
-#' @export
-groupttest <- function(MatAdj, cond1=NULL, cond2 = NULL){
+#'
+#' utils::data(Exp1_R25_pept, package='DAPARdata2')
+#' object <- Exp1_R25_pept[1:1000,]
+#' object <- addAssay(object, Features::filterNA(object[[2]],  pNA = 0), name='filtered')
+#' object <- addListAdjacencyMatrices(object, 3)
+#' sTab <- colData(object)
+#' gttest.se <- computeGroupTtest(object[[3]], sTab, contrast="OnevsOne")
+#' 
+#' object <-computeGroupTtest(object, 3, name = "ttestAssay", contrast = 'OnevsOne')
+#' 
+NULL
+
+#' @exportMethod computeGroupTtest
+#' 
+setMethod("computeGroupTtest", "SummarizedExperiment",
+          function(object,
+                   sampleTab,
+                   ...) {
+            
+            X.all <- GetAdjMat(object, type = 'all')
+            X.onlySpec <- GetAdjMat(object,type = 'onlySpec')
+             
+            df <- compute.group.t.tests(assay(object), sampleTab, X.all, X.onlySpec,...)
+            e <- object
+            metadata(e)$t_test <- df
+            e
+          })
+
+
+#' @rdname Features-dapar-compute-group-ttests
+setMethod("computeGroupTtest", "Features",
+          function(object, i, name = "ttestAssay", ...) {
+            if (missing(i))
+              stop("Provide index or name of assay to be processed")
+            if (length(i) != 1)
+              stop("Only one assay to be processed at a time")
+            if (is.numeric(i)) i <- names(object)[[i]]
+            
+            if (is.null(GetAdjMat(object, i)))
+              object <- addListAdjacencyMatrices(object, i)
+            
+            object <- addAssay(object,
+                               computeGroupTtest(object[[i]], sampleTab = colData(object), ...),
+                               name)
+            addAssayLinkOneToOne(object, from = i, to = name)
+          })
+
+
+
+
+
+
+#' @title xxxxxx
+#' 
+#' @param X xxxxx.
+#' 
+#' @param cond1 xxxx.
+#' 
+#' @param cond2 xxxx.
+#'
+#' @return xxxxx
+#'
+#' @author Thomas Burger, Samuel Wieczorek
+#' 
+#' @examples
+#' utils::data(Exp1_R25_pept, package='DAPARdata2')
+#' obj <- Exp1_R25_pept[1:1000,]
+#' obj <- addAssay(obj, Features::filterNA(obj[[2]],  pNA = 0), name='filtered')
+#' obj <- addListAdjacencyMatrices(obj, 3)
+#' qData <- assay(obj[['filtered']])
+#' X <- GetAdjMat(obj, 3, 'onlySpec')
+#' gttest <- groupttest(X, qData[,1:3], qData[,4:6])
+#' 
+groupttest <- function(X, qData1=NULL, qData2 = NULL){
   res <- list()
-  if (is.null(cond1) || is.null(cond2)){
-    warning("At least, one condition is empty.")
-    return(NULL)
+  if (is.null(qData1) || is.null(qData2)){
+    stop("At least, one condition is empty.")
   }
-  
-  for(i in 1:dim(MatAdj)[2]){
-    index <- names(which(MatAdj[,i]==1))
+
+  for(i in 1:dim(X)[2]){
+    index <- names(which(X[,i]==1))
     if(length(index)> 0){
-      res[[i]] <- t.test(x=cond1[index,], y=cond2[index,], var.equal=TRUE)
+      res[[i]] <- t.test(x=qData1[index,], y=qData2[index,], var.equal=TRUE)
     } else {
       res[[i]] <- NA
     }
   }
   return(res)
-}  
+}
 
 
 
 
 
 
-#'
+
 #' @title xxxxxx
+#' 
 #' @param qData A matrix of quantitative data, without any missing values.
-#' @param sTab xxxx
-#' @param X xxx
-#' @param X.spec A matrix of quantitative data, without any missing values.
+#' 
+#' @param sampleTab xxxx
+#' 
+#' @param X An adjacency matrix which contains all peptides (specific and shared).
+#' 
+#' @param X.spec An adjacency matrix which contains only specific peptides.
+#' 
 #' @param logFC A vector (or list of vectors) xxxx
+#' 
 #' @param contrast Indicates if the test consists of the comparison of each 
 #' biological condition versus 
 #' each of the other ones (contrast=1; 
 #' for example H0:"C1=C2" vs H1:"C1!=C2", etc.) 
 #' or each condition versus all others (contrast=2; e.g.  H0:"C1=(C2+C3)/2" vs
 #' H1:"C1!=(C2+C3)/2", etc. if there are three conditions).
+#' 
 #' @param type xxxxx
-#' @return xxxxx
+#' 
+#' @return A DataFrame which contains the 
+#' 
 #' @author Thomas Burger, Samuel Wieczorek
+#' 
 #' @examples
 #' utils::data(Exp1_R25_pept, package='DAPARdata')
-#' obj <- Exp1_R25_pept
-#' protID <- "Protein_group_IDs"
-#' keepThat <-  mvFilterGetIndices(obj, 'wholeMatrix', ncol(obj))
-#' obj <- mvFilterFromIndices(obj, keepThat)
-#' X <- BuildAdjacencyMatrix(obj, protID,  unique = FALSE)
-#' X.spec <- BuildAdjacencyMatrix(obj, protID,  unique = TRUE)
-#' sTab <- Biobase::pData(obj)
-#' qData <- Biobase::exprs(obj)
-#' gttest <- compute.group.t.tests(qData, sTab, X, X.spec)
+#' obj <- Exp1_R25_pept[1:1000,]
+#' obj <- addAssay(obj, Features::filterNA(obj[[2]],  pNA = 0), name='filtered')
+#' obj <- addListAdjacencyMatrices(obj, 3)
+#' qData <- assay(obj[['filtered']])
+#' X.all <- GetAdjMat(obj, 3, 'all')
+#' X.onlySpec <- GetAdjMat(obj, 3, 'onlySpec')
+#' sTab <- colData(obj)
+#' gttest <- compute.group.t.tests(qData, sTab, X.all, X.onlySpec)
+#' 
 #' @export
+#' 
 #' @importFrom utils combn
-compute.group.t.tests <- function(qData, sTab,X,  X.spec, logFC = NULL,contrast="OnevsOne", type="Student"){
+#' 
+compute.group.t.tests <- function(qData, sampleTab, X,  X.spec, logFC = NULL, contrast="OnevsOne", type="Student"){
   
-  switch(type,
-         Student=.type <- TRUE,
-         Welch=.type <- FALSE)
+  if( missing(X.spec))
+    stop("'X' is needed.")
+  if( missing(X.spec))
+    stop("'X.spec' is needed.")
+  
+  .type <- type =='Student'
+  sampleTab <- as.data.frame(sampleTab)
   
   res.tmp <- list()
   logFC <- list()
   P_Value <- list()
   
-  sTab.old <- sTab
-  Conditions.f <- factor(sTab$Condition, levels=unique(sTab$Condition))
-  sTab <- sTab[unlist(lapply(split(sTab, Conditions.f), function(x) {x['Sample.name']})),]
-  qData <- qData[,unlist(lapply(split(sTab.old, Conditions.f), function(x) {x['Sample.name']}))]
-  Conditions <- sTab$Condition
+  sampleTab.old <- sampleTab
+  Conditions.f <- factor(sampleTab$Condition, levels=unique(sampleTab$Condition))
+  sampleTab <- sampleTab[unlist(lapply(split(sampleTab, Conditions.f), function(x) {x['Sample.name']})),]
+  qData <- qData[,unlist(lapply(split(sampleTab.old, Conditions.f), function(x) {x['Sample.name']}))]
+  Conditions <- sampleTab$Condition
   
   y <- qData
   y <- y[rownames(X), ]
@@ -213,13 +262,70 @@ compute.group.t.tests <- function(qData, sTab,X,  X.spec, logFC = NULL,contrast=
   } # End Contrast=2
   
   
-  res.l <- list(
-    logFC = as.data.frame(logFC),
-    P_Value = as.data.frame(P_Value)
-  )
-  colnames(res.l$logFC) <- names(logFC)
-  colnames(res.l$P_Value) <- names(P_Value)
+  res.l <- DataFrame(logFC, P_Value)
+  colnames(res.l) <- c(names(logFC), names(P_Value))
+                       
   
   return(res.l) 
   
 }
+
+
+
+
+
+
+
+
+
+
+
+## Build design matrix X
+# X <- as.matrix(BuildAdjacencyMatrix(obj, 'Protein_group_IDs', unique = FALSE))
+# X.spec <- as.matrix(BuildAdjacencyMatrix(obj, 'Protein_group_IDs', unique = TRUE))
+# 
+# y <- exprs(obj)
+# y <- y[rownames(X), ]
+# n1 <- n2 <- 3
+# n <- n1+n2 # number of samples in c1 and c2
+# 
+# ## Keep track of proteins that are lost in aggregation step
+# unsup.prot <- !(colnames(X) %in% colnames(X.spec))
+# q <- nrow(X) # Number of peptides
+# p <- ncol(X) # Number of proteins
+# 
+# 
+# # Two ways to compute it (function groupttest below)
+# peptide.spec.based.tmp <- apply(X.spec, 2, FUN=function(mask) t.test(x=as.vector(y[mask == 1, 1:n1]), y=as.vector(y[mask == 1, -(1:n1)]), var.equal=TRUE)$p.value)
+# peptide.spec.based.tmp <- groupttest(X.spec,y)
+# 
+# # then:
+# peptide.spec.based.pv <- rep(1, ncol(X))
+# peptide.spec.based.pv[!unsup.prot] <- peptide.spec.based.tmp
+# 
+
+
+
+
+
+# groupttest <- function(MatAdj, expr){
+#   nProt <- dim(MatAdj)[2]
+#   res <- rep(0,nProt)
+#   
+#   for(i in 1:nProt){
+#     #print(i)
+#     index <- names(which(MatAdj[,i]==1))
+#     if(length(index)== 0){
+#       res[i] <- 1
+#     } else{
+#       peptidestotest <- expr[index,]
+#       if(length(index)== 1){
+#         res[i] <- t.test(x=peptidestotest[1:3], y=peptidestotest[-(1:3)], var.equal=TRUE)$p.value
+#       } else{
+#         res[i] <- t.test(x=peptidestotest[,1:3], y=peptidestotest[,-(1:3)], var.equal=TRUE)$p.value
+#       }
+#     }
+#   }
+#   return(res)
+# }  
+

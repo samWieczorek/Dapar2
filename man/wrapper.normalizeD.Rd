@@ -4,29 +4,26 @@
 \alias{wrapper.normalizeD}
 \title{Normalisation}
 \usage{
-wrapper.normalizeD(obj, method, ..., subset.norm = NULL)
+wrapper.normalizeD(
+  obj,
+  method,
+  conds = NULL,
+  type = NULL,
+  scaling = FALSE,
+  quantile = 0.15,
+  span = 0.7,
+  subset.norm = NULL
+)
 }
 \arguments{
 \item{obj}{A \code{SummerizedExperiment} object}
 
-\item{method}{One of the following : "GlobalQuantileAlignment" (for
-normalizations of important magnitude), "SumByColumns", "QuantileCentering",
-"Mean Centering", "LOESS" and "vsn".}
+\item{method}{"GlobalQuantileAlignment" (for normalizations of important magnitude),
+"SumByColumns", "QuantileCentering", "Mean Centering", "LOESS" and "vsn".}
 
-\item{...}{Parameters of normalization functions}
+\item{conds}{xxx}
 
-\item{subset.norm}{A vector of index indicating rows to be used for normalization}
-
-\item{conds}{<- colData(obj)[["Condition"]]}
-
-\item{type}{For the method "Global Alignment", the parameters are:
-"sum by columns": operates on the original scale (not the log2 one) and propose
-to normalize each abundance by the total abundance of the sample (so as to focus
-on the analyte proportions among each sample).
-"Alignment on all quantiles": proposes to align the quantiles of all the
-replicates; practically it amounts to replace abundances by order statistics.
-For the two other methods, the parameters are "overall" (shift all the
-sample distributions at once) or "within conditions" (shift the sample
+\item{type}{"overall" (shift all the sample distributions at once) or "within conditions" (shift the sample
 distributions within each condition at a time).}
 
 \item{scaling}{A boolean that indicates if the variance of the data have to
@@ -36,30 +33,33 @@ be forced to unit (variance reduction) or not.}
 data.}
 
 \item{span}{Parameter for LOESS method}
+
+\item{subset.norm}{A vector of index indicating rows to be used for normalization}
 }
 \value{
 An instance of class \code{SummerizedExperiment} where the quantitative
 data in the \code{array()} tab has been normalized.
 }
 \description{
-Provides several methods to normalize quantitative data from
-a numeric matrix.
-They are organized in six main families : GlobalQuantileAlignement,
-sumByColumns, QuantileCentering, MeanCentering, LOESS, vsn
+Provides several methods to normalize quantitative data from a numeric matrix.
+They are organized in six main families : GlobalQuantileAlignement, sumByColumns, QuantileCentering, MeanCentering, LOESS, vsn
 For the first family, there is no type.
-For the five other families, two type categories are available :
-"Overall" which means that the value for each protein
-(ie row) is computed over all the samples ;
-"within conditions" which means that the value for each protein
-(ie row) is computed condition by condition.
-Normalization can be based only on a subset of protein. Proteins
-with NA in this subset are ignored.
+For the five other families, two type categories are available : 
+"Overall" which means that the value for each protein (ie row) is computed over all the samples ;
+"within conditions" which means that the value for each protein (ie row) is computed condition by condition.
+Normalization can be based only on a subset of protein.
+Proteins with NA in this subset are ignored.
 }
 \examples{
 utils::data(Exp1_R25_pept, package='DAPARdata2')
 obj <- Exp1_R25_pept[['original']]
 conds <- colData(Exp1_R25_pept)[["Condition"]]
-wrapper.normalizeD(obj, "GlobalQuantileAlignment")
+r<-wrapper.normalizeD(obj, "GlobalQuantileAlignment")
+r<-wrapper.normalizeD(obj, "SumByColumns", conds, type="within conditions")
+r<-wrapper.normalizeD(obj, "QuantileCentering", conds, type="within conditions")
+r<-wrapper.normalizeD(obj, "MeanCentering", conds, type="overall")
+r<-wrapper.normalizeD(obj, "vsn", conds, type="within conditions")
+r<-wrapper.normalizeD(obj, "LOESS", conds, type="within conditions")
 }
 \author{
 Samuel Wieczorek, Thomas Burger, Helene Borges, Anais Courtier, Enora Fremy

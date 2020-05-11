@@ -4,7 +4,7 @@
 \alias{GetAdjMat}
 \title{Get an adjacency matrix from a Features object}
 \usage{
-GetAdjMat(obj, i, type = "all")
+GetAdjMat(obj, i = NULL, type = "all")
 }
 \arguments{
 \item{obj}{An object of class 'Features'}
@@ -24,6 +24,8 @@ utils::data(Exp1_R25_pept, package='DAPARdata2')
 obj <- Exp1_R25_pept[1:1000,]
 obj <- addListAdjacencyMatrices(obj, 2)
 X <- GetAdjMat(obj, 2, 'all')
+ 
+X <- GetAdjMat(obj[[2]], type='all')
 
 }
 \author{

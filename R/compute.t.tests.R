@@ -1,99 +1,44 @@
 
 
-setGeneric("computeTTest", function(object, ...) standardGeneric("computeTTest"))
 
-##' @title Features compute t-tests
-##'
-##' @description
-##'
-##' This manual page describes the computation of statistical test using [Features] objects. In the following
-##' functions, if `object` is of class `Features`, and optional assay
-##' index or name `i` can be specified to define the assay (by name of
-##' index) on which to operate.
-##'
-##' The following functions are currently available:
-##'
-##' - `compute.t.test(object, base = 2, i, pc = 0)` log-transforms (with
-##'   an optional pseudocount offset) the assay(s).
-##'
-##' - `compute.group.t.test(object, method, i)` normalises the assay(s) according
-##'   to `method` (see Details).
-##' 
-##'
-##' @details
-##' 
-##' The `method` parameter in `normalize` can be one of `"sum"`,
-##' `"max"`, `"center.mean"`, `"center.median"`, `"div.mean"`,
-##' `"div.median"`, `"diff.meda"`, `"quantiles`", `"quantiles.robust`"
-##' or `"vsn"`. The [MsCoreUtils::normalizeMethods()] function
-##' returns a vector of available normalisation methods.
-##'
-##' - For `"sum"` and `"max"`, each feature's intensity is divided by the
-##'   maximum or the sum of the feature respectively. These two methods are
-##'   applied along the features (rows).
-##'
-##' - `"center.mean"` and `"center.median"` center the respective sample
-##'   (column) intensities by subtracting the respective column means or
-##'   medians. `"div.mean"` and `"div.median"` divide by the column means or
-##'   medians.
-##'
-##' - `"diff.median"` centers all samples (columns) so that they all match the
-##'   grand median by subtracting the respective columns medians differences to
-##'   the grand median.
-##'
-##' - Using `"quantiles"` or `"quantiles.robust"` applies (robust) quantile
-##'   normalisation, as implemented in [preprocessCore::normalize.quantiles()]
-##'   and [preprocessCore::normalize.quantiles.robust()]. `"vsn"` uses the
-##'   [vsn::vsn2()] function.  Note that the latter also glog-transforms the
-##'   intensities.  See respective manuals for more details and function
-##'   arguments.
-##'
-##' For further details and examples about normalisation, see
-##' [MsCoreUtils::normalize_matrix()].
-##'
-##' @param  object An object of class `Features` or `SummarizedExperiment`.
-##'
-##' @param base `numeric(1)` providing the base with respect to which
-##'     logarithms are computed. Defaults is 2.
-##'
-##' @param pc `numeric(1)` with a pseudocount to add to the
-##'     quantitative data. Useful when (true) 0 are present in the
-##'     data. Default is 0 (no effect).
-##'
-##' @param center `logical(1)` (default is `TRUE`) value or
-##'     numeric-alike vector of length equal to the number of columns
-##'     of `object`. See [base::scale()] for details.
-##' 
-##' @param scale `logical(1)` (default is `TRUE`) or a numeric-alike
-##'     vector of length equal to the number of columns of
-##'     `object`. See [base::scale()] for details.
-##'
-##' @param method `character(1)` defining the normalisation method to
-##'     apply. See Details.
-##' 
-##' @param i A numeric vector or a character vector giving the index or the 
-##'     name, respectively, of the assay(s) to be processed.
-##'
-##' @param name A `character(1)` naming the new assay name. Defaults
-##'     are `logAssay` for `logTransform`, `scaledAssay` for
-##'     `scaleTranform` and `normAssay` for `normalize`.
-##'
-##' @param ... Additional parameters passed to inner functions.
-##'
-##' @aliases logTransform logTransform,SummarizedExperiment-method logTransform,Features-method
-##'
-##' @aliases scaleTransform scaleTransform,SummarizedExperiment-method scaleTransform,Features-method
-##' 
-##' @aliases normalize normalize,SummarizedExperiment-method normalize,Features-method
-##'
-##' @aliases normalizeMethods
-##'
-##' @name Features-processing
-##'
-##' @rdname Features-processing
-##'
-##' @examples
-##'
+#' @title Features compute t-tests
+#'
+#' @description
+#'
+#' This manual page describes the computation of statistical test using [Features] objects. In the following
+#' functions, if `object` is of class `Features`, and optional assay
+#' index or name `i` can be specified to define the assay (by name of
+#' index) on which to operate.
+#'
+#' The following functions are currently available:
+#'
+#' - `compute.t.test(object, base = 2, i, pc = 0)` log-transforms (with
+#'   an optional pseudocount offset) the assay(s).
+#'
+#' - `compute.group.t.test(object, method, i)` normalises the assay(s) according
+#'   to `method` (see Details).
+#' 
+#'
+#' @details
+#' 
+#'
+#'
+#' @param  object An object of class `Features` or `SummarizedExperiment`.
+#'
+#' @param method `character(1)` defining the normalisation method to
+#'     apply. See Details.
+#' 
+#' @param i A numeric vector or a character vector giving the index or the 
+#'     name, respectively, of the assay(s) to be processed.
+#'
+#' @param name A `character(1)` naming the new assay name. Defaults
+#'     are `logAssay` for `logTransform`, `scaledAssay` for
+#'     `scaleTranform` and `normAssay` for `normalize`.
+#'
+#' @param ... Additional parameters passed to inner functions.
+#'
+#' @examples
+#'
 #' utils::data(Exp1_R25_pept, package='DAPARdata2')
 #' object <- Exp1_R25_pept
 #' object <- addAssay(object, Features::filterNA(object[[2]],  pNA = 0), name='filtered')
@@ -104,8 +49,8 @@ setGeneric("computeTTest", function(object, ...) standardGeneric("computeTTest")
 #' 
 NULL
 
-##' @exportMethod computeTTest
- #' @rdname Features-dapar-compute-ttests
+#' @exportMethod computeTTest
+
 setMethod("computeTTest", "SummarizedExperiment",
           function(object,
                    sampleTab,
@@ -294,7 +239,6 @@ Cond.Nb<-length(levels(Conditions.f))
 #' #' sTab <- as.data.frame(colData(Exp1_R25_pept)@listData)
 #' #' qData <- assay(Exp1_R25_pept[['filtered']])
 #' #' ttest <- compute.t.tests2(qData,sTab ,"OnevsOne")
-#' #' @export
 #' #' @importFrom utils combn
 #' #' @importFrom stats t.test
 #' compute.t.tests2 <- function(qData,sTab, contrast="OnevsOne", type="Student"){

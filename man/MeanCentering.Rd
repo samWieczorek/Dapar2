@@ -14,6 +14,16 @@ MeanCentering(
 }
 \arguments{
 \item{qData}{A numeric matrix.}
+
+\item{conds}{xxx}
+
+\item{type}{"overall" (shift all the sample distributions at once) or
+"within conditions" (shift the sample distributions within each condition at a time).}
+
+\item{subset.norm}{A vector of index indicating rows to be used for normalization}
+
+\item{scaling}{A boolean that indicates if the variance of the data have to
+be forced to unit (variance reduction) or not.}
 }
 \value{
 A normalized numeric matrix

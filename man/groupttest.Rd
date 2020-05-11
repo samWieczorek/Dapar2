@@ -4,10 +4,10 @@
 \alias{groupttest}
 \title{xxxxxx}
 \usage{
-groupttest(MatAdj, cond1 = NULL, cond2 = NULL)
+groupttest(X, qData1 = NULL, qData2 = NULL)
 }
 \arguments{
-\item{MatAdj}{xxxxx.}
+\item{X}{xxxxx.}
 
 \item{cond1}{xxxx.}
 
@@ -17,17 +17,17 @@ groupttest(MatAdj, cond1 = NULL, cond2 = NULL)
 xxxxx
 }
 \description{
-This function is xxxxxx
+xxxxxx
 }
 \examples{
-utils::data(Exp1_R25_pept, package='DAPARdata')
-obj <- Exp1_R25_pept
-protID <- "Protein_group_IDs"
-keepThat <-  mvFilterGetIndices(obj, 'wholeMatrix', ncol(obj))
-obj <- mvFilterFromIndices(obj, keepThat)
-X.spec <- BuildAdjacencyMatrix(obj, protID,  unique = TRUE)
-qData <- Biobase::exprs(obj)
-gttest <- groupttest(X.spec, qData[,1:3], qData[,4:6])
+utils::data(Exp1_R25_pept, package='DAPARdata2')
+obj <- Exp1_R25_pept[1:1000,]
+obj <- addAssay(obj, Features::filterNA(obj[[2]],  pNA = 0), name='filtered')
+obj <- addListAdjacencyMatrices(obj, 3)
+qData <- assay(obj[['filtered']])
+X <- GetAdjMat(obj, 3, 'onlySpec')
+gttest <- groupttest(X, qData[,1:3], qData[,4:6])
+
 }
 \author{
 Thomas Burger, Samuel Wieczorek

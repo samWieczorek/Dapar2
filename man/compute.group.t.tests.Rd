@@ -6,7 +6,7 @@
 \usage{
 compute.group.t.tests(
   qData,
-  sTab,
+  sampleTab,
   X,
   X.spec,
   logFC = NULL,
@@ -17,11 +17,11 @@ compute.group.t.tests(
 \arguments{
 \item{qData}{A matrix of quantitative data, without any missing values.}
 
-\item{sTab}{xxxx}
+\item{sampleTab}{xxxx}
 
-\item{X}{xxx}
+\item{X}{An adjacency matrix which contains all peptides (specific and shared).}
 
-\item{X.spec}{A matrix of quantitative data, without any missing values.}
+\item{X.spec}{An adjacency matrix which contains only specific peptides.}
 
 \item{logFC}{A vector (or list of vectors) xxxx}
 
@@ -35,22 +35,22 @@ H1:"C1!=(C2+C3)/2", etc. if there are three conditions).}
 \item{type}{xxxxx}
 }
 \value{
-xxxxx
+A DataFrame which contains the
 }
 \description{
 xxxxxx
 }
 \examples{
 utils::data(Exp1_R25_pept, package='DAPARdata')
-obj <- Exp1_R25_pept
-protID <- "Protein_group_IDs"
-keepThat <-  mvFilterGetIndices(obj, 'wholeMatrix', ncol(obj))
-obj <- mvFilterFromIndices(obj, keepThat)
-X <- BuildAdjacencyMatrix(obj, protID,  unique = FALSE)
-X.spec <- BuildAdjacencyMatrix(obj, protID,  unique = TRUE)
-sTab <- Biobase::pData(obj)
-qData <- Biobase::exprs(obj)
-gttest <- compute.group.t.tests(qData, sTab, X, X.spec)
+obj <- Exp1_R25_pept[1:1000,]
+obj <- addAssay(obj, Features::filterNA(obj[[2]],  pNA = 0), name='filtered')
+obj <- addListAdjacencyMatrices(obj, 3)
+qData <- assay(obj[['filtered']])
+X.all <- GetAdjMat(obj, 3, 'all')
+X.onlySpec <- GetAdjMat(obj, 3, 'onlySpec')
+sTab <- colData(obj)
+gttest <- compute.group.t.tests(qData, sTab, X.all, X.onlySpec)
+
 }
 \author{
 Thomas Burger, Samuel Wieczorek
