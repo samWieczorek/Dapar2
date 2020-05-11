@@ -25,7 +25,7 @@
 #' @author Samuel Wieczorek, Thomas Burger, Helene Borges, Anais Courtier, Enora Fremy
 #' @examples
 #' utils::data(Exp1_R25_pept, package='DAPARdata2')
-#' obj <- Exp1_R25_pept[['original']]
+#' obj <- Exp1_R25_pept[['original_log']]
 #' conds <- colData(Exp1_R25_pept)[["Condition"]]
 #' r<-wrapper.normalizeD(obj, "GlobalQuantileAlignment")
 #' r<-wrapper.normalizeD(obj, "SumByColumns", conds, type="within conditions")
