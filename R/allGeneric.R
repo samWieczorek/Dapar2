@@ -1,2 +1,1 @@
-setGeneric("computeTTest", function(object, ...) standardGeneric("computeTTest"))
-setGeneric("computeGroupTtest", function(object, ...) standardGeneric("computeGroupTtest"))
+setGeneric("t.test.sam", function(object, ...) standardGeneric("t.test.sam"))

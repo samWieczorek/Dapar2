@@ -1,92 +1,13 @@
 
 
 
-#' @title Features compute t-tests
-#'
-#' @description
-#'
-#' This manual page describes the computation of statistical test using [Features] objects. In the following
-#' functions, if `object` is of class `Features`, and optional assay
-#' index or name `i` can be specified to define the assay (by name of
-#' index) on which to operate.
-#'
-#' The following functions are currently available:
-#'
-#' - `compute.t.test(object, base = 2, i, pc = 0)` log-transforms (with
-#'   an optional pseudocount offset) the assay(s).
-#'
-#' - `compute.group.t.test(object, method, i)` normalises the assay(s) according
-#'   to `method` (see Details).
-#' 
-#'
-#' @details
-#' 
-#'
-#'
-#' @param  object An object of class `Features` or `SummarizedExperiment`.
-#'
-#' @param method `character(1)` defining the normalisation method to
-#'     apply. See Details.
-#' 
-#' @param i A numeric vector or a character vector giving the index or the 
-#'     name, respectively, of the assay(s) to be processed.
-#'
-#' @param name A `character(1)` naming the new assay name. Defaults
-#'     are `logAssay` for `logTransform`, `scaledAssay` for
-#'     `scaleTranform` and `normAssay` for `normalize`.
-#'
-#' @param ... Additional parameters passed to inner functions.
-#'
-#' @examples
-#'
-#' utils::data(Exp1_R25_pept, package='DAPARdata2')
-#' object <- Exp1_R25_pept
-#' object <- addAssay(object, Features::filterNA(object[[2]],  pNA = 0), name='filtered')
-#' sTab <- colData(object)
-#' ttest <- computeTTest(object[[3]], sTab, contrast="OnevsOne")
-#' 
-#' object <-computeTTest(object, 3, name = "ttestAssay", contrast = 'OnevsOne')
-#' 
-NULL
-
-#' @exportMethod computeTTest
-
-setMethod("computeTTest", "SummarizedExperiment",
-          function(object,
-                   sampleTab,
-                   ...) {
-              df <- compute.t.test(assay(object), sampleTab, ...)
-              #rownames(df) <- rownames(assay(object))
-              e <- object
-              metadata(e)$t_test <- df
-              e
-          })
-
-
-#' @rdname Features-dapar-compute-ttests
-setMethod("computeTTest", "Features",
-          function(object, i, name = "ttestAssay", ...) {
-              if (missing(i))
-                  stop("Provide index or name of assay to be processed")
-              if (length(i) != 1)
-                  stop("Only one assay to be processed at a time")
-              if (is.numeric(i)) i <- names(object)[[i]]
-              object <- addAssay(object,
-                                 computeTTest(object[[i]], sampleTab = colData(object), ...),
-                                 name)
-              addAssayLinkOneToOne(object, from = i, to = name)
-          })
-
-
-
-
 #' This function is xxxxxx
 #'
 #' @title xxxxxx
 #' 
 #' @description 
 #' 
-#' @param qData A matrix of quantitative data, without any missing values.
+#' @param obj xxxxx
 #' 
 #' @param sampleTab A data.frame which contains the samples data.  
 #' 
@@ -118,13 +39,14 @@ setMethod("computeTTest", "Features",
 #' 
 #' @importFrom stats t.test
 #' 
-compute.t.test <- function(qData, sampleTab, contrast="OnevsOne", type="Student"){
+compute.t.test <- function(obj, sampleTab, contrast="OnevsOne", type="Student"){
 
     
     # if (class(sampleTab) != 'data.frame'){
     #     stop("'sampleTab' is not of class data.frame.")
     # }
     
+    qData <- assay(obj)
     .type <- type=='Student'
     sampleTab <- as.data.frame(sampleTab)
     

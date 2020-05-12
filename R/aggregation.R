@@ -107,19 +107,6 @@ addListAdjacencyMatrices <- function(obj, i){
 GetAdjMat <- function(obj, i=NULL, type='all'){
   res <- NULL
   
-  if (is.null(i)){
-    if (is.null(metadata(obj)$list.matAdj)){
-      #warning("Adjacency matrix is not present")
-      return(NULL)
-    }
-    
-    if (is.null(metadata(obj)$list.matAdj[[type]])){
-      # warning("Adjacency matrix of type '",type, "' is not present")
-      return(NULL)
-    }
-    
-    res <-metadata(obj)$list.matAdj[[type]]
-  } else {
     
    if (is.numeric(i)) i <- names(obj)[[i]]
   
@@ -134,7 +121,28 @@ GetAdjMat <- function(obj, i=NULL, type='all'){
     }
   
    res <- metadata(obj[[i]])$list.matAdj[[type]]
-  }
+
+  return(res)
+  
+}
+
+
+GetAdjMat <- function(obj, type='all'){
+  res <- NULL
+  
+
+    if (is.null(metadata(obj)$list.matAdj)){
+      #warning("Adjacency matrix is not present")
+      return(NULL)
+    }
+    
+    if (is.null(metadata(obj)$list.matAdj[[type]])){
+      # warning("Adjacency matrix of type '",type, "' is not present")
+      return(NULL)
+    }
+    
+    res <-metadata(obj)$list.matAdj[[type]]
+  
   
   return(res)
   

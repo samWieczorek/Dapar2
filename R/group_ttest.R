@@ -1,23 +1,19 @@
-# peptide-level t-test
-##########
-
-
-#' @title Features compute group t-tests
+#' @title Check the validity of the experimental design
 #'
 #' @description
 #'
 #' This manual page describes the computation of statistical test using [Features] objects. In the following
 #' functions, if `object` is of class `Features`, and optional assay
 #' index or name `i` can be specified to define the assay (by name of
-#' index) on which to oerate.
+#' index) on which to operate.
 #'
 #' The following functions are currently available:
 #'
-#' - `compute.t.test(object, base = 2, i, pc = 0)` log-transforms (with
-#'   an optional pseudocount offset) the assay(s).
+#' - `compute.t.test(xxxxx)` xxxxx.
 #'
-#' - `compute.group.t.test(object, method, i)` normalises the assay(s) according
-#'   to `method` (see Details).
+#' - `compute.group.t.test(xxxxx)` xxxxx.
+#'   
+#' - `limma.complete.test(object, sampleTab)` uses the package Limma 
 #' 
 #'
 #' @details
@@ -42,32 +38,30 @@
 #' object <- addAssay(object, Features::filterNA(object[[2]],  pNA = 0), name='filtered')
 #' object <- addListAdjacencyMatrices(object, 3)
 #' sTab <- colData(object)
-#' gttest.se <- computeGroupTtest(object[[3]], sTab, contrast="OnevsOne")
+#' gttest.se <- t.test.sam(object[[3]], sTab, FUN = limma.complete.test)
 #' 
-#' object <-computeGroupTtest(object, 3, name = "ttestAssay", contrast = 'OnevsOne')
+#' object <-t.test.sam(object, 3, name = "ttestAssay", FUN = compute.t.test, contrast = 'OnevsOne')
 #' 
 NULL
 
-#' @exportMethod computeGroupTtest
+#' @export
 #' 
-setMethod("computeGroupTtest", "SummarizedExperiment",
+setMethod("t.test.sam", "SummarizedExperiment",
           function(object,
                    sampleTab,
+                   FUN,
                    ...) {
             
-            X.all <- GetAdjMat(object, type = 'all')
-            X.onlySpec <- GetAdjMat(object,type = 'onlySpec')
-             
-            df <- compute.group.t.tests(assay(object), sampleTab, X.all, X.onlySpec,...)
-            e <- object
-            metadata(e)$t_test <- df
-            e
+            df <- do.call(FUN, list(object, sampleTab, ...))
+            
+            copy <- object
+            metadata(copy)$t_test <- df
+            copy
           })
 
 
-#' @rdname Features-dapar-compute-group-ttests
-setMethod("computeGroupTtest", "Features",
-          function(object, i, name = "ttestAssay", ...) {
+setMethod("t.test.sam", "Features",
+          function(object, i, name = "ttestAssay", FUN,  ...) {
             if (missing(i))
               stop("Provide index or name of assay to be processed")
             if (length(i) != 1)
@@ -78,7 +72,7 @@ setMethod("computeGroupTtest", "Features",
               object <- addListAdjacencyMatrices(object, i)
             
             object <- addAssay(object,
-                               computeGroupTtest(object[[i]], sampleTab = colData(object), ...),
+                               t.test.sam(object[[i]], sampleTab = colData(object), FUN, ...),
                                name)
             addAssayLinkOneToOne(object, from = i, to = name)
           })
@@ -158,26 +152,25 @@ groupttest <- function(X, qData1=NULL, qData2 = NULL){
 #' @author Thomas Burger, Samuel Wieczorek
 #' 
 #' @examples
-#' utils::data(Exp1_R25_pept, package='DAPARdata')
+#' library(Features)
+#' utils::data(Exp1_R25_pept, package='DAPARdata2')
 #' obj <- Exp1_R25_pept[1:1000,]
 #' obj <- addAssay(obj, Features::filterNA(obj[[2]],  pNA = 0), name='filtered')
 #' obj <- addListAdjacencyMatrices(obj, 3)
-#' qData <- assay(obj[['filtered']])
-#' X.all <- GetAdjMat(obj, 3, 'all')
-#' X.onlySpec <- GetAdjMat(obj, 3, 'onlySpec')
 #' sTab <- colData(obj)
-#' gttest <- compute.group.t.tests(qData, sTab, X.all, X.onlySpec)
+#' gttest <- compute.group.t.test(obj[[3]], sTab)
 #' 
 #' @export
 #' 
 #' @importFrom utils combn
 #' 
-compute.group.t.tests <- function(qData, sampleTab, X,  X.spec, logFC = NULL, contrast="OnevsOne", type="Student"){
+compute.group.t.test <- function(obj, sampleTab,logFC = NULL, contrast="OnevsOne", type="Student"){
+
+ 
+  qData <- assay(obj)
+  X <- GetAdjMat(obj,'all')
+  X.spec <- GetAdjMat(obj, 'onlySpec')
   
-  if( missing(X.spec))
-    stop("'X' is needed.")
-  if( missing(X.spec))
-    stop("'X.spec' is needed.")
   
   .type <- type =='Student'
   sampleTab <- as.data.frame(sampleTab)
@@ -203,7 +196,7 @@ compute.group.t.tests <- function(qData, sampleTab, X,  X.spec, logFC = NULL, co
     for(i in 1:ncol(comb)){
       c1Indice <- which(Conditions==comb[1,i])
       c2Indice <- which(Conditions==comb[2,i])
-      res.tmp <- groupttest(X.spec,qData[,c1Indice], qData[,c2Indice] )
+      res.tmp <- groupttest(X.spec, qData[,c1Indice], qData[,c2Indice] )
       
       #compute logFC from the result of t.test function
       p.tmp <- unlist(lapply(res.tmp,function(x) x["p.value"]))

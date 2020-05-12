@@ -4,10 +4,10 @@
 \alias{compute.t.test}
 \title{xxxxxx}
 \usage{
-compute.t.test(qData, sampleTab, contrast = "OnevsOne", type = "Student")
+compute.t.test(obj, sampleTab, contrast = "OnevsOne", type = "Student")
 }
 \arguments{
-\item{qData}{A matrix of quantitative data, without any missing values.}
+\item{obj}{xxxxx}
 
 \item{sampleTab}{A data.frame which contains the samples data.}
 
