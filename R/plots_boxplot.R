@@ -15,7 +15,7 @@
 #' library(highcharter)
 #' utils::data(Exp1_R25_pept, package='DAPARdata2')
 #' qData <- assay(Exp1_R25_pept[['original_log']])
-#' fData <- rowData(Exp1_R25_pept[['original_log']])[['Sequence']]
+#' fData <- rowData(Exp1_R25_pept[['original_log']])
 #' legend <- colData(Exp1_R25_pept)[["Sample.name"]]
 #' boxPlotD_HC(qData, fData, legend, subset.view=1:10)
 #' @importFrom Biobase exprs pData
@@ -82,7 +82,7 @@ boxPlotD_HC <- function(qData, fData, legend=NULL, palette = NULL,subset.view=NU
   
   # Display of rows to highlight (index of row in subset.view) 
   if(!is.null(subset.view)){
-    idVector <- fData
+    idVector <- fData[['Sequence']]
     pal=grDevices::colorRampPalette(RColorBrewer::brewer.pal(8, "Set1"))(length(subset.view))    
     n=0
     for(i in subset.view){

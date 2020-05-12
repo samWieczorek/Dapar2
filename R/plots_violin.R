@@ -2,6 +2,7 @@
 #' 
 #' @title Builds a violinplot from a numeric matrix
 #' @param qData Numeric matrix
+#' @param fData xxx
 #' @param legend A vector of the conditions (one condition per sample).
 #' @param palette xxx
 #' @param subset.view A vector of index indicating rows to highlight
@@ -14,7 +15,7 @@
 #' library(Features)
 #' utils::data(Exp1_R25_pept, package='DAPARdata2')
 #' qData <- assay(Exp1_R25_pept[['original_log']])
-#' fData <- as.matrix(rowData(Exp1_R25_pept[['original_log']]))
+#' fData <- rowData(Exp1_R25_pept[['original_log']])
 #' legend <- colData(Exp1_R25_pept)[["Condition"]]
 #' violinPlotD(qData, fData, legend=legend)
 #' @importFrom vioplot vioplot
@@ -65,7 +66,7 @@ violinPlotD <- function(qData, fData, legend=NULL, palette = NULL,subset.view=NU
   
   # Display of rows to highlight (index of row in subset.view) 
   if(!is.null(subset.view)){
-    idVector <- fData[,'Sequence']
+    idVector <- fData[['Sequence']]
     pal <- grDevices::colorRampPalette(RColorBrewer::brewer.pal(8, "Set1"))(length(subset.view))
     
     n=0
