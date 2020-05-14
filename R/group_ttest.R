@@ -40,7 +40,7 @@
 #' sTab <- colData(object)
 #' gttest.se <- t.test.sam(object[[3]], sTab, FUN = limma.complete.test)
 #' 
-#' object <-t.test.sam(object, 3, name = "ttestAssay", FUN = compute.t.test, contrast = 'OnevsOne')
+#' object <- t.test.sam(object, 3, name = "ttestAssay", FUN = compute.t.test, contrast = 'OnevsOne')
 #' 
 NULL
 

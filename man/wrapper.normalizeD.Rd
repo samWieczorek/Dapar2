@@ -55,9 +55,9 @@ utils::data(Exp1_R25_pept, package='DAPARdata2')
 obj <- Exp1_R25_pept[['original_log']]
 conds <- colData(Exp1_R25_pept)[["Condition"]]
 r<-wrapper.normalizeD(obj, "GlobalQuantileAlignment")
-r<-wrapper.normalizeD(obj, "SumByColumns", conds, type="within conditions")
+r<-wrapper.normalizeD(obj, "SumByColumns", conds, type="within conditions", subset.norm=1:100)
 r<-wrapper.normalizeD(obj, "QuantileCentering", conds, type="within conditions")
-r<-wrapper.normalizeD(obj, "MeanCentering", conds, type="overall")
+r<-wrapper.normalizeD(obj, method="MeanCentering", conds, type="overall", scaling=TRUE)
 r<-wrapper.normalizeD(obj, "vsn", conds, type="within conditions")
 r<-wrapper.normalizeD(obj, "LOESS", conds, type="within conditions")
 }

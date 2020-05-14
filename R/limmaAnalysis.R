@@ -14,7 +14,59 @@
 #' 
 CheckDesign <- function(sampleTab){
   
+  res <- list(valid=FALSE,warn=NULL)
   
+  names <- colnames(sampleTab)
+  level.design <- sum(names %in% c('Bio.Rep', 'Tech.Rep', 'Analyt.Rep'))
+  
+  
+  res <- check.conditions(sampleTab$Condition)
+  if (!res$valid){
+    return(res)
+  }
+  # Check if all the column are fullfilled
+  
+  if (level.design == 1){
+    if (("" %in% sampleTab$Bio.Rep) || (NA %in% sampleTab$Bio.Rep)){
+      res <- list(valid=FALSE, warn="The Bio.Rep colmumn are not full filled.")
+      return(res)
+    }
+  }
+  else if (level.design == 2){
+    if (("" %in% sampleTab$Bio.Rep) || (NA %in% sampleTab$Bio.Rep)){
+      res <- list(valid=FALSE, warn="The Bio.Rep colmumn are not full filled.")
+      return(res)
+    }else if (("" %in% sampleTab$Tech.Rep) || (NA %in% sampleTab$Tech.Rep)){
+      res <- list(valid=FALSE, warn="The Tech.Rep colmumn are not full filled.")
+      return(res)
+    }
+  }
+  else if (level.design == 3){
+    if (("" %in% sampleTab$Bio.Rep) || (NA %in% sampleTab$Bio.Rep)){
+      res <- list(valid=FALSE, warn="The Bio.Rep colmumn are not full filled.")
+      return(res)
+    } else if (("" %in% sampleTab$Tech.Rep) || (NA %in% sampleTab$Tech.Rep)){
+      res <- list(valid=FALSE, warn="The Tech.Rep colmumn are not full filled.")
+      return(res)
+    } else if (("" %in% sampleTab$Analyt.Rep) || (NA %in% sampleTab$Analyt.Rep)){
+      res <- list(valid=FALSE, warn="The Analyt.Rep colmumn are not full filled.")
+      return(res)
+    }
+  }
+  
+  # Check if the hierarchy of the design is correct
+  if (level.design == 1){res <- test.design(sampleTab[,c("Condition", "Bio.Rep")])}
+  else if (level.design == 2){res <- test.design(sampleTab[,c("Condition", "Bio.Rep","Tech.Rep")])}
+  else if (level.design == 3){
+    res <- test.design(sampleTab[,c("Condition", "Bio.Rep","Tech.Rep")])
+    if (res$valid)
+    {
+      res <- test.design(sampleTab[,c("Bio.Rep","Tech.Rep", "Analyt.Rep")])
+      
+    }
+  }
+  
+  return(res)
   
   
   }
