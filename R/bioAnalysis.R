@@ -26,15 +26,13 @@
 #' @importFrom clusterProfiler bitr groupGO
 group_GO <- function(data, idFrom,  orgdb, ont, level, readable=FALSE){
   
-  
   require(as.character(orgdb),character.only = TRUE)
   
   if (idFrom == "UNIPROT"){
     gene <- clusterProfiler::bitr(data, fromType=idFrom, toType="ENTREZID", OrgDb=orgdb)
     if (is.null(gene)){return (NULL)}
     gene.id = gene$ENTREZID
-    
-  }else {
+  } else {
     gene.id = data
   }
   
@@ -57,7 +55,7 @@ group_GO <- function(data, idFrom,  orgdb, ont, level, readable=FALSE){
 #' @title Returns the totality of ENTREZ ID (gene id) of an OrgDb annotation 
 #' package. 
 #' Careful : org.Pf.plasmo.db : no ENTREZID but ORF
-#' @param orgdb a Bioconductor OrgDb annotation package 
+#' @param orgdb A Bioconductor OrgDb annotation package 
 #' @return A vector of ENTREZ ID  
 #' @author Florence Combes
 #' @export
@@ -98,19 +96,17 @@ univ_AnnotDbPkg <- function(orgdb){
 #' }
 #' @export
 #' @importFrom clusterProfiler bitr enrichGO
-enrich_GO <- function(data, idFrom, orgdb, ont, readable=FALSE, pval, universe)
-{
+enrich_GO <- function(data, idFrom, orgdb, ont, readable=FALSE, pval, universe) {
   tmp <- which(is.na(data))
   if (length(tmp) > 0){
     data <- data[-which(is.na(data))]
   }
   
-  
-  if (idFrom == "UNIPROT"){
+  if (idFrom == "UNIPROT") {
     gene <- clusterProfiler::bitr(data, fromType=idFrom, toType="ENTREZID", OrgDb=orgdb)
     if (is.null(gene)){return (NULL)}
     gene.id = gene$ENTREZID
-  }else {
+  } else {
     gene.id = data
   }
   
@@ -138,7 +134,6 @@ enrich_GO <- function(data, idFrom, orgdb, ont, readable=FALSE, pval, universe)
 #' \donttest{
 #' library(highcharter)
 #' library(DAPAR2)
-#' library(Features)
 #' utils::data(Exp1_R25_prot, package='DAPARdata2')
 #' data <- rowData(Exp1_R25_prot[[2]])[['Protein_IDs']]
 #' ggo <- group_GO(data, idFrom="UNIPROT", orgdb="org.Sc.sgd.db", ont="MF", level=2)
@@ -146,7 +141,7 @@ enrich_GO <- function(data, idFrom, orgdb, ont, readable=FALSE, pval, universe)
 #' }
 #' @export
 #' @import highcharter
-barplotGroupGO_HC <- function(ggo, maxRes=5, title=""){
+barplotGroupGO_HC <- function(ggo, maxRes=5, title=NULL){
   
   dat <- ggo@result
   nRes <- min(maxRes, nrow(dat))
@@ -166,14 +161,10 @@ barplotGroupGO_HC <- function(ggo, maxRes=5, title=""){
     hc_xAxis(categories = dat[,"Description"], title = list(text = "")) %>%
     dapar_hc_ExportMenu(filename = "GOGroup_barplot")
   
-  
   return(h1)
 }
 
 
-
-
-#######################################################################################
 
 #' A barplot of GO enrichment analysis
 #' 
@@ -185,8 +176,20 @@ barplotGroupGO_HC <- function(ggo, maxRes=5, title=""){
 #' @param title The title of the plot
 #' @return A barplot 
 #' @author Samuel Wieczorek, Enora Fremy
+#' @examples
+#' \donttest{
+#' library(clusterProfiler)
+#' library(highcharter)
+#' library(DAPAR2)
+#' utils::data(Exp1_R25_prot, package='DAPARdata2')
+#' data <- rowData(Exp1_R25_prot[[2]])[['Protein_IDs']]
+#' univ <- univ_AnnotDbPkg("org.Sc.sgd.db")
+#' ego <- enrich_GO(data, idFrom="UNIPROT", orgdb="org.Sc.sgd.db", ont="MF", pval=0.05, universe = univ)
+#' barplotEnrichGO_HC(ego)
+#' }
 #' @export
 #' @import highcharter
+#' @importFrom data.table last
 barplotEnrichGO_HC <- function(ego, maxRes = 5, title=NULL){
   if (is.null(ego)){return(NULL)}
   dat <- ego@result
@@ -204,7 +207,7 @@ barplotEnrichGO_HC <- function(ego, maxRes = 5, title=NULL){
   t <- log(dat[,"pvalue"])
   d <- (max(t) - min(t))/nbBreaks
   base <- seq(from=min(t), to=max(t), by = d)
-  myColorsIndex <- unlist(lapply(t, function(x){last(which(x > base))}))
+  myColorsIndex <- unlist(lapply(t, function(x){data.table::last(which(x > base))}))
   myColorsIndex[which(is.na(myColorsIndex))] <- 1
   myColors <- pal[myColorsIndex]
   
@@ -236,4 +239,140 @@ barplotEnrichGO_HC <- function(ego, maxRes = 5, title=NULL){
       dataLabels = list(enabled = TRUE)))
   
   return(h1)
+}
+
+
+
+#' A scatter plot of GO enrichment analysis
+#' 
+#' @title A dotplot that shows the result of a GO enrichment, using the package \code{highcharter}
+#' @param ego The result of the GO enrichment, provides either by the function
+#' enrichGO in \code{DAPAR} or the function \code{enrichGO} of the packaage \code{\link{clusterProfiler}}
+#' @param maxRes The maximum number of categories to display in the plot
+#' @param title The title of the plot
+#' @return A dotplot 
+#' @author Samuel Wieczorek, Enora Fremy
+#' @examples
+#' \donttest{
+#' library(clusterProfiler)
+#' library(highcharter)
+#' library(DAPAR2)
+#' utils::data(Exp1_R25_prot, package='DAPARdata2')
+#' data <- rowData(Exp1_R25_prot[[2]])[['Protein_IDs']]
+#' univ <- univ_AnnotDbPkg("org.Sc.sgd.db")
+#' ego <- enrich_GO(data, idFrom="UNIPROT", orgdb="org.Sc.sgd.db", ont="MF", pval=0.05, universe = univ)
+#' scatterplotEnrichGO_HC(ego)
+#' @export
+#' @import highcharter
+scatterplotEnrichGO_HC <- function(ego, maxRes = 10, title=NULL){
+  
+  dat <- ego@result
+  nRes <- min(maxRes, nrow(dat))
+  dat$GeneRatio <- unlist(lapply(dat$GeneRatio, function(x){
+    as.numeric(unlist(strsplit(x,'/'))[1]) / as.numeric(unlist(strsplit(x,'/'))[2])
+  }))
+  
+  
+  n <- which(dat$GeneRatio==0)
+  if (length(n) > 0){dat <- dat[-which(dat$GeneRatio==0),]}
+  dat <- dat[order(dat$GeneRatio, decreasing=TRUE),]
+  dat <- dat[seq(1:nRes),]
+  
+  
+  colfunc <- colorRampPalette(c("red","royalblue"))
+  nbColors <- 5
+  
+  pal <- colfunc(nbColors)
+  t <- log(dat$p.adjust)
+  d <- (max(t) - min(t))/nbColors
+  base <- seq(from=min(t), to=max(t), by = d)
+  tmpList <- lapply(t, function(x){
+    if (x == min(t)){ ind <- 1}
+    else {ind <- which(x > base)[length(which(x > base))]}
+    
+  })
+  
+  myColorsIndex <- unlist(tmpList)
+  
+  df <- data.frame(x=c(0:(nRes-1)),
+                   y=dat$GeneRatio,
+                   z=dat$Count,
+                   color=pal[myColorsIndex],
+                   colorSegment=pal[myColorsIndex],
+                   pAdjust = format(dat$p.adjust, digits=2),
+                   name = dat[,"Description"])
+  
+  
+  txt_tooltip <- paste("<b> p.adjust </b>: {point.pAdjust} <br> ", 
+                       "<b> Count </b>: {point.z} <br> ",
+                       sep="")
+  
+  h1 <-  highchart() %>%
+    hc_title(title = title) %>%
+    dapar_hc_chart(chartType = "bubble") %>%
+    hc_add_series(df) %>%
+    hc_legend(enabled = FALSE) %>%
+    hc_xAxis(type = "category", categories = df$name)  %>%
+    hc_yAxis(title = list(text = "Gene Ratio"))  %>%
+    hc_tooltip(headerFormat= '',
+               pointFormat = txt_tooltip) %>%
+    dapar_hc_ExportMenu(filename = "GOEnrich_dotplot")
+  
+  
+  
+  return(h1)
+}
+
+
+########## TO DO ##########
+
+#' This method returns an \code{MSnSet} object with the results
+#' of the Gene Ontology analysis.
+#' 
+#' @title Returns an \code{MSnSet} object with the results of
+#' the GO analysis performed with the functions \code{enrichGO} and/or 
+#' \code{groupGO} of the \code{\link{clusterProfiler}} package. 
+#' @param obj An object of the class \code{MSnSet}
+#' @param ggo_res The object returned by the function \code{group_GO} of the 
+#' package \code{DAPAR} or the function \code{groupGO} of the package \code{\link{clusterProfiler}}
+#' @param ego_res The object returned by the function \code{enrich_GO} of the package \code{DAPAR}
+#' or the function \code{enrichGO} of the package \code{\link{clusterProfiler}}
+#' @param organism The parameter OrgDb of the functions \code{\link{bitr}}, \code{\link{groupGO}} and \code{\link{enrichGO}}
+#' @param ontology One of "MF", "BP", and "CC" subontologies
+#' @param levels A vector of the different GO grouping levels to save
+#' @param pvalueCutoff The qvalue cutoff (same parameter as in the function \code{enrichGO} of the package \code{\link{clusterProfiler}})
+#' @param typeUniverse  The type of background to be used. Values are 'Entire Organism', 'Entire dataset' or 'Custom'. In the latter
+#' case, a file should be uploaded by the user
+#' @return An object of the class \code{MSnSet}
+#' @author Samuel Wieczorek
+#' @export
+GOAnalysisSave <- function (obj, ggo_res=NULL, ego_res=NULL, organism, ontology, levels, pvalueCutoff, typeUniverse){
+  if (is.null(ggo_res) && is.null(ego_res)){
+    warning("Neither ggo or ego analysis has  been completed.")
+    return(NULL)}
+  
+  if (!is.null(ggo_res)){
+    text <- paste("Group analysis on ", organism)
+    #obj@processingData@processing <- c(obj@processingData@processing, text)
+    
+    obj@experimentData@other$GGO_analysis <- list(ggo_res = ggo_res,
+                                                  organism = organism,
+                                                  ontology = ontology,
+                                                  levels = levels)
+  }
+  
+  if (!is.null(ego_res)){
+    text <- paste("Enrichment analysis on", organism)
+    #obj@processingData@processing <- c(obj@processingData@processing, text)
+    
+    obj@experimentData@other$EGO_analysis <- list(ego_res = ego_res,
+                                                  organism = organism,
+                                                  ontology = ontology,
+                                                  PAdjustMethod = "BH",
+                                                  pvalueCutoff = pvalueCutoff,
+                                                  typeUniverse = typeUniverse)
+  }
+  
+  
+  return(obj)
 }
