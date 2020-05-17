@@ -4,7 +4,7 @@
 \alias{LOESS}
 \title{Normalisation LOESS}
 \usage{
-LOESS(qData, conds, type = NULL, span = 0.7)
+LOESS(qData, conds, type = "overall", span = 0.7)
 }
 \arguments{
 \item{qData}{A numeric matrix.}
@@ -24,10 +24,11 @@ Normalisation LOESS
 }
 \examples{
 utils::data(Exp1_R25_pept, package='DAPARdata2')
-qData <- assay(Exp1_R25_pept[['original']])
+qData <- assay(Exp1_R25_pept[['original_log']])
 conds <- colData(Exp1_R25_pept)[['Condition']]
 normalized <- LOESS(qData, conds, type="overall")
+
 }
 \author{
-Samuel Wieczorek, Thomas Burger, Helene Borges, Anais Courtier, Enora Fremy
+Thomas Burger, Helene Borges, Anais Courtier, Enora Fremy
 }

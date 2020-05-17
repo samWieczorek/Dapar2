@@ -16,6 +16,7 @@ A boolean
 Check the validity of the experimental design
 }
 \examples{
+library(Features)
 utils::data(Exp1_R25_pept, package='DAPARdata2')
 CheckDesign(colData(Exp1_R25_pept))
 

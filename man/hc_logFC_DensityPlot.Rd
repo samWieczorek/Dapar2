@@ -21,6 +21,7 @@ This function show the density plots of Fold Change (the same as calculated by l
 of the comparisons of conditions in a differnetial analysis.
 }
 \examples{
+library(Features)
 utils::data(Exp1_R25_pept, package='DAPARdata2')
 obj <- Exp1_R25_pept[1:1000]
 obj <- addAssay(obj, Features::filterNA(obj[[2]],  pNA = 0), name='filtered')

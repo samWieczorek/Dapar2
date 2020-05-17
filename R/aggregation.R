@@ -1,4 +1,192 @@
 
+
+#' @title Aggregate an assay's quantitative features which take into account
+#' the peptides shared between proteins
+#'
+#' @description
+#' 
+#' This function aggregates the quantitative features of an assay,
+#' applying an aggregation function (`fun`) to sets of features as
+#' defined by the `fcol` feature variable. The new assay's features
+#' will be named based on the unique `fcol` values.
+#' This function is largely inspired by xxxx . The difference is that it can take into account the peptides shared between proteins.
+#'
+#'
+#' @param object An instance of class [Features].
+#'
+#' @param i The index or name of the assay which features will be
+#'     aggregated the create the new assay.
+#'
+#'
+#' @param aggType The type of peptides used for the aggregation. Possibla values are: 'all', 'onlyShared' and 'onlySPec'. This argument automatically
+#' selects the corresponding adjacency matrix.
+#' 
+#' @param name A `character(1)` naming the new assay. Default is `newAssay`. Note that the function will fail if there's
+#'     already an assay with `name`.
+#'     
+#' @param meta.names A vector of character strings that are the metadata of the peptides which needs to be aggregated
+#' and kept in the protein dataset
+#'
+#' @param fun A function used for quantitative feature
+#'     aggregation. See Details for examples.
+#'
+#' @param ... Additional parameters passed the `fun`.
+#'
+#' @return A `Features` object with an additional assay.
+#'
+#' @details
+#'
+#' Aggregation is performed by a function that takes a matrix as
+#' input and returns a xxxxx. Examples
+#' thereof are
+#'
+#' - [DAPAR2:aggSum()] to use the sum of each column (default);
+#'
+#' - [DAPAR2:aggMean()] to use the sum of each column;
+#'
+#' - [DAPAR2:aggIter()] to use the mean of each column;
+#'
+#' - [DAPAR2:aggIterParallel()] same as previous function but use parallelism.
+#'
+#' - [DAPAR::aggTopn] to use the sum of each column;
+#'
+#' 
+#' @seealso The *Features* vignette provides an extended example and
+#'     the *Processing* vignette, for a complete quantitative
+#'     proteomics data processing pipeline.
+#' 
+#' @aliases aggregateFeatures aggregateFeatures,Features-method
+#'
+#' @name aggregateFeatures_sam
+#'
+#' @rdname Features-aggregate_dapar
+#'
+#' @importFrom MsCoreUtils aggregate_by_vector robustSummary
+#'
+#' @examples
+#' library(S4Vectors)
+#' utils::data(Exp1_R25_pept, package='DAPARdata2')
+#' obj <- Exp1_R25_pept[1:1000,]
+#' aggregateFeatures_sam(obj,2, aggType= 'all', name='aggregated', meta.names = 'Sequence', 'aggTopn', n=3)
+#' 
+#' @export aggregateFeatures_sam
+#' 
+##-------------------------------------------------------------------------
+# setMethod("aggregateFeatures_sam", "Features",
+#           function(object, i, X, name = "newAssay",
+#                    fun = aggSum, ...)
+#             .aggregateFeatures_sam(object, i, fcol, name, fun, ...))
+
+
+aggregateFeatures_sam <- function(object, i, aggType='all', name, meta.names = NULL, fun, ...) {
+  if (isEmpty(object))
+    return(object)
+  if (name %in% names(object))
+    stop("There's already an assay named '", name, "'.")
+  if (missing(aggType))
+    stop("'aggType' is required.")    
+  if (missing(i))
+    i <- main_assay(object)
+  
+  
+  argg <- c(as.list(environment()), list(...))
+  print(argg)
+  
+  ## if the adjacency matrices are already present in the metadata of the SE, then load it
+  ## else build it
+  
+  assay_i <- assay(object, i)
+  object_i <- object[[i]]
+  rowdata_i <- rowData(object[[i]])
+  
+  if (!(aggType %in% c('all', 'onlyShared', 'onlySpec'))){
+    stop("Available values for 'typeMatAdj' are 'all', 'onlyShared', 'onlySpec'.")
+  }
+  
+  if (is.null(metadata(object_i)$list.matAdj) || is.null(metadata(object_i)$list.matAdj[[aggType]])){
+    ## by default, all three types of matrices are computed once for all and stored in the metadata slot of the SE. 
+    ## This reduces the future computations
+    object <- addListAdjacencyMatrices(object, i)
+  }
+  
+  X <- metadata(object[[i]])$list.matAdj[[aggType]]
+  
+  
+  ## Message about NA values is quant/row data
+  has_na <- character()
+  if (anyNA(assay_i))
+    has_na <- c(has_na, "quantitative")
+  if (anyNA(rowdata_i, recursive = TRUE))
+    has_na <- c(has_na, "row")
+  if (length(has_na)) {
+    msg <- paste(paste("Your", paste(has_na, collapse = " and "),
+                       " data contain missing values."),
+                 "Please read the relevant section(s) in the",
+                 "aggregateFeatures manual page regarding the",
+                 "effects of missing values on data aggregation.")
+    message(paste(strwrap(msg), collapse = "\n"))
+  }
+  
+  #aggregated_assay <- aggregate_by_vector(assay_i, groupBy, fun, ...)
+  
+  aggregated_assay <- aggregate_with_matAdj(assay_i, X, fun, ...)
+  
+  
+  # aggregated_rowdata <- Features::reduceDataFrame(rowdata_i, rowdata_i[[fcol]],
+  #                                                 simplify = TRUE, drop = TRUE,
+  #                                                 count = TRUE)
+  
+  # This part build general statistics about the aggregation
+  aggregated_rowdata <- rowdata_stats_Aggregation_sam(assay_i, X)
+  
+  ## This part make the aggregation of the metadata of peptides which have been given
+  ## by the parameter meta.names. It is column-binded to the previous aggregated_rowdata
+  if (!is.null(meta.names)){
+    aggregated_rowdata <- cbind(aggregated_rowdata, aggMetadata_sam(rowdata_i, meta.names, X))
+  }
+  
+  se <- SummarizedExperiment(aggregated_assay,
+                             rowData = aggregated_rowdata[rownames(aggregated_assay), ])
+  metadata(se)$Params <- argg[-match(c('object', 'i', 'name', 'meta.names'), names(argg))]
+  
+  # hits <- findMatches(rownames(aggregated_assay), groupBy)
+  # rownames(aggregated_assay) : correspond au nom des proteines nouvellement creees
+  # groupBy : correspond aaux id des peptides d'origine ?
+  #hits <- findMatches(rownames(aggregated_assay), groupBy)
+  ## from et to forment la definition du graphe pepetide-protein
+  
+  
+  ## The following code is used to build the hits object originally built with findMatches
+  ## in the class Features. The vectors from and to are built explicitly with the 'which' function
+  test <- which(as.matrix(X)==1, arr.ind=TRUE)
+  from <- test[,'col']
+  to <- test[,'row']
+  hits <- S4Vectors::Hits(from=from, 
+                          to=to, 
+                          nLnode=length(from), 
+                          nRnode=nrow(X),
+                          sort.by.query=TRUE
+  )
+  
+  elementMetadata(hits)$names_from <- rownames(assay_i)[hits@to]
+  elementMetadata(hits)$names_to <- colnames(X)[hits@from]
+  
+  
+  assayLinks <- AssayLink(name = name,
+                          from = ifelse(is.character(i), i, names(object)[i]),
+                          fcol = metadata(object)$parentProtId,
+                          hits = hits)
+  
+  addAssay(object,
+           se,
+           name = name,
+           assayLinks = assayLinks)
+  
+}
+
+
+
+
 #' Method to create a list of three binary matrices with proteins in columns and peptides in lines.
 #' 
 #' @title Function matrix of appartenance group
@@ -97,34 +285,31 @@ addListAdjacencyMatrices <- function(obj, i){
 #' utils::data(Exp1_R25_pept, package='DAPARdata2')
 #' obj <- Exp1_R25_pept[1:1000,]
 #' obj <- addListAdjacencyMatrices(obj, 2)
-#' X <- GetAdjMat(obj, 2, 'all')
+#' X <- GetAdjMat(obj[[2]], 'all')
 #
-#'  
-#' X <- GetAdjMat(obj[[2]], type='all')
-#' 
 #' @export
 #' 
-GetAdjMat <- function(obj, i=NULL, type='all'){
-  res <- NULL
-  
-    
-   if (is.numeric(i)) i <- names(obj)[[i]]
-  
-    if (is.null(metadata(obj[[i]])$list.matAdj)){
-    # warning("Adjacency matrix is not present")
-      return(NULL)
-    }
-  
-    if (is.null(metadata(obj[[i]])$list.matAdj[[type]])){
-    # warning("Adjacency matrix of type '",type, "' is not present")
-    return(NULL)
-    }
-  
-   res <- metadata(obj[[i]])$list.matAdj[[type]]
-
-  return(res)
-  
-}
+# GetAdjMat <- function(obj, i=NULL, type='all'){
+#   res <- NULL
+#   
+#     
+#    if (is.numeric(i)) i <- names(obj)[[i]]
+#   
+#     if (is.null(metadata(obj[[i]])$list.matAdj)){
+#     # warning("Adjacency matrix is not present")
+#       return(NULL)
+#     }
+#   
+#     if (is.null(metadata(obj[[i]])$list.matAdj[[type]])){
+#     # warning("Adjacency matrix of type '",type, "' is not present")
+#     return(NULL)
+#     }
+#   
+#    res <- metadata(obj[[i]])$list.matAdj[[type]]
+# 
+#   return(res)
+#   
+# }
 
 
 GetAdjMat <- function(obj, type='all'){
@@ -174,7 +359,7 @@ GetAdjMat <- function(obj, type='all'){
 #' utils::data(Exp1_R25_pept, package='DAPARdata2')
 #' obj <- Exp1_R25_pept[1:1000,]
 #' obj <- addListAdjacencyMatrices(obj, 2)
-#' X <- GetAdjMat(obj, 2, 'all')
+#' X <- GetAdjMat(obj[[2]], 'all')
 #' matAdjStats(X)
 #' 
 #' @export
@@ -233,7 +418,7 @@ matAdjStats <- function(X){
 #' utils::data(obj, package='DAPARdata2')
 #' obj <- Exp1_R25_pept[1:1000,]
 #' obj <- addListAdjacencyMatrices(obj, 2)
-#' X <- GetAdjMat(obj, 2, 'all')
+#' X <- GetAdjMat(obj[[2]], 'all')
 #' GraphPepProt_hc(X)
 #' 
 #' @import highcharter
@@ -290,7 +475,7 @@ GraphPepProt_hc <- function(X, type = 'all'){
 #' obj <- Exp1_R25_pept[1:1000,]
 #' qPepData <- assay(obj,2)
 #' obj <- addListAdjacencyMatrices(obj, 2)
-#' X <- GetAdjMat(obj, 2, 'all')
+#' X <- GetAdjMat(obj[[2]], 'all')
 #' n <- GetNbPeptidesUsed(qPepData, X)
 #' 
 #' @export
@@ -331,7 +516,7 @@ GetNbPeptidesUsed <- function(qPepData, X){
 #' obj <- Exp1_R25_pept[1:1000,]
 #' qPepData <- assay(obj,2)
 #' obj <- addListAdjacencyMatrices(obj, 2)
-#' X <- GetAdjMat(obj, 2, 'all')
+#' X <- GetAdjMat(obj[[2]], 'all')
 #' n <- GetDetailedNbPeptidesUsed(X, qPepData)
 #' 
 #' @export
@@ -367,7 +552,7 @@ GetDetailedNbPeptidesUsed <- function(X, qPepData){
 #' utils::data(Exp1_R25_pept, package='DAPARdata2')
 #' obj <- Exp1_R25_pept[1:1000,]
 #' obj <- addListAdjacencyMatrices(obj, 2)
-#' X <- GetAdjMat(obj, 2, 'all')
+#' X <- GetAdjMat(obj[[2]], 'all')
 #' n <- GetDetailedNbPeptides(X)
 #' 
 #' @export
@@ -400,7 +585,7 @@ GetDetailedNbPeptides <- function(X){
 #' utils::data(Exp1_R25_pept, package='DAPARdata2')
 #' obj <- Exp1_R25_pept[1:1000,]
 #' obj <- addListAdjacencyMatrices(obj, 2)
-#' X <- GetAdjMat(obj, 2, 'all')
+#' X <- GetAdjMat(oobj[[2]], 'all')
 #' n <- inner.sum(assay(obj[[2]]), X)
 
 inner.sum <- function(qPepData, X){
@@ -427,7 +612,7 @@ inner.sum <- function(qPepData, X){
 #' utils::data(Exp1_R25_pept, package='DAPARdata2')
 #' obj <- Exp1_R25_pept[1:1000,]
 #' obj <- addListAdjacencyMatrices(obj, 2)
-#' X <- GetAdjMat(obj, 2, 'all')
+#' X <- GetAdjMat(obj[[2]], 'all')
 #' inner.mean(assay(obj[[2]]), X)
 #' 
 inner.mean <- function(qPepData, X){
@@ -461,7 +646,7 @@ inner.mean <- function(qPepData, X){
 #' utils::data(Exp1_R25_pept, package='DAPARdata2')
 #' obj <- Exp1_R25_pept[1:1000,]
 #' obj <- addListAdjacencyMatrices(obj, 2)
-#' X <- GetAdjMat(obj, 2, 'all')
+#' X <- GetAdjMat(obj[[2]], 'all')
 #' inner.aggregate.topn(assay(obj[[2]]), X, n=3)
 #' 
 #' @importFrom stats median
@@ -515,7 +700,7 @@ inner.aggregate.topn <-function(qPepData, X, method='Mean', n=10){
 #' utils::data(Exp1_R25_pept, package='DAPARdata2')
 #' obj <- Exp1_R25_pept[1:1000,]
 #' obj <- addListAdjacencyMatrices(obj, 2)
-#' X <- GetAdjMat(obj, 2, 'all')
+#' X <- GetAdjMat(obj[[2]], 'all')
 #' qPepData <- assay(obj[[2]])
 #' inner.aggregate.iter(qPepData, X)
 #' 
@@ -588,7 +773,7 @@ inner.aggregate.iter <- function(qPepData, X, init.method='Sum', method='Mean', 
 #' utils::data(Exp1_R25_pept, package='DAPARdata2')
 #' obj <- Exp1_R25_pept[1:1000,]
 #' obj <- addListAdjacencyMatrices(obj, 2)
-#' X <- GetAdjMat(obj, 2, 'all')
+#' X <- GetAdjMat(obj[[2]], 'all')
 #' aggSum(assay(obj[[2]]), X)
 #' 
 #' @export
@@ -621,7 +806,7 @@ aggSum <- function(qPepData, X){
 #' utils::data(Exp1_R25_pept, package='DAPARdata2')
 #' obj <- Exp1_R25_pept[1:1000,]
 #' obj <- addListAdjacencyMatrices(obj, 2)
-#' X <- GetAdjMat(obj, 2, 'all')
+#' X <- GetAdjMat(obj[[2]], 'all')
 #' aggMean(assay(obj[[2]]), X)
 #' 
 #' @export
@@ -660,9 +845,9 @@ aggMean <- function(qPepData, X){
 #' utils::data(Exp1_R25_pept, package='DAPARdata2')
 #' obj <- Exp1_R25_pept[1:1000,]
 #' obj <- addListAdjacencyMatrices(obj, 2)
-#' X <- GetAdjMat(obj, 2, 'all')
+#' X <- GetAdjMat(obj[[2]], 'all')
 #' conditions <- colData(obj)$Condition
-#' aggIterParallel(assay(obj,2), X conditions)
+#' aggIterParallel(assay(obj,2), X, conditions)
 #' 
 #' @export
 #' 
@@ -716,7 +901,7 @@ aggIterParallel <- function(qPepData, X, conditions=NULL, init.method='Sum', met
 #' utils::data(Exp1_R25_pept, package='DAPARdata2')
 #' obj <- Exp1_R25_pept[1:1000,]
 #' obj <- addListAdjacencyMatrices(obj, 2)
-#' X <- GetAdjMat(obj, 2, 'all')
+#' X <- GetAdjMat(obj[[2]], 'all')
 #' conditions <- colData(obj)$Condition
 #' aggIter(assay(obj,2), X, conditions)
 #' 
@@ -766,7 +951,7 @@ aggIter <- function(qPepData, X, conditions=NULL, init.method='Sum', method='Mea
 #' utils::data(Exp1_R25_pept, package='DAPARdata2')
 #' obj <- Exp1_R25_pept[1:1000,]
 #' obj <- addListAdjacencyMatrices(obj, 2)
-#' X <- GetAdjMat(obj, 2, 'all')
+#' X <- GetAdjMat(obj[[2]], 'all')
 #' aggTopn(assay(obj,2), X, n=3)
 #' 
 #' @export
@@ -826,185 +1011,6 @@ aggregate_with_matAdj <- function(qPepData, X, FUN, ...){
 
 
 
-#' @title Aggregate an assay's quantitative features which take into account
-#' the peptides shared between proteins
-#'
-#' @description
-#' 
-#' This function aggregates the quantitative features of an assay,
-#' applying an aggregation function (`fun`) to sets of features as
-#' defined by the `fcol` feature variable. The new assay's features
-#' will be named based on the unique `fcol` values.
-#' This function is largely inspired by xxxx . The difference is that it can take into account the peptides shared between proteins.
-#'
-#'
-#' @param object An instance of class [Features].
-#'
-#' @param i The index or name of the assay which features will be
-#'     aggregated the create the new assay.
-#'
-#'
-#' @param aggType The type of peptides used for the aggregation. Possibla values are: 'all', 'onlyShared' and 'onlySPec'. This argument automatically
-#' selects the corresponding adjacency matrix.
-#' 
-#' @param name A `character(1)` naming the new assay. Default is `newAssay`. Note that the function will fail if there's
-#'     already an assay with `name`.
-#'     
-#' @param meta.names A vector of character strings that are the metadata of the peptides which needs to be aggregated
-#' and kept in the protein dataset
-#'
-#' @param fun A function used for quantitative feature
-#'     aggregation. See Details for examples.
-#'
-#' @param ... Additional parameters passed the `fun`.
-#'
-#' @return A `Features` object with an additional assay.
-#'
-#' @details
-#'
-#' Aggregation is performed by a function that takes a matrix as
-#' input and returns a xxxxx. Examples
-#' thereof are
-#'
-#' - [DAPAR2:aggSum()] to use the sum of each column (default);
-#'
-#' - [DAPAR2:aggMean()] to use the sum of each column;
-#'
-#' - [DAPAR2:aggIter()] to use the mean of each column;
-#'
-#' - [DAPAR2:aggIterParallel()] same as previous function but use parallelism.
-#'
-#' - [DAPAR::aggTopn] to use the sum of each column;
-#'
-#' 
-#' @seealso The *Features* vignette provides an extended example and
-#'     the *Processing* vignette, for a complete quantitative
-#'     proteomics data processing pipeline.
-#' 
-#' @aliases aggregateFeatures aggregateFeatures,Features-method
-#'
-#' @name aggregateFeatures_sam
-#'
-#' @rdname Features-aggregate_dapar
-#'
-#' @importFrom MsCoreUtils aggregate_by_vector robustSummary
-#'
-#' @examples
-#' library(S4Vectors)
-#' utils::data(Exp1_R25_pept, package='DAPARdata2')
-#' obj <- Exp1_R25_pept[1:1000,]
-#' aggregateFeatures_sam(obj,2, aggType= 'all', name='aggregated', meta.names = 'Sequence', aggSum)
-#' 
-#' @export aggregateFeatures_sam
-#' 
-##-------------------------------------------------------------------------
-# setMethod("aggregateFeatures_sam", "Features",
-#           function(object, i, X, name = "newAssay",
-#                    fun = aggSum, ...)
-#             .aggregateFeatures_sam(object, i, fcol, name, fun, ...))
-
-
-aggregateFeatures_sam <- function(object, i, aggType='all', name, meta.names = NULL, fun, ...) {
-  if (isEmpty(object))
-    return(object)
-  if (name %in% names(object))
-    stop("There's already an assay named '", name, "'.")
-   if (missing(aggType))
-     stop("'aggType' is required.")    
-  if (missing(i))
-    i <- main_assay(object)
-  
-  ## if the adjacency matrices are already present in the metadata of the SE, then load it
-  ## else build it
-  
-  assay_i <- assay(object, i)
-  object_i <- object[[i]]
-  rowdata_i <- rowData(object[[i]])
-  
-    if (!(aggType %in% c('all', 'onlyShared', 'onlySpec'))){
-      stop("Available values for 'typeMatAdj' are 'all', 'onlyShared', 'onlySpec'.")
-    }
-     
-  if (is.null(metadata(object_i)$list.matAdj) || is.null(metadata(object_i)$list.matAdj[[aggType]])){
-    ## by default, all three types of matrices are computed once for all and stored in the metadata slot of the SE. 
-    ## This reduces the future computations
-    object <- addListAdjacencyMatrices(object, i)
-  }
-  
-  X <- metadata(object[[i]])$list.matAdj[[aggType]]
-  
-  
-  ## Message about NA values is quant/row data
-  has_na <- character()
-  if (anyNA(assay_i))
-    has_na <- c(has_na, "quantitative")
-  if (anyNA(rowdata_i, recursive = TRUE))
-    has_na <- c(has_na, "row")
-  if (length(has_na)) {
-    msg <- paste(paste("Your", paste(has_na, collapse = " and "),
-                       " data contain missing values."),
-                 "Please read the relevant section(s) in the",
-                 "aggregateFeatures manual page regarding the",
-                 "effects of missing values on data aggregation.")
-    message(paste(strwrap(msg), collapse = "\n"))
-  }
-  
-  #aggregated_assay <- aggregate_by_vector(assay_i, groupBy, fun, ...)
-  
-  aggregated_assay <- aggregate_with_matAdj(assay_i, X, fun, ...)
-  
-  
-  # aggregated_rowdata <- Features::reduceDataFrame(rowdata_i, rowdata_i[[fcol]],
-  #                                                 simplify = TRUE, drop = TRUE,
-  #                                                 count = TRUE)
-  
-  # This part build general statistics about the aggregation
-  aggregated_rowdata <- rowdata_stats_Aggregation_sam(assay_i, X)
-  
-  ## This part make the aggregation of the metadata of peptides which have been given
-  ## by the parameter meta.names. It is column-binded to the previous aggregated_rowdata
-  if (!is.null(meta.names)){
-  aggregated_rowdata <- cbind(aggregated_rowdata, aggMetadata_sam(rowdata_i, meta.names, X))
-  }
-
-  se <- SummarizedExperiment(aggregated_assay,
-                              rowData = aggregated_rowdata[rownames(aggregated_assay), ])
-  
-  # hits <- findMatches(rownames(aggregated_assay), groupBy)
-   # rownames(aggregated_assay) : correspond au nom des proteines nouvellement creees
-   # groupBy : correspond aaux id des peptides d'origine ?
-   #hits <- findMatches(rownames(aggregated_assay), groupBy)
-   ## from et to forment la definition du graphe pepetide-protein
-   
-  
-  ## The following code is used to build the hits object originally built with findMatches
-  ## in the class Features. The vectors from and to are built explicitly with the 'which' function
-  test <- which(as.matrix(X)==1, arr.ind=TRUE)
-  from <- test[,'col']
-  to <- test[,'row']
-  hits <- S4Vectors::Hits(from=from, 
-               to=to, 
-               nLnode=length(from), 
-               nRnode=nrow(X),
-               sort.by.query=TRUE
-               )
-   
-   elementMetadata(hits)$names_from <- rownames(assay_i)[hits@to]
-   elementMetadata(hits)$names_to <- colnames(X)[hits@from]
-  
-   
-   assayLinks <- AssayLink(name = name,
-                           from = ifelse(is.character(i), i, names(object)[i]),
-                           fcol = metadata(object)$parentProtId,
-                           hits = hits)
-   addAssay(object,
-            se,
-            name = name,
-            assayLinks = assayLinks)
-   
-}
-
-
 
 
 
@@ -1028,7 +1034,7 @@ aggregateFeatures_sam <- function(object, i, aggType='all', name, meta.names = N
 #' utils::data(Exp1_R25_pept, package='DAPARdata2')
 #' obj <- Exp1_R25_pept[1:1000,]
 #' obj <- addListAdjacencyMatrices(obj, 2)
-#' X <- GetAdjMat(obj, 2, 'all')
+#' X <- GetAdjMat(obj[[2]], 'all')
 #' rowdata_stats_Aggregation_sam(assay(obj,2), X)
 #' 
 rowdata_stats_Aggregation_sam <- function(qPepData, X){
@@ -1082,7 +1088,7 @@ rowdata_stats_Aggregation_sam <- function(qPepData, X){
 #' utils::data(Exp1_R25_pept, package='DAPARdata2')
 #' obj <- Exp1_R25_pept[1:1000,]
 #' obj <- addListAdjacencyMatrices(obj, 2)
-#' X <- GetAdjMat(obj, 2, 'all')
+#' X <- GetAdjMat(obj[[2]], 'all')
 #' ft <- aggMetadata_sam(rowData(obj[[2]]), c('Sequence'), X)
 #' 
 #' @importFrom stats setNames
@@ -1164,7 +1170,7 @@ aggMetadata_sam <- function(pepMetadata, names, X, simplify=TRUE){
 #' utils::data(Exp1_R25_pept, package='DAPARdata2')
 #' obj <- Exp1_R25_pept[1:1000,]
 #' obj <- addListAdjacencyMatrices(obj, 2)
-#' X <- GetAdjMat(obj, 2, 'all')
+#' X <- GetAdjMat(obj[[2]], 'all')
 #' ft <- aggMetadata_parallel_sam(rowData(obj[[2]]), c('Sequence', 'Proteins'), X)
 #' 
 #' @export

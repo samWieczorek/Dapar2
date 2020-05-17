@@ -19,7 +19,7 @@ Jitter plot of CC
 utils::data(Exp1_R25_pept, package='DAPARdata2') 
 obj <- Exp1_R25_pept[1:1000,]
 obj <- addListAdjacencyMatrices(obj, 2)
-X <- GetAdjMat(obj, 2, 'all')
+X <- GetAdjMat(obj[[2]], 'all')
 ll <- get.pep.prot.cc(X)
 plotJitterCC(ll)
 

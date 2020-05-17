@@ -7,13 +7,13 @@
 QuantileCentering(
   qData,
   conds = NULL,
-  type = NULL,
+  type = "overall",
   subset.norm = NULL,
   quantile = 0.15
 )
 }
 \arguments{
-\item{qData}{A numeric matrix.}
+\item{qData}{xxx}
 
 \item{conds}{xxx}
 
@@ -31,10 +31,12 @@ A normalized numeric matrix
 Normalisation QuantileCentering
 }
 \examples{
+library(Features)
 utils::data(Exp1_R25_pept, package='DAPARdata2')
-qData <- assay(Exp1_R25_pept[['original']])
+obj <- Exp1_R25_pept[['original_log']]
 conds <- colData(Exp1_R25_pept)[['Condition']]
-normalized <- QuantileCentering(qData, conds, type="within conditions", subset.norm=1:10)
+normalized <- QuantileCentering(assay(obj), conds, type="within conditions", subset.norm=1:10)
+
 }
 \author{
 Samuel Wieczorek, Thomas Burger, Helene Borges, Anais Courtier, Enora Fremy

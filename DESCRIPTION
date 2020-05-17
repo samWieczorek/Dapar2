@@ -24,8 +24,33 @@ License: Artistic-2.0
 VignetteBuilder: knitr
 Depends: R (>= 3.6.3)
 Suggests: testthat, BiocStyle, knitr
-Imports: Features,  methods, MsCoreUtils, SummarizedExperiment, MultiAssayExperiment, preprocessCore, RColorBrewer, FactoMineR, factoextra, DT, doParallel, dplyr, foreach, gplots, highcharter, tibble, tidyr, visNetwork, Matrix
+Imports: Features,  methods, MsCoreUtils, SummarizedExperiment, MultiAssayExperiment, preprocessCore, RColorBrewer, FactoMineR, factoextra, DT, doParallel, dplyr, foreach, gplots, highcharter, tibble, tidyr, visNetwork, Matrix, cp4p, limma, vioplot
 biocViews: Proteomics, Normalization, Preprocessing, MassSpectrometry, QualityControl, GO, DataImport
 NeedsCompilation: no
+Collate:
+    'AllGenerics.R'
+    'aggregation.R'
+    'compute.t.tests.R'
+    'DiffAnalysis.R'
+    'get_pep_prot_cc.R'
+    'group_ttest.R'
+    'inOutFiles.R'
+    'limmaAnalysis.R'
+    'normalize.R'
+    'plots_boxplot.R'
+    'plots_compare_normalization_plots.R'
+    'plots_corr_matrix.R'
+    'plots_CV_dist.R'
+    'plots_density_plot.R'
+    'plots_heatmap.R'
+    'plots_mv_heatmap.R'
+    'plots_mv_histo.R'
+    'plots_mv_PerLinesHisto.R'
+    'plots_mv_PerLinesHistoPerCondition.R'
+    'plots_mv_typePlot.R'
+    'plots_pca.R'
+    'plots_violin.R'
+    'plots_volcano.R'
+    'utils.R'
 RoxygenNote: 7.1.0
 Packaged: 2017-10-13 11:13:04 UTC; sw175264

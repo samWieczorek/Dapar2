@@ -37,6 +37,7 @@ This function is a wrappper to the function adjust.p from the cp4p package. It r
 differential analysis. The FDR is computed with the function \code{p.adjust}\{stats\}..
 }
 \examples{
+library(Features)
 utils::data(Exp1_R25_pept, package='DAPARdata2')
 obj <- Exp1_R25_pept[1:1000]
 obj <- addAssay(obj, Features::filterNA(obj[[2]],  pNA = 0), name='filtered')

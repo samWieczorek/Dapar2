@@ -4,10 +4,10 @@
 \alias{GlobalQuantileAlignment}
 \title{Normalisation GlobalQuantileAlignement}
 \usage{
-GlobalQuantileAlignment(qData)
+GlobalQuantileAlignment(obj)
 }
 \arguments{
-\item{qData}{A numeric matrix.}
+\item{qData}{xxxx}
 }
 \value{
 A normalized numeric matrix
@@ -20,6 +20,7 @@ library(Features)
 utils::data(Exp1_R25_pept, package='DAPARdata2')
 qData <- assay(Exp1_R25_pept[['original']])
 normalized <- GlobalQuantileAlignment(qData)
+
 }
 \author{
 Samuel Wieczorek, Thomas Burger, Helene Borges, Anais Courtier, Enora Fremy

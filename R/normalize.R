@@ -1,36 +1,33 @@
-
-setGeneric("normalizeD", function(object, ...) standardGeneric("normalizeD"))
-
-
-#' @exportMethod normalizeD
-setMethod("normalizeD", "SummarizedExperiment",
-          function(object,
-                   method,
-                   conds,
-                   type,
-                   ...) {
-            df <- wrapper.normalizeD(object, method, conds, type, ...)
-            df
-          })
+##' @export
+##'
+normalizeMethods.dapar <- function()
+  c("GlobalQuantileAlignment", "SumByColumns",
+    "QuantileCentering", "MeanCentering",
+    "LOESS", "vsn")
 
 
 
-#' @rdname Features-dapar-normalization
-setMethod("normalizeD", "Features",
-          function(object, i, name = "normalizedAssay", ...) {
-            if (missing(i))
-              stop("Provide index or name of assay to be processed")
-            if (length(i) != 1)
-              stop("Only one assay to be processed at a time")
-            if (is.numeric(i)) i <- names(object)[[i]]
-            object <- addAssay(object,
-                               normalizeD(object[[i]], method, conds, type, ...),
-                               name)
-            addAssayLinkOneToOne(object, from = i, to = name)
-          })
-
-
-#' Provides several methods to normalize quantitative data from a numeric matrix.
+#' @title Check the validity of the experimental design
+#'
+#' @description
+#'
+#' This manual page describes the computation of statistical test using [Features] objects. In the following
+#' functions, if `object` is of class `Features`, and optional assay
+#' index or name `i` can be specified to define the assay (by name of
+#' index) on which to operate.
+#'
+#' The following functions are currently available:
+#'
+#' - `GlobalQuantileAlignment` xxx
+#' - `SumByColumns` xxx
+#' - `QuantileCentering` xxx
+#' - `MeanCentering` xxxx
+#' - `LOESS` xxx
+#' - `vsn` xxx
+#' 
+#'
+#' @details
+#' #' Provides several methods to normalize quantitative data from a numeric matrix.
 #' They are organized in six main families : GlobalQuantileAlignement, sumByColumns, QuantileCentering, MeanCentering, LOESS, vsn
 #' For the first family, there is no type.
 #' For the five other families, two type categories are available : 
@@ -39,172 +36,181 @@ setMethod("normalizeD", "Features",
 #' Normalization can be based only on a subset of protein.
 #' Proteins with NA in this subset are ignored.
 #'
-#' @title Normalisation
-#' @param obj A \code{SummerizedExperiment} object
-#' @param conds xxx
-#' @param method "GlobalQuantileAlignment" (for normalizations of important magnitude),
+#' @param  object An object of class `Features` or `SummarizedExperiment`.
+#'
+#' @param i A numeric vector or a character vector giving the index or the 
+#'     name, respectively, of the assay(s) to be processed.
+#'
+#' @param name A `character(1)` naming the new assay name. Defaults
+#'     are `ttestAssay`.
+#'
+#'
+#' @param ... Additional parameters passed to inner functions.
+#' 
+#' #' @param method "GlobalQuantileAlignment" (for normalizations of important magnitude),
 #' "SumByColumns", "QuantileCentering", "Mean Centering", "LOESS" and "vsn".
+#' 
 #' @param type "overall" (shift all the sample distributions at once) or "within conditions" (shift the sample
 #' distributions within each condition at a time).
+#' 
 #' @param scaling A boolean that indicates if the variance of the data have to
 #' be forced to unit (variance reduction) or not.
+#' 
 #' @param quantile A float that corresponds to the quantile used to align the
 #' data.
+#' 
 #' @param span Parameter for LOESS method
+#' 
 #' @param subset.norm A vector of index indicating rows to be used for normalization
+#' 
 #' @return An instance of class \code{SummerizedExperiment} where the quantitative
 #' data in the \code{array()} tab has been normalized.
+#' 
 #' @author Samuel Wieczorek, Thomas Burger, Helene Borges, Anais Courtier, Enora Fremy
+#'
 #' @examples
+#'
 #' utils::data(Exp1_R25_pept, package='DAPARdata2')
-#' obj <- Exp1_R25_pept[['original_log']]
-#' conds <- colData(Exp1_R25_pept)[["Condition"]]
-#' r<-wrapper.normalizeD(obj, "GlobalQuantileAlignment")
-#' r<-wrapper.normalizeD(obj, "SumByColumns", conds, type="within conditions", subset.norm=1:100)
-#' r<-wrapper.normalizeD(obj, "QuantileCentering", conds, type="within conditions")
-#' r<-wrapper.normalizeD(obj, method="MeanCentering", conds, type="overall", scaling=TRUE)
-#' r<-wrapper.normalizeD(obj, "vsn", conds, type="within conditions")
-#' r<-wrapper.normalizeD(obj, "LOESS", conds, type="within conditions")
-#' @export
+#' object <- Exp1_R25_pept
+#' 
+#' object <- addAssay(object, normalizeD(object[['original_log']], method='GlobalQuantileAlignment'), "peptides_norm")
+#' 
+#' conds <- colData(object)$Condition
+#' object <- addAssay(object, normalizeD(object[['original_log']], method='SumByColumns', conds=conds, type='overall'), "peptides_norm")
+#' 
 
-wrapper.normalizeD <- function(obj, method, 
-                               conds=NULL, type=NULL, scaling=FALSE, quantile=0.15, span = 0.7,
-                               subset.norm=NULL){
-  
-  parammethod<-c("GlobalQuantileAlignment",
-                 "SumByColumns",
-                 "QuantileCentering",
-                 "MeanCentering",
-                 "LOESS",
-                 "vsn")
-  
-  if (sum(is.na(match(method, parammethod)==TRUE))>0){
-    warning("Parameter method is not correct")
-    return (NULL)
-  }
-  
-  paramtype<-c(NULL,"overall", "within conditions")
-  if (sum(is.na(match(type, paramtype)==TRUE))>0){
-    warning("Parameter type is not correct")
-    return (NULL)
-  }
-  
-  params <- list(Normalization=list())
-  metadata(obj)$params <- params
-  metadata(obj)$params[["Normalization"]][["Method"]] <- method
-  if (method != "GlobalQuantileAlignment") { metadata(obj)$params[["Normalization"]][["Type"]] <- type }
-  if (method %in% c("SumByColumns", "QuantileCentering", "MeanCentering")) {
-    if (!is.null(subset.norm)) {
-    metadata(obj)$params[["Normalization"]][["Subset.row"]] <- paste0(subset.norm[1],':',subset.norm[length(subset.norm)])
-    } else { metadata(obj)$params[["Normalization"]][["Subset.row"]] <- "NULL" }
-  }
-  
-  qData <- assay(obj)
-  #msg_method <- paste("Normalisation using method =", method,  sep="")
-  #msg_type <- paste("With type =", type,  sep="")
-  
-  if(!is.null(subset.norm)){
-    subset.norm=subset.norm[complete.cases(qData)[subset.norm]]
-  }
-  if(is.null(subset.norm) | length(subset.norm)<1){
-    subset.norm=1:nrow(qData)
-  }
-  
-  switch(method,
-         GlobalQuantileAlignment = {
-           e <- GlobalQuantileAlignment(qData)
-           #obj@processingData@processing <- c(obj@processingData@processing, msg_method, msg_type)
-         },
-         SumByColumns = {
-           e <- SumByColumns(qData, conds, type, subset.norm)
-           #obj@processingData@processing <- c(qData@processingData@processing, msg_method, msg_type)
-         },
-         QuantileCentering = {
-           e <- QuantileCentering(qData, conds, type, subset.norm, quantile)
-           metadata(obj)$params[["Normalization"]][["Quantile"]] <- quantile
-           #msg_quantile <- paste("With quantile =", quantile,  sep="")
-           #obj@processingData@processing <- c(obj@processingData@processing, msg_method, msg_type, msg_quantile)
-         },
-         MeanCentering = {
-           e <- MeanCentering(qData,  conds, type, subset.norm, scaling)
-           metadata(obj)$params[["Normalization"]][["Scaling"]] <- scaling
-           #msg_scaling <- paste("With scaling =", scaling,  sep="")
-           #obj@processingData@processing <- c(obj@processingData@processing, msg_method, msg_type, msg_scaling)
-         },
-         vsn = {
-           e <- vsn(qData, conds, type)
-           #obj@processingData@processing <- c(obj@processingData@processing, msg_method, msg_type)
-         },
-         LOESS = {
-           e <- LOESS(qData, conds, type, span)
-           metadata(obj)$params[["Normalization"]][["Span"]] <- span
-           #msg_loess <- paste("With span =", span,  sep="")
-           #obj@processingData@processing <- c(obj@processingData@processing, msg_method, msg_type, msg_loess)
-         }
-  )
-  rownames(e) <- rownames(qData)
-  colnames(e) <- colnames(qData)
-  assay(obj) <- e
-  
-  return(obj)
-}
+NULL
+
+#' @export
+#' 
+setMethod("normalizeD", "SummarizedExperiment",
+          function(object,
+                   method,
+                   ...) {
+            argg <- c(as.list(environment()), list(...))
+            #print(argg[c(-1)])
+            
+            e <- do.call(method, list(assay(object), ...))
+            
+            rownames(e) <- rownames(assay(object))
+            colnames(e) <- colnames(assay(object))
+            assay(object) <- argg[-match(c('object'), names(argg))]
+            object
+          })
+
+
+
+#' @rdname Features-dapar-normalization
+setMethod("normalizeD", "Features",
+          function(object, i, name = "normalizedAssay", method, ...) {
+            if (missing(i))
+              stop("Provide index or name of assay to be processed")
+            if (length(i) != 1)
+              stop("Only one assay to be processed at a time")
+            if (is.numeric(i)) i <- names(object)[[i]]
+            object <- addAssay(object,
+                               normalizeD(object[[i]], method, ...),
+                               name)
+            addAssayLinkOneToOne(object, from = i, to = name)
+          })
+
 
 
 #' @title Normalisation GlobalQuantileAlignement
-#' @param qData A numeric matrix.
+#' 
+#' @param qData xxxx
+#' 
 #' @return A normalized numeric matrix
+#' 
 #' @author Samuel Wieczorek, Thomas Burger, Helene Borges, Anais Courtier, Enora Fremy
+#' 
 #' @examples
 #' library(Features)
 #' utils::data(Exp1_R25_pept, package='DAPARdata2')
 #' qData <- assay(Exp1_R25_pept[['original']])
 #' normalized <- GlobalQuantileAlignment(qData)
+#' 
 #' @export
+#' 
 #' @importFrom preprocessCore normalize.quantiles
-GlobalQuantileAlignment <- function(qData) {
-  e <- preprocessCore::normalize.quantiles(qData)
+#' 
+GlobalQuantileAlignment <- function(obj) {
+  e <- preprocessCore::normalize.quantiles(as.matrix(assay(obj)))
   return(e)
 }
 
 
 #' @title Normalisation SumByColumns
-#' @param qData A numeric matrix.
+#' 
+#' @param qData xxxx
+#' 
 #' @param conds xxx
+#' 
 #' @param type "overall" (shift all the sample distributions at once) or
 #' "within conditions" (shift the sample distributions within each condition at a time).
+#' 
 #' @param subset.norm A vector of index indicating rows to be used for normalization
+#' 
 #' @return A normalized numeric matrix
+#' 
 #' @author Samuel Wieczorek, Thomas Burger, Helene Borges, Anais Courtier, Enora Fremy
+#' 
 #' @examples
 #' utils::data(Exp1_R25_pept, package='DAPARdata2')
 #' library(Features)
-#' qData <- assay(Exp1_R25_pept[['original']])
+#' qData <- assay(Exp1_R25_pept[['original_log']])
 #' conds <- colData(Exp1_R25_pept)[["Condition"]]
 #' normalized <- SumByColumns(qData, conds, type="within conditions", subset.norm=1:10)
+#' 
 #' @export
+#' 
 #' @importFrom stats median
+#' 
 SumByColumns <- function(qData, conds=NULL, type=NULL, subset.norm=NULL) {
 
+  if( missing(conds))
+    stop("'conds' is required")
+  if( missing(type))
+    stop("'type' is required")
+  
+  
+  if (!(type %in% c('overall', 'within conditions')))
+    stop("'type' must have one of the following values: 'overall', 'within conditions'")
+  
+  
+  qData <- as.matrix(qData)
+  
   e <- 2^qData
+  
+  if(is.null(subset.norm) | length(subset.norm)<1){
+    subset.norm=1:nrow(qData)
+  }
+  
   if (type == "overall"){
-    if(length(subset.norm)==1){
-      sums_cols=e[subset.norm,]
-    }else{
-      sums_cols <- colSums(e[subset.norm,], na.rm=TRUE)
-    }
+    
+    
+      if(length(subset.norm)==1){
+        sum_cols=e[subset.norm,]
+      }else{
+        sum_cols <- colSums(e[subset.norm,], na.rm=TRUE)
+      }
+    
     for ( i in 1:nrow(e)) {
-      e[i, ] <- (e[i, ] / sums_cols)*(stats::median(sums_cols))
+      e[i, ] <- (e[i, ] / sum_cols)*(stats::median(sum_cols))
     }
   } else if (type == "within conditions"){
+    
     for (l in unique(conds)) {
       indices <- which(conds== l)
-      if(length(subset.norm)==1){
-        sums_cols=e[subset.norm,indices]
-      }else{
-        sums_cols <- colSums(e[subset.norm,indices], na.rm=TRUE)
-      }
+      
+          if(length(subset.norm)==1){
+            sum_cols=e[subset.norm,indices]
+          }else{
+            sum_cols <- colSums(e[subset.norm,indices], na.rm=TRUE)
+          }
+      
       for (i in 1:nrow(e)){
-        e[i,indices] <- (e[i,indices]/sums_cols) * stats::median(sums_cols)
+        e[i,indices] <- (e[i,indices]/sum_cols) * stats::median(sum_cols)
       }
     }
   }
@@ -214,30 +220,60 @@ SumByColumns <- function(qData, conds=NULL, type=NULL, subset.norm=NULL) {
 
 
 #' @title Normalisation QuantileCentering
-#' @param qData A numeric matrix.
+#' 
+#' @param qData xxx
+#' 
 #' @param conds xxx
+#' 
 #' @param type "overall" (shift all the sample distributions at once) or
 #' "within conditions" (shift the sample distributions within each condition at a time).
+#' 
 #' @param subset.norm A vector of index indicating rows to be used for normalization
+#' 
 #' @param quantile A float that corresponds to the quantile used to align the data.
+#' 
 #' @return A normalized numeric matrix
+#' 
 #' @author Samuel Wieczorek, Thomas Burger, Helene Borges, Anais Courtier, Enora Fremy
+#' 
 #' @examples
+#' library(Features)
 #' utils::data(Exp1_R25_pept, package='DAPARdata2')
-#' qData <- assay(Exp1_R25_pept[['original']])
+#' obj <- Exp1_R25_pept[['original_log']]
 #' conds <- colData(Exp1_R25_pept)[['Condition']]
-#' normalized <- QuantileCentering(qData, conds, type="within conditions", subset.norm=1:10)
+#' normalized <- QuantileCentering(assay(obj), conds, type="within conditions", subset.norm=1:10)
+#' 
 #' @export
+#' 
 #' @importFrom stats quantile
-QuantileCentering <- function(qData, conds=NULL, type=NULL, subset.norm=NULL, quantile=0.15){
+#' 
+QuantileCentering <- function(qData, conds=NULL, type="overall", subset.norm=NULL, quantile=0.15){
 
+  if( missing(conds))
+    stop("'conds' is required")
+  if( missing(type))
+    stop("'type' is required")
+  
+  
+  if (!(type %in% c('overall', 'within conditions')))
+    stop("'type' must have one of the following values: 'overall', 'within conditions'")
+  
+  
+  qData <- as.matrix(qData)
+  
+  if(is.null(subset.norm) | length(subset.norm)<1){
+    subset.norm=1:nrow(qData)
+  }
+  
   q <- function(x) { stats::quantile(x, probs=quantile, na.rm=TRUE) }
   
-  if(length(subset.norm)==1){
-    quantileOverSamples=qData[subset.norm,]
-  }else{
-    quantileOverSamples <- apply(qData[subset.norm,], 2, q)
-  }
+  
+      if(length(subset.norm)==1){
+        quantileOverSamples=qData[subset.norm,]
+      }else{
+        quantileOverSamples <- apply(qData[subset.norm,], 2, q)
+      }
+
   
   if (type == "overall"){
     cOverall <- q(quantileOverSamples)
@@ -257,28 +293,44 @@ QuantileCentering <- function(qData, conds=NULL, type=NULL, subset.norm=NULL, qu
 
 
 #' @title Normalisation MeanCentering
-#' @param qData A numeric matrix.
+#' 
+#' @param qData xxx
+#' 
 #' @param conds xxx
+#' 
 #' @param type "overall" (shift all the sample distributions at once) or
 #' "within conditions" (shift the sample distributions within each condition at a time).
+#' 
 #' @param subset.norm A vector of index indicating rows to be used for normalization
+#' 
 #' @param scaling A boolean that indicates if the variance of the data have to
 #' be forced to unit (variance reduction) or not.
+#' 
 #' @return A normalized numeric matrix
+#' 
 #' @author Samuel Wieczorek, Thomas Burger, Helene Borges, Anais Courtier, Enora Fremy
+#' 
 #' @examples
 #' utils::data(Exp1_R25_pept, package='DAPARdata2')
-#' qData <- assay(Exp1_R25_pept[['original']])
+#' qData <- assay(Exp1_R25_pept[['original_log']])
 #' conds <- colData(Exp1_R25_pept)[['Condition']]
 #' normalized <- MeanCentering(qData, conds, type="overall")
+#' 
 #' @export
-MeanCentering <- function(qData, conds=NULL, type=NULL, subset.norm=NULL, scaling=FALSE) {
+#' 
+MeanCentering <- function(qData, conds, type='overall', subset.norm=NULL, scaling=FALSE) {
 
+  if( missing(conds))
+    stop("'conds' is required")
+  
+  qData <- as.matrix(qData)
+  
   if(length(subset.norm)==1){
     meanOverSamples=qData[subset.norm,]
   } else{
     meanOverSamples <- apply(qData[subset.norm,], 2, mean, na.rm = TRUE)
   }
+  
   if (type == "overall"){
     cOverall <- mean(meanOverSamples)
     qData <- sweep(qData, 2, meanOverSamples)
@@ -306,19 +358,30 @@ MeanCentering <- function(qData, conds=NULL, type=NULL, subset.norm=NULL, scalin
 
 
 #' @title Normalisation vsn
+#' 
 #' @param qData A numeric matrix.
+#' 
 #' @param conds xxx
+#' 
 #' @param type "overall" (shift all the sample distributions at once) or
 #' "within conditions" (shift the sample distributions within each condition at a time).
+#' 
 #' @return A normalized numeric matrix
-#' @author Samuel Wieczorek, Thomas Burger, Helene Borges, Anais Courtier, Enora Fremy
+#' 
+#' @author Thomas Burger, Helene Borges, Anais Courtier, Enora Fremy
+#' 
 #' @examples
 #' utils::data(Exp1_R25_pept, package='DAPARdata2')
-#' qData <- assay(Exp1_R25_pept[['original']])
+#' qData <- assay(Exp1_R25_pept[['original_log']])
 #' conds <- colData(Exp1_R25_pept)[['Condition']]
 #' normalized <- vsn(qData, conds, type="overall")
+#' 
 #' @export
+#' 
 vsn = function(qData, conds, type=NULL) {
+  if( missing(conds))
+    stop("'conds' is required")
+  
   if(type == "overall"){
     vsn.fit <- vsn::vsnMatrix(2^(qData))
     qData <- vsn::predict(vsn.fit, 2^(qData))
@@ -334,20 +397,34 @@ vsn = function(qData, conds, type=NULL) {
 
 
 #' @title Normalisation LOESS
+#' 
 #' @param qData A numeric matrix.
+#' 
 #' @param conds xxx
+#' 
 #' @param type "overall" (shift all the sample distributions at once) or
 #' "within conditions" (shift the sample distributions within each condition at a time).
+#' 
 #' @param span xxx
+#' 
 #' @return A normalized numeric matrix
-#' @author Samuel Wieczorek, Thomas Burger, Helene Borges, Anais Courtier, Enora Fremy
+#' 
+#' @author Thomas Burger, Helene Borges, Anais Courtier, Enora Fremy
+#' 
 #' @examples
 #' utils::data(Exp1_R25_pept, package='DAPARdata2')
-#' qData <- assay(Exp1_R25_pept[['original']])
+#' qData <- assay(Exp1_R25_pept[['original_log']])
 #' conds <- colData(Exp1_R25_pept)[['Condition']]
 #' normalized <- LOESS(qData, conds, type="overall")
+#' 
+#' @importFrom limma normalizeCyclicLoess
+#' 
 #' @export
-LOESS <- function(qData, conds, type=NULL, span=0.7) {
+#' 
+LOESS <- function(qData, conds, type='overall', span=0.7) {
+  if( missing(conds))
+    stop("'conds' is required")
+  
   if(type == "overall"){
     qData <- limma::normalizeCyclicLoess(x = qData, method = "fast", span = span)
   }else if(type == "within conditions"){

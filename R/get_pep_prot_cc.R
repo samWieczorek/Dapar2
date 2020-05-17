@@ -13,10 +13,10 @@
 #' utils::data(Exp1_R25_pept, package='DAPARdata2')
 #' obj <- Exp1_R25_pept[1:1000,]
 #' obj <- addListAdjacencyMatrices(obj, 2)
-#' X.all <- GetAdjMat(obj, 2, 'all')
-#' X.onlyShared <- GetAdjMat(obj, 2, 'onlyShared')
-#' X.onlySpec <- GetAdjMat(obj, 2, 'onlySpec')
-#' X.list <- list(all=GetAdjMat(obj, 2, 'all'), onlySHared = GetAdjMat(obj, 2, 'onlyShared'), onlySpec = GetAdjMat(obj, 2, 'onlyShared'))
+#' X.all <- GetAdjMat(obj[[2]], 'all')
+#' X.onlyShared <- GetAdjMat(obj[[2]], 'onlyShared')
+#' X.onlySpec <- GetAdjMat(obj[[2]], 'onlySpec')
+#' X.list <- list(all=GetAdjMat(obj[[2]], 'all'), onlySHared = GetAdjMat(obj[[2]], 'onlyShared'), onlySpec = GetAdjMat(obj[[2]], 'onlyShared'))
 #' cc <- ComputeConnexComposants(X.list)
 #' 
 #' @export
@@ -61,7 +61,7 @@ ComputeConnexComposants <- function(X.list=NULL){
 #' utils::data(Exp1_R25_pept, package='DAPARdata2') 
 #' obj <- Exp1_R25_pept[1:1000,]
 #' obj <- addListAdjacencyMatrices(obj, 2)
-#' X <- GetAdjMat(obj, 2, 'all')
+#' X <- GetAdjMat(obj[[2]], 'all')
 #' ll <- get.pep.prot.cc(X)
 #' 
 #' @export
@@ -160,7 +160,7 @@ get.pep.prot.cc <- function(X){
 #' utils::data(Exp1_R25_pept, package='DAPARdata2') 
 #' obj <- Exp1_R25_pept[1:1000,]
 #' obj <- addListAdjacencyMatrices(obj, 2)
-#' X <- GetAdjMat(obj, 2, 'all')
+#' X <- GetAdjMat(obj[[2]], 'all')
 #' ll <- get.pep.prot.cc(X)
 #' g <- buildGraph(ll[[1]], X)
 #' 
@@ -219,7 +219,7 @@ buildGraph <- function(The.CC, X){
 #' utils::data(Exp1_R25_pept, package='DAPARdata2') 
 #' obj <- Exp1_R25_pept[1:1000,]
 #' obj <- addListAdjacencyMatrices(obj, 2)
-#' X <- GetAdjMat(obj, 2, 'all')
+#' X <- GetAdjMat(obj[[2]], 'all')
 #' ll <- get.pep.prot.cc(X)
 #' g <- buildGraph(ll[[1]], X)
 #' display.CC.visNet(g)
@@ -269,7 +269,7 @@ display.CC.visNet <- function(g,
 #' utils::data(Exp1_R25_pept, package='DAPARdata2') 
 #' obj <- Exp1_R25_pept[1:1000,]
 #' obj <- addListAdjacencyMatrices(obj, 2)
-#' X <- GetAdjMat(obj, 2, 'all')
+#' X <- GetAdjMat(obj[[2]], 'all')
 #' ll <- get.pep.prot.cc(X)
 #' plotJitterCC(ll)
 #' 

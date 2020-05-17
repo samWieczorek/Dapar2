@@ -7,6 +7,7 @@
 #' @author Thomas Burger, Samuel Wieczorek
 #' 
 #' @examples
+#' library(Features)
 #' utils::data(Exp1_R25_pept, package='DAPARdata2')
 #' CheckDesign(colData(Exp1_R25_pept))
 #' 
@@ -193,6 +194,7 @@ check.conditions <- function(conds){
 #' @author Thomas Burger, Quentin Giai-Gianetto, Samuel Wieczorek
 #' 
 #' @examples
+#' library(Features)
 #' utils::data(Exp1_R25_pept, package='DAPARdata2')
 #' make.design(colData(Exp1_R25_pept))
 #' 
@@ -229,6 +231,7 @@ make.design <- function(sampleTab){
 #' @author Thomas Burger, Quentin Giai-Gianetto, Samuel Wieczorek
 #' 
 #' @examples
+#' library(Features)
 #' utils::data(Exp1_R25_pept, package='DAPARdata2')
 #' make.design.1(colData(Exp1_R25_pept))
 #' 
@@ -272,6 +275,7 @@ make.design.1 <- function(sampleTab){
 #' @author Thomas Burger, Quentin Giai-Gianetto, Samuel Wieczorek
 #' 
 #' @examples
+#' library(Features)
 #' utils::data(Exp1_R25_pept, package='DAPARdata2')
 #' make.design.1(colData(Exp1_R25_pept))
 #' 
@@ -316,8 +320,9 @@ make.design.1 <- function(sampleTab){
 #' 
 #' @examples
 #' \donttest{
-#' utils::data(Exp1_R25_pept, package='DAPARdata')
-#' make.design.2(Biobase::pData(Exp1_R25_pept))
+#' library(Features)
+#' utils::data(Exp1_R25_pept, package='DAPARdata2')
+#' make.design.2(colData(Exp1_R25_pept))
 #' }
 #' 
 #' @export
@@ -366,6 +371,7 @@ make.design.2 <- function(sampleTab){
 #' @author Thomas Burger, Quentin Giai-Gianetto, Samuel Wieczorek
 #' 
 #' @examples
+#' library(Features)
 #' utils::data(Exp1_R25_pept, package='DAPARdata2')
 #' sTab <-cbind(colData(Exp1_R25_pept), Tech.Rep=1:6)
 #' make.design.3(sTab)
@@ -434,6 +440,7 @@ make.design.3=function(sampleTab){
 #' @author Thomas Burger, Quentin Giai-Gianetto, Samuel Wieczorek
 #' 
 #' @examples
+#' library(Features)
 #' utils::data(Exp1_R25_pept, package='DAPARdata2')
 #' design <- make.design(colData(Exp1_R25_pept))
 #' conds <- colData(Exp1_R25_pept)$Condition
@@ -523,6 +530,7 @@ make.contrast <- function(design, condition, contrast=1){
 #' @author Thomas Burger, Quentin Giai-Gianetto, Samuel Wieczorek
 #' 
 #' @examples
+#' library(Features)
 #' utils::data(Exp1_R25_pept, package='DAPARdata2')
 #' object <- Exp1_R25_pept
 #' object <- addAssay(object, Features::filterNA(object[[2]],  pNA = 0), name='filtered')
@@ -582,6 +590,7 @@ limma.complete.test <- function(obj, sampleTab, comp.type="OnevsOne"){
 #' 
 #' @examples
 #' \dontrun{
+#' library(Features)
 #' utils::data(Exp1_R25_pept, package='DAPARdata2')
 #' object <- Exp1_R25_pept
 #' object <- addAssay(object, Features::filterNA(object[[2]],  pNA = 0), name='filtered')

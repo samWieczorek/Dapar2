@@ -32,6 +32,7 @@ qData <- assay(Exp1_R25_pept[['original_log']])
 fData <- rowData(Exp1_R25_pept[['original_log']])
 legend <- colData(Exp1_R25_pept)[["Sample.name"]]
 boxPlotD_HC(qData, fData, legend, subset.view=1:10)
+
 }
 \seealso{
 \code{\link{densityPlotD_HC}}

@@ -20,6 +20,7 @@ A plot
 Plots a histogram of p-values
 }
 \examples{
+library(Features)
 utils::data(Exp1_R25_pept, package='DAPARdata2')
 object <- Exp1_R25_pept[1:1000,]
 object <- addAssay(object, Features::filterNA(object[[2]],  pNA = 0), name='filtered')

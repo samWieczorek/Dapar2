@@ -6,14 +6,14 @@
 \usage{
 MeanCentering(
   qData,
-  conds = NULL,
-  type = NULL,
+  conds,
+  type = "overall",
   subset.norm = NULL,
   scaling = FALSE
 )
 }
 \arguments{
-\item{qData}{A numeric matrix.}
+\item{qData}{xxx}
 
 \item{conds}{xxx}
 
@@ -33,9 +33,10 @@ Normalisation MeanCentering
 }
 \examples{
 utils::data(Exp1_R25_pept, package='DAPARdata2')
-qData <- assay(Exp1_R25_pept[['original']])
+qData <- assay(Exp1_R25_pept[['original_log']])
 conds <- colData(Exp1_R25_pept)[['Condition']]
 normalized <- MeanCentering(qData, conds, type="overall")
+
 }
 \author{
 Samuel Wieczorek, Thomas Burger, Helene Borges, Anais Courtier, Enora Fremy

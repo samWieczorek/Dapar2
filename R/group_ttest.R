@@ -38,9 +38,9 @@
 #' object <- addAssay(object, Features::filterNA(object[[2]],  pNA = 0), name='filtered')
 #' object <- addListAdjacencyMatrices(object, 3)
 #' sTab <- colData(object)
-#' gttest.se <- t.test.sam(object[[3]], sTab, FUN = limma.complete.test)
+#' gttest.se <- t.test.sam(object[[3]], sTab, FUN = 'limma.complete.test')
 #' 
-#' object <- t.test.sam(object, 3, name = "ttestAssay", FUN = compute.t.test, contrast = 'OnevsOne')
+#' object <- t.test.sam(object, 3, name = "ttestAssay", FUN = 'compute.t.test', contrast = 'OnevsOne')
 #' 
 NULL
 
@@ -51,12 +51,12 @@ setMethod("t.test.sam", "SummarizedExperiment",
                    sampleTab,
                    FUN,
                    ...) {
-            
+            argg <- c(as.list(environment()), list(...))
             df <- do.call(FUN, list(object, sampleTab, ...))
             
-            copy <- object
-            metadata(copy)$t_test <- df
-            copy
+            metadata(object)$t_test <- df
+            metadata(object)$Params <- argg[-match(c('object', 'sampleTab'), names(argg))]
+            object
           })
 
 
@@ -68,7 +68,7 @@ setMethod("t.test.sam", "Features",
               stop("Only one assay to be processed at a time")
             if (is.numeric(i)) i <- names(object)[[i]]
             
-            if (is.null(GetAdjMat(object, i)))
+            if (is.null(GetAdjMat(object[[i]])))
               object <- addListAdjacencyMatrices(object, i)
             
             object <- addAssay(object,
@@ -100,7 +100,7 @@ setMethod("t.test.sam", "Features",
 #' obj <- addAssay(obj, Features::filterNA(obj[[2]],  pNA = 0), name='filtered')
 #' obj <- addListAdjacencyMatrices(obj, 3)
 #' qData <- assay(obj[['filtered']])
-#' X <- GetAdjMat(obj, 3, 'onlySpec')
+#' X <- GetAdjMat(obj[[3]], 'onlySpec')
 #' gttest <- groupttest(X, qData[,1:3], qData[,4:6])
 #' 
 groupttest <- function(X, qData1=NULL, qData2 = NULL){

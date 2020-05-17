@@ -32,7 +32,7 @@
 #' @param ... Additional parameters passed to inner functions.
 #'
 #' @examples
-#'
+#' library(Features)
 #' utils::data(Exp1_R25_pept, package='DAPARdata2')
 #' object <- Exp1_R25_pept[1:1000,]
 #' object <- addAssay(object, Features::filterNA(object[[2]],  pNA = 0), name='filtered')
@@ -95,6 +95,7 @@ setMethod("diff.analysis.sam", "Features",
 #' @author Samuel Wieczorek
 #' 
 #' @examples
+#' library(Features)
 #' utils::data(Exp1_R25_pept, package='DAPARdata2')
 #' object <- Exp1_R25_pept[1:1000,]
 #' object <- addAssay(object, Features::filterNA(object[[2]],  pNA = 0), name='filtered')
@@ -188,6 +189,7 @@ histPValue_HC <- function(pval_ll, bins=80, pi0=1){
 #' @author Samuel Wieczorek
 #' 
 #' @examples
+#' library(Features)
 #' utils::data(Exp1_R25_pept, package='DAPARdata2')
 #' obj <- Exp1_R25_pept[1:1000]
 #' obj <- addAssay(obj, Features::filterNA(obj[[2]],  pNA = 0), name='filtered')
@@ -381,6 +383,7 @@ hc_logFC_DensityPlot <-function(df_logFC, threshold_LogFC = 0, palette=NULL){
 #' @author Samuel Wieczorek
 #' 
 #' @examples
+#' library(Features)
 #' utils::data(Exp1_R25_pept, package='DAPARdata2')
 #' obj <- Exp1_R25_pept[1:1000]
 #' obj <- addAssay(obj, Features::filterNA(obj[[2]],  pNA = 0), name='filtered')
@@ -432,6 +435,7 @@ diffAnaComputeFDR <- function(logFC, pval, threshold_PVal=0, threshold_LogFC = 0
 #' @author Samuel Wieczorek
 #' 
 #' @examples
+#' library(Features)
 #' utils::data(Exp1_R25_pept, package='DAPARdata2')
 #' object <- Exp1_R25_pept[1:1000,]
 #' object <- addAssay(object, Features::filterNA(object[[2]],  pNA = 0), name='filtered')
@@ -493,6 +497,7 @@ Get_AllComparisons <- function(obj){
 #' @author Samuel Wieczorek
 #' 
 #' @examples
+#' library(Features)
 #' utils::data(Exp1_R25_pept, package='DAPARdata2')
 #' obj <- Exp1_R25_pept[1:1000]
 #' obj <- addAssay(obj, Features::filterNA(obj[[2]],  pNA = 0), name='filtered')
@@ -518,6 +523,7 @@ diffAnalysis <- function(obj, comp, th_pval=0, th_logFC=0){
     
 
 metadata(temp)$Significant <- df
+metadata(temp)$Params$comp <- comp
 metadata(temp)$Params$th_pval <- th_pval
   metadata(temp)$Params$th_logFC <- th_logFC
   

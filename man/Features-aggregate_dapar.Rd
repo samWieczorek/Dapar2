@@ -66,7 +66,7 @@ thereof are
 library(S4Vectors)
 utils::data(Exp1_R25_pept, package='DAPARdata2')
 obj <- Exp1_R25_pept[1:1000,]
-aggregateFeatures_sam(obj,2, aggType= 'all', name='aggregated', meta.names = 'Sequence', aggSum)
+aggregateFeatures_sam(obj,2, aggType= 'all', name='aggregated', meta.names = 'Sequence', 'aggTopn', n=3)
 
 }
 \seealso{

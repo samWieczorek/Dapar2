@@ -24,6 +24,7 @@ xxxx
 }
 \examples{
 \dontrun{
+library(Features)
 utils::data(Exp1_R25_pept, package='DAPARdata2')
 object <- Exp1_R25_pept
 object <- addAssay(object, Features::filterNA(object[[2]],  pNA = 0), name='filtered')

@@ -18,11 +18,13 @@
 #' fData <- rowData(Exp1_R25_pept[['original_log']])
 #' legend <- colData(Exp1_R25_pept)[["Sample.name"]]
 #' boxPlotD_HC(qData, fData, legend, subset.view=1:10)
-#' @importFrom Biobase exprs pData
+#' 
 #' @import highcharter
 #' @importFrom grDevices colorRampPalette
 #' @importFrom RColorBrewer brewer.pal
+#' 
 #' @export
+#' 
 boxPlotD_HC <- function(qData, fData, legend=NULL, palette = NULL,subset.view=NULL){
   
   if (is.null(qData)){

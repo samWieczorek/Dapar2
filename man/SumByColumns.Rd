@@ -7,7 +7,7 @@
 SumByColumns(qData, conds = NULL, type = NULL, subset.norm = NULL)
 }
 \arguments{
-\item{qData}{A numeric matrix.}
+\item{qData}{xxxx}
 
 \item{conds}{xxx}
 
@@ -25,9 +25,10 @@ Normalisation SumByColumns
 \examples{
 utils::data(Exp1_R25_pept, package='DAPARdata2')
 library(Features)
-qData <- assay(Exp1_R25_pept[['original']])
+qData <- assay(Exp1_R25_pept[['original_log']])
 conds <- colData(Exp1_R25_pept)[["Condition"]]
 normalized <- SumByColumns(qData, conds, type="within conditions", subset.norm=1:10)
+
 }
 \author{
 Samuel Wieczorek, Thomas Burger, Helene Borges, Anais Courtier, Enora Fremy

@@ -17,8 +17,9 @@ Builds the design matrix for designs of level 2
 }
 \examples{
 \donttest{
-utils::data(Exp1_R25_pept, package='DAPARdata')
-make.design.2(Biobase::pData(Exp1_R25_pept))
+library(Features)
+utils::data(Exp1_R25_pept, package='DAPARdata2')
+make.design.2(colData(Exp1_R25_pept))
 }
 
 }
