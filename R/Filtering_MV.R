@@ -83,69 +83,73 @@ proportionConRev_HC <- function(lDataset, nBoth = 0, nCont=0, nRev=0){
 
 
 
-#' Returns the indices of the lines of \code{exprs()} table to delete w.r.t. 
-#' the conditions on the number of missing values.
+#' Returns the \code{SummarizedExperiment} object with a extra column in \code{rowData()}.
+#' The extra column indicates feature(s) to delete in 1 and 0 otherwise.
 #' The user chooses the minimum amount of intensities that is acceptable and
-#' the filter delete lines that do not respect this condition.
+#' the filter tags the lines that do not respect this condition.
 #' The condition may be on the whole line or condition by condition.
 #' 
 #' The different methods are :
-#' "wholeMatrix": given a threshold \code{th}, only the lines that contain
+#' "WholeMatrix": given a threshold \code{th}, only the lines that contain
 #' at least \code{th} values are kept.
-#' "allCond": given a threshold \code{th}, only the lines which contain
+#' "AllCond": given a threshold \code{th}, only the lines which contain
 #' at least \code{th} values for each of the conditions are kept.
-#' "atLeastOneCond": given a threshold \code{th}, only the lines that contain
+#' "AtLeastOneCond": given a threshold \code{th}, only the lines that contain
 #' at least \code{th} values, and for at least one condition, are kept.
 #' 
 #' @title Filter lines in the matrix of intensities w.r.t. some criteria
 #' @param obj An object of class \code{SummarizedExperiment} containing
 #' quantitative data.
 #' @param type Method used to choose the lines to delete.
-#' Values are : "None", "EmptyLines", "wholeMatrix", "allCond", "atLeastOneCond"
+#' Values are : "None", "EmptyLines", "WholeMatrix", "AllCond", "AtLeastOneCond"
 #' @param th An integer value of the threshold
 #' @return An vector of indices that correspond to the lines to keep.
-#' @author Florence Combes, Samuel Wieczorek
+#' @author Florence Combes, Samuel Wieczorek, Enora Fremy
 #' @examples
-#' utils::data(Exp1_R25_pept, package='DAPARdata')
-#' mvFilterGetIndices(Exp1_R25_pept, "wholeMatrix", 2)
+#' library(DAPAR2)
+#' library(Features)
+#' utils::data(Exp1_R25_pept, package='DAPARdata2')
+#' object <- Exp1_R25_pept[[2]]
+#' sampleTab <- colData(Exp1_R25_pept)
+#' mvFilterGetIndices(obj=object, sampleTab, type="AllCond", th=2)
 #' @export
-mvFilterGetIndices <- function(obj, type, th = 0)
-{
+mvFilterGetIndices <- function(obj, sampleTab, type, th = 0) {
+  
   #Check parameters
-  paramtype<-c("None", "EmptyLines", "wholeMatrix", "allCond", "atLeastOneCond") 
+  paramtype<-c("None", "EmptyLines", "WholeMatrix", "AllCond", "AtLeastOneCond") 
   if (sum(is.na(match(type, paramtype)==TRUE))>0)
     stop("Param type is not correct.")
-
   
-  paramth<-c(seq(0, nrow(Biobase::pData(obj)), 1))
+  
+  paramth<-c(seq(0, nrow(sampleTab), 1))
   if (sum(is.na(match(th, paramth)==TRUE))>0){
     warning("Param th is not correct.")
     return (NULL)
   }
   
   keepThat <- NULL
-  if (is.null(obj@experimentData@other$OriginOfValues)){
-    data <- Biobase::exprs(obj)
+  if (is.null(metadata(obj)$OriginOfValues)){
+    data <- as.data.frame(assay(obj))
   } else {
-    data <- dplyr::select(Biobase::fData(obj),obj@experimentData@other$OriginOfValues)
+    data <- dplyr::select(rowData(obj),metadata(obj)$OriginOfValues)
   }
   
   if (type == "None"){
     keepThat <- seq(1:nrow(data))
   } else if (type == "EmptyLines"){
     keepThat <- which(apply(!is.MV(data), 1, sum) >= 1)
-  } else if (type == "wholeMatrix"){
+  } else if (type == "WholeMatrix"){
     keepThat <- which(apply(!is.MV(data), 1, sum) >= th)
-  } else if (type == "atLeastOneCond" || type == "allCond"){
+  } else if (type == "AtLeastOneCond" || type == "AllCond"){
     
-    conditions <- unique(Biobase::pData(obj)$Condition)
+    conditions <- unique(sampleTab[['Condition']])
     nbCond <- length(conditions)
     keepThat <- NULL
     s <- matrix(rep(0, nrow(data)*nbCond),nrow=nrow(data), 
                 ncol=nbCond)
     
     for (c in 1:nbCond){
-      ind <- which(Biobase::pData(obj)$Condition == conditions[c])
+      ind <- which(sampleTab[['Condition']] == conditions[c])
       if (length(ind) == 1){
         s[,c] <- (!is.MV(data[,ind]) >= th)}
       else {
@@ -153,13 +157,16 @@ mvFilterGetIndices <- function(obj, type, th = 0)
       }
     }
     
-    
-    if (type == "allCond") {
+    if (type == "AllCond") {
       keepThat <- which(rowSums(s) == nbCond)
     }
-    else if (type == "atLeastOneCond") {
+    else if (type == "AtLeastOneCond") {
       keepThat <- which(rowSums(s) >= 1)
     }
   }
-  return(keepThat)
+  
+  rowData(obj)$LinesKept<-1
+  rowData(obj)$LinesKept[keepThat]<-0
+  
+  return(obj)
 }
