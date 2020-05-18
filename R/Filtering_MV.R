@@ -100,20 +100,22 @@ proportionConRev_HC <- function(lDataset, nBoth = 0, nCont=0, nRev=0){
 #' @title Filter lines in the matrix of intensities w.r.t. some criteria
 #' @param obj An object of class \code{SummarizedExperiment} containing
 #' quantitative data.
+#' @param newColName Name of the new column
 #' @param type Method used to choose the lines to delete.
 #' Values are : "None", "EmptyLines", "WholeMatrix", "AllCond", "AtLeastOneCond"
 #' @param th An integer value of the threshold
-#' @return An vector of indices that correspond to the lines to keep.
+#' @return The object of class \code{SummarizedExperiment} where a new column in rowData
+#' contains 0 for the lines to keep, else 1.
 #' @author Florence Combes, Samuel Wieczorek, Enora Fremy
 #' @examples
 #' library(DAPAR2)
-#' library(Features)
 #' utils::data(Exp1_R25_pept, package='DAPARdata2')
 #' object <- Exp1_R25_pept[[2]]
 #' sampleTab <- colData(Exp1_R25_pept)
-#' mvFilterGetIndices(obj=object, sampleTab, type="AllCond", th=2)
+#' obj<-MVindicesToZero(obj=object, sampleTab, newColName="LinesKept", type="AllCond", th=2)
+#' head(rowData(obj))
 #' @export
-mvFilterGetIndices <- function(obj, sampleTab, type, th = 0) {
+MVindicesToZero <- function(obj, sampleTab, newColName, type, th = 0) {
   
   #Check parameters
   paramtype<-c("None", "EmptyLines", "WholeMatrix", "AllCond", "AtLeastOneCond") 
@@ -165,8 +167,28 @@ mvFilterGetIndices <- function(obj, sampleTab, type, th = 0) {
     }
   }
   
-  rowData(obj)$LinesKept<-1
-  rowData(obj)$LinesKept[keepThat]<-0
+  rowData(obj)[[newColName]]<-1
+  rowData(obj)[[newColName]][keepThat]<-0
+  
+  return(obj)
+}
+
+
+#' Returns the \code{SummarizedExperiment} object with a extra column in \code{rowData()}.
+#'  
+#' @title Filter lines in the matrix of intensities w.r.t. some criteria
+#' @param obj An object of class \code{SummarizedExperiment} containing
+#' quantitative data.
+#' @param newCol_name 
+#' @return An vector of indices that correspond to the lines to keep.
+#' @author Enora Fremy
+#' @examples
+#' utils::data(Exp1_R25_pept, package='DAPARdata2')
+#' object <- Exp1_R25_pept[[2]]
+#' removeAdditionalCol(obj=object, newCol="plop")
+#' @export
+removeAdditionalCol <- function(obj, newCol_name) {
+  
   
   return(obj)
 }
