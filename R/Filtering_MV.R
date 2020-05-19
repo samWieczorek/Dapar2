@@ -100,15 +100,16 @@ proportionConRev_HC <- function(lDataset, nBoth = 0, nCont=0, nRev=0){
 #' @title Filter lines in the matrix of intensities w.r.t. some criteria
 #' @param obj An object of class \code{SummarizedExperiment} containing
 #' quantitative data.
-#' @param newColName Name of the new column
+#' @param newColName Name of the new column in rowData()
 #' @param type Method used to choose the lines to delete.
 #' Values are : "None", "EmptyLines", "WholeMatrix", "AllCond", "AtLeastOneCond"
 #' @param th An integer value of the threshold
-#' @return The object of class \code{SummarizedExperiment} where a new column in rowData
-#' contains 0 for the lines to keep, else 1.
+#' @return The object of class \code{SummarizedExperiment} with extra column in rowData
+#' indicating 0 for the lines to keep, else 1.
 #' @author Florence Combes, Samuel Wieczorek, Enora Fremy
 #' @examples
 #' library(DAPAR2)
+#' library(Features)
 #' utils::data(Exp1_R25_pept, package='DAPARdata2')
 #' object <- Exp1_R25_pept[[2]]
 #' sampleTab <- colData(Exp1_R25_pept)
@@ -174,21 +175,30 @@ MVindicesToZero <- function(obj, sampleTab, newColName, type, th = 0) {
 }
 
 
-#' Returns the \code{SummarizedExperiment} object with a extra column in \code{rowData()}.
+#' Returns the \code{SummarizedExperiment} object without the \code{rowData()} extra column
+#' from MVindicesToZero
 #'  
-#' @title Filter lines in the matrix of intensities w.r.t. some criteria
-#' @param obj An object of class \code{SummarizedExperiment} containing
-#' quantitative data.
-#' @param newCol_name 
-#' @return An vector of indices that correspond to the lines to keep.
+#' @title Restore the rowData() before MVindicesToZero
+#' @param obj An object of class \code{SummarizedExperiment}
+#' @param newColName Column to remove
+#' @return The \code{SummarizedExperiment} object without the rowData newColName column
 #' @author Enora Fremy
 #' @examples
+#' library(DAPAR2)
+#' library(Features)
 #' utils::data(Exp1_R25_pept, package='DAPARdata2')
 #' object <- Exp1_R25_pept[[2]]
-#' removeAdditionalCol(obj=object, newCol="plop")
+#' sampleTab <- colData(Exp1_R25_pept)
+#' obj<-MVindicesToZero(obj=object, sampleTab, newColName="LinesKept", type="AllCond", th=2)
+#' removeAdditionalCol(obj,newColName="LinesKept" )
 #' @export
-removeAdditionalCol <- function(obj, newCol_name) {
+removeAdditionalCol <- function(obj, newColName) {
   
+  if( is.na(match(newColName,names(rowData(obj)))) ){ 
+    print(paste0("Warning: ",newColName," isn't a column name of rowData(obj)"))
+  }
+  
+  rowData(obj)[[newColName]] <- NULL
   
   return(obj)
 }
