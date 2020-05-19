@@ -4,7 +4,7 @@
 \alias{GlobalQuantileAlignment}
 \title{Normalisation GlobalQuantileAlignement}
 \usage{
-GlobalQuantileAlignment(obj)
+GlobalQuantileAlignment(qData)
 }
 \arguments{
 \item{qData}{xxxx}

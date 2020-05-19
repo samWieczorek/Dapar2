@@ -88,7 +88,6 @@ setMethod("normalizeD", "SummarizedExperiment",
                    method,
                    ...) {
             argg <- c(as.list(environment()), list(...))
-            #print(argg[c(-1)])
             
             e <- do.call(method, list(assay(object), ...))
             
@@ -134,8 +133,8 @@ setMethod("normalizeD", "Features",
 #' 
 #' @importFrom preprocessCore normalize.quantiles
 #' 
-GlobalQuantileAlignment <- function(obj) {
-  e <- preprocessCore::normalize.quantiles(as.matrix(assay(obj)))
+GlobalQuantileAlignment <- function(qData) {
+  e <- preprocessCore::normalize.quantiles(as.matrix(qData))
   return(e)
 }
 
