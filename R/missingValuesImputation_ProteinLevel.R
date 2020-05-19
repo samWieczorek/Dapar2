@@ -74,6 +74,10 @@ impute_matrix_dapar <- function(x,
         res <- impute_det_quant(x, ...)
     } else if (method == "slsa") {
         res <- impute_slsa(x, ...)
+    } else if (method == "mle_dapar") {
+        res <- impute_mle_dapar(x, ...)
+    } else if (method == "mi") {
+        res <- impute_mi(x, ...)
     }
     ## else method == "none" -- do nothing
     res
@@ -84,7 +88,7 @@ impute_matrix_dapar <- function(x,
 ##' @export
 ##' @rdname imputation
 imputeMethodsDapar <- function()
-    c("knn_by_conds", "pa", "det_quant", "slsa", "none")
+    c("knn_by_conds", "pa", "det_quant", "slsa", "mle_dapar", "none")
 
 
 
