@@ -111,12 +111,12 @@ proportionConRev_HC <- function(lDataset, nBoth = 0, nCont=0, nRev=0){
 #' library(DAPAR2)
 #' library(Features)
 #' utils::data(Exp1_R25_pept, package='DAPARdata2')
-#' object <- Exp1_R25_pept[[2]]
+#' obj <- Exp1_R25_pept[[2]]
 #' sampleTab <- colData(Exp1_R25_pept)
-#' obj<-MVindicesToZero(obj=object, sampleTab, newColName="LinesKept", type="AllCond", th=2)
+#' obj<-MVrowsTagToOne(obj, sampleTab, newColName="AtLeastOneCond", type="AtLeastOneCond", th=2)
 #' head(rowData(obj))
 #' @export
-MVindicesToZero <- function(obj, sampleTab, newColName, type, th = 0) {
+MVrowsTagToOne <- function(obj, sampleTab, newColName, type, th = 0) {
   
   #Check parameters
   paramtype<-c("None", "EmptyLines", "WholeMatrix", "AllCond", "AtLeastOneCond") 
@@ -176,9 +176,9 @@ MVindicesToZero <- function(obj, sampleTab, newColName, type, th = 0) {
 
 
 #' Returns the \code{SummarizedExperiment} object without the \code{rowData()} extra column
-#' from MVindicesToZero
+#' from MVrowsTagToOne
 #'  
-#' @title Restore the rowData() before MVindicesToZero
+#' @title Restore the rowData() before MVrowsTagToOne
 #' @param obj An object of class \code{SummarizedExperiment}
 #' @param newColName Column to remove
 #' @return The \code{SummarizedExperiment} object without the rowData newColName column
@@ -189,8 +189,9 @@ MVindicesToZero <- function(obj, sampleTab, newColName, type, th = 0) {
 #' utils::data(Exp1_R25_pept, package='DAPARdata2')
 #' object <- Exp1_R25_pept[[2]]
 #' sampleTab <- colData(Exp1_R25_pept)
-#' obj<-MVindicesToZero(obj=object, sampleTab, newColName="LinesKept", type="AllCond", th=2)
-#' removeAdditionalCol(obj,newColName="LinesKept" )
+#' obj<-MVrowsTagToOne(obj=object, sampleTab, newColName="LinesKept", type="AllCond", th=2)
+#' obj<-removeAdditionalCol(obj,newColName="plop" )
+#' head(rowData(obj))
 #' @export
 removeAdditionalCol <- function(obj, newColName) {
   
@@ -201,4 +202,62 @@ removeAdditionalCol <- function(obj, newColName) {
   rowData(obj)[[newColName]] <- NULL
   
   return(obj)
+}
+
+
+
+#' Tags features in extra column in rowData(), where rows with thPercent and more
+#' MV are 1 and 0 under
+#' 
+#' @param type WholeMatrix, AtLeastOneCond, AllCond
+#' 
+#' @examples
+#' library(DAPAR2)
+#' library(Features)
+#' utils::data(Exp1_R25_pept, package='DAPARdata2') 
+#' sampleTab <- colData(Exp1_R25_pept)
+#' obj <- Exp1_R25_pept[[2]][100:120,]
+#' obj <- MVrowsTagToOnePercent(obj, sampleTab, "WholeMatrix", 2/3, "WholeMatrix")
+#' obj <- MVrowsTagToOnePercent(obj, sampleTab, "AtLeastOneCond", 2/3, "AtLeastOneCond")
+#' res <- MVrowsTagToOnePercent(obj, sampleTab, "AllCond", 2/3, "AllCond")
+#' as.data.frame(rowData(res)[,72:74])
+
+MVrowsTagToOnePercent <- function(obj, sampleTab, type, thPercent=0, newColName="newCol") {
+  
+  keepThat <- NULL
+  if (is.null(metadata(obj)$OriginOfValues)){
+    data <- as.data.frame(assay(obj))
+  } else {
+    data <- dplyr::select(rowData(obj),metadata(obj)$OriginOfValues)
+  }
+  
+  if (type == "WholeMatrix"){
+    keepThat <- which( (rowSums(!is.MV(data))/ncol(data)) >= thPercent )
+  }
+  
+  else if (type == "AtLeastOneCond" || type == "AllCond"){
+    
+    conditions <- unique(sampleTab[['Condition']])
+    nbCond <- length(conditions)
+    s <- matrix(rep(0, nrow(data)*nbCond),nrow=nrow(data), 
+                ncol=nbCond)
+    
+    for (c in 1:nbCond){
+      ind <- which(sampleTab[['Condition']] == conditions[c])
+      s[,c] <- (rowSums(!is.MV(data[,ind]))/length(ind)) >= thPercent # booleans
+    }
+    
+    if (type == "AllCond") {
+      keepThat <- which(rowSums(s) == nbCond)
+    }
+    else if (type == "AtLeastOneCond") {
+      keepThat <- which(rowSums(s) >= 1)
+    }
+  }
+  
+  rowData(obj)[[newColName]]<-1
+  rowData(obj)[[newColName]][keepThat]<-0
+  
+  return(obj)
+  
 }
