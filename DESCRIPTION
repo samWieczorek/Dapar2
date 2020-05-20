@@ -24,7 +24,7 @@ License: Artistic-2.0
 VignetteBuilder: knitr
 Depends: R (>= 3.6.3)
 Suggests: testthat, BiocStyle, knitr
-Imports: Features,  methods, MsCoreUtils, SummarizedExperiment, MultiAssayExperiment, preprocessCore, RColorBrewer, FactoMineR, factoextra, DT, doParallel, dplyr, foreach, gplots, highcharter, tibble, tidyr, visNetwork, Matrix, cp4p, limma, vioplot, imp4p (>= 0.9)
+Imports: Features,  methods, MsCoreUtils, SummarizedExperiment, MultiAssayExperiment, preprocessCore, RColorBrewer, FactoMineR, factoextra, DT, doParallel, dplyr, foreach, gplots, highcharter, tibble, tidyr, visNetwork, Matrix, cp4p, limma, vioplot, imp4p (>= 0.9), clusterProfiler, data.table, impute
 biocViews: Proteomics, Normalization, Preprocessing, MassSpectrometry, QualityControl, GO, DataImport
 NeedsCompilation: no
 Collate:

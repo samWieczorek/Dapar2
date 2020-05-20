@@ -158,14 +158,28 @@ addOriginOfValues <- function(obj, i, namesOrigin=NULL){
 #' @export
 #' 
 createFeatures <- function(data,
-                           sample=NULL,
+                           sample,
                            indExpData,
                            keyId=NULL,
                            namesOrigin = NULL,
                            logTransform=FALSE, 
                            forceNA=FALSE,
-                           typeOfData=NULL,
-                           parentProtId = NULL){
+                           typeOfData,
+                           parentProtId = NULL,
+                           analysis,
+                           processes = NULL,
+                           pipelineType = NULL){
+  
+  if(missing(data))
+    stop("'data' is missing.")
+  if(missing(sample))
+    stop("'sample' is missing.")
+  if(missing(indExpData))
+    stop("'indExpData' is missing.")
+  if(missing(typeOfData))
+    stop("'typeOfData' is missing.")
+  
+  
   
   
   if (is.null(keyId)) {
@@ -207,17 +221,8 @@ createFeatures <- function(data,
   }
   
   
-  daparVersion <- if (length(grep('DAPAR', installed.packages())) > 0) {
-    installed.packages()["DAPAR","Version"]
-  } else {
-    'NA'
-  }
-  
-  ProstarVersion <- if (length(grep('Prostar2', installed.packages())) > 0) {
-    installed.packages()["Prostar2","Version"]
-  } else {
-    'NA'
-  }
+  daparVersion <- if (is.na(utils::installed.packages()["DAPAR2"])) 'NA' else utils::installed.packages()["DAPAR2",'Version']
+  ProstarVersion <-if (is.na(utils::installed.packages()["Prostar2"])) 'NA' else utils::installed.packages()["Prostar2",'Version']
   
  
   metadata(obj) <- list(versions = list(Prostar_Version = ProstarVersion,
@@ -227,9 +232,13 @@ createFeatures <- function(data,
                         params = list(),
                         typeOfData = typeOfData,
                         RawPValues = FALSE,
-                        OriginOfValues = colnames(origin)
+                        OriginOfValues = colnames(origin),
+                        analysis = analysis,
+                        pipelineType = pipelineType,
+                        processes=c('original',processes)
   )
  
+  
   return(obj)
 }
 
