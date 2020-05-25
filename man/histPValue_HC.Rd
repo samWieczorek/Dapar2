@@ -26,7 +26,7 @@ object <- Exp1_R25_pept[1:1000,]
 object <- addAssay(object, Features::filterNA(object[[2]],  pNA = 0), name='filtered')
 object <- addListAdjacencyMatrices(object, 3)
 sTab <- colData(object)
-se <- t.test.sam(object[[3]], sTab, FUN = compute.t.test)
+se <- t_test_sam(object[[3]], sTab, FUN = compute.t.test)
 pval <- metadata(se)$t_test[['25fmol_vs_10fmol_pval']]
 histPValue_HC(pval)
 

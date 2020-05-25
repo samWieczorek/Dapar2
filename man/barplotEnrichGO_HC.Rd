@@ -9,7 +9,7 @@ barplotEnrichGO_HC(ego, maxRes = 5, title = NULL)
 \arguments{
 \item{ego}{The result of the GO enrichment, provides either by the function
 \code{enrichGO} in the package \code{DAPAR} or the function \code{enrichGO} 
-of the package \code{\link{clusterProfiler}}}
+of the package 'clusterProfiler'}
 
 \item{maxRes}{The maximum number of categories to display in the plot}
 
@@ -19,7 +19,7 @@ of the package \code{\link{clusterProfiler}}}
 A barplot
 }
 \description{
-A barplot of GO enrichment analysis
+A barplot that shows the result of a GO enrichment, using the package \code{highcharter}
 }
 \examples{
 \donttest{
@@ -32,6 +32,7 @@ univ <- univ_AnnotDbPkg("org.Sc.sgd.db")
 ego <- enrich_GO(data, idFrom="UNIPROT", orgdb="org.Sc.sgd.db", ont="MF", pval=0.05, universe = univ)
 barplotEnrichGO_HC(ego)
 }
+
 }
 \author{
 Samuel Wieczorek, Enora Fremy

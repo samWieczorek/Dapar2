@@ -7,7 +7,9 @@
 find_MEC_matrix(x, conds)
 }
 \arguments{
-\item{obj}{An object of class \code{SummarizedExperiment}.}
+\item{x}{xxxxx}
+
+\item{conds}{xxx}
 }
 \value{
 A data.frame that contains the indexes of LAPALA

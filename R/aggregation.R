@@ -54,17 +54,14 @@
 #' @seealso The *Features* vignette provides an extended example and
 #'     the *Processing* vignette, for a complete quantitative
 #'     proteomics data processing pipeline.
-#' 
-#' @aliases aggregateFeatures aggregateFeatures,Features-method
 #'
 #' @name aggregateFeatures_sam
 #'
-#' @rdname Features-aggregate_dapar
-#'
 #' @importFrom MsCoreUtils aggregate_by_vector robustSummary
+#' @importFrom S4Vectors Hits
 #'
 #' @examples
-#' library(S4Vectors)
+#' library(Features)
 #' utils::data(Exp1_R25_pept, package='DAPARdata2')
 #' obj <- Exp1_R25_pept[1:1000,]
 #' aggregateFeatures_sam(obj,2, aggType= 'all', name='aggregated', meta.names = 'Sequence', 'aggTopn', n=3)
@@ -86,7 +83,7 @@ aggregateFeatures_sam <- function(object, i, aggType='all', name, meta.names = N
   if (missing(aggType))
     stop("'aggType' is required.")    
   if (missing(i))
-    i <- main_assay(object)
+    stop("'i' is required.")  
   
   
   argg <- c(as.list(environment()), list(...))
@@ -211,6 +208,8 @@ aggregateFeatures_sam <- function(object, i, aggType='all', name, meta.names = N
 #' 
 #' @export
 #' 
+#' @importFrom Matrix Matrix
+#' 
 addListAdjacencyMatrices <- function(obj, i){
   
   if(missing(obj))
@@ -271,9 +270,7 @@ addListAdjacencyMatrices <- function(obj, i){
 #' 
 #' @description Get an adjacency matrix from a Features object
 #' 
-#' @param obj An object of class 'Features' 
-#' 
-#' @param i The indice of the dataset (class 'SumarizedExperiment') in the list of 'obj' on which to apply the aggregation. 
+#' @param obj An object of class 'SummarizedExperiment' 
 #' 
 #' @param type The type of matrix. Available values are 'all', 'onlySepc' and 'onlyShared'. Default value is 'all'.
 #' 
@@ -289,29 +286,6 @@ addListAdjacencyMatrices <- function(obj, i){
 #
 #' @export
 #' 
-# GetAdjMat <- function(obj, i=NULL, type='all'){
-#   res <- NULL
-#   
-#     
-#    if (is.numeric(i)) i <- names(obj)[[i]]
-#   
-#     if (is.null(metadata(obj[[i]])$list.matAdj)){
-#     # warning("Adjacency matrix is not present")
-#       return(NULL)
-#     }
-#   
-#     if (is.null(metadata(obj[[i]])$list.matAdj[[type]])){
-#     # warning("Adjacency matrix of type '",type, "' is not present")
-#     return(NULL)
-#     }
-#   
-#    res <- metadata(obj[[i]])$list.matAdj[[type]]
-# 
-#   return(res)
-#   
-# }
-
-
 GetAdjMat <- function(obj, type='all'){
   res <- NULL
   
@@ -842,6 +816,7 @@ aggMean <- function(qPepData, X){
 #' @author Samuel Wieczorek
 #' 
 #' @examples 
+#' library(doParallel)
 #' utils::data(Exp1_R25_pept, package='DAPARdata2')
 #' obj <- Exp1_R25_pept[1:1000,]
 #' obj <- addListAdjacencyMatrices(obj, 2)
@@ -851,7 +826,7 @@ aggMean <- function(qPepData, X){
 #' 
 #' @export
 #' 
-#' @importFrom doParallel registerDoParallel
+#' @import doParallel
 #' @import foreach
 #' 
 aggIterParallel <- function(qPepData, X, conditions=NULL, init.method='Sum', method='Mean', n=NULL){
@@ -863,7 +838,7 @@ aggIterParallel <- function(qPepData, X, conditions=NULL, init.method='Sum', met
   
   #qPepData <- 2^(qPepData)
   protData <- matrix(rep(0,ncol(X)*nrow(X)), nrow=ncol(X))
-  
+  cond <- NULL
   protData <- foreach(cond = 1:length(unique(conditions)), .combine=cbind) %dopar% {
     condsIndices <- which(conditions == unique(conditions)[cond])
     qData <- qPepData[,condsIndices]
@@ -1196,7 +1171,7 @@ aggMetadata_parallel_sam <- function(pepMetadata, names, X, simplify=TRUE){
   res <- stats::setNames(data.frame(matrix(ncol = length(names), nrow = 0), stringsAsFactors = FALSE), names)
   proteinNames <- colnames(X)
   
-
+  i <- NULL
   res <- foreach (i=1:length(proteinNames), .combine=rbind) %dopar% {
     listeIndicePeptides <- names(which(X[,proteinNames[i]] == 1))
     listeData <- pepMetadata[listeIndicePeptides,names]

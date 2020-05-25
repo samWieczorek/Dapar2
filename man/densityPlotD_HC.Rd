@@ -4,12 +4,12 @@
 \alias{densityPlotD_HC}
 \title{Builds a densityplot from a dataframe}
 \usage{
-densityPlotD_HC(qData, pData, legend = NULL, palette = NULL)
+densityPlotD_HC(qData, conds, legend = NULL, palette = NULL)
 }
 \arguments{
 \item{qData}{numeric matrix}
 
-\item{pData}{DataFrame}
+\item{conds}{DataFrame}
 
 \item{legend}{A vector of the conditions (one condition per sample).}
 
@@ -25,7 +25,7 @@ Densityplot of quantitative proteomics data over samples.
 utils::data(Exp1_R25_pept, package='DAPARdata2')
 qData <- assay(Exp1_R25_pept[['original']])
 pData <- colData(Exp1_R25_pept)
-legend <- colData(Exp1_R25_pept)@listData[["Condition"]]
+conds <- colData(Exp1_R25_pept)[["Condition"]]
 densityPlotD_HC(qData, pData)
 
 }

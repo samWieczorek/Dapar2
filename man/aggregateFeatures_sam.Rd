@@ -2,8 +2,6 @@
 % Please edit documentation in R/aggregation.R
 \name{aggregateFeatures_sam}
 \alias{aggregateFeatures_sam}
-\alias{aggregateFeatures}
-\alias{aggregateFeatures,Features-method}
 \title{Aggregate an assay's quantitative features which take into account
 the peptides shared between proteins}
 \usage{
@@ -63,7 +61,7 @@ thereof are
 - [DAPAR::aggTopn] to use the sum of each column;
 }
 \examples{
-library(S4Vectors)
+library(Features)
 utils::data(Exp1_R25_pept, package='DAPARdata2')
 obj <- Exp1_R25_pept[1:1000,]
 aggregateFeatures_sam(obj,2, aggType= 'all', name='aggregated', meta.names = 'Sequence', 'aggTopn', n=3)

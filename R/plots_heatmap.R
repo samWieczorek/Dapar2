@@ -2,7 +2,7 @@
 
 #' Heatmap of the quantitative proteomic data of a \code{data.frame} object
 #'
-#' @title This function is a wrapper to \code{\link{heatmap.2}} that displays
+#' @title This function is a wrapper to 'heatmap.2' that displays
 #' a numeric matrix
 #' 
 #' @param qData A dataframe of numeric values
@@ -30,7 +30,6 @@
 #' @importFrom grDevices colorRampPalette
 #' @importFrom gplots heatmap.2
 #' @importFrom stats dist hclust
-#' @import graphics
 #' 
 #' @export
 #' 
@@ -99,30 +98,45 @@ heatmapD <- function(qData, distance="euclidean", cluster="complete", dendro = F
 }
 
 
-#' Heatmap inspired by the heatmap.2 function.
-#' 
-#' @title This function is inspired from the function \code{\link{heatmap.2}} 
+
+#' @title This function is inspired from the function 'heatmap.2' 
 #' that displays a numeric matrix. For more information, please refer to the help 
 #' of the heatmap.2 function.
+#' 
 #' @param x A matrix that contains quantitative data.
+#' 
 #' @param col Colors used for the image. Defaults to heat colors (heat.colors).
+#' 
 #' @param srtCol Angle of column conds, in degrees from horizontal 
+#' 
 #' @param labCol Character vectors with column conds to use.
+#' 
 #' @param labRow Character vectors with row conds to use.
+#' 
 #' @param key Logical indicating whether a color-key should be shown.
+#' 
 #' @param key.title Main title of the color key. If set to NA no title will 
 #' be plotted.
+#' 
 #' @param main Main title; default to none.
+#' 
 #' @param ylab y-axis title; default to none.
+#' 
 #' @return A heatmap
+#' 
 #' @author Samuel Wieczorek, Enora Fremy
+#' 
 #' @examples
 #' utils::data(Exp1_R25_pept, package='DAPARdata2')
 #' qData <- assay(Exp1_R25_pept[['original']])
 #' heatmap.DAPAR(qData)
+#' 
 #' @export
+#' 
 #' @importFrom grDevices heat.colors
-#' @import graphics
+#' 
+#' @importFrom graphics image strwidth strheight axis mtext text title layout par plot.new
+#' 
 heatmap.DAPAR <- function (x, 
                            col = grDevices::heat.colors(100),
                            srtCol=NULL,
@@ -179,63 +193,63 @@ heatmap.DAPAR <- function (x,
   lmat <- rbind(4:3, 2:1)
   lmat[is.na(lmat)] <- 0
   
-  op <- par(no.readonly = TRUE)
-  on.exit(par(op))
-  layout(lmat, widths = lwid, heights = lhei, respect = FALSE)
+  op <- graphics::par(no.readonly = TRUE)
+  on.exit(graphics::par(op))
+  graphics::layout(lmat, widths = lwid, heights = lhei, respect = FALSE)
   
-  par(mar = c(margins[1], 0, 0, margins[2]))
+  graphics::par(mar = c(margins[1], 0, 0, margins[2]))
   x <- t(x)
   
   
-  image(1:nc, 1:nr, x, xlim = 0.5 + c(0, nc), ylim = 0.5 + c(0, nr),
+  graphics::image(1:nc, 1:nr, x, xlim = 0.5 + c(0, nc), ylim = 0.5 + c(0, nr),
         axes = FALSE, xlab = "", ylab = "", col = col, breaks = breaks)
   
   
   if (!is.null(labCol)) {
-    axis(1, 1:nc, label = labCol, las = 2, line = -0.5 + offsetCol,
+    graphics::axis(1, 1:nc, labels = labCol, las = 2, line = -0.5 + offsetCol,
          tick = 0, cex.axis = cexCol, hadj = NA, padj = 0)
   }
   else {
     adjCol = c(1, NA)
     xpd.orig <- par("xpd")
     par(xpd = NA)
-    xpos <- axis(1, 1:nc, label = rep("", nc), las = 2, 
+    xpos <- graphics::axis(1, 1:nc, labels = rep("", nc), las = 2, 
                  tick = 0)
-    text(x = xpos, y = par("usr")[3] - (1 + offsetCol) * 
+    graphics::text(x = xpos, y = par("usr")[3] - (1 + offsetCol) * 
            strheight("M"), label = labCol, adj = adjCol, 
          cex = cexCol, srt = srtCol, col = colCol)
-    par(xpd = xpd.orig)
+    graphics::par(xpd = xpd.orig)
   }
   
   
   if (!is.null(labRow) ) {
-    axis(4, iy, label = labRow, las = 5, line = -0.5 + offsetRow, 
+    graphics::axis(4, iy, labels = labRow, las = 5, line = -0.5 + offsetRow, 
          tick = 0, cex.axis = cexRow, hadj = 0, padj = NA)
   }
   else {
     xpd.orig <- par("xpd")
     par(xpd = NA)
-    ypos <- axis(4, iy, label = rep("", nr), las = 2, 
+    ypos <- axis(4, iy, labels = rep("", nr), las = 2, 
                  line = -0.5, tick = 0)
-    text(x = par("usr")[2] + (1 + offsetRow) * strwidth("M"), 
-         y = ypos, label = labRow, adj = c(0,NA), cex = cexRow, 
+    graphics::text(x = par("usr")[2] + (1 + offsetRow) * graphics::strwidth("M"), 
+         y = ypos, labels = labRow, adj = c(0,NA), cex = cexRow, 
          srt = srtRow, col = colRow)
-    par(xpd = xpd.orig)
+    graphics::par(xpd = xpd.orig)
   }
   
   
-  par(mar = c(margins[1], 0, 0, 0))
-  plot.new()
-  par(mar = c(0, 0, if (!is.null(main)) 5 else 0, margins[2]))
+  graphics::par(mar = c(margins[1], 0, 0, 0))
+  graphics::plot.new()
+  graphics::par(mar = c(0, 0, if (!is.null(main)) 5 else 0, margins[2]))
   
-  plot.new()
+  graphics::plot.new()
   if (!is.null(main)) 
-    title(main, cex.main = 1.5 * op[["cex.main"]])
+    graphics::title(main, cex.main = 1.5 * op[["cex.main"]])
   
   
   if (key) {
     mar <- c(5, 4, 2, 1)
-    par(mar = mar, cex = 0.75, mgp = c(2, 1, 0))
+    graphics::par(mar = mar, cex = 0.75, mgp = c(2, 1, 0))
     if (length(key.par) > 0) 
       do.call(par, key.par)
     
@@ -244,18 +258,18 @@ heatmap.DAPAR <- function (x,
     max.raw <- max.breaks
     
     z <- seq(min.raw, max.raw, by = min(diff(breaks)/100))
-    image(z = matrix(z, ncol = 1), col = col, breaks = tmpbreaks, 
+    graphics::image(z = matrix(z, ncol = 1), col = col, breaks = tmpbreaks, 
           xaxt = "n", yaxt = "n")
-    par(usr = c(0, 1, 0, 1))
+    graphics::par(usr = c(0, 1, 0, 1))
     lv <- pretty(breaks)
     xv <- scale01(as.numeric(lv), min.raw, max.raw)
-    xargs <- list(at = xv, label = lv)
+    xargs <- list(at = xv, labels = lv)
     
     xargs$side <- 1
     do.call(axis, xargs)
     key.xlab <- "Intensity value"
     
-    mtext(side = 1, key.xlab, line = par("mgp")[1], padj = 0.5, 
+    graphics::mtext(side = 1, key.xlab, line = par("mgp")[1], padj = 0.5, 
           cex = par("cex") * par("cex.lab"))
     
     if (is.null(key.title)) 

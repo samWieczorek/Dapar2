@@ -7,9 +7,11 @@
 impute_knn_by_conditions(x, conds = NULL, k = 3)
 }
 \arguments{
-\item{k}{the number of neighbors.}
+\item{x}{xxxx}
 
-\item{obj}{An object of class \code{MSnSet}.}
+\item{conds}{xxx}
+
+\item{k}{the number of neighbors.}
 }
 \value{
 The object \code{obj} which has been imputed

@@ -9,9 +9,9 @@ groupttest(X, qData1 = NULL, qData2 = NULL)
 \arguments{
 \item{X}{xxxxx.}
 
-\item{cond1}{xxxx.}
+\item{qData1}{xxxx.}
 
-\item{cond2}{xxxx.}
+\item{qData2}{xxxx.}
 }
 \value{
 xxxxx

@@ -67,6 +67,7 @@ ComputeConnexComposants <- function(X.list=NULL){
 #' @export
 #' 
 #' @import Matrix
+#' @importFrom graph graphAM connComp 
 #' 
 get.pep.prot.cc <- function(X){
   if (is.null(X)){
@@ -203,8 +204,6 @@ buildGraph <- function(The.CC, X){
 #' 
 #' @param g A connex component (a list)
 #' 
-#' @param layout Default value is 'layout_nicely'
-#' 
 #' @param obj xxx
 #' 
 #' @param prot.tooltip A vector of strings which are the text for the tooltips of the proteins.
@@ -224,11 +223,11 @@ buildGraph <- function(The.CC, X){
 #' g <- buildGraph(ll[[1]], X)
 #' display.CC.visNet(g)
 #' 
-#' @import visNetwork
+#' @importFrom visNetwork visNetwork visNodes visGroups visOptions
 #' 
 #' @export
+#' 
 display.CC.visNet <- function(g, 
-                              layout = layout_nicely, 
                               obj=NULL,
                               prot.tooltip=NULL, 
                               pept.tooltip=NULL){
@@ -247,8 +246,6 @@ display.CC.visNet <- function(g,
     #visLegend()
     #visPhysics(stabilization = FALSE)%>%
     visNetwork::visEdges(color = "#A9A9A9",width = 2)
-  #%>%
-  # visIgraphLayout(layout = "layout_with_fr")
   
   
 }
@@ -275,6 +272,8 @@ display.CC.visNet <- function(g,
 #' 
 #' @export
 #' 
+#' @importFrom graphics plot
+#' 
 plotJitterCC <- function(list.of.cc){
   if (is.null(list.of.cc)){return()}
   
@@ -288,7 +287,7 @@ plotJitterCC <- function(list.of.cc){
   
   
   cc.summary <- as.data.frame(t(jitter(cc.summary)))
-  plot(jitter(cc.summary[,2]),jitter(cc.summary[,1]), type="p", xlab="#peptides in CC", ylab="#proteins in CC")
+  graphics::plot(jitter(cc.summary[,2]),jitter(cc.summary[,1]), type="p", xlab="#peptides in CC", ylab="#proteins in CC")
   
 }
 
@@ -309,8 +308,8 @@ plotJitterCC <- function(list.of.cc){
 #' @author Thomas Burger, Samuel Wieczorek
 #' 
 #' @examples
-#' \dontrun{
-#' }
+#' df <- data.frame(x=1:10, y=1:10)
+#' plotJitter_hc(df)
 #' 
 #' @export
 #' 

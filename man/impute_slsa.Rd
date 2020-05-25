@@ -9,7 +9,7 @@ impute_slsa(x, sampleTab)
 \arguments{
 \item{x}{A DataFrame.}
 
-\item{conds}{xxxxx}
+\item{sampleTab}{xxxxx}
 }
 \value{
 A DataFrame

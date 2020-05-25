@@ -11,7 +11,6 @@
 #' @return A bar plot
 #' @author Samuel Wieczorek, Enora Fremy
 #' @examples
-#' library(DAPAR)
 #' library(highcharter)
 #' utils::data(Exp1_R25_pept, package='DAPARdata2')
 #' qData <- assay(Exp1_R25_pept[['original']])

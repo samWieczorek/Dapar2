@@ -30,9 +30,6 @@ are identical and correspond to the description of the comparison.
 \description{
 
 }
-\details{
-This function is xxxxxx
-}
 \examples{
 utils::data(Exp1_R25_pept, package='DAPARdata2')
 Exp1_R25_pept <- addAssay(Exp1_R25_pept, Features::filterNA(Exp1_R25_pept[[2]],  pNA = 0), name='filtered')

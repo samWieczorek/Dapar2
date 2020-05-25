@@ -21,7 +21,7 @@ ENTREZID, GENENAME, REFSEQ, UNIGENE, UNIPROT)}
 \item{readable}{TRUE or FALSE (default FALSE)}
 
 \item{pval}{The qvalue cutoff (same parameter as in the function 
-\code{enrichGO} of the package \code{\link{clusterProfiler}})}
+\code{enrichGO} of the package 'clusterProfiler')}
 
 \item{universe}{A list of ID to be considered as the background for 
 enrichment calculation}
@@ -30,9 +30,8 @@ enrichment calculation}
 A groupGOResult instance.
 }
 \description{
-This function is a wrappper to the function enrichGO from the
-package \code{\link{clusterProfiler}}. Given a vector of genes/proteins, 
-it returns an enrichResult instance.
+Calculates GO enrichment classes for a given list of 
+proteins/genes ID. It results an enrichResult instance.
 }
 \examples{
 \donttest{

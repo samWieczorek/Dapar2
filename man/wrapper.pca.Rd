@@ -7,11 +7,13 @@
 wrapper.pca(qData, condition, var.scaling = TRUE, ncp = NULL)
 }
 \arguments{
+\item{qData}{numeric matrix}
+
+\item{condition}{xxx}
+
 \item{var.scaling}{The dimensions to plot}
 
 \item{ncp}{Number of dimensions kept in the results}
-
-\item{obj}{numeric matrix}
 }
 \value{
 A list including eigenvalues of obj
@@ -25,6 +27,7 @@ utils::data(Exp1_R25_pept, package='DAPARdata2')
 qData <- assay(Exp1_R25_pept[['original']])
 condition <- colData(Exp1_R25_pept)@listData[["Condition"]]
 res.pca <- wrapper.pca(qData, condition)
+
 }
 \author{
 Samuel Wieczorek, Enora Fremy

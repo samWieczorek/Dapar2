@@ -44,7 +44,6 @@
 #' @examples
 #' \donttest{
 #' library(Features)
-#' library(DAPAR)
 #' library(DT)
 #' library(highcharter)
 #' utils::data(Exp1_R25_pept, package='DAPARdata2')
@@ -104,10 +103,10 @@ diffAnaVolcanoplot_rCharts <- function(df,
                               sep="")
   }
   
-  leftBorder <- data.frame(x=c(min(df$x), -threshold_logFC,-threshold_logFC),
-                           y = c(threshold_pVal,threshold_pVal,max(df$y)))
-  rightBorder <- data.frame(x=c(max(df$x), threshold_logFC,threshold_logFC),
-                            y = c(threshold_pVal,threshold_pVal,max(df$y)))
+  leftBorder <- data.frame(x=c(min(df$x), -threshold_logFC, -threshold_logFC),
+                           y = c(threshold_pVal, threshold_pVal, max(df$y)))
+  rightBorder <- data.frame(x=c(max(df$x), threshold_logFC, threshold_logFC),
+                            y = c(threshold_pVal, threshold_pVal, max(df$y)))
   
   title <- NULL
   if (isTRUE(swap)){
@@ -117,7 +116,7 @@ diffAnaVolcanoplot_rCharts <- function(df,
   }
   
   h1 <-  highchart() %>%
-    hc_add_series(data = df, type = "scatter", hcaes(x,y,group=g)) %>%
+    hc_add_series(data = df, type = "scatter", hcaes(df$x,df$y,group=df$g)) %>%
     hc_colors(c(palette$In, palette$Out)) %>%
     dapar_hc_chart(zoomType = "xy",chartType="scatter") %>%
     hc_title(text = title,

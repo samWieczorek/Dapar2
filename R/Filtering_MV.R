@@ -82,9 +82,14 @@ proportionConRev_HC <- function(lDataset, nBoth = 0, nCont=0, nRev=0){
 }
 
 
-#' Returns the \code{SummarizedExperiment} object with a extra column in \code{rowData()}.
-#' The extra column indicates feature(s) to remove in 1 and 0 otherwise.
-#' The user chooses the threshold, either the percentage of NAs per row (default)
+
+
+
+#' @title Filter lines in the matrix of intensities w.r.t. some criteria
+#' 
+#' @description Returns the \code{SummarizedExperiment} object with a extra column in \code{rowData()}.
+#' The extra column indicates feature(s) to delete in 1 and 0 otherwise.
+#' The user chooses the threshold, either the percentage of NAS per row (default)
 #' or the number of samples containing NAs per row allowed. Then, 
 #' the filter tags the lines that do not respect this condition.
 #' The condition may be on the whole line or condition by condition.
@@ -130,7 +135,11 @@ proportionConRev_HC <- function(lDataset, nBoth = 0, nCont=0, nRev=0){
 #' obj <- MVrowsTagToOne(obj, sampleTab, "AllCond", 3, percent=F, "AllCond")
 #' res <- MVrowsTagToOne(obj, sampleTab, "AtLeastOneCond", 3, percent=F, "AtLeastOneCond")
 #' as.data.frame(rowData(res)[,72:76])
+#' 
+#' @export
+#' 
 MVrowsTagToOne <- function(obj=NULL, sampleTab=NULL, type=NULL, th=0, percent=T, newColName="newCol") {
+
   
   # check Type param
   paramtype<-c("None", "EmptyLines", "WholeMatrix", "AllCond", "AtLeastOneCond") 
@@ -252,7 +261,7 @@ MVrowsTagToOne <- function(obj=NULL, sampleTab=NULL, type=NULL, th=0, percent=T,
 #' @export
 removeAdditionalCol <- function(obj, colToRemove) {
   
-  if( is.na(match(colToRemove,names(rowData(obj)))) ){
+  if( is.na(match(colToRemove,names(rowData(obj)))) ) {
     print(paste0("Warning: ",colToRemove," isn't a column name of rowData(obj)"))
   }
   

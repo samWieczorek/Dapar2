@@ -10,7 +10,9 @@ MVindicesToZero(obj, sampleTab, newColName, type, th = 0)
 \item{obj}{An object of class \code{SummarizedExperiment} containing
 quantitative data.}
 
-\item{newColName}{Name of the new column}
+\item{sampleTab}{xxx}
+
+\item{newColName}{Name of the new column in rowData()}
 
 \item{type}{Method used to choose the lines to delete.
 Values are : "None", "EmptyLines", "WholeMatrix", "AllCond", "AtLeastOneCond"}
@@ -18,8 +20,8 @@ Values are : "None", "EmptyLines", "WholeMatrix", "AllCond", "AtLeastOneCond"}
 \item{th}{An integer value of the threshold}
 }
 \value{
-The object of class \code{SummarizedExperiment} where a new column in rowData
-contains 0 for the lines to keep, else 1.
+The object of class \code{SummarizedExperiment} with extra column in rowData
+indicating 0 for the lines to keep, else 1.
 }
 \description{
 Returns the \code{SummarizedExperiment} object with a extra column in \code{rowData()}.
@@ -27,8 +29,7 @@ The extra column indicates feature(s) to delete in 1 and 0 otherwise.
 The user chooses the minimum amount of intensities that is acceptable and
 the filter tags the lines that do not respect this condition.
 The condition may be on the whole line or condition by condition.
-}
-\details{
+
 The different methods are :
 "WholeMatrix": given a threshold \code{th}, only the lines that contain
 at least \code{th} values are kept.
@@ -39,12 +40,14 @@ at least \code{th} values, and for at least one condition, are kept.
 }
 \examples{
 library(DAPAR2)
+library(Features)
 utils::data(Exp1_R25_pept, package='DAPARdata2')
 object <- Exp1_R25_pept[[2]]
 sampleTab <- colData(Exp1_R25_pept)
 obj<-MVindicesToZero(obj=object, sampleTab, newColName="LinesKept", type="AllCond", th=2)
 head(rowData(obj))
+
 }
 \author{
-Florence Combes, Samuel Wieczorek, Enora Fremy
+Enora Fremy
 }

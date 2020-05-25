@@ -12,13 +12,25 @@
 #' 
 #' @author Samuel Wieczorek
 #' 
-#' @examples 
+#' @examples
+#' \dontrun{
+#' utils::data(Exp1_R25_pept, package='DAPARdata2')
+#' obj <- Exp1_R25_pept
+#' }
 #' 
 #' @export
 #' 
-setMEC <- function(origin, qData,conds){
+setMEC <- function(origin, qData, conds){
   
-  #if (is.null( obj@experimentData@other$OriginOfValues)){return()}
+  if (missing(origin))
+    stop("'origin' is required.")
+  
+  if (missing(qData))
+    stop("'qData' is required.")
+  if (missing(conds))
+    stop("'conds' is required.")
+  
+
   
   u.conds <- unique(conds)
   nbCond <- length(u.conds)
@@ -57,7 +69,12 @@ setMEC <- function(origin, qData,conds){
 #' 
 #' @author Samuel Wieczorek
 #' 
-#' @examples 
+#' @examples
+#' \dontrun{
+#' utils::data(Exp1_R25_pept, package='DAPARdata2')
+#' origin <- c("Identification_type_C_R1", "Identification_type_C_R2", "Identification_type_C_R3", "Identification_type_D_R1", "Identification_type_D_R2", "Identification_type_D_R3")
+#' obj <- addOriginOfValues(Exp1_R25_pept, 2, origin)
+#' }
 #' 
 #' @importFrom methods as
 #' 
@@ -68,8 +85,7 @@ setMEC <- function(origin, qData,conds){
 addOriginOfValues <- function(obj, i, namesOrigin=NULL){
   
   if ( ncol(assay(obj,i)) != length(namesOrigin)){
-    warning('eee')
-    return(NULL)
+    stop("The number of samples in the assay must be equal to the length of 'namesOrigin'")
   }
   
   if (!is.null(namesOrigin))
@@ -136,6 +152,12 @@ addOriginOfValues <- function(obj, i, namesOrigin=NULL){
 #' @param parentProtId For peptide entities, a string which is the name of a column in rowData. It contains the id of parent
 #' proteins and is used to generate adjacency matrix and process to aggregation.
 #' 
+#' @param processes xxxx
+#' 
+#' @param pipelineType xxxx
+#' 
+#' @param analysis xxx
+#' 
 #' @return An instance of class \code{Features}.
 #' 
 #' @author Samuel Wieczorek
@@ -158,14 +180,28 @@ addOriginOfValues <- function(obj, i, namesOrigin=NULL){
 #' @export
 #' 
 createFeatures <- function(data,
-                           sample=NULL,
+                           sample,
                            indExpData,
                            keyId=NULL,
                            namesOrigin = NULL,
                            logTransform=FALSE, 
                            forceNA=FALSE,
-                           typeOfData=NULL,
-                           parentProtId = NULL){
+                           typeOfData,
+                           parentProtId = NULL,
+                           analysis,
+                           processes = NULL,
+                           pipelineType = NULL){
+  
+  if(missing(data))
+    stop("'data' is missing.")
+  if(missing(sample))
+    stop("'sample' is missing.")
+  if(missing(indExpData))
+    stop("'indExpData' is missing.")
+  if(missing(typeOfData))
+    stop("'typeOfData' is missing.")
+  
+  
   
   
   if (is.null(keyId)) {
@@ -207,17 +243,8 @@ createFeatures <- function(data,
   }
   
   
-  daparVersion <- if (length(grep('DAPAR', installed.packages())) > 0) {
-    installed.packages()["DAPAR","Version"]
-  } else {
-    'NA'
-  }
-  
-  ProstarVersion <- if (length(grep('Prostar2', installed.packages())) > 0) {
-    installed.packages()["Prostar2","Version"]
-  } else {
-    'NA'
-  }
+  daparVersion <- if (is.na(utils::installed.packages()["DAPAR2"])) 'NA' else utils::installed.packages()["DAPAR2",'Version']
+  ProstarVersion <-if (is.na(utils::installed.packages()["Prostar2"])) 'NA' else utils::installed.packages()["Prostar2",'Version']
   
  
   metadata(obj) <- list(versions = list(Prostar_Version = ProstarVersion,
@@ -227,9 +254,13 @@ createFeatures <- function(data,
                         params = list(),
                         typeOfData = typeOfData,
                         RawPValues = FALSE,
-                        OriginOfValues = colnames(origin)
+                        OriginOfValues = colnames(origin),
+                        analysis = analysis,
+                        pipelineType = pipelineType,
+                        processes=c('original',processes)
   )
  
+  
   return(obj)
 }
 

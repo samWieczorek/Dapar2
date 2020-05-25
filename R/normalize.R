@@ -1,5 +1,9 @@
-##' @export
-##'
+#' @title List normalization methods
+#' 
+#' @name normalizeMethods.dapar
+#' 
+#' @export
+#'
 normalizeMethods.dapar <- function()
   c("GlobalQuantileAlignment", "SumByColumns",
     "QuantileCentering", "MeanCentering",
@@ -7,11 +11,9 @@ normalizeMethods.dapar <- function()
 
 
 
-#' @title Check the validity of the experimental design
+#' @title Check the validity of the experimental design.
 #'
-#' @description
-#'
-#' This manual page describes the computation of statistical test using [Features] objects. In the following
+#' @description This manual page describes the computation of statistical test using [Features] objects. In the following
 #' functions, if `object` is of class `Features`, and optional assay
 #' index or name `i` can be specified to define the assay (by name of
 #' index) on which to operate.
@@ -36,40 +38,20 @@ normalizeMethods.dapar <- function()
 #' Normalization can be based only on a subset of protein.
 #' Proteins with NA in this subset are ignored.
 #'
-#' @param  object An object of class `Features` or `SummarizedExperiment`.
 #'
 #' @param i A numeric vector or a character vector giving the index or the 
 #'     name, respectively, of the assay(s) to be processed.
 #'
-#' @param name A `character(1)` naming the new assay name. Defaults
-#'     are `ttestAssay`.
+#' @param name A `character(1)` naming the new assay name. Defaults are `normAssay`.
 #'
-#'
-#' @param ... Additional parameters passed to inner functions.
 #' 
-#' #' @param method "GlobalQuantileAlignment" (for normalizations of important magnitude),
-#' "SumByColumns", "QuantileCentering", "Mean Centering", "LOESS" and "vsn".
-#' 
-#' @param type "overall" (shift all the sample distributions at once) or "within conditions" (shift the sample
-#' distributions within each condition at a time).
-#' 
-#' @param scaling A boolean that indicates if the variance of the data have to
-#' be forced to unit (variance reduction) or not.
-#' 
-#' @param quantile A float that corresponds to the quantile used to align the
-#' data.
-#' 
-#' @param span Parameter for LOESS method
-#' 
-#' @param subset.norm A vector of index indicating rows to be used for normalization
-#' 
-#' @return An instance of class \code{SummerizedExperiment} where the quantitative
+#' @return An instance of class 'SummerizedExperiment' where the quantitative
 #' data in the \code{array()} tab has been normalized.
 #' 
 #' @author Samuel Wieczorek, Thomas Burger, Helene Borges, Anais Courtier, Enora Fremy
 #'
 #' @examples
-#'
+#' library(Features)
 #' utils::data(Exp1_R25_pept, package='DAPARdata2')
 #' object <- Exp1_R25_pept
 #' 
@@ -78,10 +60,20 @@ normalizeMethods.dapar <- function()
 #' conds <- colData(object)$Condition
 #' object <- addAssay(object, normalizeD(object[['original_log']], method='SumByColumns', conds=conds, type='overall'), "peptides_norm")
 #' 
+"normalizeD"
 
-NULL
 
+#' @param  object An object of class `SummarizedExperiment`.
+#' 
+#' @param method xxxxx. See xxx for methods available.
+#' 
+#' @param ... Additional parameters passed to inner functions.
+#' 
 #' @export
+#' 
+#' @importFrom SummarizedExperiment assay
+#' 
+#' @rdname normalizeD
 #' 
 setMethod("normalizeD", "SummarizedExperiment",
           function(object,
@@ -93,13 +85,28 @@ setMethod("normalizeD", "SummarizedExperiment",
             
             rownames(e) <- rownames(assay(object))
             colnames(e) <- colnames(assay(object))
-            assay(object) <- argg[-match(c('object'), names(argg))]
+            SummarizedExperiment::assay(object) <- argg[-match(c('object'), names(argg))]
             object
           })
 
 
 
-#' @rdname Features-dapar-normalization
+#' @param  object An object of class `Features`.
+#' 
+#' @param method xxxxx. See xxx for methods available.
+#' 
+#' @param i xxxx
+#' 
+#' @param name xxxx
+#' 
+#' @param ... Additional parameters passed to inner functions.
+#' 
+#' @export
+#' 
+#' @importFrom Features addAssay addAssayLinkOneToOne
+#' 
+#' @rdname normalizeD
+#' 
 setMethod("normalizeD", "Features",
           function(object, i, name = "normalizedAssay", method, ...) {
             if (missing(i))
@@ -107,10 +114,10 @@ setMethod("normalizeD", "Features",
             if (length(i) != 1)
               stop("Only one assay to be processed at a time")
             if (is.numeric(i)) i <- names(object)[[i]]
-            object <- addAssay(object,
+            object <- Features::addAssay(object,
                                normalizeD(object[[i]], method, ...),
                                name)
-            addAssayLinkOneToOne(object, from = i, to = name)
+            Features::addAssayLinkOneToOne(object, from = i, to = name)
           })
 
 
@@ -376,6 +383,8 @@ MeanCentering <- function(qData, conds, type='overall', subset.norm=NULL, scalin
 #' normalized <- vsn(qData, conds, type="overall")
 #' 
 #' @export
+#' 
+#' @importFrom vsn vsnMatrix predict
 #' 
 vsn = function(qData, conds, type=NULL) {
   if( missing(conds))

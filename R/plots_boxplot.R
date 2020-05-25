@@ -1,42 +1,63 @@
 #' Boxplot for quantitative proteomics data using the library \code{highcharter}
 #' 
 #' @title Builds a boxplot from a dataframe using the library \code{highcharter}
+#' 
 #' @param qData Numeric matrix 
-#' @param fData xxx
+#' 
+#' @param conds xxx
+#' 
+#' @param sequence xxxx
+#' 
 #' @param legend A vector of the conditions (one condition per sample).
+#' 
 #' @param palette xxx
+#' 
 #' @param subset.view A vector of index indicating rows to highlight
+#' 
 #' @return A boxplot
+#' 
 #' @author Samuel Wieczorek, Anais Courtier, Enora Fremy
-#' @seealso \code{\link{densityPlotD_HC}}
+#' 
 #' @examples
 #' library(Features)
-#' library(DAPAR2)
 #' library(highcharter)
 #' utils::data(Exp1_R25_pept, package='DAPARdata2')
 #' qData <- assay(Exp1_R25_pept[['original_log']])
-#' fData <- rowData(Exp1_R25_pept[['original_log']])
-#' legend <- colData(Exp1_R25_pept)[["Sample.name"]]
-#' boxPlotD_HC(qData, fData, legend, subset.view=1:10)
+#' conds <- colData(Exp1_R25_pept)[["Condition"]]
+#' seq <- rowData(Exp1_R25_pept[['original_log']])$Sequence
+#' boxPlotD_HC(qData, conds, sequence=seq, subset.view=1:10)
 #' 
 #' @import highcharter
 #' @importFrom grDevices colorRampPalette
 #' @importFrom RColorBrewer brewer.pal
+#' @importFrom graphics boxplot
 #' 
 #' @export
 #' 
-boxPlotD_HC <- function(qData, fData, legend=NULL, palette = NULL,subset.view=NULL){
+boxPlotD_HC <- function(qData, conds, sequence=NULL, legend=NULL, palette = NULL, subset.view=NULL){
   
   if (is.null(qData)){
     warning('The dataset in NULL and cannot be shown')
     return(NULL)
   }
   
-  if( is.null(legend)){legend <- colData(Exp1_R25_pept)[["Sample.name"]] }
+  if(missing(conds))
+    stop("'conds' is missing.")
   
-  palette <- BuildPalette(colData(Exp1_R25_pept)[["Condition"]], palette)
+  #if (is.null(legend) ) { legend<- pData@listData[["Sample.name"]] }
+  if (is.null(legend)) {
+    legend <- paste0("series", 1:ncol(qData))
+  }
   
-  bx <-boxplot(qData, na.rm=TRUE)
+  if (!is.null(subset.view)){
+    if (is.null(sequence)|| missing(sequence))
+      stop("'sequence' is missing.")
+  }
+  
+  
+  palette <- BuildPalette(conds, palette)
+  
+  bx <- graphics::boxplot(qData, na.rm=TRUE)
   df_outlier <- data.frame(x=bx$group-1,
                            y = bx$out)
   
@@ -84,7 +105,7 @@ boxPlotD_HC <- function(qData, fData, legend=NULL, palette = NULL,subset.view=NU
   
   # Display of rows to highlight (index of row in subset.view) 
   if(!is.null(subset.view)){
-    idVector <- fData[['Sequence']]
+    idVector <- sequence
     pal=grDevices::colorRampPalette(RColorBrewer::brewer.pal(8, "Set1"))(length(subset.view))    
     n=0
     for(i in subset.view){

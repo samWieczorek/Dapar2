@@ -7,12 +7,14 @@
 impute_pa(x, conds, q.min = 0.025)
 }
 \arguments{
-\item{q.min}{Same as the function \code{impute.pa} in the package \code{imp4p}}
+\item{x}{xxxxx}
 
-\item{obj}{An object of class \code{MSnSet}.}
+\item{conds}{xxxx}
+
+\item{q.min}{Same as the function \code{impute.pa} in the package \code{imp4p}}
 }
 \value{
-The \code{exprs(obj)} matrix with imputed values instead of missing values.
+The xxxx.
 }
 \description{
 Imputation of peptides having no values in a biological condition.

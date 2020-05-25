@@ -4,7 +4,7 @@
 #' 
 #' @param qData numeric matrix
 #' 
-#' @param pData DataFrame
+#' @param conds DataFrame
 #' 
 #' @param legend A vector of the conditions (one condition per sample).
 #' 
@@ -18,18 +18,19 @@
 #' utils::data(Exp1_R25_pept, package='DAPARdata2')
 #' qData <- assay(Exp1_R25_pept[['original']])
 #' pData <- colData(Exp1_R25_pept)
-#' legend <- colData(Exp1_R25_pept)@listData[["Condition"]]
+#' conds <- colData(Exp1_R25_pept)[["Condition"]]
 #' densityPlotD_HC(qData, pData)
 #' 
 #' @import highcharter
 #' @importFrom stats density
 #' 
 #' @export
-densityPlotD_HC <- function(qData, pData, legend=NULL, palette = NULL){
+densityPlotD_HC <- function(qData, conds, legend=NULL, palette = NULL){
   
-  if (is.null(legend) ) { legend<- pData@listData[["Condition"]] }
+ if(missing(conds))
+   stop("'conds' is missing.")
   
-  palette <- BuildPalette(legend, palette)
+  palette <- BuildPalette(conds, palette)
   
   
   h1 <-  highcharter::highchart() %>% 
