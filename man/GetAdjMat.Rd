@@ -7,11 +7,9 @@
 GetAdjMat(obj, type = "all")
 }
 \arguments{
-\item{obj}{An object of class 'Features'}
+\item{obj}{An object of class 'SummarizedExperiment'}
 
 \item{type}{The type of matrix. Available values are 'all', 'onlySepc' and 'onlyShared'. Default value is 'all'.}
-
-\item{i}{The indice of the dataset (class 'SumarizedExperiment') in the list of 'obj' on which to apply the aggregation.}
 }
 \value{
 An adjacency matrix

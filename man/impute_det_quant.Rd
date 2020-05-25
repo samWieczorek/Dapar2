@@ -2,8 +2,7 @@
 % Please edit documentation in R/missingValuesImputation_ProteinLevel.R
 \name{impute_det_quant}
 \alias{impute_det_quant}
-\title{Wrapper of the function \code{\link{impute.detQuant}} for objects
-of class \code{MSnSet}}
+\title{xxx}
 \usage{
 impute_det_quant(x, ...)
 }
@@ -16,12 +15,11 @@ impute_det_quant(x, ...)
 An imputed instance of class \code{DataFrame}
 }
 \description{
-Wrapper of the function \code{\link{impute.detQuant}} for objects
-of class \code{MSnSet}
+xxx
 }
 \examples{
 utils::data(Exp1_R25_pept, package='DAPARdata2')
-impute_det_quant(assay(Exp1_R25_pept[[2]])
+impute_det_quant(assay(Exp1_R25_pept[[2]]))
 
 }
 \author{

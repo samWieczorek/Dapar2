@@ -7,6 +7,10 @@
 impute_pa2(x, sampleTab, q.min = 0, q.norm = 3, eps = 0, distribution = "unif")
 }
 \arguments{
+\item{x}{xxxxx}
+
+\item{sampleTab}{xxxxx}
+
 \item{q.min}{A quantile value of the observed values allowing defining the 
 maximal value which can be generated. This maximal value is defined by the
 quantile q.min of the observed values distribution minus eps. 
@@ -22,10 +26,6 @@ generated. This maximal value is defined by the quantile q.min of the
 observed values distribution minus eps. Default is 0.}
 
 \item{distribution}{The type of distribution used. Values are unif or beta.}
-
-\item{tab}{An object of class \code{MSnSet}.}
-
-\item{conditions}{A vector of conditions in the dataset}
 }
 \value{
 The object \code{obj} which has been imputed

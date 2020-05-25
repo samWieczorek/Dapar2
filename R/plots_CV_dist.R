@@ -18,8 +18,6 @@
 #' 
 #' @author Samuel Wieczorek, Enora Fremy
 #' 
-#' @seealso \code{\link{densityPlotD}}.
-#' 
 #' @examples
 #' library(Features)
 #' library(SummarizedExperiment)
@@ -31,6 +29,7 @@
 #' @importFrom RColorBrewer brewer.pal
 #' @import highcharter
 #' @importFrom DT JS
+#' @importFrom stats var
 #' 
 #' @export
 #' 
@@ -65,7 +64,7 @@ CVDistD_HC <- function(qData, conds=NULL, palette = NULL){
   for (i in 1:n){
     if (length(which(conds == conditions[i])) > 1){
       t <- apply(qData[,which(conds == conditions[i])], 1, 
-                 function(x) 100*var(x, na.rm=TRUE)/mean(x, na.rm=TRUE))
+                 function(x) 100*stats::var(x, na.rm=TRUE)/mean(x, na.rm=TRUE))
       tmp <- data.frame(x = density(t, na.rm = TRUE)$x,
                         y = density(t, na.rm = TRUE)$y)
       

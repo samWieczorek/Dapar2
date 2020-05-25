@@ -1,3 +1,4 @@
+
 #' @title Check the validity of the experimental design
 #'
 #' @description
@@ -16,39 +17,30 @@
 #' - `limma.complete.test(object, sampleTab)` uses the package Limma 
 #' 
 #'
-#' @details
-#'
-#'
-#' @param  object An object of class `Features` or `SummarizedExperiment`.
-#'
-#' @param i A numeric vector or a character vector giving the index or the 
-#'     name, respectively, of the assay(s) to be processed.
-#'
-#' @param name A `character(1)` naming the new assay name. Defaults
-#'     are `ttestAssay`.
-#'
-#' @param sampleTab xxxxxxx
-#'
-#' @param ... Additional parameters passed to inner functions.
-#'
 #' @examples
 #' library(Features)
 #' utils::data(Exp1_R25_pept, package='DAPARdata2')
 #' object <- Exp1_R25_pept[1:1000,]
 #' object <- addAssay(object, Features::filterNA(object[[2]],  pNA = 0), name='filtered')
 #' sTab <- colData(object)
-#' gttest.se <- t.test.sam(object[[3]], sTab, FUN = compute.t.test)
+#' gttest.se <- t_test_sam(object[[3]], sTab, FUN = compute.t.test)
 #' object <- addAssay(object, gttest.se, name='t-test')
 #' comp <- '25fmol_vs_10fmol'
-#' da.se <- diff.analysis.sam(object[['t-test']], comp)
+#' da.se <- diff_analysis_sam(object[['t-test']], comp)
 #' 
-#' object <- diff.analysis.sam(object, 't-test', name='diffAna', comp)
+#' object <- diff_analysis_sam(object, 't-test', name='diffAna', comp)
 #' 
-NULL
+"diff_analysis_sam"
 
+#' @param  object An object of class `Features` or `SummarizedExperiment`.
+#' 
+#' @param ... Additional parameters passed to inner functions.
+#' 
 #' @export
 #' 
-setMethod("diff.analysis.sam", "SummarizedExperiment",
+#' @rdname diff_analysis_sam
+#' 
+setMethod("diff_analysis_sam", "SummarizedExperiment",
           function(object,
                    ...) {
             
@@ -57,7 +49,20 @@ setMethod("diff.analysis.sam", "SummarizedExperiment",
           })
 
 
-setMethod("diff.analysis.sam", "Features",
+#' @param  object An object of class `Features` or `SummarizedExperiment`.
+#' 
+#' @param i A numeric vector or a character vector giving the index or the 
+#'     name, respectively, of the assay(s) to be processed.
+#'
+#' @param name A `character(1)` naming the new assay name. Default is `ttestAssay`.
+#' 
+#' @param ... Additional parameters passed to inner functions.
+#' 
+#' @export
+#' 
+#' @rdname diff_analysis_sam
+#' 
+setMethod("diff_analysis_sam", "Features",
           function(object, i, name = "diffAnaAssay",  ...) {
             if (missing(i))
               stop("Provide index or name of assay to be processed")
@@ -67,7 +72,7 @@ setMethod("diff.analysis.sam", "Features",
             
             
             object <- addAssay(object,
-                               diff.analysis.sam(object[[i]],  ...),
+                               diff_analysis_sam(object[[i]],  ...),
                                name)
             addAssayLinkOneToOne(object, from = i, to = name)
           })
@@ -101,17 +106,18 @@ setMethod("diff.analysis.sam", "Features",
 #' object <- addAssay(object, Features::filterNA(object[[2]],  pNA = 0), name='filtered')
 #' object <- addListAdjacencyMatrices(object, 3)
 #' sTab <- colData(object)
-#' se <- t.test.sam(object[[3]], sTab, FUN = compute.t.test)
+#' se <- t_test_sam(object[[3]], sTab, FUN = compute.t.test)
 #' pval <- metadata(se)$t_test[['25fmol_vs_10fmol_pval']]
 #' histPValue_HC(pval)
 #' 
 #' @export
 #' 
 #' @import highcharter
+#' @importFrom graphics hist
 #' 
 histPValue_HC <- function(pval_ll, bins=80, pi0=1){
   
-  h <- hist(sort(unlist(pval_ll)), freq=F,breaks=bins)
+  h <- graphics::hist(sort(unlist(pval_ll)), freq=F,breaks=bins)
   
   serieInf <- sapply(h$density, function(x)min(pi0, x) )
   serieSup <- sapply(h$density, function(x)max(0, x-pi0) )
@@ -193,7 +199,7 @@ histPValue_HC <- function(pval_ll, bins=80, pi0=1){
 #' utils::data(Exp1_R25_pept, package='DAPARdata2')
 #' obj <- Exp1_R25_pept[1:1000]
 #' obj <- addAssay(obj, Features::filterNA(obj[[2]],  pNA = 0), name='filtered')
-#' se <- t.test.sam(obj[[3]], colData(obj), FUN = compute.t.test)
+#' se <- t_test_sam(obj[[3]], colData(obj), FUN = compute.t.test)
 #' ind <- grep('_logFC', colnames(metadata(se)$t_test))
 #' df <- setNames(as.data.frame(metadata(se)$t_test[,ind]), colnames(metadata(se)$t_test)[ind])
 #' if (length(ind)>0)
@@ -356,18 +362,17 @@ hc_logFC_DensityPlot <-function(df_logFC, threshold_LogFC = 0, palette=NULL){
 }
 
 
-#' 
-#' @title Computes the FDR corresponding to the p-values of the 
-#' differential analysis using
+
+#' @title Computes the FDR corresponding to the p-values of the differential analysis using
 #' 
 #' @description This function is a wrappper to the function adjust.p from the cp4p package. It returns the FDR corresponding to the p-values of the 
 #' differential analysis. The FDR is computed with the function \code{p.adjust}\{stats\}..
 #' 
 #' @param logFC The result (logFC values) of the differential analysis processed 
-#' by \code{\link{limmaCompleteTest}} 
+#' by 'limmaCompleteTest'
 #' 
 #' @param pval The result (p-values) of the differential analysis processed 
-#' by \code{\link{limmaCompleteTest}} 
+#' by 'limmaCompleteTest'
 #' 
 #' @param threshold_PVal The threshold on p-pvalue to
 #' distinguish between differential and non-differential data 
@@ -387,7 +392,7 @@ hc_logFC_DensityPlot <-function(df_logFC, threshold_LogFC = 0, palette=NULL){
 #' utils::data(Exp1_R25_pept, package='DAPARdata2')
 #' obj <- Exp1_R25_pept[1:1000]
 #' obj <- addAssay(obj, Features::filterNA(obj[[2]],  pNA = 0), name='filtered')
-#' se <- t.test.sam(obj[[3]], colData(obj), FUN = compute.t.test)
+#' se <- t_test_sam(obj[[3]], colData(obj), FUN = compute.t.test)
 #' ind_logFC <- grep('_logFC', colnames(metadata(se)$t_test))
 #' logFC <- setNames(as.data.frame(metadata(se)$t_test[,ind_logFC]), colnames(metadata(se)$t_test)[ind_logFC])
 #' ind_pval <- grep('_pval', colnames(metadata(se)$t_test))
@@ -440,10 +445,10 @@ diffAnaComputeFDR <- function(logFC, pval, threshold_PVal=0, threshold_LogFC = 0
 #' object <- Exp1_R25_pept[1:1000,]
 #' object <- addAssay(object, Features::filterNA(object[[2]],  pNA = 0), name='filtered')
 #' sTab <- colData(object)
-#' gttest.se <- t.test.sam(object[[3]], sTab, FUN = compute.t.test)
+#' gttest.se <- t_test_sam(object[[3]], sTab, FUN = compute.t.test)
 #' object <- addAssay(object, gttest.se, name='t-test')
 #' comp <- '25fmol_vs_10fmol'
-#' object <- diff.analysis.sam(object, 't-test', name='diffAna', comp)
+#' object <- diff_analysis_sam(object, 't-test', name='diffAna', comp)
 #' 
 #' allComp <- Get_AllComparisons(object[['diffAna']])
 #' 
@@ -479,7 +484,7 @@ Get_AllComparisons <- function(obj){
 
 
 #' @title Returns a \code{MSnSet} object with the results of
-#' the differential analysis performed with \code{\link{limma}} package. 
+#' the differential analysis performed with 'limma package'. 
 #' 
 #' @description This method returns a class \code{MSnSet} object with the results
 #' of differential analysis
@@ -501,7 +506,7 @@ Get_AllComparisons <- function(obj){
 #' utils::data(Exp1_R25_pept, package='DAPARdata2')
 #' obj <- Exp1_R25_pept[1:1000]
 #' obj <- addAssay(obj, Features::filterNA(obj[[2]],  pNA = 0), name='filtered')
-#' obj <- addAssay(obj, t.test.sam(obj[[3]], colData(obj), FUN = compute.t.test), name='t-test')
+#' obj <- addAssay(obj, t_test_sam(obj[[3]], colData(obj), FUN = 't_test_sam'), name='t-test')
 #' comp <- '25fmol_vs_10fmol'
 #' da.se <- diffAnalysis(obj[['t-test']], comp, th_pval=0, th_logFC=0)
 #' 
@@ -530,99 +535,5 @@ metadata(temp)$Params$th_pval <- th_pval
   return(temp)
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-#' 
-#' #' @title Returns a MSnSet object with only proteins significant after differential analysis.
-#' #' 
-#' #' @param obj An object of class \code{MSnSet}.
-#' #' 
-#' #' @return A MSnSet
-#' #' 
-#' #' @author Alexia Dorffer
-#' #' 
-#' #' @examples
-#' #' utils::data(Exp1_R25_pept, package='DAPARdata')
-#' #' obj <- Exp1_R25_pept
-#' #' keepThat <- mvFilterGetIndices(obj, 'wholeMatrix', ncol(obj))
-#' #' obj <- mvFilterFromIndices(obj, keepThat)
-#' #' qData <- Biobase::exprs(obj)
-#' #' sTab <- Biobase::pData(obj)
-#' #' allComp <- limmaCompleteTest(qData,sTab)
-#' #' data <- list(logFC=allComp$logFC[1], P_Value = allComp$P_Value[1])
-#' #' obj <- diffAnaSave(obj, allComp, data)
-#' #' signif <- diffAnaGetSignificant(obj)
-#' #' 
-#' #' @export
-#' #' 
-#' diffAnaGetSignificant <- function (obj){
-#'   if (is.null(obj)){
-#'     warning("The dataset contains no data")
-#'     return(NULL)
-#'   }
-#'   if (!("Significant" %in% colnames(Biobase::fData(obj)))) {
-#'     warning ("Please Set Significant data before")
-#'     return(NULL)
-#'   }
-#'   temp <- obj
-#'   signif <- which(Biobase::fData(temp)$Significant == TRUE)
-#'   return (temp[signif,])
-#' }
-
-
-
-
-#' #' @title Performs a calibration plot on an \code{MSnSet} object, calling the \code{cp4p} package functions. 
-#' #' 
-#' #' @description This function is a wrapper to the calibration.plot method of the \code{cp4p} package for use with \code{MSnSet} objects.
-#' #'
-#' #' @param vPVal A dataframe that contains quantitative data.
-#' #' 
-#' #' @param pi0Method A vector of the conditions (one condition per sample).
-#' #' 
-#' #' @return A plot
-#' #' 
-#' #' @author Samuel Wieczorek
-#' #' 
-#' #' @examples
-#' #' utils::data(Exp1_R25_pept, package='DAPARdata')
-#' #' obj <- Exp1_R25_pept[1:1000]
-#' #' keepThat <- mvFilterGetIndices(obj, 'wholeMatrix', ncol(obj))
-#' #' obj <- mvFilterFromIndices(obj, keepThat)
-#' #' qData <- Biobase::exprs(obj)
-#' #' sTab <- Biobase::pData(obj)
-#' #' limma <- limmaCompleteTest(qData,sTab)
-#' #' wrapperCalibrationPlot(limma$P_Value[,1])
-#' #' 
-#' #' @export
-#' #' 
-#' wrapperCalibrationPlot <- function(vPVal, pi0Method="pounds"){
-#'   #require(cp4p)
-#'   if (is.null(vPVal)){return(NULL)}
-#'   
-#'   p <- cp4p::calibration.plot(vPVal, pi0.method=pi0Method)
-#'   
-#'   return(p)
-#' }
 
 

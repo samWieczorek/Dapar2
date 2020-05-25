@@ -83,7 +83,11 @@ proportionConRev_HC <- function(lDataset, nBoth = 0, nCont=0, nRev=0){
 
 
 
-#' Returns the \code{SummarizedExperiment} object with a extra column in \code{rowData()}.
+
+
+#' @title Filter lines in the matrix of intensities w.r.t. some criteria
+#' 
+#' @description Returns the \code{SummarizedExperiment} object with a extra column in \code{rowData()}.
 #' The extra column indicates feature(s) to delete in 1 and 0 otherwise.
 #' The user chooses the minimum amount of intensities that is acceptable and
 #' the filter tags the lines that do not respect this condition.
@@ -97,16 +101,23 @@ proportionConRev_HC <- function(lDataset, nBoth = 0, nCont=0, nRev=0){
 #' "AtLeastOneCond": given a threshold \code{th}, only the lines that contain
 #' at least \code{th} values, and for at least one condition, are kept.
 #' 
-#' @title Filter lines in the matrix of intensities w.r.t. some criteria
 #' @param obj An object of class \code{SummarizedExperiment} containing
 #' quantitative data.
+#' 
+#' @param sampleTab xxx
+#' 
 #' @param newColName Name of the new column in rowData()
+#' 
 #' @param type Method used to choose the lines to delete.
 #' Values are : "None", "EmptyLines", "WholeMatrix", "AllCond", "AtLeastOneCond"
+#' 
 #' @param th An integer value of the threshold
+#' 
 #' @return The object of class \code{SummarizedExperiment} with extra column in rowData
 #' indicating 0 for the lines to keep, else 1.
-#' @author Florence Combes, Samuel Wieczorek, Enora Fremy
+#' 
+#' @author Enora Fremy
+#' 
 #' @examples
 #' library(DAPAR2)
 #' library(Features)
@@ -115,7 +126,9 @@ proportionConRev_HC <- function(lDataset, nBoth = 0, nCont=0, nRev=0){
 #' sampleTab <- colData(Exp1_R25_pept)
 #' obj<-MVindicesToZero(obj=object, sampleTab, newColName="LinesKept", type="AllCond", th=2)
 #' head(rowData(obj))
+#' 
 #' @export
+#' 
 MVindicesToZero <- function(obj, sampleTab, newColName, type, th = 0) {
   
   #Check parameters

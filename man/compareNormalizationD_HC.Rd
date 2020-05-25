@@ -13,14 +13,11 @@ compareNormalizationD_HC(
 )
 }
 \arguments{
-\item{qDataBefore}{A numeric matrix that contains quantitative data before 
-normalization.}
+\item{qDataBefore}{A numeric matrix that contains quantitative data before normalization.}
 
-\item{qDataAfter}{A numeric matrix that contains quantitative data after 
-normalization.}
+\item{qDataAfter}{A numeric matrix that contains quantitative data after normalization.}
 
-\item{condsForLegend}{A vector of the conditions (one condition 
-per sample).}
+\item{condsForLegend}{A vector of the conditions (one condition per sample).}
 
 \item{indData2Show}{A vector of the indices of the columns to show in 
 the plot. The indices are those of indices of 
@@ -32,21 +29,20 @@ the columns int the data.frame qDataBefore.}
 A plot
 }
 \description{
-Plot to compare the quantitative proteomics data before and after 
-normalization using the library \code{highcharter}
+Builds a plot from a numeric matrix.
 }
 \examples{
 library(highcharter)
-library(DAPAR)
-# source('~/TELETRAVAIL/github_DAPARforFeatures/DAPAR2/R/normalize.R')
+library(Features)
 utils::data(Exp1_R25_pept, package='DAPARdata2')
 obj <- Exp1_R25_pept[1:1000,]
 conds <- colData(obj)[["Condition"]]
 objBefore <- obj[['original_log']]
 qDataBefore <- assay(objBefore)
-objAfter <- wrapper.normalizeD(objBefore,"QuantileCentering", conds, "within conditions")
+objAfter <- normalizeD(object[['original_log']], method='SumByColumns', conds=conds, type='overall')
 qDataAfter <- assay(objAfter)
 compareNormalizationD_HC(qDataBefore, qDataAfter, condsForLegend=conds)
+
 }
 \author{
 Samuel Wieczorek, Enora Fremy

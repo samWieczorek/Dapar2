@@ -20,6 +20,10 @@ An instance of class \code{DataFrame} which is an update of the parameter names 
 Sets the MEC tag in the origin parameter
 }
 \examples{
+\dontrun{
+utils::data(Exp1_R25_pept, package='DAPARdata2')
+obj <- Exp1_R25_pept
+}
 
 }
 \author{

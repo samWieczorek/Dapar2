@@ -1,10 +1,11 @@
 
 
-#' Compute the PCA
-#' 
+
 #' @title Compute the PCA
 #' 
-#' @param obj numeric matrix
+#' @param qData numeric matrix
+#' 
+#' @param condition xxx
 #' 
 #' @param var.scaling The dimensions to plot
 #' 
@@ -20,11 +21,17 @@
 #' qData <- assay(Exp1_R25_pept[['original']])
 #' condition <- colData(Exp1_R25_pept)@listData[["Condition"]]
 #' res.pca <- wrapper.pca(qData, condition)
+#' 
 #' @importFrom FactoMineR PCA
 #' @importFrom stats na.omit
 #' 
 #' @export
 wrapper.pca <- function(qData, condition, var.scaling=TRUE, ncp=NULL){
+  
+  if(missing(qData))
+    stop("'qData' is missing.")
+  if(missing(condition))
+    stop("'condition' is missing.")
   
   if (is.null(var.scaling)) {var.scaling <- TRUE}
 

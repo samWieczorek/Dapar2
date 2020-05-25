@@ -2,7 +2,7 @@
 % Please edit documentation in R/plots_heatmap.R
 \name{heatmapD}
 \alias{heatmapD}
-\title{This function is a wrapper to \code{\link{heatmap.2}} that displays
+\title{This function is a wrapper to 'heatmap.2' that displays
 a numeric matrix}
 \usage{
 heatmapD(qData, distance = "euclidean", cluster = "complete", dendro = FALSE)

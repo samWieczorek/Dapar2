@@ -4,12 +4,21 @@
 \alias{boxPlotD_HC}
 \title{Builds a boxplot from a dataframe using the library \code{highcharter}}
 \usage{
-boxPlotD_HC(qData, fData, legend = NULL, palette = NULL, subset.view = NULL)
+boxPlotD_HC(
+  qData,
+  conds,
+  sequence = NULL,
+  legend = NULL,
+  palette = NULL,
+  subset.view = NULL
+)
 }
 \arguments{
 \item{qData}{Numeric matrix}
 
-\item{fData}{xxx}
+\item{conds}{xxx}
+
+\item{sequence}{xxxx}
 
 \item{legend}{A vector of the conditions (one condition per sample).}
 
@@ -25,17 +34,13 @@ Boxplot for quantitative proteomics data using the library \code{highcharter}
 }
 \examples{
 library(Features)
-library(DAPAR2)
 library(highcharter)
 utils::data(Exp1_R25_pept, package='DAPARdata2')
 qData <- assay(Exp1_R25_pept[['original_log']])
-fData <- rowData(Exp1_R25_pept[['original_log']])
-legend <- colData(Exp1_R25_pept)[["Sample.name"]]
-boxPlotD_HC(qData, fData, legend, subset.view=1:10)
+conds <- colData(Exp1_R25_pept)[["Condition"]]
+seq <- rowData(Exp1_R25_pept[['original_log']])$Sequence
+boxPlotD_HC(qData, conds, sequence=seq, subset.view=1:10)
 
-}
-\seealso{
-\code{\link{densityPlotD_HC}}
 }
 \author{
 Samuel Wieczorek, Anais Courtier, Enora Fremy

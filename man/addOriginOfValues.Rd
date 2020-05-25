@@ -22,6 +22,11 @@ of values with tags such as MEC, POV
 Sets the MEC tag in the origin parameter
 }
 \examples{
+\dontrun{
+utils::data(Exp1_R25_pept, package='DAPARdata2')
+origin <- c("Identification_type_C_R1", "Identification_type_C_R2", "Identification_type_C_R3", "Identification_type_D_R1", "Identification_type_D_R2", "Identification_type_D_R3")
+obj <- addOriginOfValues(Exp1_R25_pept, 2, origin)
+}
 
 }
 \author{

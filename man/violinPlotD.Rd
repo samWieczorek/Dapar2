@@ -21,20 +21,17 @@ violinPlotD(qData, fData, legend = NULL, palette = NULL, subset.view = NULL)
 A violinplot
 }
 \description{
-ViolinPlot for quantitative proteomics data
+Builds a violinplot from a numeric matrix
 }
 \examples{
 library(vioplot)
-library(DAPAR2)
 library(Features)
 utils::data(Exp1_R25_pept, package='DAPARdata2')
 qData <- assay(Exp1_R25_pept[['original_log']])
 fData <- rowData(Exp1_R25_pept[['original_log']])
 legend <- colData(Exp1_R25_pept)[["Condition"]]
 violinPlotD(qData, fData, legend=legend)
-}
-\seealso{
-\code{\link{densityPlotD}}
+
 }
 \author{
 Samuel Wieczorek, Anais Courtier, Enora Fremy

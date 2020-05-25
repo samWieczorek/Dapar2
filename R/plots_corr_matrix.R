@@ -1,27 +1,34 @@
 
-#' Correlation matrix based on a data.frame object. Same as the 
-#' function \link{corrMatrixD} but uses the package \code{highcharter}
-#' 
+
 #' @title Displays a correlation matrix of the quantitative data of a
 #' numeric matrix.
-#' @param object The result of the \code{cor} function.
+#' 
+#' @param res xxx
+#' 
 #' @param names xxxxx
+#' 
 #' @param rate The rate parameter to control the exponential law for 
 #' the gradient of colors
+#' 
 #' @return A colored correlation matrix
+#' 
 #' @author Samuel Wieczorek, Enora Fremy
+#' 
 #' @examples
 #' utils::data(Exp1_R25_pept, package='DAPARdata2')
 #' qData <- assay(Exp1_R25_pept[['original']])
 #' names <- colnames(qData)
 #' res <- cor(qData,use = 'pairwise.complete.obs')
 #' corrMatrixD_HC(res, names)
+#' 
 #' @importFrom dplyr tbl_df mutate left_join
 #' @importFrom tidyr gather
 #' @import highcharter
 #' @importFrom DT JS
 #' @importFrom tibble tibble
+#' 
 #' @export
+#' 
 corrMatrixD_HC <- function(res, names = NULL, rate = 0.5) {
   
   df <- as.data.frame(res)

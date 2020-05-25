@@ -148,6 +148,10 @@ is.MV <- function(data){
 #' 
 #' @export
 #' 
+#' @importFrom SummarizedExperiment colData rowData 
+#' @import Features
+#' @import S4Vectors
+#' 
 getListNbValuesInLines <- function(obj, i, type="wholeMatrix"){
   if (is.null(obj)){return()}
   
@@ -155,7 +159,7 @@ getListNbValuesInLines <- function(obj, i, type="wholeMatrix"){
     ll <- seq(0, ncol(obj))
   }
   
-  data <- as.data.frame(rowData(obj[[i]])[, metadata(obj)$OriginOfValues])
+  data <- as.data.frame(SummarizedExperiment::rowData(obj[[i]])[, metadata(obj)$OriginOfValues])
   
   switch(type,
          wholeMatrix= {
@@ -163,15 +167,15 @@ getListNbValuesInLines <- function(obj, i, type="wholeMatrix"){
            },
          allCond = {
                     tmp <- NULL
-                    for (cond in unique(colData(obj)@listData$Condition)){
-                     tmp <- c(tmp, length(which(colData(obj)@listData$Condition == cond)))
+                    for (cond in unique(SummarizedExperiment::colData(obj)@listData$Condition)){
+                     tmp <- c(tmp, length(which(SummarizedExperiment::colData(obj)@listData$Condition == cond)))
                   }
                   ll <- seq(0,min(tmp))
                   },
          atLeastOneCond = {
                    tmp <- NULL
-                  for (cond in unique(colData(obj)@listData$Condition)){
-                       tmp <- c(tmp, length(which(colData(obj)@listData$Condition == cond)))
+                  for (cond in unique(SummarizedExperiment::colData(obj)@listData$Condition)){
+                       tmp <- c(tmp, length(which(SummarizedExperiment::colData(obj)@listData$Condition == cond)))
                    }
                    ll <- seq(0,max(tmp))
                     }
@@ -227,6 +231,10 @@ dapar_hc_ExportMenu <- function(hc, filename){
 #' 
 #' @param zoomType The type of the zoom (one of "x", "y", "xy", "None")
 #' 
+#' @param width xxx
+#' 
+#' @param height xxx
+#' 
 #' @return A highchart plot
 #' 
 #' @author Samuel Wieczorek
@@ -242,7 +250,7 @@ dapar_hc_ExportMenu <- function(hc, filename){
 #' 
 #' @importFrom highcharter hc_chart
 #' 
-dapar_hc_chart <- function(hc,  chartType,zoomType="None", width=0, height=0){
+dapar_hc_chart <- function(hc,  chartType, zoomType="None", width=0, height=0){
   hc %>% 
     hc_chart(type = chartType, 
            zoomType=zoomType,

@@ -4,18 +4,10 @@
 \alias{display.CC.visNet}
 \title{Display a connex component.}
 \usage{
-display.CC.visNet(
-  g,
-  layout = layout_nicely,
-  obj = NULL,
-  prot.tooltip = NULL,
-  pept.tooltip = NULL
-)
+display.CC.visNet(g, obj = NULL, prot.tooltip = NULL, pept.tooltip = NULL)
 }
 \arguments{
 \item{g}{A connex component (a list)}
-
-\item{layout}{Default value is 'layout_nicely'}
 
 \item{obj}{xxx}
 

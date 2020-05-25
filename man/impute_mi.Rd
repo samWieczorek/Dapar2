@@ -15,7 +15,7 @@ impute_mi(x, sampleTab, lapala = TRUE, progress.bar = TRUE, ...)
 
 \item{progress.bar}{Same as the function \code{mi.mix} in the package \code{imp4p}}
 
-\item{distribution}{The type of distribution used. Values are \code{unif} (default) or \code{beta}.}
+\item{...}{xxxxxxxx}
 }
 \value{
 The \code{exprs(obj)} matrix with imputed values instead of missing values.
@@ -25,7 +25,7 @@ Missing values imputation using the LSimpute algorithm.
 }
 \examples{
 utils::data(Exp1_R25_pept, package='DAPARdata2')
-obj <- Exp1_R25_pept[1:1000]
+obj <- Exp1_R25_pept[1:1000,]
 x <- assay(obj[[2]])
 sampleTab <- colData(obj)
 dat <- impute_mi(x, sampleTab)

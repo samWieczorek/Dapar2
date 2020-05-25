@@ -2,14 +2,16 @@
 % Please edit documentation in R/missingValuesImputation_ProteinLevel.R
 \name{restore_MEC_matrix}
 \alias{restore_MEC_matrix}
-\title{Put back LAPALA into  a \code{MSnSet} object}
+\title{Put back LAPALA into xxxx}
 \usage{
 restore_MEC_matrix(x, conds, MECIndex)
 }
 \arguments{
-\item{MECIndex}{A data.frame that contains index of MEC (see findMECBlock) .}
+\item{x}{xxxxx}
 
-\item{obj}{An object of class \code{Su}.}
+\item{conds}{xxx}
+
+\item{MECIndex}{A data.frame that contains index of MEC (see findMECBlock) .}
 }
 \value{
 The object \code{obj} where LAPALA have been reintroduced

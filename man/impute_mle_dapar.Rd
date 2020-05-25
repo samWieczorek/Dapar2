@@ -7,7 +7,9 @@
 impute_mle_dapar(x, sampleTab)
 }
 \arguments{
-\item{x}{An object of class \code{MSnSet}.}
+\item{x}{xxxxx}
+
+\item{sampleTab}{xxxx}
 }
 \value{
 The \code{exprs(obj)} matrix with imputed values instead of missing values.

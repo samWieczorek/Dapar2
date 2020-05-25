@@ -13,6 +13,8 @@ compute.group.t.test(
 )
 }
 \arguments{
+\item{obj}{xxxxx}
+
 \item{sampleTab}{xxxx}
 
 \item{logFC}{A vector (or list of vectors) xxxx}
@@ -25,12 +27,6 @@ or each condition versus all others (contrast=2; e.g.  H0:"C1=(C2+C3)/2" vs
 H1:"C1!=(C2+C3)/2", etc. if there are three conditions).}
 
 \item{type}{xxxxx}
-
-\item{qData}{A matrix of quantitative data, without any missing values.}
-
-\item{X}{An adjacency matrix which contains all peptides (specific and shared).}
-
-\item{X.spec}{An adjacency matrix which contains only specific peptides.}
 }
 \value{
 A DataFrame which contains the

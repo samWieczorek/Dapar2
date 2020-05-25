@@ -23,7 +23,6 @@ number of missing values (NA) per lines (ie proteins).
 }
 \examples{
 library(highcharter)
-library(DAPAR2)
 utils::data(Exp1_R25_pept, package='DAPARdata2')
 qData <- assay(Exp1_R25_pept[['original']])
 samplesData <- colData(Exp1_R25_pept)

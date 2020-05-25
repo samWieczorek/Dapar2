@@ -2,26 +2,30 @@
 % Please edit documentation in R/Filtering_MV.R
 \name{removeAdditionalCol}
 \alias{removeAdditionalCol}
-\title{Filter lines in the matrix of intensities w.r.t. some criteria}
+\title{Restore the rowData() before MVindicesToZero}
 \usage{
-removeAdditionalCol(obj, newCol_name)
+removeAdditionalCol(obj, newColName)
 }
 \arguments{
-\item{obj}{An object of class \code{SummarizedExperiment} containing
-quantitative data.}
+\item{obj}{An object of class \code{SummarizedExperiment}}
 
-\item{newCol_name}{}
+\item{newColName}{Column to remove}
 }
 \value{
-An vector of indices that correspond to the lines to keep.
+The \code{SummarizedExperiment} object without the rowData newColName column
 }
 \description{
-Returns the \code{SummarizedExperiment} object with a extra column in \code{rowData()}.
+Returns the \code{SummarizedExperiment} object without the \code{rowData()} extra column
+from MVindicesToZero
 }
 \examples{
+library(DAPAR2)
+library(Features)
 utils::data(Exp1_R25_pept, package='DAPARdata2')
 object <- Exp1_R25_pept[[2]]
-removeAdditionalCol(obj=object, newCol="plop")
+sampleTab <- colData(Exp1_R25_pept)
+obj<-MVindicesToZero(obj=object, sampleTab, newColName="LinesKept", type="AllCond", th=2)
+removeAdditionalCol(obj,newColName="LinesKept" )
 }
 \author{
 Enora Fremy

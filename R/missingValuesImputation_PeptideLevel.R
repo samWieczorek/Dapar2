@@ -3,7 +3,9 @@
 
 #' @title Imputation of peptides having no values in a biological condition.
 #' 
-#' @param x An object of class \code{MSnSet}.
+#' @param x xxxxx
+#' 
+#' @param sampleTab xxxx
 #' 
 #' @return The \code{exprs(obj)} matrix with imputed values instead of missing values.
 #' 
@@ -51,14 +53,15 @@ impute_mle_dapar <- function(x, sampleTab){
 #' 
 #' @param progress.bar Same as the function \code{mi.mix} in the package \code{imp4p}
 #' 
-#' @param distribution The type of distribution used. Values are \code{unif} (default) or \code{beta}.
+#' @param ... xxxxxxxx
+#' 
 #' @return The \code{exprs(obj)} matrix with imputed values instead of missing values.
 #' 
 #' @author Samuel Wieczorek
 #' 
 #' @examples
 #' utils::data(Exp1_R25_pept, package='DAPARdata2')
-#' obj <- Exp1_R25_pept[1:1000]
+#' obj <- Exp1_R25_pept[1:1000,]
 #' x <- assay(obj[[2]])
 #' sampleTab <- colData(obj)
 #' dat <- impute_mi(x, sampleTab)
@@ -181,9 +184,9 @@ translatedRandomBeta <- function(n, min, max, param1=3, param2=1){
 #' 
 #' @title Missing values imputation from a \code{MSnSet} object
 #' 
-#' @param tab An object of class \code{MSnSet}.
+#' @param x xxxxx
 #' 
-#' @param conditions A vector of conditions in the dataset
+#' @param sampleTab xxxxx
 #' 
 #' @param q.min A quantile value of the observed values allowing defining the 
 #' maximal value which can be generated. This maximal value is defined by the
@@ -214,7 +217,7 @@ translatedRandomBeta <- function(n, min, max, param1=3, param2=1){
 #' 
 #' @export
 #' 
-#' @importFrom stats median quantile runif
+#' @importFrom stats median quantile runif sd
 #' 
 impute_pa2 <- function (x, sampleTab, q.min = 0, q.norm = 3, eps = 0, distribution = "unif"){
   

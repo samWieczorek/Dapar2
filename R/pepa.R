@@ -1,16 +1,18 @@
-#' fudge2LRT: heuristic to choose the value of the hyperparameter
+
+#' @title Heuristic to choose the value of the hyperparameter
+#' (fudge factor) used to regularize the variance estimator in the
+#' likelihood ratio statistic
+#' 
+#' @description fudge2LRT: heuristic to choose the value of the hyperparameter
 #' (fudge factor) used to regularize the variance estimator in the
 #' likelihood ratio statistic (as implemented in samLRT). We follow
 #' the heuristic described in [1] and adapt the code of the fudge2
 #' function in the siggene R package.
-
+#' 
 #' [1] Tusher, Tibshirani and Chu, Significance analysis of
 #' microarrays applied to the ionizing radiation response, PNAS 2001
-#' 98: 5116-5121, (Apr 24).
+#' 98: 5116-5121, (Apr 24)
 #' 
-#' @title Heuristic to choose the value of the hyperparameter
-#' (fudge factor) used to regularize the variance estimator in the
-#' likelihood ratio statistic
 #' @param lmm.res.h0 a vector of object containing the estimates (used to
 #' compute the statistic) under H0 for each connected component. If
 #' the fast version of the estimator was used (as implemented in this
@@ -18,23 +20,31 @@
 #' residuals. If a fixed effect model was used, it is a vector of lm
 #' objects and if a mixed effect model was used it is a vector or lmer
 #' object.
+#' 
 #' @param lmm.res.h1 similar to lmm.res.h0, a vector of object containing
 #' the estimates (used to compute the statistic) under H1 for each
 #' protein.
+#' 
 #' @param cc a list containing the indices of peptides and proteins
 #' belonging to each connected component.
+#' 
 #' @param n the number of samples used in the test
+#' 
 #' @param p the number of proteins in the experiment
+#' 
 #' @param s a vector containing the maximum likelihood estimate of the
 #' variance for the chosen model. When using the fast version of the
 #' estimator implemented in this package, this is the same thing as
 #' the input lmm.res.h1. For other models (e.g. mixed models) it can
 #' be obtained from samLRT.
+#' 
 #' @param alpha A vector of proportions used to build candidate values for
 #' the regularizer. We use quantiles of s with these
 #' proportions. Default to seq(0, 1, 0.05)
+#' 
 #' @param include.zero logical value indicating if 0 should be included in
 #' the list of candidates. Default to TRUE.
+#' 
 #' @return (same as the fudge2 function of siggene):
 #' s.zero: the value of the fudge factor s0.
 #' alpha.hat: the optimal quantile of the 's' values. If s0=0, 'alpha.hat'
@@ -45,9 +55,13 @@
 #'           test statistics.
 #' msg: a character string summarizing the most important information
 #'           about the fudge factor.
+#'           
 #' @author Thomas Burger, Laurent Jacob
+#' 
 #' @export
-#' @importFrom stats quantile
+#' 
+#' @importFrom stats quantile mad sd
+#' 
 fudge2LRT <- function(lmm.res.h0, lmm.res.h1, cc, n, p, s, alpha = seq(0, 1, 0.05), include.zero = TRUE)
 {
     
@@ -107,11 +121,11 @@ fudge2LRT <- function(lmm.res.h0, lmm.res.h1, cc, n, p, s, alpha = seq(0, 1, 0.0
     
     mad.mat <- matrix(0, n.int - 1, ncol(d.mat))
     for (i in 1:(n.int - 1)) {
-        mad.mat[i, ] <- apply(d.mat[which(int.s == i), , drop = FALSE],2, mad)
+        mad.mat[i, ] <- apply(d.mat[which(int.s == i), , drop = FALSE],2, stats::mad)
     }
     
     cv <- function(x) {
-        sd(x)/mean(x)
+        stats::sd(x)/mean(x)
     }
     
     vec.cv <- apply(mad.mat, 2, cv)
@@ -139,17 +153,23 @@ fudge2LRT <- function(lmm.res.h0, lmm.res.h1, cc, n, p, s, alpha = seq(0, 1, 0.0
 
 
 
-#' This function is xxxxxxx
-#' 
+
 #' @title xxxxxx
+#' 
 #' @param X an n.pep*n.prot indicator matrix.
+#' 
 #' @param y1 n.pep*n.samples matrice giving the observed counts for
-## each peptide in each sample from the condition 1
+#' each peptide in each sample from the condition 1
+#' 
 #' @param y2  n.pep*n.samples matrice giving the observed counts for
-## each peptide in each sample from the condition 2 
+#' each peptide in each sample from the condition 2 
+#' 
 #' @return xxxxxxxxxx..
+#' 
 #' @author Thomas Burger, Laurent Jacob
+#' 
 #' @export
+#' 
 LH0 <- function(X, y1, y2){
     
     n <- ncol(y1)+ncol(y2)
@@ -165,19 +185,26 @@ LH0 <- function(X, y1, y2){
 
 
 
-#' This function is xxxxxxx
-#' 
+
 #' @title xxxxxx
+#' 
 #' @param X an n.pep*n.prot indicator matrix.
+#' 
 #' @param y1 n.pep*n.samples matrice giving the observed counts for
-## each peptide in each sample from the condition 1
+#' each peptide in each sample from the condition 1
+#' 
 #' @param y2  n.pep*n.samples matrice giving the observed counts for
-## each peptide in each sample from the condition 2 
+#' each peptide in each sample from the condition 2 
+#' 
 #' @param j the index of the protein being tested, ie which has different
-## expression in the two conditions under H1
+#' expression in the two conditions under H1
+#' 
 #' @return xxxxxxxxxx..
+#' 
 #' @author Thomas Burger, Laurent Jacob
+#' 
 #' @export
+#' 
 LH1 <- function(X, y1, y2, j){
     n1 <- ncol(y1)
     n2 <- ncol(y2)
@@ -196,17 +223,23 @@ LH1 <- function(X, y1, y2, j){
 
 
 
-#' This function is xxxxxxx
-#' 
+
 #' @title xxxxxx
+#' 
 #' @param X an n.pep*n.prot indicator matrix.
+#' 
 #' @param y1 n.pep*n.samples matrice giving the observed counts for
 #' each peptide in each sample from the condition 1
+#' 
 #' @param y2  n.pep*n.samples matrice giving the observed counts for
 #' each peptide in each sample from the condition 2 
+#' 
 #' @return xxxxxxxxxx..
+#' 
 #' @author Thomas Burger, Laurent Jacob
+#' 
 #' @export
+#' 
 LH0.lm <- function(X, y1, y2){
     Ytilde <- matrix(c(as.vector(y1), as.vector(y2)), ncol=1)
     p <- ncol(X)
@@ -240,24 +273,28 @@ LH0.lm <- function(X, y1, y2){
 }
 
 
-
-
-
-
-#' This function is xxxxxxx
-#' 
+ 
 #' @title xxxxxx
+#' 
 #' @param X an n.pep*n.prot indicator matrix.
+#' 
 #' @param y1 n.pep*n.samples matrix giving the observed counts for
-## each peptide in each sample from the condition 1
+#' each peptide in each sample from the condition 1
+#' 
 #' @param y2  n.pep*n.samples matrix giving the observed counts for
-## each peptide in each sample from the condition 2 
+#' each peptide in each sample from the condition 2 
+#' 
 #' @param j the index of the protein being tested, ie which has different
-## expression in the two conditions under H1.
+#' expression in the two conditions under H1.
+#' 
 #' @return xxxxxxxxxx..
+#' 
 #' @author Thomas Burger, Laurent Jacob
+#' 
 #' @export
+#' 
 #' @importFrom stats formula logLik lm
+#' 
 LH1.lm <- function(X, y1, y2, j){
     n1 <- ncol(y1)
     n2 <- ncol(y2)
@@ -303,14 +340,15 @@ LH1.lm <- function(X, y1, y2, j){
 
 
 
-#' This function computes a regularized version of the likelihood ratio
+
+#' @title xxxxxx
+#' 
+#' @description This function computes a regularized version of the likelihood ratio
 #' statistic. The regularization adds a user-input fudge factor s1 to
 #' the variance estimator. This is straightforward when using a fixed
 #' effect model (cases 'numeric' and 'lm') but requires some more care
-#' when using a mixed model.
-
+#' when using a mixed model
 #' 
-#' @title xxxxxx
 #' @param lmm.res.h0 a vector of object containing the estimates (used to
 #' compute the statistic) under H0 for each connected component. If
 #' the fast version of the estimator was used (as implemented in this
@@ -318,14 +356,20 @@ LH1.lm <- function(X, y1, y2, j){
 #' residuals. If a fixed effect model was used, it is a vector of lm
 #' objects and if a mixed effect model was used it is a vector or lmer
 #' object.
+#' 
 #' @param lmm.res.h1 similar to lmm.res.h0, a vector of object containing
 #' the estimates (used to compute the statistic) under H1 for each
 #' protein.
+#' 
 #' @param cc a list containing the indices of peptides and proteins
 #' belonging to each connected component. 
+#' 
 #' @param n the number of samples used in the test
+#' 
 #' @param p  the number of proteins in the experiment 
+#' 
 #' @param s1 the fudge factor to be added to the variance estimate
+#' 
 #' @return llr.sam: a vector of numeric containing the regularized log
 #' likelihood ratio statistic for each protein.
 #' s: a vector containing the maximum likelihood estimate of the
@@ -340,8 +384,13 @@ LH1.lm <- function(X, y1, y2, j){
 #' (number of biological samples times number of peptides) for each
 #' protein. This number is the same for all proteins within each
 #' connected component.
+#' 
 #' @author Thomas Burger, Laurent Jacob
+#' 
 #' @export
+#' 
+#' @importFrom lme4 getME
+#' 
 samLRT <- function(lmm.res.h0, lmm.res.h1, cc, n, p, s1){
     s <- lh1.sam <- llr.sam <- rep(NA, p)
     lh0.sam <- rep(NA, length(cc))
@@ -356,7 +405,7 @@ samLRT <- function(lmm.res.h0, lmm.res.h1, cc, n, p, s1){
             lh0.sam[ii] <- (lmm.res.h0[ii] + s1) * (length(local.pep)*n)
         }else{
             if(class(lmm.res.h0[[ii]]) == 'lm'){
-                lh0.sam[ii] <- (mean(residuals(lmm.res.h0[[ii]])^2) + s1) * (length(local.pep)*n)
+                lh0.sam[ii] <- (mean(stats::residuals(lmm.res.h0[[ii]])^2) + s1) * (length(local.pep)*n)
             }else{
                 devcomp <- lme4::getME(lmm.res.h0[[ii]], 'devcomp')
                 sigmaML2 <- devcomp$cmp['pwrss']/devcomp$dims['n']
@@ -371,8 +420,8 @@ samLRT <- function(lmm.res.h0, lmm.res.h1, cc, n, p, s1){
                 s[jj] <- lmm.res.h1[jj]
             }else{
                 if(class(lmm.res.h1[[jj]]) == 'lm'){
-                    s[jj] <- mean(residuals(lmm.res.h1[[jj]])^2)
-                    lh1.sam[jj] <- (mean(residuals(lmm.res.h1[[jj]])^2) + s1) * (length(local.pep)*n)
+                    s[jj] <- mean(stats::residuals(lmm.res.h1[[jj]])^2)
+                    lh1.sam[jj] <- (mean(stats::residuals(lmm.res.h1[[jj]])^2) + s1) * (length(local.pep)*n)
                     llr.sam[jj] <- (length(local.pep)*n) * (log(lh0.sam[ii]) - log(lh1.sam[jj]))
                 }else{
                     devcomp <- lme4::getME(lmm.res.h1[[jj]], 'devcomp')
@@ -392,16 +441,20 @@ samLRT <- function(lmm.res.h0, lmm.res.h1, cc, n, p, s1){
 
 
 
-#' This function is PEptide based Protein differential Abundance test
-#' 
+
 #' @title PEptide based Protein differential Abundance test
+#' 
 #' @param X Binary q x p design matrix for q peptides and p
 #' proteins. X_(ij)=1 if peptide i belongs to protein j, 0 otherwise.
+#' 
 #' @param y q x n matrix representing the log intensities of q peptides
 #' among n MS samples.
+#' 
 #' @param n1 number of samples under condition 1. It is assumed that the first n1 columns of y
 #' correspond to observations under condition 1.
+#' 
 #' @param n2 number of samples under condition 2.
+#' 
 #' @param global if TRUE, the test statistic for each protein uses all
 #' residues, including the ones for peptides in different connected
 #' components. Can be much faster as it does not require to compute
@@ -410,8 +463,10 @@ samLRT <- function(lmm.res.h0, lmm.res.h1, cc, n, p, s1){
 #' statistic. Calibrating the p-value would require knowing the
 #' amplitude of the ridge, which in turns would require computing the
 #' connected components.
+#' 
 #' @param use.lm if TRUE (and if global=FALSE), use lm() rather than the result
 #' in Proposition 1 to compute the test statistic
+#' 
 #' @return A list of the following elements:
 #' llr: log likelihood ratio statistic (maximum likelihood version).
 #' llr.map: log likelihood ratio statistic (maximum a posteriori version).
@@ -421,9 +476,13 @@ samLRT <- function(lmm.res.h0, lmm.res.h1, cc, n, p, s1){
 #' mse.h1: Mean squared error under H1
 #' s: selected regularization hyperparameter for llr.map.
 #' wchi2: weight used to make llr.map chi2-distributed under H0.
+#' 
 #' @author Thomas Burger, Laurent Jacob
+#' 
 #' @export
-#' @importFrom stats pchisq quantile
+#' 
+#' @importFrom stats pchisq quantile residuals
+#' 
 pepa.test <- function(X, y, n1, n2, global=FALSE, use.lm=FALSE){
     
     n <- n1+n2
@@ -483,7 +542,7 @@ pepa.test <- function(X, y, n1, n2, global=FALSE, use.lm=FALSE){
             
             if(use.lm){
                 lik0 <- LH0.lm(equiv.X, y1[local.pep, , drop=FALSE], y2[local.pep, , drop=FALSE])
-                mse.h0[ii] <- mean(residuals(lik0$lmm.res)^2)
+                mse.h0[ii] <- mean(stats::residuals(lik0$lmm.res)^2)
             }else{
                 lik0 <- LH0(equiv.X, y1[local.pep, , drop=FALSE], y2[local.pep, , drop=FALSE])
                 mse.h0[ii] <- lik0$ss/(length(local.pep)*n)
@@ -495,7 +554,7 @@ pepa.test <- function(X, y, n1, n2, global=FALSE, use.lm=FALSE){
                 
                 if(use.lm){
                     lik1 <- LH1.lm(equiv.X, y1[local.pep, , drop=FALSE], y2[local.pep, , drop=FALSE], prot.equiv.idx)
-                    mse.h1[jj] <- mean(residuals(lik1$lmm.res)^2)
+                    mse.h1[jj] <- mean(stats::residuals(lik1$lmm.res)^2)
                     llr[jj] <- 2*(lik1$ll - lik0$ll)
                 }else{
                     lik1 <- LH1(equiv.X, y1[local.pep, , drop=FALSE], y2[local.pep, , drop=FALSE], prot.equiv.idx)

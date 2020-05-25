@@ -19,34 +19,31 @@
 #' @details
 #'
 #'
-#' @param  object An object of class `Features` or `SummarizedExperiment`.
-#'
-#' @param i A numeric vector or a character vector giving the index or the 
-#'     name, respectively, of the assay(s) to be processed.
-#'
-#' @param name A `character(1)` naming the new assay name. Defaults
-#'     are `ttestAssay`.
-#'
-#' @param sampleTab xxxxxxx
-#'
-#' @param ... Additional parameters passed to inner functions.
-#'
 #' @examples
-#'
 #' utils::data(Exp1_R25_pept, package='DAPARdata2')
 #' object <- Exp1_R25_pept[1:1000,]
 #' object <- addAssay(object, Features::filterNA(object[[2]],  pNA = 0), name='filtered')
 #' object <- addListAdjacencyMatrices(object, 3)
 #' sTab <- colData(object)
-#' gttest.se <- t.test.sam(object[[3]], sTab, FUN = 'limma.complete.test')
+#' gttest.se <- t_test_sam(object[[3]], sTab, FUN = 'limma.complete.test')
 #' 
-#' object <- t.test.sam(object, 3, name = "ttestAssay", FUN = 'compute.t.test', contrast = 'OnevsOne')
+#' object <- t_test_sam(object, 3, name = "ttestAssay", FUN = 'compute.t.test', contrast = 'OnevsOne')
 #' 
-NULL
+"t_test_sam"
 
+#' @param  object An object of class `SummarizedExperiment`.
+#' 
+#' @param sampleTab xxxxxxx
+#'
+#' @param FUN xxx
+#' 
+#' @param ... Additional parameters passed to inner functions.
+#' 
 #' @export
 #' 
-setMethod("t.test.sam", "SummarizedExperiment",
+#' @rdname t_test_sam
+#'
+setMethod("t_test_sam", "SummarizedExperiment",
           function(object,
                    sampleTab,
                    FUN,
@@ -60,7 +57,23 @@ setMethod("t.test.sam", "SummarizedExperiment",
           })
 
 
-setMethod("t.test.sam", "Features",
+#' @param  object An object of class `Features`.
+#' 
+#' @param i A numeric vector or a character vector giving the index or the 
+#'     name, respectively, of the assay(s) to be processed.
+#'
+#' @param name A `character(1)` naming the new assay name. Defaults
+#'     are `ttestAssay`.
+#' 
+#' @param FUN xxx
+#' 
+#' @param ... Additional parameters passed to inner functions.
+#' 
+#' @export
+#' 
+#' @rdname t_test_sam
+#'
+setMethod("t_test_sam", "Features",
           function(object, i, name = "ttestAssay", FUN,  ...) {
             if (missing(i))
               stop("Provide index or name of assay to be processed")
@@ -72,7 +85,7 @@ setMethod("t.test.sam", "Features",
               object <- addListAdjacencyMatrices(object, i)
             
             object <- addAssay(object,
-                               t.test.sam(object[[i]], sampleTab = colData(object), FUN, ...),
+                               t_test_sam(object[[i]], sampleTab = colData(object), FUN, ...),
                                name)
             addAssayLinkOneToOne(object, from = i, to = name)
           })
@@ -86,9 +99,9 @@ setMethod("t.test.sam", "Features",
 #' 
 #' @param X xxxxx.
 #' 
-#' @param cond1 xxxx.
+#' @param qData1 xxxx.
 #' 
-#' @param cond2 xxxx.
+#' @param qData2 xxxx.
 #'
 #' @return xxxxx
 #'
@@ -128,13 +141,9 @@ groupttest <- function(X, qData1=NULL, qData2 = NULL){
 
 #' @title xxxxxx
 #' 
-#' @param qData A matrix of quantitative data, without any missing values.
+#' @param obj xxxxx
 #' 
 #' @param sampleTab xxxx
-#' 
-#' @param X An adjacency matrix which contains all peptides (specific and shared).
-#' 
-#' @param X.spec An adjacency matrix which contains only specific peptides.
 #' 
 #' @param logFC A vector (or list of vectors) xxxx
 #' 
@@ -164,7 +173,7 @@ groupttest <- function(X, qData1=NULL, qData2 = NULL){
 #' 
 #' @importFrom utils combn
 #' 
-compute.group.t.test <- function(obj, sampleTab,logFC = NULL, contrast="OnevsOne", type="Student"){
+compute.group.t.test <- function(obj, sampleTab, logFC = NULL, contrast="OnevsOne", type="Student"){
 
  
   qData <- assay(obj)

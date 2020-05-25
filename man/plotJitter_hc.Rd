@@ -18,8 +18,8 @@ A plot
 Display a jitter plot for connex component with the package highcharter
 }
 \examples{
-\dontrun{
-}
+df <- data.frame(x=1:10, y=1:10)
+plotJitter_hc(df)
 
 }
 \author{

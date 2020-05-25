@@ -599,6 +599,7 @@ limma.complete.test <- function(obj, sampleTab, comp.type="OnevsOne"){
 #' limma <- limma.complete.test(qData, sTab)
 #' }
 #' 
+#' @importFrom stringr str_match_all
 #' 
 formatLimmaResult <- function(fit, conds, contrast){
   

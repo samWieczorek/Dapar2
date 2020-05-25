@@ -6,14 +6,17 @@
 \usage{
 createFeatures(
   data,
-  sample = NULL,
+  sample,
   indExpData,
   keyId = NULL,
   namesOrigin = NULL,
   logTransform = FALSE,
   forceNA = FALSE,
-  typeOfData = NULL,
-  parentProtId = NULL
+  typeOfData,
+  parentProtId = NULL,
+  analysis,
+  processes = NULL,
+  pipelineType = NULL
 )
 }
 \arguments{
@@ -40,6 +43,12 @@ intensity have to be replaced by NA (Default is FALSE)}
 
 \item{parentProtId}{For peptide entities, a string which is the name of a column in rowData. It contains the id of parent
 proteins and is used to generate adjacency matrix and process to aggregation.}
+
+\item{analysis}{xxx}
+
+\item{processes}{xxxx}
+
+\item{pipelineType}{xxxx}
 }
 \value{
 An instance of class \code{Features}.

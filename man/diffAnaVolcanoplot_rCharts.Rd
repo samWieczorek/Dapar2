@@ -57,7 +57,6 @@ a point of the scatter plot.
 \examples{
 \donttest{
 library(Features)
-library(DAPAR)
 library(DT)
 library(highcharter)
 utils::data(Exp1_R25_pept, package='DAPARdata2')

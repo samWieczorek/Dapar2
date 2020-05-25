@@ -1,8 +1,3 @@
-
-
-
-#' This function is xxxxxx
-#'
 #' @title xxxxxx
 #' 
 #' @description 

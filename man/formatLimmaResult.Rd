@@ -33,7 +33,6 @@ sTab <- colData(object)
 limma <- limma.complete.test(qData, sTab)
 }
 
-
 }
 \author{
 Samuel Wieczorek

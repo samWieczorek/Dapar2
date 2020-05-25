@@ -12,6 +12,10 @@ dapar_hc_chart(hc, chartType, zoomType = "None", width = 0, height = 0)
 \item{chartType}{The type of the plot}
 
 \item{zoomType}{The type of the zoom (one of "x", "y", "xy", "None")}
+
+\item{width}{xxx}
+
+\item{height}{xxx}
 }
 \value{
 A highchart plot

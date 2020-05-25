@@ -35,9 +35,6 @@ conds <- colData(Exp1_R25_pept)@listData[["Condition"]]
 CVDistD_HC(qData, conds)
 
 }
-\seealso{
-\code{\link{densityPlotD}}.
-}
 \author{
 Samuel Wieczorek, Enora Fremy
 }

@@ -1,21 +1,37 @@
-#' The function impute_fixed_value is deleted and the dev must use the function impite_with from the package MSCoreUtils
 
-
+#' @title xxxxxx
+#' 
+#' 
+#' @examples
+#' library(Features)
+#' utils::data(Exp1_R25_pept, package='DAPARdata2')
+#' obj <- Exp1_R25_pept[1:1000,]
+#' obj <- impute_dapar(obj[[2]], 'det_quant')
+#' 
+"impute_dapar"
 
 #' @param object A `SummarizedExperiment` or `Features` object with
 #'     missing values to be imputed.
+#'     
 #' @param method `character(1)` defining the imputation method. See
 #'     `imputeMethods()` for available ones. See
 #'     [MsCoreUtils::impute_matrix()] for details.
+#'     
 #' @param ... Additional parameters passed to the inner imputation
 #'     function. See [MsCoreUtils::impute_matrix()] for details.
-#' 
+#'     
 #' @export
-#' @rdname impute
+#' 
+#' @importFrom SummarizedExperiment assay
+#' 
+#' @rdname impute_dapar
+#' 
 setMethod("impute_dapar", "SummarizedExperiment",
           function(object, method, ...) {
               res <- impute_matrix_dapar(assay(object), method, ...)
-              assay(object) <- res
+              rownames(res) <- rownames(assay(object))
+              colnames(res) <- colnames(assay(object))
+              SummarizedExperiment::assay(object) <- res
               object
           })
 
@@ -24,14 +40,18 @@ setMethod("impute_dapar", "SummarizedExperiment",
 #'     impute. If missing, all assays will be imputed.
 #' 
 #' @export
-#' @rdname impute
+#' 
+#' @importFrom SummarizedExperiment assay
+#' 
+#' @rdname impute_dapar
+#' 
 setMethod("impute_dapar", "Features",
           function(object, method, ..., i) {
               if (missing(i))
                   i  <-  seq_len(length(object))
               for (ii in i) {
                   res <- impute_matrix_dapar(assay(object[[ii]]), method, ...)
-                  assay(object[[ii]]) <- res
+                  SummarizedExperiment::assay(object[[ii]]) <- res
               }
               object
           })
@@ -39,6 +59,14 @@ setMethod("impute_dapar", "Features",
 
 
 
+#' @title xxx
+#' 
+#' @param x xxxx
+#' 
+#' @param method xxxx
+#' 
+#' @param ... xxxxx
+#' 
 #' @examples
 #' library(Features)
 #' utils::data(Exp1_R25_pept, package='DAPARdata2')
@@ -52,13 +80,15 @@ setMethod("impute_dapar", "Features",
 #' imp <- impute_matrix_dapar(assay(obj[[2]]), method='slsa', sampleTab = colData(obj))
 #' 
 #' @export
+#' 
+#' @rdname impute_matrix_dapar
+#' 
 impute_matrix_dapar <- function(x,
                           method,
                           ...) {
     if (!anyNA(x)) return(x)
     if (missing(method))
-        stop("Please specify an imputation method. ",
-             "See '?impute_matrix_dapar' for details.")
+        stop("Please specify an imputation method. ")
     method <- match.arg(method,
                         choices = imputeMethodsDapar(),
                         several.ok = FALSE)
@@ -85,8 +115,10 @@ impute_matrix_dapar <- function(x,
 
 
 
-##' @export
-##' @rdname imputation
+#' @title xxxx
+#' 
+#' @export
+#' 
 imputeMethodsDapar <- function()
     c("knn_by_conds", "pa", "det_quant", "slsa", "mle_dapar", "none")
 
@@ -96,7 +128,9 @@ imputeMethodsDapar <- function()
 #' 
 #' @description This function imputes the missing values condition by condition.
 #' 
-#' @param obj An object of class \code{MSnSet}.
+#' @param x xxxx
+#' 
+#' @param conds xxx
 #' 
 #' @param k the number of neighbors.
 #' 
@@ -138,11 +172,13 @@ impute_knn_by_conditions <- function(x, conds=NULL, k=3){
 
 #' @title Imputation of peptides having no values in a biological condition.
 #' 
-#' @param obj An object of class \code{MSnSet}.
+#' @param x xxxxx
+#' 
+#' @param conds xxxx
 #' 
 #' @param q.min Same as the function \code{impute.pa} in the package \code{imp4p}
 #' 
-#' @return The \code{exprs(obj)} matrix with imputed values instead of missing values.
+#' @return The xxxx.
 #' 
 #' @author Samuel Wieczorek
 #' 
@@ -155,7 +191,7 @@ impute_knn_by_conditions <- function(x, conds=NULL, k=3){
 #' 
 #' @export
 #' 
-#' importFrom imp4p impute.pa
+#' @importFrom imp4p impute.pa
 #' 
 impute_pa <- function(x, conds, q.min = 0.025){
     res <- x
@@ -173,8 +209,7 @@ impute_pa <- function(x, conds, q.min = 0.025){
 
 
 
-#' @title Wrapper of the function \code{\link{impute.detQuant}} for objects
-#' of class \code{MSnSet}
+#' @title xxx
 #' 
 #' @param x An instance of class \code{DataFrame}
 #' 
@@ -186,11 +221,11 @@ impute_pa <- function(x, conds, q.min = 0.025){
 #' 
 #' @examples
 #' utils::data(Exp1_R25_pept, package='DAPARdata2')
-#' impute_det_quant(assay(Exp1_R25_pept[[2]])
+#' impute_det_quant(assay(Exp1_R25_pept[[2]]))
 #' 
 #' @export
 impute_det_quant <- function(x,...){
-    if (is.null(obj)){return(NULL)}
+    if (is.null(x)){return(NULL)}
     
     values <- getQuantile4Imp(x, ...)
     res <- x
@@ -219,8 +254,8 @@ impute_det_quant <- function(x,...){
 #' @author Thomas Burger
 #' 
 #' @examples
-#' utils::data(Exp1_R25_pept, package='DAPARdata')
-#' qData <- Biobase::exprs(Exp1_R25_pept)
+#' utils::data(Exp1_R25_pept, package='DAPARdata2')
+#' qData <- assay(Exp1_R25_pept[[2]])
 #' getQuantile4Imp(qData) 
 #' 
 #' @export
@@ -240,7 +275,7 @@ getQuantile4Imp <- function(x, qval=0.025, factor=1){
 #' 
 #' @param x A DataFrame.
 #' 
-#' @param conds xxxxx
+#' @param sampleTab xxxxx
 #' 
 #' @return A DataFrame
 #' 
@@ -275,11 +310,13 @@ impute_slsa <- function(x, sampleTab){
 
 #' 
 #'
-#' @title Put back LAPALA into  a \code{MSnSet} object
+#' @title Put back LAPALA into xxxx
 #' 
 #' @description This method is used to put back the LAPALA that have been identified previously
 #' 
-#' @param obj An object of class \code{Su}.
+#' @param x xxxxx
+#' 
+#' @param conds xxx
 #' 
 #' @param MECIndex A data.frame that contains index of MEC (see findMECBlock) .
 #' 
@@ -310,7 +347,9 @@ restore_MEC_matrix <- function(x, conds, MECIndex){
 
 #' @title Finds the LAPALA into a \code{MSnSet} object
 #' 
-#' @param obj An object of class \code{SummarizedExperiment}.
+#' @param x xxxxx
+#' 
+#' @param conds xxx
 #' 
 #' @return A data.frame that contains the indexes of LAPALA
 #' 
@@ -326,7 +365,7 @@ restore_MEC_matrix <- function(x, conds, MECIndex){
 find_MEC_matrix <- function(x, conds){
     
     u_conds <- unique(conds)
-    nbCond <- length(conditions)
+    nbCond <- length(u_conds)
     
     s <- data.frame()
     

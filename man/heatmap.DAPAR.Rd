@@ -2,7 +2,7 @@
 % Please edit documentation in R/plots_heatmap.R
 \name{heatmap.DAPAR}
 \alias{heatmap.DAPAR}
-\title{This function is inspired from the function \code{\link{heatmap.2}} 
+\title{This function is inspired from the function 'heatmap.2' 
 that displays a numeric matrix. For more information, please refer to the help 
 of the heatmap.2 function.}
 \usage{
@@ -42,12 +42,15 @@ be plotted.}
 A heatmap
 }
 \description{
-Heatmap inspired by the heatmap.2 function.
+This function is inspired from the function 'heatmap.2' 
+that displays a numeric matrix. For more information, please refer to the help 
+of the heatmap.2 function.
 }
 \examples{
 utils::data(Exp1_R25_pept, package='DAPARdata2')
 qData <- assay(Exp1_R25_pept[['original']])
 heatmap.DAPAR(qData)
+
 }
 \author{
 Samuel Wieczorek, Enora Fremy

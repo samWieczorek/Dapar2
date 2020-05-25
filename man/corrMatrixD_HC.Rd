@@ -8,19 +8,19 @@ numeric matrix.}
 corrMatrixD_HC(res, names = NULL, rate = 0.5)
 }
 \arguments{
+\item{res}{xxx}
+
 \item{names}{xxxxx}
 
 \item{rate}{The rate parameter to control the exponential law for 
 the gradient of colors}
-
-\item{object}{The result of the \code{cor} function.}
 }
 \value{
 A colored correlation matrix
 }
 \description{
-Correlation matrix based on a data.frame object. Same as the 
-function \link{corrMatrixD} but uses the package \code{highcharter}
+Displays a correlation matrix of the quantitative data of a
+numeric matrix.
 }
 \examples{
 utils::data(Exp1_R25_pept, package='DAPARdata2')
@@ -28,6 +28,7 @@ qData <- assay(Exp1_R25_pept[['original']])
 names <- colnames(qData)
 res <- cor(qData,use = 'pairwise.complete.obs')
 corrMatrixD_HC(res, names)
+
 }
 \author{
 Samuel Wieczorek, Enora Fremy

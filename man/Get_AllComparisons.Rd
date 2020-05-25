@@ -23,10 +23,10 @@ utils::data(Exp1_R25_pept, package='DAPARdata2')
 object <- Exp1_R25_pept[1:1000,]
 object <- addAssay(object, Features::filterNA(object[[2]],  pNA = 0), name='filtered')
 sTab <- colData(object)
-gttest.se <- t.test.sam(object[[3]], sTab, FUN = compute.t.test)
+gttest.se <- t_test_sam(object[[3]], sTab, FUN = compute.t.test)
 object <- addAssay(object, gttest.se, name='t-test')
 comp <- '25fmol_vs_10fmol'
-object <- diff.analysis.sam(object, 't-test', name='diffAna', comp)
+object <- diff_analysis_sam(object, 't-test', name='diffAna', comp)
 
 allComp <- Get_AllComparisons(object[['diffAna']])
 
