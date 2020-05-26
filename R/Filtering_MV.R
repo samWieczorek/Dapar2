@@ -113,6 +113,7 @@ proportionConRev_HC <- function(lDataset, nBoth = 0, nCont=0, nRev=0){
 #' Values are : "None", "EmptyLines", "WholeMatrix", "AllCond", "AtLeastOneCond"
 #' 
 #' @param th Either a numeric between 0 and 1, or a integer between 0 and maximum number of samples.
+#' Only the lines which contain at least \code{th}% of non NA values or \code{th} values are kept.
 #' 
 #' @param percent TRUE by default. When FALSE, use the number of samples
 #' 

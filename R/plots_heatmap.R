@@ -23,7 +23,8 @@
 #' \dontrun{
 #' utils::data(Exp1_R25_pept, package='DAPARdata2')
 #' ft <- Exp1_R25_pept
-#' qData <- assay(ft[[2]])[1:1000,]
+#' qData <- assay(ft[[2]])[1:100,]
+#' qData <- cbind(qData,qData) # x4
 #' heatmapD(qData)
 #' }
 #' 
@@ -65,7 +66,7 @@ heatmapD <- function(qData, distance="euclidean", cluster="complete", dendro = F
              seq(0.5, 6, length=100))
   heatmap.color <- grDevices::colorRampPalette(c("green", "red"))(n = 1000)
   
-  
+  par(cex.lab = 0.2)
   if (dendro){ .dendro = "row"} else {.dendro = "none"}
   p <- gplots::heatmap.2(
     x=t(.data),
@@ -87,7 +88,8 @@ heatmapD <- function(qData, distance="euclidean", cluster="complete", dendro = F
     #srtCol=45,
     labCol="",
     margins=c(4,12),
-    cexRow=1.5,
+    #cexRow=1.5,
+    cexRow=0.2 + 1/log10(nrow(.data)),
     keysize = 1.5,
     lhei = c(1.5, 9),
     lwid = c(1.5, 4),
@@ -128,7 +130,7 @@ heatmapD <- function(qData, distance="euclidean", cluster="complete", dendro = F
 #' 
 #' @examples
 #' utils::data(Exp1_R25_pept, package='DAPARdata2')
-#' qData <- assay(Exp1_R25_pept[['original']])
+#' qData <- assay(Exp1_R25_pept[[2]])[1:1000,]
 #' heatmap.DAPAR(qData)
 #' 
 #' @export
