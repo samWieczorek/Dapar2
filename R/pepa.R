@@ -468,14 +468,14 @@ samLRT <- function(lmm.res.h0, lmm.res.h1, cc, n, p, s1){
 #' in Proposition 1 to compute the test statistic
 #' 
 #' @return A list of the following elements:
-#' llr: log likelihood ratio statistic (maximum likelihood version).
-#' llr.map: log likelihood ratio statistic (maximum a posteriori version).
-#' llr.pv: p-value for llr.
-#' llr.map.pv: p-value for llr.map.
-#' mse.h0: Mean squared error under H0
-#' mse.h1: Mean squared error under H1
-#' s: selected regularization hyperparameter for llr.map.
-#' wchi2: weight used to make llr.map chi2-distributed under H0.
+#' - llr: log likelihood ratio statistic (maximum likelihood version).
+#' - llr.map: log likelihood ratio statistic (maximum a posteriori version).
+#' - llr.pv: p-value for llr.
+#' - llr.map.pv: p-value for llr.map.
+#' - mse.h0: Mean squared error under H0
+#' - mse.h1: Mean squared error under H1
+#' - s: selected regularization hyperparameter for llr.map.
+#' - wchi2: weight used to make llr.map chi2-distributed under H0.
 #' 
 #' @author Thomas Burger, Laurent Jacob
 #' 
@@ -485,7 +485,7 @@ samLRT <- function(lmm.res.h0, lmm.res.h1, cc, n, p, s1){
 #' 
 pepa.test <- function(X, y, n1, n2, global=FALSE, use.lm=FALSE){
     
-    n <- n1+n2
+    n <- n1 + n2
     
     q <- nrow(X) # Number of peptides
     p <- ncol(X) # Number of proteins
@@ -585,3 +585,4 @@ pepa.test <- function(X, y, n1, n2, global=FALSE, use.lm=FALSE){
                 mse.h0=mse.h0, mse.h1=mse.h1,
                 s=s, wchi2=wchi2))
 }
+

@@ -2,30 +2,31 @@
 % Please edit documentation in R/Filtering_MV.R
 \name{removeAdditionalCol}
 \alias{removeAdditionalCol}
-\title{Restore the rowData() before MVindicesToZero}
+\title{Restore the rowData() before MVrowsTagToOne}
 \usage{
-removeAdditionalCol(obj, newColName)
+removeAdditionalCol(obj, colToRemove)
 }
 \arguments{
 \item{obj}{An object of class \code{SummarizedExperiment}}
 
-\item{newColName}{Column to remove}
+\item{colToRemove}{Column to remove}
 }
 \value{
-The \code{SummarizedExperiment} object without the rowData newColName column
+The \code{SummarizedExperiment} object without the rowData colToRemove column
 }
 \description{
 Returns the \code{SummarizedExperiment} object without the \code{rowData()} extra column
-from MVindicesToZero
+from MVrowsTagToOne
 }
 \examples{
-library(DAPAR2)
 library(Features)
 utils::data(Exp1_R25_pept, package='DAPARdata2')
 object <- Exp1_R25_pept[[2]]
 sampleTab <- colData(Exp1_R25_pept)
-obj<-MVindicesToZero(obj=object, sampleTab, newColName="LinesKept", type="AllCond", th=2)
-removeAdditionalCol(obj,newColName="LinesKept" )
+obj<-MVrowsTagToOne(obj=object, sampleTab, newColName="LinesKept", type="AllCond", th=2)
+obj<-removeAdditionalCol(obj,colToRemove="None" )
+head(rowData(obj))
+
 }
 \author{
 Enora Fremy

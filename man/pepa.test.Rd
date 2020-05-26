@@ -32,14 +32,14 @@ in Proposition 1 to compute the test statistic}
 }
 \value{
 A list of the following elements:
-llr: log likelihood ratio statistic (maximum likelihood version).
-llr.map: log likelihood ratio statistic (maximum a posteriori version).
-llr.pv: p-value for llr.
-llr.map.pv: p-value for llr.map.
-mse.h0: Mean squared error under H0
-mse.h1: Mean squared error under H1
-s: selected regularization hyperparameter for llr.map.
-wchi2: weight used to make llr.map chi2-distributed under H0.
+- llr: log likelihood ratio statistic (maximum likelihood version).
+- llr.map: log likelihood ratio statistic (maximum a posteriori version).
+- llr.pv: p-value for llr.
+- llr.map.pv: p-value for llr.map.
+- mse.h0: Mean squared error under H0
+- mse.h1: Mean squared error under H1
+- s: selected regularization hyperparameter for llr.map.
+- wchi2: weight used to make llr.map chi2-distributed under H0.
 }
 \description{
 PEptide based Protein differential Abundance test
