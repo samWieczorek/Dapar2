@@ -266,4 +266,6 @@ removeAdditionalCol <- function(obj, colToRemove) {
   rowData(obj)[[colToRemove]] <- NULL
   
   return(obj)
+
 }
+
