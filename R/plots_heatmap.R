@@ -66,7 +66,7 @@ heatmapD <- function(qData, distance="euclidean", cluster="complete", dendro = F
              seq(0.5, 6, length=100))
   heatmap.color <- grDevices::colorRampPalette(c("green", "red"))(n = 1000)
   
-  par(cex.lab = 0.2)
+  
   if (dendro){ .dendro = "row"} else {.dendro = "none"}
   p <- gplots::heatmap.2(
     x=t(.data),

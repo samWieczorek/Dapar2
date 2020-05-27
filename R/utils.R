@@ -37,10 +37,10 @@ BuildPalette <- function(conds, base_palette){
   return(palette)
   
 }                                        
-                                        
 
 
- 
+
+
 #' @title Returns the number of empty lines in the data
 #' 
 #' @param qData A matrix corresponding to the quantitative data.
@@ -57,8 +57,8 @@ BuildPalette <- function(conds, base_palette){
 #' @export
 #' 
 nEmptyLines <- function(qData){
-n <- sum(apply(is.na(as.matrix(qData)), 1, all))
-return (n)
+  n <- sum(apply(is.na(as.matrix(qData)), 1, all))
+  return (n)
 }
 
 
@@ -94,8 +94,8 @@ is.OfType <- function(data, type){
 
 
 
-  
-  
+
+
 
 #' @title Similar to the function \code{is.na} but focused on the equality with the missing 
 #' values in the dataset (type 'POV' and 'MEC')
@@ -136,11 +136,11 @@ is.MV <- function(data){
 #' 
 #' @param i The indice of the dataset (SummarizedExperiment) in the object
 #' 
-#' @param type xxxxxxx
+#' @param type wholeMatrix, allCond or atLeastOneCond
 #' 
 #' @return An integer
 #' 
-#' @author Samuel Wieczorek
+#' @author Samuel Wieczorek, Enora Fremy
 #' 
 #' @examples
 #' utils::data(Exp1_R25_pept, package='DAPARdata2')
@@ -153,33 +153,35 @@ is.MV <- function(data){
 #' @import S4Vectors
 #' 
 getListNbValuesInLines <- function(obj, i, type="wholeMatrix"){
-  if (is.null(obj)){return()}
+  
+  if (is.null(obj)){return(NULL)}
   
   if(is.null(metadata(obj)$OriginOfValues)){
-    ll <- seq(0, ncol(obj))
+    data <- as.data.frame(SummarizedExperiment::assay(obj[[i]]))
   }
-  
-  data <- as.data.frame(SummarizedExperiment::rowData(obj[[i]])[, metadata(obj)$OriginOfValues])
+  else {
+    data <- as.data.frame(SummarizedExperiment::rowData(obj[[i]])[, metadata(obj)$OriginOfValues])
+  }
   
   switch(type,
          wholeMatrix= {
            ll <- unique(ncol(data) - apply(is.MV(data), 1, sum))
-           },
+         },
          allCond = {
-                    tmp <- NULL
-                    for (cond in unique(SummarizedExperiment::colData(obj)@listData$Condition)){
-                     tmp <- c(tmp, length(which(SummarizedExperiment::colData(obj)@listData$Condition == cond)))
-                  }
-                  ll <- seq(0,min(tmp))
-                  },
+           tmp <- NULL
+           for (cond in unique(SummarizedExperiment::colData(obj)[['Condition']])){
+             tmp <- c(tmp, length(which(SummarizedExperiment::colData(obj)[['Condition']] == cond)))
+           }
+           ll <- seq(0,min(tmp))
+         },
          atLeastOneCond = {
-                   tmp <- NULL
-                  for (cond in unique(SummarizedExperiment::colData(obj)@listData$Condition)){
-                       tmp <- c(tmp, length(which(SummarizedExperiment::colData(obj)@listData$Condition == cond)))
-                   }
-                   ll <- seq(0,max(tmp))
-                    }
-         )
+           tmp <- NULL
+           for (cond in unique(SummarizedExperiment::colData(obj)[['Condition']])){
+             tmp <- c(tmp, length(which(SummarizedExperiment::colData(obj)[['Condition']] == cond)))
+           }
+           ll <- seq(0,max(tmp))
+         }
+  )
   
   return (sort(ll))
 }
@@ -253,20 +255,20 @@ dapar_hc_ExportMenu <- function(hc, filename){
 dapar_hc_chart <- function(hc,  chartType, zoomType="None", width=0, height=0){
   hc %>% 
     hc_chart(type = chartType, 
-           zoomType=zoomType,
-           showAxes = TRUE,
-           width = width,
-           height = height,
-           resetZoomButton= list(
-             position = list(
-               align= 'left',
-               verticalAlign = 'top')
-           ))
+             zoomType=zoomType,
+             showAxes = TRUE,
+             width = width,
+             height = height,
+             resetZoomButton= list(
+               position = list(
+                 align= 'left',
+                 verticalAlign = 'top')
+             ))
 }
 
 
 
- 
+
 #' @title Retrieve the indices of non-zero elements in sparse matrices
 #' 
 #' @description This function retrieves the indices of non-zero elements in sparse matrices
@@ -287,16 +289,16 @@ dapar_hc_chart <- function(hc,  chartType, zoomType="None", width=0, height=0){
 #' @export
 #' 
 nonzero <- function(x){
-    ## function to get a two-column matrix containing the indices of the
-    ### non-zero elements in a "dgCMatrix" class matrix
-    
-    stopifnot(inherits(x, "dgCMatrix"))
-    if (all(x@p == 0))
-        return(matrix(0, nrow=0, ncol=2,
-                      dimnames=list(character(0), c("row","col"))))
-    res <- cbind(x@i+1, rep(seq(dim(x)[2]), diff(x@p)))
-    colnames(res) <- c("row", "col")
-    res <- res[x@x != 0, , drop = FALSE]
-    return(res)
+  ## function to get a two-column matrix containing the indices of the
+  ### non-zero elements in a "dgCMatrix" class matrix
+  
+  stopifnot(inherits(x, "dgCMatrix"))
+  if (all(x@p == 0))
+    return(matrix(0, nrow=0, ncol=2,
+                  dimnames=list(character(0), c("row","col"))))
+  res <- cbind(x@i+1, rep(seq(dim(x)[2]), diff(x@p)))
+  colnames(res) <- c("row", "col")
+  res <- res[x@x != 0, , drop = FALSE]
+  return(res)
 }
 
