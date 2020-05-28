@@ -137,45 +137,52 @@ proportionConRev_HC <- function(lDataset, nBoth = 0, nCont=0, nRev=0){
 #' 
 #' @export
 #' 
-MVrowsTagToOne <- function(obj=NULL, sampleTab=NULL, type=NULL, th=0, percent=T, newColName="newCol") {
+MVrowsTagToOne <- function(obj=NULL, sampleTab=NULL, type=NULL, th=0, percent=TRUE, newColName="newCol") {
   
   
   # check Type param
   paramtype<-c("None", "EmptyLines", "WholeMatrix", "AllCond", "AtLeastOneCond") 
-  if (sum(is.na(match(type, paramtype)==TRUE))>0)
+  if (!(type %in% paramtype))
     stop("Param type is not correct.")
   
   # check Threshold/Percent param
-  if (!is.numeric(th)) stop("th must be numeric.")
+  if (!is.numeric(th)) stop("'th' must be numeric.")
   if (th < 0) {
-    warning("Param th can't be inferior to zero.")
+    warning("Param 'th' can't be inferior to zero.")
+    cat("'th' set to 0.\n")
     th<-0
-    cat("th set to 0.\n")
+    
+  } else if (th==0) { 
+    cat("All row with NAs are kept.\n") 
   }
-  if (th==0) { cat("All row with NAs are kept.\n") }
+  
+  
+  
   
   if (isTRUE(percent)) {
-    if (th>1) {
-      th<-1
-      warning("When percent=T, th can't be superior to one.")
-      cat("th set to 1.\n")
+    if (th > 1) {
+      th <- 1
+      warning("When percent=TRUE, 'th' can't be superior to one.")
+      cat("'th' set to 1.\n")
     }
-    if (th != 0) { cat("Row(s) containing",round(th, digits = 2)*100,"% NAs or more are removed.\n") 
+    if (th != 0) { cat("Row(s) containing", round(th, digits = 2)*100, "% NAs or more are removed.\n") 
     }
   }
   else { # !isTRUE(percent)
-    if (th!=0) {
+    if (th != 0) {
       if (th%%1 != 0) {
-        stop("Param th have to be an integer.")
+        stop("Param 'th' have to be an integer.")
       }
       if (th > nrow(sampleTab)) {
-        warning("When percent=F, param th can't be superior to the number of samples.")
-        th<-nrow(sampleTab)
-        cat("th set to the number of samples.\n")
+        warning("When percent=FALSE, param 'th' can't be superior to the number of samples.")
+        th <- nrow(sampleTab)
+        cat("'th' set to the number of samples.\n")
       }
       cat("Rows are removed when at least",th,"sample(s) contain NAs.\n")
     }
   }
+  
+  
   
   # Filtration
   keepThat <- NULL
@@ -184,6 +191,7 @@ MVrowsTagToOne <- function(obj=NULL, sampleTab=NULL, type=NULL, th=0, percent=T,
   } else {
     data <- dplyr::select(rowData(obj),metadata(obj)$OriginOfValues)
   }
+  
   
   if (type == "None") {
     keepThat <- seq(1:nrow(data))
@@ -226,8 +234,8 @@ MVrowsTagToOne <- function(obj=NULL, sampleTab=NULL, type=NULL, th=0, percent=T,
     }
   }
   
-  rowData(obj)[[newColName]]<-1
-  rowData(obj)[[newColName]][keepThat]<-0
+  rowData(obj)[[newColName]] <- 1
+  rowData(obj)[[newColName]][keepThat] <- 0
   
   return(obj)
 }

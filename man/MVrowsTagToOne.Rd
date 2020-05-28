@@ -9,7 +9,7 @@ MVrowsTagToOne(
   sampleTab = NULL,
   type = NULL,
   th = 0,
-  percent = T,
+  percent = TRUE,
   newColName = "newCol"
 )
 }
