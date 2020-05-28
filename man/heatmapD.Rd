@@ -28,7 +28,8 @@ Heatmap of the quantitative proteomic data of a \code{data.frame} object
 \dontrun{
 utils::data(Exp1_R25_pept, package='DAPARdata2')
 ft <- Exp1_R25_pept
-qData <- assay(ft[[2]])[1:1000,]
+qData <- assay(ft[[2]])[1:100,]
+qData <- cbind(qData,qData) # x4
 heatmapD(qData)
 }
 

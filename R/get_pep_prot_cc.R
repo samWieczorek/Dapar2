@@ -1,4 +1,53 @@
 
+
+
+ 
+#' @title Fxxxx
+#' 
+#' @description xxxxx)
+#' 
+#' @param obj An object of class 'Features' 
+#' 
+#' @param i The indice of the dataset (class 'SumarizedExperiment') in the list of 'obj' on which to apply the aggregation. 
+#' 
+#' @return AN object of class 'Features'
+#' 
+#' @author Samuel Wieczorek
+#' 
+#' @examples
+#' utils::data(Exp1_R25_pept, package='DAPARdata2')
+#' obj <- Exp1_R25_pept[1:1000,]
+#' obj <- addListAdjacencyMatrices(obj, 2)
+#' obj <- addConnexComp(obj, 2)
+#' 
+#' @export
+#' 
+addConnexComp <- function(obj, i){
+  
+  if(missing(obj))
+    stop("'i' is missing.")
+  if(missing(i))
+    stop("'i' is missing.")
+  
+  object_i <- obj[[i]]
+  
+  if (length(metadata(object_i)$list.matAdj) ==0)
+    {
+    warning("Any adjacency matrix is present in the dataset.")
+    return(obj)
+  }
+  
+  cc <- ComputeConnexComposants(metadata(obj[[i]])$list.matAdj)
+  
+  metadata(obj[[i]])$list.cc <- cc
+  return (obj)
+}
+
+
+
+
+
+
 #' @title Computes the connex components of a graph, represented by an adjacency matrix.
 #' 
 #' @description This function computes the connex components of a graph, represented by an adjacency matrix.

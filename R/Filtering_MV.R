@@ -112,7 +112,11 @@ proportionConRev_HC <- function(lDataset, nBoth = 0, nCont=0, nRev=0){
 #' @param type Method used to choose the lines to delete.
 #' Values are : "None", "EmptyLines", "WholeMatrix", "AllCond", "AtLeastOneCond"
 #' 
-#' @param th Either a numeric between 0 and 1, or a integer between 0 and maximum number of samples.
+#' @param th Either a numeric between 0 and 1 where only the lines which contain
+#' at least \code{th}% of non NA values are kept.
+#' Or a integer between 0 and maximum number of samples for 'WholeMatrix' and 
+#' between 0 and maximum nuber of replicat for "AllCond" and "AtLeastOneCond", where
+#' only the lines which contain at least \code{th} values are kept.
 #' 
 #' @param percent TRUE by default. When FALSE, use the number of samples
 #' 
@@ -124,65 +128,56 @@ proportionConRev_HC <- function(lDataset, nBoth = 0, nCont=0, nRev=0){
 #' @author Enora Fremy
 #' 
 #' @examples
-#' library(Features)
 #' utils::data(Exp1_R25_pept, package='DAPARdata2')
 #' sampleTab <- colData(Exp1_R25_pept)
 #' obj <- Exp1_R25_pept[[2]][100:120,]
-#' obj <- MVrowsTagToOne(obj, sampleTab, "None", 3, percent=F, "None")
-#' obj <- MVrowsTagToOne(obj, sampleTab, "EmptyLines", 3, percent=F, "EmptyLines")
-#' obj <- MVrowsTagToOne(obj, sampleTab, "WholeMatrix", 3, percent=F, "WholeMatrix")
-#' obj <- MVrowsTagToOne(obj, sampleTab, "AllCond", 3, percent=F, "AllCond")
 #' res <- MVrowsTagToOne(obj, sampleTab, "AtLeastOneCond", 3, percent=F, "AtLeastOneCond")
-#' as.data.frame(rowData(res)[,72:76])
+#' names(rowData(res)
 #' 
 #' @export
 #' 
-MVrowsTagToOne <- function(obj=NULL, sampleTab=NULL, type=NULL, th=0, percent=TRUE, newColName="newCol") {
+#' @import SummarizedExperiment
+#' 
+MVrowsTagToOne <- function(obj, sampleTab=NULL, type, th=0, percent=T, newColName="newCol") {
   
+  if (is.null(obj)) { return(NULL) }
   
-  # check Type param
-  paramtype<-c("None", "EmptyLines", "WholeMatrix", "AllCond", "AtLeastOneCond") 
-  if (!(type %in% paramtype))
-    stop("Param type is not correct.")
+  # # check Type param
+  # paramtype<-c("None", "EmptyLines", "WholeMatrix", "AllCond", "AtLeastOneCond") 
+  # if (sum(is.na(match(type, paramtype)==TRUE))>0)
+  #   stop("Param type is not correct.")
   
-  # check Threshold/Percent param
-  if (!is.numeric(th)) stop("'th' must be numeric.")
-  if (th < 0) {
-    warning("Param 'th' can't be inferior to zero.")
-    cat("'th' set to 0.\n")
-    th<-0
-    
-  } else if (th==0) { 
-    cat("All row with NAs are kept.\n") 
-  }
+  # # check Threshold/Percent param
+  # if (!is.numeric(th)) stop("th must be numeric.")
+  # if (th < 0) {
+  #   warning("Param th can't be inferior to zero.")
+  #   th<-0
+  #   cat("th set to 0.\n")
+  # }
+  # if (th==0) { cat("All row with NAs are kept.\n") }
   
-  
-  
-  
-  if (isTRUE(percent)) {
-    if (th > 1) {
-      th <- 1
-      warning("When percent=TRUE, 'th' can't be superior to one.")
-      cat("'th' set to 1.\n")
-    }
-    if (th != 0) { cat("Row(s) containing", round(th, digits = 2)*100, "% NAs or more are removed.\n") 
-    }
-  }
-  else { # !isTRUE(percent)
-    if (th != 0) {
-      if (th%%1 != 0) {
-        stop("Param 'th' have to be an integer.")
-      }
-      if (th > nrow(sampleTab)) {
-        warning("When percent=FALSE, param 'th' can't be superior to the number of samples.")
-        th <- nrow(sampleTab)
-        cat("'th' set to the number of samples.\n")
-      }
-      cat("Rows are removed when at least",th,"sample(s) contain NAs.\n")
-    }
-  }
-  
-  
+  # if (isTRUE(percent)) {
+  #   if (th>1) {
+  #     th<-1
+  #     warning("When percent=T, th can't be superior to one.")
+  #     cat("th set to 1.\n")
+  #   }
+  #   if (th != 0) { cat("Row(s) containing",round(th, digits = 2)*100,"% NAs or more are removed.\n") 
+  #   }
+  # }
+  # else { # !isTRUE(percent)
+  #   if (th!=0) {
+  #     if (th%%1 != 0) {
+  #       stop("Param th have to be an integer.")
+  #     }
+  #     if (th > nrow(sampleTab)) {
+  #       warning("When percent=F, param th can't be superior to the number of samples.")
+  #       th<-nrow(sampleTab)
+  #       cat("th set to the number of samples.\n")
+  #     }
+  #     cat("Rows are removed when at least",th,"sample(s) contain NAs.\n")
+  #   }
+  # }
   
   # Filtration
   keepThat <- NULL
@@ -191,7 +186,6 @@ MVrowsTagToOne <- function(obj=NULL, sampleTab=NULL, type=NULL, th=0, percent=TR
   } else {
     data <- dplyr::select(rowData(obj),metadata(obj)$OriginOfValues)
   }
-  
   
   if (type == "None") {
     keepThat <- seq(1:nrow(data))
@@ -204,6 +198,8 @@ MVrowsTagToOne <- function(obj=NULL, sampleTab=NULL, type=NULL, th=0, percent=TR
       keepThat <- which(apply(!is.MV(data), 1, sum) >= th)
     }
   } else if (type == "AtLeastOneCond" || type == "AllCond") {
+    
+    if (is.null(sampleTab)) { return(NULL) }
     
     conditions <- unique(sampleTab[['Condition']])
     nbCond <- length(conditions)
@@ -234,8 +230,8 @@ MVrowsTagToOne <- function(obj=NULL, sampleTab=NULL, type=NULL, th=0, percent=TR
     }
   }
   
-  rowData(obj)[[newColName]] <- 1
-  rowData(obj)[[newColName]][keepThat] <- 0
+  rowData(obj)[[newColName]]<-1
+  rowData(obj)[[newColName]][keepThat]<-0
   
   return(obj)
 }
@@ -256,16 +252,19 @@ MVrowsTagToOne <- function(obj=NULL, sampleTab=NULL, type=NULL, th=0, percent=TR
 #' @author Enora Fremy
 #' 
 #' @examples
-#' library(Features)
 #' utils::data(Exp1_R25_pept, package='DAPARdata2')
 #' object <- Exp1_R25_pept[[2]]
 #' sampleTab <- colData(Exp1_R25_pept)
 #' obj<-MVrowsTagToOne(obj=object, sampleTab, newColName="LinesKept", type="AllCond", th=2)
 #' obj<-removeAdditionalCol(obj,colToRemove="None" )
-#' head(rowData(obj))
 #' 
 #' @export
+#' 
+#' @import SummarizedExperiment
+#' 
 removeAdditionalCol <- function(obj, colToRemove) {
+  
+  if(is.null(obj)) { return(NULL) }
   
   if( is.na(match(colToRemove,names(rowData(obj)))) ) {
     print(paste0("Warning: ",colToRemove," isn't a column name of rowData(obj)"))
@@ -274,6 +273,5 @@ removeAdditionalCol <- function(obj, colToRemove) {
   rowData(obj)[[colToRemove]] <- NULL
   
   return(obj)
-
+  
 }
-
