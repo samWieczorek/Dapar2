@@ -14,12 +14,14 @@
 #' 
 #' @author Samuel Wieczorek, Enora Fremy
 #' 
-#' @examples 
+#' @examples
+#' library(highcharter)
 #' utils::data(Exp1_R25_pept, package='DAPARdata2')
-#' qData <- assay(Exp1_R25_pept[['original']])
-#' pData <- colData(Exp1_R25_pept)
+#' qData <- assay(Exp1_R25_pept[[2]])
 #' conds <- colData(Exp1_R25_pept)[["Condition"]]
-#' densityPlotD_HC(qData, pData)
+#' legend <- colData(Exp1_R25_pept)[["Sample.name"]]
+#' palette <- c("#fc03ec","#94fc03")
+#' densityPlotD_HC(qData, conds, legend, palette)
 #' 
 #' @import highcharter
 #' @importFrom stats density
@@ -31,7 +33,6 @@ densityPlotD_HC <- function(qData, conds, legend=NULL, palette = NULL){
    stop("'conds' is missing.")
   
   palette <- BuildPalette(conds, palette)
-  
   
   h1 <-  highcharter::highchart() %>% 
     hc_title(text = "Density plot") %>% 

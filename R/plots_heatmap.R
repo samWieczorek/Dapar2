@@ -89,7 +89,7 @@ heatmapD <- function(qData, distance="euclidean", cluster="complete", dendro = F
     labCol="",
     margins=c(4,12),
     #cexRow=1.5,
-    cexRow=0.2 + 1/log10(nrow(.data)),
+    cexRow= 0.7 + 1/log10(nrow(.data)),
     keysize = 1.5,
     lhei = c(1.5, 9),
     lwid = c(1.5, 4),
