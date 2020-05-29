@@ -30,7 +30,7 @@ setMEC <- function(origin, qData, conds){
   if (missing(conds))
     stop("'conds' is required.")
   
-
+  
   
   u.conds <- unique(conds)
   nbCond <- length(u.conds)
@@ -93,8 +93,8 @@ addOriginOfValues <- function(obj, i, namesOrigin=NULL){
     OriginOfValues <- rowData(obj[[i]])[,namesOrigin]
   } else {   
     OriginOfValues <- MultiAssayExperiment::DataFrame(matrix(rep("unknown", nrow(assay(obj,i))*nrow(SummarizedExperiment::colData(obj))), 
-                                        nrow=nrow(assay(obj,i)),
-                                        ncol=nrow(SummarizedExperiment::colData(obj))))
+                                                             nrow=nrow(assay(obj,i)),
+                                                             ncol=nrow(SummarizedExperiment::colData(obj))))
   }
   
   ## Identification of all NA as POV
@@ -193,13 +193,13 @@ createFeatures <- function(data,
                            pipelineType = NULL){
   
   if(missing(data))
-    stop("'data' is missing.")
+    stop("'data' is required")
   if(missing(sample))
-    stop("'sample' is missing.")
+    stop("'sample' is required")
   if(missing(indExpData))
-    stop("'indExpData' is missing.")
+    stop("'indExpData' is required")
   if(missing(typeOfData))
-    stop("'typeOfData' is missing.")
+    stop("'typeOfData' is required")
   
   
   
@@ -233,7 +233,7 @@ createFeatures <- function(data,
     origin <- addOriginOfValues(obj, 1, namesOrigin)
     metadata(obj)$OriginOfValues <- colnames(origin)
     rowData(obj[['original']]) <- cbind(rowData(obj[['original']]), origin)
-
+    
   }
   
   
@@ -246,7 +246,7 @@ createFeatures <- function(data,
   daparVersion <- if (is.na(utils::installed.packages()["DAPAR2"])) 'NA' else utils::installed.packages()["DAPAR2",'Version']
   ProstarVersion <-if (is.na(utils::installed.packages()["Prostar2"])) 'NA' else utils::installed.packages()["Prostar2",'Version']
   
- 
+  
   metadata(obj) <- list(versions = list(Prostar_Version = ProstarVersion,
                                         DAPAR_Version = daparVersion),
                         parentProtId = parentProtId,
@@ -259,8 +259,112 @@ createFeatures <- function(data,
                         pipelineType = pipelineType,
                         processes=c('original',processes)
   )
- 
+  
   
   return(obj)
 }
 
+
+
+
+
+#' @title Creates an object of class \code{MSnSet} from text file
+#' 
+#' @description xxxx
+#' 
+#' @param obj xxx.
+#' 
+#' @param analysis xxx
+#' 
+#' @param parentProtId For peptide entities, a string which is the name of a column in rowData. It contains the id of parent
+#' proteins and is used to generate adjacency matrix and process to aggregation.
+#' 
+#' @param keyId The indice of the column containing the ID of entities 
+#' (peptides or proteins)
+#' 
+#' @param pipelineType xxxx
+#' 
+#' @param processes xxxx
+#' 
+#' @param logTransform A boolean value to indicate if the data have to be
+#' log-transformed (Default is FALSE)
+#' 
+#' @return An instance of class \code{Features}.
+#' 
+#' @author Samuel Wieczorek
+#' 
+#' @examples 
+#' library(Features)
+#' utils::data(Exp1_R25_pept, package='DAPARdata')
+#' obj <- Exp1_R25_pept
+#' parentId <- 'Protein_group_IDs'
+#' keyid <- 'Sequence'
+#' ft <- convertMSnset2Features(obj, 'conv',parentId, keyid )
+#' 
+#' @importFrom Biobase exprs fData pData
+#' @importFrom Features readFeatures
+#' 
+#' @export
+#' 
+convertMSnset2Features <- function(obj, analysis, parentProtId, keyId, pipelineType = NULL, processes = NULL, logTransform=FALSE ) {
+  
+  
+  if (!(class(obj)[1] == 'MSnSet'))
+    stop("This dataset is not a MSnset file.")
+  
+  if(missing(analysis))
+    stop("'analysis' is required.")
+  if(missing(parentProtId))
+    stop("'parentProtId' is required.")
+  if(missing(keyId))
+    stop("'keyId' is required.")
+  # if(missing(pipelineType))
+  #   stop("'pipelineType' is required.")
+  # if(missing(processes))
+  #   stop("'processes' is required.")
+  
+  
+  df <- cbind(Biobase::fData(obj), Biobase::exprs(obj))
+  i <- (ncol(fData(obj))+1):(ncol(df))
+  
+  feat <- Features::readFeatures(df, ecol = i, sep = "\t", name = "original", fnames = keyId)
+  
+  ## Encoding the sample data
+  sample <- lapply(Biobase::pData(obj),function(x){ gsub(".", "_", x, fixed=TRUE)})
+  SummarizedExperiment::colData(feat)@listData <- sample
+  
+  feat <- Features::zeroIsNA(feat,seq_along(feat))
+  
+  if (is.null(obj@experimentData@other$OriginOfValues))
+  {
+    warning("The MSnset file odes not contain any information about the origin of values.")
+    warning("So, this convert tool cannot be used. Please use the convert GUI from raw datasets in Prostar.")
+    return(NULL)
+  } else {
+    origin <- obj@experimentData@other$OriginOfValues
+  }
+  
+  daparVersion <- if (is.na(utils::installed.packages()["DAPAR2"])) 'NA' else utils::installed.packages()["DAPAR2",'Version']
+  ProstarVersion <-if (is.na(utils::installed.packages()["Prostar2"])) 'NA' else utils::installed.packages()["Prostar2",'Version']
+  
+  if (isTRUE(logTransform)) {
+    obj <- addAssay(obj, logTransform(obj[['original']]),name = "original_log")
+    obj <- addAssayLinkOneToOne(obj, from = "original", to = "original_log")
+  }
+  
+  
+  metadata(feat) <- list(versions = list(Prostar_Version = ProstarVersion,
+                                         DAPAR_Version = daparVersion),
+                         parentProtId = parentProtId,
+                         keyId = keyId,
+                         params = list(),
+                         typeOfData = obj@experimentData@other$typeOfData,
+                         RawPValues = obj@experimentData@other$RawPValues,
+                         OriginOfValues = origin,
+                         analysis = analysis,
+                         pipelineType = pipelineType,
+                         processes=c('original',processes)
+  )
+  
+  
+}
