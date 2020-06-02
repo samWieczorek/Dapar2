@@ -10,8 +10,7 @@ convertMSnset2Features(
   parentProtId,
   keyId,
   pipelineType = NULL,
-  processes = NULL,
-  logTransform = FALSE
+  processes = NULL
 )
 }
 \arguments{
@@ -28,9 +27,6 @@ proteins and is used to generate adjacency matrix and process to aggregation.}
 \item{pipelineType}{xxxx}
 
 \item{processes}{xxxx}
-
-\item{logTransform}{A boolean value to indicate if the data have to be
-log-transformed (Default is FALSE)}
 }
 \value{
 An instance of class \code{Features}.

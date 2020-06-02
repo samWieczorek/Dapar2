@@ -286,9 +286,6 @@ createFeatures <- function(data,
 #' 
 #' @param processes xxxx
 #' 
-#' @param logTransform A boolean value to indicate if the data have to be
-#' log-transformed (Default is FALSE)
-#' 
 #' @return An instance of class \code{Features}.
 #' 
 #' @author Samuel Wieczorek
@@ -306,10 +303,10 @@ createFeatures <- function(data,
 #' 
 #' @export
 #' 
-convertMSnset2Features <- function(obj, analysis, parentProtId, keyId, pipelineType = NULL, processes = NULL, logTransform=FALSE ) {
+convertMSnset2Features <- function(obj, analysis, parentProtId, keyId, pipelineType = NULL, processes = NULL) {
   
   
-  if (!(class(obj)[1] == 'MSnSet'))
+  if (class(obj) != 'MSnSet')
     stop("This dataset is not a MSnset file.")
   
   if(missing(analysis))
@@ -326,7 +323,9 @@ convertMSnset2Features <- function(obj, analysis, parentProtId, keyId, pipelineT
   
   df <- cbind(Biobase::fData(obj), Biobase::exprs(obj))
   i <- (ncol(fData(obj))+1):(ncol(df))
-  
+  print(i)
+  print(head(df))
+  print(keyId)
   feat <- Features::readFeatures(df, ecol = i, sep = "\t", name = "original", fnames = keyId)
   
   ## Encoding the sample data
@@ -347,11 +346,6 @@ convertMSnset2Features <- function(obj, analysis, parentProtId, keyId, pipelineT
   daparVersion <- if (is.na(utils::installed.packages()["DAPAR2"])) 'NA' else utils::installed.packages()["DAPAR2",'Version']
   ProstarVersion <-if (is.na(utils::installed.packages()["Prostar2"])) 'NA' else utils::installed.packages()["Prostar2",'Version']
   
-  if (isTRUE(logTransform)) {
-    obj <- addAssay(obj, logTransform(obj[['original']]),name = "original_log")
-    obj <- addAssayLinkOneToOne(obj, from = "original", to = "original_log")
-  }
-  
   
   metadata(feat) <- list(versions = list(Prostar_Version = ProstarVersion,
                                         DAPAR_Version = daparVersion),
@@ -366,6 +360,7 @@ convertMSnset2Features <- function(obj, analysis, parentProtId, keyId, pipelineT
                         processes=c('original',processes)
                     )
 
+  return(feat)
   
 }
 
