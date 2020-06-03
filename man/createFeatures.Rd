@@ -14,7 +14,7 @@ createFeatures(
   forceNA = FALSE,
   typeOfData,
   parentProtId = NULL,
-  analysis,
+  analysis = "foo",
   processes = NULL,
   pipelineType = NULL
 )
@@ -67,7 +67,8 @@ indExpData <- c(56:61)
 namesOrigin <- colnames(data)[43:48]
 parentId <- 'Protein_group_IDs'
 keyid <- 'Sequence'
-ft <- createFeatures(data, sample,indExpData,  keyId = keyid, namesOrigin = namesOrigin, typeOfData = "peptide", parentProtId = parentId, forceNA=TRUE)
+analysis <- 'test'
+ft <- createFeatures(data, sample,indExpData,keyId = keyid, analysis=analysis, namesOrigin = namesOrigin, typeOfData = "peptide", parentProtId = parentId, forceNA=TRUE)
 
 }
 \author{

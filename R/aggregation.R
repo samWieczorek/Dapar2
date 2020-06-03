@@ -87,7 +87,6 @@ aggregateFeatures_sam <- function(object, i, aggType='all', name, meta.names = N
   
   
   argg <- c(as.list(environment()), list(...))
-  print(argg)
   
   ## if the adjacency matrices are already present in the metadata of the SE, then load it
   ## else build it
@@ -145,6 +144,7 @@ aggregateFeatures_sam <- function(object, i, aggType='all', name, meta.names = N
   se <- SummarizedExperiment(aggregated_assay,
                              rowData = aggregated_rowdata[rownames(aggregated_assay), ])
   metadata(se)$Params <- argg[-match(c('object', 'i', 'name', 'meta.names'), names(argg))]
+  metadata(se)$typeOfData <- 'protein'
   
   # hits <- findMatches(rownames(aggregated_assay), groupBy)
   # rownames(aggregated_assay) : correspond au nom des proteines nouvellement creees
@@ -1026,10 +1026,6 @@ rowdata_stats_Aggregation_sam <- function(qPepData, X){
                    n, 
                    pepUsed)
 
-
-  # obj.prot@experimentData@other$typeOfData <-"protein"
-  # #obj.prot <- addOriginOfValue(obj.prot)
-  # obj.prot@experimentData@other$OriginOfValues <- NULL
   return (fd)
 }
 

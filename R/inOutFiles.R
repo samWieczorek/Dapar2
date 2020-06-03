@@ -30,7 +30,7 @@ setMEC <- function(origin, qData, conds){
   if (missing(conds))
     stop("'conds' is required.")
   
-
+  
   
   u.conds <- unique(conds)
   nbCond <- length(u.conds)
@@ -93,8 +93,8 @@ addOriginOfValues <- function(obj, i, namesOrigin=NULL){
     OriginOfValues <- rowData(obj[[i]])[,namesOrigin]
   } else {   
     OriginOfValues <- MultiAssayExperiment::DataFrame(matrix(rep("unknown", nrow(assay(obj,i))*nrow(SummarizedExperiment::colData(obj))), 
-                                        nrow=nrow(assay(obj,i)),
-                                        ncol=nrow(SummarizedExperiment::colData(obj))))
+                                                             nrow=nrow(assay(obj,i)),
+                                                             ncol=nrow(SummarizedExperiment::colData(obj))))
   }
   
   ## Identification of all NA as POV
@@ -171,7 +171,8 @@ addOriginOfValues <- function(obj, i, namesOrigin=NULL){
 #' namesOrigin <- colnames(data)[43:48]
 #' parentId <- 'Protein_group_IDs'
 #' keyid <- 'Sequence'
-#' ft <- createFeatures(data, sample,indExpData,  keyId = keyid, namesOrigin = namesOrigin, typeOfData = "peptide", parentProtId = parentId, forceNA=TRUE)
+#' analysis <- 'test'
+#' ft <- createFeatures(data, sample,indExpData,keyId = keyid, analysis=analysis, namesOrigin = namesOrigin, typeOfData = "peptide", parentProtId = parentId, forceNA=TRUE)
 #' 
 #' @import Features
 #' @importFrom utils installed.packages
@@ -188,7 +189,7 @@ createFeatures <- function(data,
                            forceNA=FALSE,
                            typeOfData,
                            parentProtId = NULL,
-                           analysis,
+                           analysis='foo',
                            processes = NULL,
                            pipelineType = NULL){
   
@@ -214,7 +215,7 @@ createFeatures <- function(data,
                         name='original',
                         fnames = keyId)
   }
-  
+  metadata(obj[['original']])$typeOfData <- typeOfData
   
   ## Encoding the sample data
   sample <- lapply(sample,function(x){ gsub(".", "_", x, fixed=TRUE)})
@@ -233,7 +234,7 @@ createFeatures <- function(data,
     origin <- addOriginOfValues(obj, 1, namesOrigin)
     metadata(obj)$OriginOfValues <- colnames(origin)
     rowData(obj[['original']]) <- cbind(rowData(obj[['original']]), origin)
-
+    
   }
   
   
@@ -246,20 +247,19 @@ createFeatures <- function(data,
   daparVersion <- if (is.na(utils::installed.packages()["DAPAR2"])) 'NA' else utils::installed.packages()["DAPAR2",'Version']
   ProstarVersion <-if (is.na(utils::installed.packages()["Prostar2"])) 'NA' else utils::installed.packages()["Prostar2",'Version']
   
- 
+  
   metadata(obj) <- list(versions = list(Prostar_Version = ProstarVersion,
                                         DAPAR_Version = daparVersion),
                         parentProtId = parentProtId,
                         keyId = keyId,
                         params = list(),
-                        typeOfData = typeOfData,
                         RawPValues = FALSE,
                         OriginOfValues = colnames(origin),
                         analysis = analysis,
                         pipelineType = pipelineType,
                         processes=c('original',processes)
   )
- 
+  
   
   return(obj)
 }
@@ -267,7 +267,7 @@ createFeatures <- function(data,
 
 
 
- 
+
 #' @title Creates an object of class \code{MSnSet} from text file
 #' 
 #' @description xxxx
@@ -315,19 +315,18 @@ convertMSnset2Features <- function(obj, analysis, parentProtId, keyId, pipelineT
     stop("'parentProtId' is required.")
   if(missing(keyId))
     stop("'keyId' is required.")
- # if(missing(pipelineType))
- #   stop("'pipelineType' is required.")
- # if(missing(processes))
- #   stop("'processes' is required.")
+  # if(missing(pipelineType))
+  #   stop("'pipelineType' is required.")
+  # if(missing(processes))
+  #   stop("'processes' is required.")
   
   
   df <- cbind(Biobase::fData(obj), Biobase::exprs(obj))
-  i <- (ncol(fData(obj))+1):(ncol(df))
-  print(i)
-  print(head(df))
-  print(keyId)
+  i <- (ncol(Biobase::fData(obj))+1):(ncol(df))
   feat <- Features::readFeatures(df, ecol = i, sep = "\t", name = "original", fnames = keyId)
-  
+  metadata(feat[['original']]) <- obj@experimentData@other$typeOfData
+    
+    
   ## Encoding the sample data
   sample <- lapply(Biobase::pData(obj),function(x){ gsub(".", "_", x, fixed=TRUE)})
   SummarizedExperiment::colData(feat)@listData <- sample
@@ -352,7 +351,6 @@ convertMSnset2Features <- function(obj, analysis, parentProtId, keyId, pipelineT
                         parentProtId = parentProtId,
                         keyId = keyId,
                         params = list(),
-                        typeOfData = obj@experimentData@other$typeOfData,
                         RawPValues = obj@experimentData@other$RawPValues,
                         OriginOfValues = origin,
                         analysis = analysis,
@@ -361,6 +359,6 @@ convertMSnset2Features <- function(obj, analysis, parentProtId, keyId, pipelineT
                     )
 
   return(feat)
+
   
 }
-
