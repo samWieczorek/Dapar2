@@ -18,6 +18,7 @@
 #' 
 #' @examples
 #' library(highcharter)
+#' library(DAPAR2)
 #' utils::data(Exp1_R25_pept, package='DAPARdata2')
 #' qData <- assay(Exp1_R25_pept[[2]])
 #' conds <- colData(Exp1_R25_pept)[['Condition']]
@@ -46,7 +47,7 @@ mvHisto_HC <- function(qData, conds, showValues = FALSE, palette = NULL){
     hc_plotOptions( column = list(stacking = "normal"),
                     animation=list(duration = 100)) %>%
     hc_legend(enabled = FALSE) %>%
-    hc_xAxis(categories = conds, title = list(text = "Replicates")) %>%
+    hc_xAxis(categories = conds[['Condition']], title = list(text = "Replicates")) %>%
     dapar_hc_ExportMenu(filename = "missingValuesPlot_3") %>%
     hc_tooltip(headerFormat= '',
                pointFormat = "{point.y}")
