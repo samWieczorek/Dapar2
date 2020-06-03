@@ -2,15 +2,15 @@
 
 
  
-#' @title Fxxxx
+#' @title Add the list of connex components to an assay in the object of classe Feeatures.
 #' 
-#' @description xxxxx)
+#' @description xxxxx
 #' 
 #' @param obj An object of class 'Features' 
 #' 
 #' @param i The indice of the dataset (class 'SumarizedExperiment') in the list of 'obj' on which to apply the aggregation. 
 #' 
-#' @return AN object of class 'Features'
+#' @return An object of class 'Features'
 #' 
 #' @author Samuel Wieczorek
 #' 

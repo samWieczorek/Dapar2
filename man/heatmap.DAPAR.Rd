@@ -48,7 +48,7 @@ of the heatmap.2 function.
 }
 \examples{
 utils::data(Exp1_R25_pept, package='DAPARdata2')
-qData <- assay(Exp1_R25_pept[['original']])
+qData <- assay(Exp1_R25_pept[[2]])[1:1000,]
 heatmap.DAPAR(qData)
 
 }

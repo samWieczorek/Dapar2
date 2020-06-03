@@ -21,7 +21,8 @@ MVrowsTagToOne(
 \item{type}{Method used to choose the lines to delete.
 Values are : "None", "EmptyLines", "WholeMatrix", "AllCond", "AtLeastOneCond"}
 
-\item{th}{Either a numeric between 0 and 1, or a integer between 0 and maximum number of samples.}
+\item{th}{Either a numeric between 0 and 1, or a integer between 0 and maximum number of samples.
+Only the lines which contain at least \code{th}% of non NA values or \code{th} values are kept.}
 
 \item{percent}{TRUE by default. When FALSE, use the number of samples}
 
