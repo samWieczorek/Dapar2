@@ -25,8 +25,11 @@
 #' violinPlotD(qData, fData, legend=legend)
 #' 
 #' @importFrom vioplot vioplot
+#' 
 #' @importFrom grDevices colorRampPalette
+#' 
 #' @importFrom graphics plot.window axis mtext legend points segments plot.new
+#' 
 #' @importFrom RColorBrewer brewer.pal
 #' 
 #' @export

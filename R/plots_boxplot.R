@@ -28,9 +28,12 @@
 #' boxPlotD_HC(qData, conds, sequence=seq, subset.view=1:10)
 #' 
 #' @import highcharter
+#' 
 #' @importFrom grDevices colorRampPalette
+#' 
 #' @importFrom RColorBrewer brewer.pal
-#' @importFrom graphics boxplot
+#' 
+#' @importFrom graphics boxplot#' 
 #' 
 #' @export
 #' 

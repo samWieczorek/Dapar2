@@ -1,6 +1,7 @@
 #' Builds a densityplot of the CV of entities in numeric matrix.
 #' The CV is calculated for each condition present in the dataset
 #' (see the slot \code{'Condition'} in the \code{colData()} DataFrame)
+#' 
 #' @title Distribution of CV of entities
 #' 
 #' @description 
@@ -22,18 +23,21 @@
 #' library(Features)
 #' library(SummarizedExperiment)
 #' utils::data(Exp1_R25_pept, package='DAPARdata2')
-#' qData <- assay(Exp1_R25_pept[['original']])[1:10,]
-#' conds <- colData(Exp1_R25_pept)@listData[["Condition"]]
+#' qData <- assay(Exp1_R25_pept[[2]])[1:10,]
+#' conds <- colData(Exp1_R25_pept)[["Condition"]]
 #' CVDistD_HC(qData, conds)
 #' 
 #' @importFrom RColorBrewer brewer.pal
+#' 
 #' @import highcharter
+#' 
 #' @importFrom DT JS
+#' 
 #' @importFrom stats var
 #' 
 #' @export
 #' 
-CVDistD_HC <- function(qData, conds=NULL, palette = NULL){
+CVDistD_HC <- function(qData, conds, palette = NULL){
   
   if (is.null(conds)) {return(NULL)}
   conditions <- unique(conds)
