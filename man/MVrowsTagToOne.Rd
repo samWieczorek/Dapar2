@@ -5,9 +5,9 @@
 \title{Filter lines in the matrix of intensities w.r.t. some criteria}
 \usage{
 MVrowsTagToOne(
-  obj = NULL,
+  obj,
   sampleTab = NULL,
-  type = NULL,
+  type,
   th = 0,
   percent = T,
   newColName = "newCol"
@@ -21,8 +21,11 @@ MVrowsTagToOne(
 \item{type}{Method used to choose the lines to delete.
 Values are : "None", "EmptyLines", "WholeMatrix", "AllCond", "AtLeastOneCond"}
 
-\item{th}{Either a numeric between 0 and 1, or a integer between 0 and maximum number of samples.
-Only the lines which contain at least \code{th}% of non NA values or \code{th} values are kept.}
+\item{th}{Either a numeric between 0 and 1 where only the lines which contain
+at least \code{th}% of non NA values are kept.
+Or a integer between 0 and maximum number of samples for 'WholeMatrix' and 
+between 0 and maximum nuber of replicat for "AllCond" and "AtLeastOneCond", where
+only the lines which contain at least \code{th} values are kept.}
 
 \item{percent}{TRUE by default. When FALSE, use the number of samples}
 
@@ -49,16 +52,11 @@ The different methods are :
   at least \code{th} values, and for at least one condition, are kept.
 }
 \examples{
-library(Features)
 utils::data(Exp1_R25_pept, package='DAPARdata2')
 sampleTab <- colData(Exp1_R25_pept)
 obj <- Exp1_R25_pept[[2]][100:120,]
-obj <- MVrowsTagToOne(obj, sampleTab, "None", 3, percent=F, "None")
-obj <- MVrowsTagToOne(obj, sampleTab, "EmptyLines", 3, percent=F, "EmptyLines")
-obj <- MVrowsTagToOne(obj, sampleTab, "WholeMatrix", 3, percent=F, "WholeMatrix")
-obj <- MVrowsTagToOne(obj, sampleTab, "AllCond", 3, percent=F, "AllCond")
 res <- MVrowsTagToOne(obj, sampleTab, "AtLeastOneCond", 3, percent=F, "AtLeastOneCond")
-as.data.frame(rowData(res)[,72:76])
+names(rowData(res)
 
 }
 \author{

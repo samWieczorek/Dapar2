@@ -23,7 +23,7 @@ Description: This package contains a collection of functions for the
 License: Artistic-2.0
 VignetteBuilder: knitr
 Depends: R (>= 3.6.3)
-Suggests: testthat, BiocStyle, knitr, DAPARdata2
+Suggests: testthat, BiocStyle, knitr, Biobase, DAPARdata2
 Imports: Features,  methods, MsCoreUtils, SummarizedExperiment, MultiAssayExperiment, preprocessCore, S4Vectors, lme4, AnnotationDbi, vsn, stringr, RColorBrewer, graph, FactoMineR, factoextra, DT, doParallel, dplyr, foreach, gplots, highcharter, tibble, tidyr, visNetwork, Matrix, cp4p, limma, vioplot, imp4p (>= 0.9), clusterProfiler, data.table, impute
 biocViews: Proteomics, Normalization, Preprocessing, MassSpectrometry, QualityControl, GO, DataImport
 NeedsCompilation: no

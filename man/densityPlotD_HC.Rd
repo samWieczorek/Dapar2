@@ -22,11 +22,13 @@ A density plot
 Densityplot of quantitative proteomics data over samples.
 }
 \examples{
+library(highcharter)
 utils::data(Exp1_R25_pept, package='DAPARdata2')
-qData <- assay(Exp1_R25_pept[['original']])
-pData <- colData(Exp1_R25_pept)
+qData <- assay(Exp1_R25_pept[[2]])
 conds <- colData(Exp1_R25_pept)[["Condition"]]
-densityPlotD_HC(qData, pData)
+legend <- colData(Exp1_R25_pept)[["Sample.name"]]
+palette <- c("#fc03ec","#94fc03")
+densityPlotD_HC(qData, conds, legend, palette)
 
 }
 \author{

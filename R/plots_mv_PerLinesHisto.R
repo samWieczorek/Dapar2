@@ -2,20 +2,29 @@
 #' number of missing values (NA) per lines (ie proteins).
 #' 
 #' @title Bar plot of missing values per lines using highcharter
+#' 
 #' @param qData A matrix that contains the data to plot.
+#' 
 #' @param samplesData A dataframe which contains informations about 
 #' the replicates.
+#' 
 #' @param indLegend The indice of the column names in \code{colData()}
+#' 
 #' @return A bar plot
+#' 
 #' @author Samuel Wieczorek, Enora Fremy
+#' 
 #' @examples
 #' library(highcharter)
 #' utils::data(Exp1_R25_pept, package='DAPARdata2')
 #' qData <- assay(Exp1_R25_pept[['original']])
 #' samplesData <- colData(Exp1_R25_pept)
 #' mvPerLinesHisto_HC(qData, samplesData)
-#' @export
+#' 
+#' @export 
+#' 
 #' @import highcharter
+#' 
 mvPerLinesHisto_HC <- function(qData, samplesData, indLegend="auto"){
   
   samplesData <- as.matrix(samplesData)

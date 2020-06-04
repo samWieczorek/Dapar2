@@ -11,7 +11,7 @@ getListNbValuesInLines(obj, i, type = "wholeMatrix")
 
 \item{i}{The indice of the dataset (SummarizedExperiment) in the object}
 
-\item{type}{xxxxxxx}
+\item{type}{wholeMatrix, allCond or atLeastOneCond}
 }
 \value{
 An integer
@@ -25,5 +25,5 @@ getListNbValuesInLines(Exp1_R25_pept, 1)
 
 }
 \author{
-Samuel Wieczorek
+Samuel Wieczorek, Enora Fremy
 }

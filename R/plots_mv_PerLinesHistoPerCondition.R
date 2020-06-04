@@ -2,22 +2,32 @@
 #' number of missing values (NA) per lines (ie proteins) and per conditions.
 #' 
 #' @title Bar plot of missing values per lines and per condition
+#' 
 #' @param qData A dataframe that contains quantitative data.
+#' 
 #' @param samplesData A dataframe where lines correspond to samples and 
 #' columns to the meta-data for those samples.
+#' 
 #' @param indLegend The indice of the column names of \code{colData()}
+#' 
 #' @param palette A vector of HEX Code colors (one color 
 #' per condition).
+#' 
 #' @return A bar plot
+#' 
 #' @author Samuel Wieczorek, Enora Fremy
+#' 
 #' @examples
 #' library(highcharter)
 #' utils::data(Exp1_R25_pept, package='DAPARdata2')
 #' qData <- assay(Exp1_R25_pept[['original']])
 #' samplesData <- colData(Exp1_R25_pept)
 #' mvPerLinesHistoPerCondition_HC(qData, samplesData)
+#' 
 #' @export
+#' 
 #' @import highcharter
+#' 
 mvPerLinesHistoPerCondition_HC <- function(qData, samplesData, indLegend="auto", palette=NULL){
   
   conds <- samplesData[,"Condition"]

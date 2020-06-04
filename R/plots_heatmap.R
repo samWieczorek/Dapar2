@@ -89,7 +89,7 @@ heatmapD <- function(qData, distance="euclidean", cluster="complete", dendro = F
     labCol="",
     margins=c(4,12),
     #cexRow=1.5,
-    cexRow=0.2 + 1/log10(nrow(.data)),
+    cexRow= 0.7 + 1/log10(nrow(.data)),
     keysize = 1.5,
     lhei = c(1.5, 9),
     lwid = c(1.5, 4),
@@ -204,29 +204,29 @@ heatmap.DAPAR <- function (x,
   
   
   graphics::image(1:nc, 1:nr, x, xlim = 0.5 + c(0, nc), ylim = 0.5 + c(0, nr),
-        axes = FALSE, xlab = "", ylab = "", col = col, breaks = breaks)
+                  axes = FALSE, xlab = "", ylab = "", col = col, breaks = breaks)
   
   
   if (!is.null(labCol)) {
     graphics::axis(1, 1:nc, labels = labCol, las = 2, line = -0.5 + offsetCol,
-         tick = 0, cex.axis = cexCol, hadj = NA, padj = 0)
+                   tick = 0, cex.axis = cexCol, hadj = NA, padj = 0)
   }
   else {
     adjCol = c(1, NA)
     xpd.orig <- par("xpd")
     par(xpd = NA)
     xpos <- graphics::axis(1, 1:nc, labels = rep("", nc), las = 2, 
-                 tick = 0)
+                           tick = 0)
     graphics::text(x = xpos, y = par("usr")[3] - (1 + offsetCol) * 
-           strheight("M"), label = labCol, adj = adjCol, 
-         cex = cexCol, srt = srtCol, col = colCol)
+                     strheight("M"), label = labCol, adj = adjCol, 
+                   cex = cexCol, srt = srtCol, col = colCol)
     graphics::par(xpd = xpd.orig)
   }
   
   
   if (!is.null(labRow) ) {
     graphics::axis(4, iy, labels = labRow, las = 5, line = -0.5 + offsetRow, 
-         tick = 0, cex.axis = cexRow, hadj = 0, padj = NA)
+                   tick = 0, cex.axis = cexRow, hadj = 0, padj = NA)
   }
   else {
     xpd.orig <- par("xpd")
@@ -234,8 +234,8 @@ heatmap.DAPAR <- function (x,
     ypos <- axis(4, iy, labels = rep("", nr), las = 2, 
                  line = -0.5, tick = 0)
     graphics::text(x = par("usr")[2] + (1 + offsetRow) * graphics::strwidth("M"), 
-         y = ypos, labels = labRow, adj = c(0,NA), cex = cexRow, 
-         srt = srtRow, col = colRow)
+                   y = ypos, labels = labRow, adj = c(0,NA), cex = cexRow, 
+                   srt = srtRow, col = colRow)
     graphics::par(xpd = xpd.orig)
   }
   
@@ -261,7 +261,7 @@ heatmap.DAPAR <- function (x,
     
     z <- seq(min.raw, max.raw, by = min(diff(breaks)/100))
     graphics::image(z = matrix(z, ncol = 1), col = col, breaks = tmpbreaks, 
-          xaxt = "n", yaxt = "n")
+                    xaxt = "n", yaxt = "n")
     graphics::par(usr = c(0, 1, 0, 1))
     lv <- pretty(breaks)
     xv <- scale01(as.numeric(lv), min.raw, max.raw)
@@ -272,7 +272,7 @@ heatmap.DAPAR <- function (x,
     key.xlab <- "Intensity value"
     
     graphics::mtext(side = 1, key.xlab, line = par("mgp")[1], padj = 0.5, 
-          cex = par("cex") * par("cex.lab"))
+                    cex = par("cex") * par("cex.lab"))
     
     if (is.null(key.title)) 
       title("Color Key")

@@ -2,21 +2,31 @@
 #' This method plots a histogram of missing values.
 #' 
 #' @title Histogram of missing values
+#' 
 #' @param qData A dataframe that contains quantitative data.
+#' 
 #' @param conds A vector of the conditions (one condition per sample).
+#' 
 #' @param showValues A logical that indicates wether numeric values should be
 #' drawn above the bars.
+#' 
 #' @param palette xxx
+#' 
 #' @return A histogram
+#' 
 #' @author Samuel Wieczorek
+#' 
 #' @examples
 #' library(highcharter)
 #' utils::data(Exp1_R25_pept, package='DAPARdata2')
 #' qData <- assay(Exp1_R25_pept[[2]])
-#' conds <- colData(Exp1_R25_pept)@listData$Condition
+#' conds <- colData(Exp1_R25_pept)[['Condition']]
 #' mvHisto_HC(qData, conds, showValues=TRUE)
+#' 
 #' @export
+#' 
 #' @import highcharter
+#' 
 mvHisto_HC <- function(qData, conds, showValues = FALSE, palette = NULL){
   
   palette <- BuildPalette(conds, palette)
