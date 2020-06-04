@@ -35,19 +35,19 @@ mvPerLinesHistoPerCondition_HC <- function(qData, samplesData, indLegend="auto",
   
   if (identical(indLegend,"auto")) { indLegend <- c(2:length(colnames(samplesData)))}
   
-  nbConditions <- length(unique(samplesData[["Condition"]))
+  nbConditions <- length(unique(samplesData[["Condition"]]))
   
-  ncolMatrix <- max(unlist(lapply(unique(samplesData[["Condition"]), function(x){length(which(samplesData[["Condition"]==x))})))
+  ncolMatrix <- max(unlist(lapply(unique(samplesData[["Condition"]]), function(x){length(which(samplesData[["Condition"]]==x))})))
   m <- matrix(rep(0, nbConditions*(1+ncolMatrix)), 
               ncol = nbConditions, 
-              dimnames=list(seq(0:(ncolMatrix)),unique(samplesData[["Condition"])))
+              dimnames=list(seq(0:(ncolMatrix)),unique(samplesData[["Condition"]])))
   
-  for (i in unique(samplesData[["Condition"])) {
-    nSample <- length(which(samplesData[["Condition"] == i))
+  for (i in unique(samplesData[["Condition"]])) {
+    nSample <- length(which(samplesData[["Condition"]] == i))
     t <- NULL
     if (nSample == 1) {
-      t <- table(as.integer(is.na(qData[,which(samplesData[["Condition"] == i)])))
-    } else {t <- table(rowSums(is.na(qData[,which(samplesData[["Condition"] == i)])))}
+      t <- table(as.integer(is.na(qData[,which(samplesData[["Condition"]] == i)])))
+    } else {t <- table(rowSums(is.na(qData[,which(samplesData[["Condition"]] == i)])))}
     
     m[as.integer(names(t))+1,i] <- t
   }
@@ -70,7 +70,7 @@ mvPerLinesHistoPerCondition_HC <- function(qData, samplesData, indLegend="auto",
                pointFormat = "{point.y} ")
   
   for (i in 1:nbConditions){
-    h1 <- h1 %>% hc_add_series(data=m[,unique(samplesData[["Condition"])[i]]) }
+    h1 <- h1 %>% hc_add_series(data=m[,unique(samplesData[["Condition"]])[i]]) }
   
   
   return(h1)

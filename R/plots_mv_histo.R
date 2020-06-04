@@ -30,7 +30,7 @@
 #' 
 mvHisto_HC <- function(qData, conds, showValues = FALSE, palette = NULL){
   
-  palette <- BuildPalette(conds, palette)
+  palette <- BuildPalette(conds[['Condition']], palette)
  
   NbNAPerCol <- colSums(is.na(qData))
   NbNAPerRow <- rowSums(is.na(qData))
