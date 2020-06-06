@@ -229,13 +229,13 @@ createFeatures <- function(data,
   # As the function addOribingOfValues is based on the presence of NA in quanti data,
   # if forceNA is not set as TRUE, the previous function cannot ben run
   origin <- MultiAssayExperiment::DataFrame()
-  if (isTRUE(forceNA)) {
+  #if (isTRUE(forceNA)) {
     obj <- zeroIsNA(obj,seq_along(obj))
     origin <- addOriginOfValues(obj, 1, namesOrigin)
     metadata(obj)$OriginOfValues <- colnames(origin)
     rowData(obj[['original']]) <- cbind(rowData(obj[['original']]), origin)
     
-  }
+  #}
   
   
   if (isTRUE(logTransform)) {
@@ -324,7 +324,7 @@ convertMSnset2Features <- function(obj, analysis, parentProtId, keyId, pipelineT
   df <- cbind(Biobase::fData(obj), Biobase::exprs(obj))
   i <- (ncol(Biobase::fData(obj))+1):(ncol(df))
   feat <- Features::readFeatures(df, ecol = i, sep = "\t", name = "original", fnames = keyId)
-  metadata(feat[['original']]) <- obj@experimentData@other$typeOfData
+  metadata(feat[['original']])$typeOfData <- obj@experimentData@other$typeOfData
     
     
   ## Encoding the sample data
