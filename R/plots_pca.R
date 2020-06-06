@@ -34,9 +34,9 @@ wrapper.pca <- function(qData, condition, var.scaling=TRUE, ncp=NULL){
     stop("'condition' is missing.")
   
   if (is.null(var.scaling)) {var.scaling <- TRUE}
-
+  
   if (length(which(is.na(qData))) > 0){ qData <- stats::na.omit(qData) }
-
+  
   
   if (is.null(ncp)){
     nmax <- 12
