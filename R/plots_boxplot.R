@@ -24,13 +24,16 @@
 #' utils::data(Exp1_R25_pept, package='DAPARdata2')
 #' qData <- assay(Exp1_R25_pept[['original_log']])
 #' conds <- colData(Exp1_R25_pept)[["Condition"]]
-#' seq <- rowData(Exp1_R25_pept[['original_log']])$Sequence
+#' seq <- rowData(Exp1_R25_pept[['original_log']])[['Sequence']]
 #' boxPlotD_HC(qData, conds, sequence=seq, subset.view=1:10)
 #' 
 #' @import highcharter
+#' 
 #' @importFrom grDevices colorRampPalette
+#' 
 #' @importFrom RColorBrewer brewer.pal
-#' @importFrom graphics boxplot
+#' 
+#' @importFrom graphics boxplot#' 
 #' 
 #' @export
 #' 

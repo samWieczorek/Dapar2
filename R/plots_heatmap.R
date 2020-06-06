@@ -21,20 +21,24 @@
 #' 
 #' @examples
 #' \dontrun{
-#' utils::data(Exp1_R25_pept, package='DAPARdata2')
-#' ft <- Exp1_R25_pept
+#' utils::data(Exp1_R25_prot, package='DAPARdata2')
+#' ft <- Exp1_R25_prot
+#' conds <- colData(Exp1_R25_prot)[['Condition']]
 #' qData <- assay(ft[[2]])[1:100,]
-#' qData <- cbind(qData,qData) # x4
-#' heatmapD(qData)
+#' heatmapD(qData, conds, dendro=T)
 #' }
 #' 
 #' @importFrom grDevices colorRampPalette
+#' 
 #' @importFrom gplots heatmap.2
+#' 
 #' @importFrom stats dist hclust
+#' 
+#' @importFrom dendextend get_leaves_branches_col
 #' 
 #' @export
 #' 
-heatmapD <- function(qData, distance="euclidean", cluster="complete", dendro = FALSE){
+heatmapD <- function(qData, conds, distance="euclidean", cluster="complete", dendro = FALSE){
   ##Check parameters
   # paramdist <- c("euclidean", "manhattan")
   # if (!(distance %in% paramdist)){
@@ -66,8 +70,19 @@ heatmapD <- function(qData, distance="euclidean", cluster="complete", dendro = F
              seq(0.5, 6, length=100))
   heatmap.color <- grDevices::colorRampPalette(c("green", "red"))(n = 1000)
   
+  # samples label color
+  x=t(.data)
+  x[is.na(x)] <- -1e5
+  dist= dist(x, method=distance)
+  hcluster = hclust(dist, method=cluster)
+  cols_branches <- DAPAR2::BuildPalette(conds, NULL)
+  dend1 <- as.dendrogram(hcluster)
+  dend1 <- dendextend::color_branches(dend1, k = length(conds), col = cols_branches)
+  col_labels <- dendextend::get_leaves_branches_col(dend1)
+  
   
   if (dendro){ .dendro = "row"} else {.dendro = "none"}
+  
   p <- gplots::heatmap.2(
     x=t(.data),
     distfun = function(x) {
@@ -78,7 +93,7 @@ heatmapD <- function(qData, distance="euclidean", cluster="complete", dendro = F
       x[is.na(x)] <- -1e5
       hclust(x, method=cluster)
     },
-    dendrogram =.dendro,
+    dendrogram = .dendro,
     Rowv=TRUE,
     col=heatmap.color ,
     density.info='none',
@@ -93,8 +108,8 @@ heatmapD <- function(qData, distance="euclidean", cluster="complete", dendro = F
     keysize = 1.5,
     lhei = c(1.5, 9),
     lwid = c(1.5, 4),
-    lmat = rbind(4:3, 2:1)
-    
+    lmat = rbind(4:3, 2:1),
+    colRow = col_labels
   )
   #    }
 }
