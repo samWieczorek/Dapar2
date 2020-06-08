@@ -3,7 +3,7 @@
 #' 
 #' @param qData Numeric matrix
 #' 
-#' @param fData xxx
+#' @param keyId xxx
 #' 
 #' @param legend A vector of the conditions (one condition per sample).
 #' 
@@ -16,13 +16,15 @@
 #' @author Samuel Wieczorek, Anais Courtier, Enora Fremy
 #' 
 #' @examples
+#' library(DAPAR2)
+#' library(SummarizedExperiment)
 #' library(vioplot)
 #' library(Features)
-#' utils::data(Exp1_R25_pept, package='DAPARdata2')
-#' qData <- assay(Exp1_R25_pept[['original_log']])
-#' fData <- rowData(Exp1_R25_pept[['original_log']])
-#' legend <- colData(Exp1_R25_pept)[["Condition"]]
-#' violinPlotD(qData, fData, legend=legend)
+#' utils::data(Exp1_R25_prot, package='DAPARdata2')
+#' qData <- assay(Exp1_R25_prot[[2]])
+#' keyId <- rowData(Exp1_R25_prot[[2]])[[ metadata(Exp1_R25_prot)[['keyId']] ]]
+#' legend <- colData(Exp1_R25_prot)[["Condition"]]
+#' violinPlotD(qData, keyId, legend=legend)
 #' 
 #' @importFrom vioplot vioplot
 #' 
@@ -34,7 +36,7 @@
 #' 
 #' @export
 #' 
-violinPlotD <- function(qData, fData, legend=NULL, palette = NULL, subset.view=NULL){
+violinPlotD <- function(qData, keyId, legend=NULL, palette = NULL, subset.view=NULL){
   
   graphics::plot.new()
   
@@ -58,15 +60,14 @@ violinPlotD <- function(qData, fData, legend=NULL, palette = NULL, subset.view=N
   graphics::axis(2, yaxp = c(floor(min(na.omit(qData))), 
                    floor(max(na.omit(qData))), 5), las=1)
   
-  if( !is.null(legend))
-  {
-    if (is.vector(legend) ){
+  if( !is.null(legend) ) {
+    if ( is.vector(legend) ) {
       N <- 1
-    } else{ 
+    } else { 
         N <- ncol(legend)
         }
     
-    for (i in 1:N){
+    for (i in 1:N) {
       graphics::axis(side=1,
            at = 1:ncol(qData),
            labels = if (is.vector(legend) ) {legend} else {legend[,i]},
@@ -80,7 +81,7 @@ violinPlotD <- function(qData, fData, legend=NULL, palette = NULL, subset.view=N
   
   # Display of rows to highlight (index of row in subset.view) 
   if(!is.null(subset.view)){
-    idVector <- fData[['Sequence']]
+    idVector <- keyId
     pal <- grDevices::colorRampPalette(RColorBrewer::brewer.pal(8, "Set1"))(length(subset.view))
     
     n=0
