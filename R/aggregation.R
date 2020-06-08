@@ -213,7 +213,7 @@ aggregateFeatures_sam <- function(object, i, aggType='all', name, meta.names = N
 addListAdjacencyMatrices <- function(obj, i){
   
   if(missing(obj))
-    stop("'i' is missing.")
+    stop("'obj' is missing.")
   if(missing(i))
     stop("'i' is missing.")
   

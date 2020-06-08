@@ -33,7 +33,7 @@
 #' 
 #' @importFrom RColorBrewer brewer.pal
 #' 
-#' @importFrom graphics boxplot#' 
+#' @importFrom graphics boxplot
 #' 
 #' @export
 #' 
