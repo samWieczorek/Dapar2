@@ -18,8 +18,8 @@
 #' @examples
 #' library(FactoMineR)
 #' utils::data(Exp1_R25_pept, package='DAPARdata2')
-#' qData <- assay(Exp1_R25_pept[['original']])
-#' condition <- colData(Exp1_R25_pept)@listData[["Condition"]]
+#' qData <- assay(Exp1_R25_pept[[2]])
+#' condition <- colData(Exp1_R25_pept)[["Condition"]]
 #' res.pca <- wrapper.pca(qData, condition)
 #' 
 #' @importFrom FactoMineR PCA
@@ -77,7 +77,7 @@ wrapper.pca <- function(qData, condition, var.scaling=TRUE, ncp=NULL){
 plotPCA_Var <- function(res.pca, chosen.axes=c(1,2)){
   #plot.PCA(res.pca, choix="var", axes = chosen.axes, title="Sample factor map (PCA)")
   #require(factoextra)
-  # Colorer en fonction du cos2: qualit? de repr?sentation
+  # Colorer en fonction du cos2: qualite de representation
   if (is.null(res.pca)){
     return(NULL)
   }
