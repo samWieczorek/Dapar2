@@ -5,7 +5,13 @@
 \title{This function is a wrapper to 'heatmap.2' that displays
 a numeric matrix}
 \usage{
-heatmapD(qData, distance = "euclidean", cluster = "complete", dendro = FALSE)
+heatmapD(
+  qData,
+  conds,
+  distance = "euclidean",
+  cluster = "complete",
+  dendro = FALSE
+)
 }
 \arguments{
 \item{qData}{A dataframe of numeric values}
@@ -26,11 +32,11 @@ Heatmap of the quantitative proteomic data of a \code{data.frame} object
 }
 \examples{
 \dontrun{
-utils::data(Exp1_R25_pept, package='DAPARdata2')
-ft <- Exp1_R25_pept
+utils::data(Exp1_R25_prot, package='DAPARdata2')
+ft <- Exp1_R25_prot
+conds <- colData(Exp1_R25_prot)[['Condition']]
 qData <- assay(ft[[2]])[1:100,]
-qData <- cbind(qData,qData) # x4
-heatmapD(qData)
+heatmapD(qData, conds, dendro=T)
 }
 
 }

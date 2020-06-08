@@ -20,7 +20,7 @@
 #' 
 #' @export
 #' 
-setMEC <- function(origin, qData, conds){
+setMEC <- function(origin, qData, conds=NULL){
   
   if (missing(origin))
     stop("'origin' is required.")
@@ -31,6 +31,10 @@ setMEC <- function(origin, qData, conds){
     stop("'conds' is required.")
   
   
+  if (is.null(conds)){
+    warning("'conds' is not set. The object is unchanged.")
+    return(origin)
+  }
   
   u.conds <- unique(conds)
   nbCond <- length(u.conds)
@@ -82,14 +86,14 @@ setMEC <- function(origin, qData, conds){
 #' @import SummarizedExperiment
 #' 
 #' @export
-addOriginOfValues <- function(obj, i, namesOrigin=NULL){
-  
-  if ( ncol(assay(obj,i)) != length(namesOrigin)){
-    stop("The number of samples in the assay must be equal to the length of 'namesOrigin'")
-  }
+#' 
+addOriginOfValues <- function(obj, i, namesOrigin = NULL){
   
   if (!is.null(namesOrigin))
   {
+    if ( ncol(assay(obj,i)) != length(namesOrigin)){
+      stop("The number of samples in the assay must be equal to the length of 'namesOrigin'")
+    }
     OriginOfValues <- rowData(obj[[i]])[,namesOrigin]
   } else {   
     OriginOfValues <- MultiAssayExperiment::DataFrame(matrix(rep("unknown", nrow(assay(obj,i))*nrow(SummarizedExperiment::colData(obj))), 
@@ -110,7 +114,7 @@ addOriginOfValues <- function(obj, i, namesOrigin=NULL){
   
   
   OriginOfValues <- setMEC(origin = OriginOfValues, 
-                           qData = assay(obj[['original']]), 
+                           qData = assay(obj[[i]]), 
                            conds = SummarizedExperiment::colData(obj)$Condition)
   
   
@@ -167,7 +171,7 @@ addOriginOfValues <- function(obj, i, namesOrigin=NULL){
 #' data <- read.table(data.file, header=TRUE, sep="\t", as.is=TRUE, stringsAsFactors = FALSE)
 #' sample.file <- system.file("extdata", "samples_Exp1_R25.txt", package="DAPARdata2")
 #' sample <- read.table(sample.file, header=TRUE, sep="\t", as.is=TRUE, stringsAsFactors = FALSE)
-#' indExpData <- c(56:61)
+#' indExpData <- 56:61
 #' namesOrigin <- colnames(data)[43:48]
 #' parentId <- 'Protein_group_IDs'
 #' keyid <- 'Sequence'
@@ -215,38 +219,29 @@ createFeatures <- function(data,
                         name='original',
                         fnames = keyId)
   }
-  metadata(obj[['original']])$typeOfData <- typeOfData
+  
   
   ## Encoding the sample data
   sample <- lapply(sample,function(x){ gsub(".", "_", x, fixed=TRUE)})
   SummarizedExperiment::colData(obj)@listData <- sample
   
   
-  ## Replace all '.' by '_' in names
-  #colnames(fd) <- gsub(".", "_", colnames(data)[indFData], fixed=TRUE)
-  #colnames(Intensity) <- gsub(".", "_", colnames(data)[indExpData], fixed=TRUE)
-  
   # As the function addOribingOfValues is based on the presence of NA in quanti data,
   # if forceNA is not set as TRUE, the previous function cannot ben run
   origin <- MultiAssayExperiment::DataFrame()
   #if (isTRUE(forceNA)) {
-    obj <- zeroIsNA(obj,seq_along(obj))
-    origin <- addOriginOfValues(obj, 1, namesOrigin)
-    metadata(obj)$OriginOfValues <- colnames(origin)
-    rowData(obj[['original']]) <- cbind(rowData(obj[['original']]), origin)
-    
+  obj <- zeroIsNA(obj,seq_along(obj))
+  origin <- addOriginOfValues(obj, 1, namesOrigin)
+  metadata(obj)$OriginOfValues <- colnames(origin)
+  rowData(obj[['original']]) <- cbind(rowData(obj[['original']]), origin)
+  
+  print('---- end of addOriginOfValues ----')
   #}
   
-  
-  if (isTRUE(logTransform)) {
-    obj <- addAssay(obj, logTransform(obj[['original']]),name = "original_log")
-    obj <- addAssayLinkOneToOne(obj, from = "original", to = "original_log")
-  }
   
   
   daparVersion <- if (is.na(utils::installed.packages()["DAPAR2"])) 'NA' else utils::installed.packages()["DAPAR2",'Version']
   ProstarVersion <-if (is.na(utils::installed.packages()["Prostar2"])) 'NA' else utils::installed.packages()["Prostar2",'Version']
-  
   
   metadata(obj) <- list(versions = list(Prostar_Version = ProstarVersion,
                                         DAPAR_Version = daparVersion),
@@ -260,7 +255,27 @@ createFeatures <- function(data,
                         processes=c('original',processes)
   )
   
+  metadata(obj[['original']])$typeOfData <- typeOfData
+   
+  ## Replace all '.' by '_' in names
+  #colnames(fd) <- gsub(".", "_", colnames(data)[indFData], fixed=TRUE)
+  #colnames(Intensity) <- gsub(".", "_", colnames(data)[indExpData], fixed=TRUE)
   
+  
+    if (tolower(typeOfData) == 'peptide')
+      {
+        cat(paste0('Build adjacency matrix for object original'))
+        browser()
+        obj <- addListAdjacencyMatrices(obj, 1)
+      }
+  print('---- end of addListAdjacencyMatrices ----')
+    
+  if (isTRUE(logTransform)) {
+    obj <- addAssay(obj, logTransform(obj[['original']]),name = "original_log")
+    obj <- addAssayLinkOneToOne(obj, from = "original", to = "original_log")
+  }
+  
+ 
   return(obj)
 }
 

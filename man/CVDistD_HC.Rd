@@ -4,7 +4,7 @@
 \alias{CVDistD_HC}
 \title{Distribution of CV of entities}
 \usage{
-CVDistD_HC(qData, conds = NULL, palette = NULL)
+CVDistD_HC(qData, conds, palette = NULL)
 }
 \arguments{
 \item{qData}{A numeric matrix that contains quantitative data.}
@@ -30,8 +30,8 @@ The CV is calculated for each condition present in the dataset
 library(Features)
 library(SummarizedExperiment)
 utils::data(Exp1_R25_pept, package='DAPARdata2')
-qData <- assay(Exp1_R25_pept[['original']])[1:10,]
-conds <- colData(Exp1_R25_pept)@listData[["Condition"]]
+qData <- assay(Exp1_R25_pept[[2]])[1:10,]
+conds <- colData(Exp1_R25_pept)[["Condition"]]
 CVDistD_HC(qData, conds)
 
 }
