@@ -4,7 +4,7 @@
 \alias{setMEC}
 \title{Sets the MEC tag in the OriginOfValues}
 \usage{
-setMEC(origin, qData, conds)
+setMEC(origin, qData, conds = NULL)
 }
 \arguments{
 \item{origin}{xxxxx}

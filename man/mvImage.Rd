@@ -24,8 +24,8 @@ number of missing values. A white square is plotted for missing values.
 }
 \examples{
 utils::data(Exp1_R25_pept, package='DAPARdata2')
-qData <- log2(assay(Exp1_R25_pept[['original']]))
-conds <- colData(Exp1_R25_pept)@listData[["Condition"]]
+qData <- assay(Exp1_R25_pept[[2]]))
+conds <- colData(Exp1_R25_pept)[["Condition"]]
 mvImage(qData, conds)
 }
 \author{
