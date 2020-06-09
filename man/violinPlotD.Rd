@@ -4,12 +4,12 @@
 \alias{violinPlotD}
 \title{Builds a violinplot from a numeric matrix}
 \usage{
-violinPlotD(qData, fData, legend = NULL, palette = NULL, subset.view = NULL)
+violinPlotD(qData, keyId, legend = NULL, palette = NULL, subset.view = NULL)
 }
 \arguments{
 \item{qData}{Numeric matrix}
 
-\item{fData}{xxx}
+\item{keyId}{xxx}
 
 \item{legend}{A vector of the conditions (one condition per sample).}
 
@@ -24,13 +24,15 @@ A violinplot
 Builds a violinplot from a numeric matrix
 }
 \examples{
+library(DAPAR2)
+library(SummarizedExperiment)
 library(vioplot)
 library(Features)
-utils::data(Exp1_R25_pept, package='DAPARdata2')
-qData <- assay(Exp1_R25_pept[['original_log']])
-fData <- rowData(Exp1_R25_pept[['original_log']])
-legend <- colData(Exp1_R25_pept)[["Condition"]]
-violinPlotD(qData, fData, legend=legend)
+utils::data(Exp1_R25_prot, package='DAPARdata2')
+qData <- assay(Exp1_R25_prot[[2]])
+keyId <- rowData(Exp1_R25_prot[[2]])[[ metadata(Exp1_R25_prot)[['keyId']] ]]
+legend <- colData(Exp1_R25_prot)[["Condition"]]
+violinPlotD(qData, keyId, legend=legend)
 
 }
 \author{
