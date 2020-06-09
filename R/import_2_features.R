@@ -232,6 +232,7 @@ createFeatures <- function(data,
   #if (isTRUE(forceNA)) {
   obj <- zeroIsNA(obj,seq_along(obj))
   origin <- addOriginOfValues(obj, 1, namesOrigin)
+  print(str(colnames(origin)))
   metadata(obj)$OriginOfValues <- colnames(origin)
   rowData(obj[['original']]) <- cbind(rowData(obj[['original']]), origin)
   
@@ -255,6 +256,7 @@ createFeatures <- function(data,
                         processes=c('original',processes)
   )
   
+  print(str(typeOfData))
   metadata(obj[['original']])$typeOfData <- typeOfData
    
   ## Replace all '.' by '_' in names
@@ -265,7 +267,6 @@ createFeatures <- function(data,
     if (tolower(typeOfData) == 'peptide')
       {
         cat(paste0('Build adjacency matrix for object original'))
-        browser()
         obj <- addListAdjacencyMatrices(obj, 1)
       }
   print('---- end of addListAdjacencyMatrices ----')
@@ -275,7 +276,7 @@ createFeatures <- function(data,
     obj <- addAssayLinkOneToOne(obj, from = "original", to = "original_log")
   }
   
- 
+ print(obj)
   return(obj)
 }
 
