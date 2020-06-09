@@ -24,7 +24,10 @@ License: Artistic-2.0
 VignetteBuilder: knitr
 Depends: R (>= 3.6.3)
 Suggests: testthat, BiocStyle, knitr, Biobase, DAPARdata2
-Imports: Features,  methods, MsCoreUtils, SummarizedExperiment, MultiAssayExperiment, preprocessCore, S4Vectors, lme4, AnnotationDbi, vsn, stringr, RColorBrewer, graph, FactoMineR, factoextra, DT, doParallel, dplyr, foreach, gplots, highcharter, tibble, tidyr, visNetwork, Matrix, cp4p, limma, vioplot, imp4p (>= 0.9), clusterProfiler, data.table, impute
+Imports: Features,  methods, MsCoreUtils, SummarizedExperiment, MultiAssayExperiment, openxlsx, 
+         preprocessCore, S4Vectors, lme4, AnnotationDbi, vsn, stringr, RColorBrewer, graph, FactoMineR, 
+         factoextra, DT, doParallel, dplyr, foreach, gplots, highcharter, tibble, tidyr, visNetwork, 
+         Matrix, cp4p, limma, vioplot, imp4p (>= 0.9), clusterProfiler, data.table, impute
 biocViews: Proteomics, Normalization, Preprocessing, MassSpectrometry, QualityControl, GO, DataImport
 NeedsCompilation: no
 Collate:
@@ -34,7 +37,8 @@ Collate:
     'DiffAnalysis.R'
     'get_pep_prot_cc.R'
     'group_ttest.R'
-    'inOutFiles.R'
+    'export_features.R'
+    'import_2_features.R'
     'limmaAnalysis.R'
     'normalize.R'
     'plots_boxplot.R'
