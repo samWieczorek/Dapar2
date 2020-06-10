@@ -23,8 +23,8 @@
 #' utils::data(Exp1_R25_prot, package='DAPARdata2')
 #' qData <- assay(Exp1_R25_prot[[2]])
 #' keyId <- rowData(Exp1_R25_prot[[2]])[[ metadata(Exp1_R25_prot)[['keyId']] ]]
-#' legend <- colData(Exp1_R25_prot)[["Condition"]]
-#' violinPlotD(qData, keyId, legend=legend)
+#' conds <- colData(Exp1_R25_prot)[["Condition"]]
+#' violinPlotD(qData, keyId, conds)
 #' 
 #' @importFrom vioplot vioplot
 #' 
@@ -36,11 +36,11 @@
 #' 
 #' @export
 #' 
-violinPlotD <- function(qData, keyId, legend=NULL, palette = NULL, subset.view=NULL){
+violinPlotD <- function(qData, keyId, legend, palette = NULL, subset.view=NULL){
   
   graphics::plot.new()
   
-  if (is.null(qData)){
+  if (is.null(qData)) {
     warning('The dataset in NULL and cannot be shown')
     return(NULL)
   }
@@ -77,7 +77,6 @@ violinPlotD <- function(qData, keyId, legend=NULL, palette = NULL, subset.view=N
     
     graphics::mtext("Samples",side=1,line=6+length(colnames(legend)), cex.lab=1, las=1)
   }
-  
   
   # Display of rows to highlight (index of row in subset.view) 
   if(!is.null(subset.view)){

@@ -32,7 +32,8 @@
 corrMatrixD_HC <- function(obj, names = NULL, rate = 0.5) {
   
   res <- cor(SummarizedExperiment::assay(obj),use = 'pairwise.complete.obs')
-  
+  print("res")
+  print(res)
   df <- as.data.frame(res)
   
   if (!is.null(names)){
