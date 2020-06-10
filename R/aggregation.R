@@ -217,6 +217,16 @@ addListAdjacencyMatrices <- function(obj, i){
   if(missing(i))
     stop("'i' is missing.")
   
+  
+  if (is.null(metadata(obj)$parentProtId) || metadata(obj)$parentProtId=='' || nchar(metadata(obj)$parentProtId)==0){
+    warning("'parentProtId' is missing.")
+    return(obj)
+  } else if (!(metadata(obj)$parentProtId %in% colnames(rowData(obj[[i]])))){
+    warning("'parentProtId' is not correctly set and does not seem to belongs to the dataset.")
+    return(obj)
+  }
+  
+  
   object_i <- obj[[i]]
   # A vector of proteins ids. The length of this vector is equal to the number of peptides one wants to aggregate, 
   # each line of it correspond to a peptide. Each element of this vector is either one element or a combination of elements seperated by a comma.

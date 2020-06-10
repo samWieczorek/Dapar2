@@ -25,13 +25,12 @@
 addConnexComp <- function(obj, i){
   
   if(missing(obj))
-    stop("'i' is missing.")
+    stop("'obj' is missing.")
   if(missing(i))
     stop("'i' is missing.")
   
-  object_i <- obj[[i]]
   
-  if (length(metadata(object_i)$list.matAdj) ==0)
+  if (length(metadata(obj[[i]])$list.matAdj) ==0)
     {
     warning("Any adjacency matrix is present in the dataset.")
     return(obj)
@@ -40,6 +39,8 @@ addConnexComp <- function(obj, i){
   cc <- ComputeConnexComposants(metadata(obj[[i]])$list.matAdj)
   
   metadata(obj[[i]])$list.cc <- cc
+  
+  print("---- end of compute CC ----")
   return (obj)
 }
 

@@ -209,7 +209,7 @@ createFeatures <- function(data,
   
   
   
-  if (is.null(keyId)) {
+  if (is.null(keyId) || keyId=='' || nchar(keyId)==0) {
     obj <- readFeatures(data, 
                         ecol=indExpData, 
                         name='original')
@@ -236,7 +236,6 @@ createFeatures <- function(data,
   metadata(obj)$OriginOfValues <- colnames(origin)
   rowData(obj[['original']]) <- cbind(rowData(obj[['original']]), origin)
   
-  print('---- end of addOriginOfValues ----')
   #}
   
   
@@ -256,7 +255,6 @@ createFeatures <- function(data,
                         processes=c('original',processes)
   )
   
-  print(str(typeOfData))
   metadata(obj[['original']])$typeOfData <- typeOfData
    
   ## Replace all '.' by '_' in names
@@ -266,17 +264,19 @@ createFeatures <- function(data,
   
     if (tolower(typeOfData) == 'peptide')
       {
-        cat(paste0('Build adjacency matrix for object original'))
-        obj <- addListAdjacencyMatrices(obj, 1)
-      }
-  print('---- end of addListAdjacencyMatrices ----')
+      print( "addListAdjacencyMatrices")
+      obj <- addListAdjacencyMatrices(obj, 1)
+      print( "addConnexComp")
+      obj <- addConnexComp(obj, 1)
+      print(names(metadata(obj[[1]])$list.cc))
+    }
+
     
   if (isTRUE(logTransform)) {
     obj <- addAssay(obj, logTransform(obj[['original']]),name = "original_log")
     obj <- addAssayLinkOneToOne(obj, from = "original", to = "original_log")
   }
   
- print(obj)
   return(obj)
 }
 
