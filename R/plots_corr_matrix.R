@@ -15,11 +15,11 @@
 #' @author Samuel Wieczorek, Enora Fremy
 #' 
 #' @examples
+#' library(highcharter)
+#' library(DAPAR2)
 #' utils::data(Exp1_R25_pept, package='DAPARdata2')
-#' qData <- assay(Exp1_R25_pept[['original']])
-#' names <- colnames(qData)
-#' res <- cor(qData,use = 'pairwise.complete.obs')
-#' corrMatrixD_HC(res, names)
+#' obj <- Exp1_R25_pept[[2]]
+#' corrMatrixD_HC(obj)
 #' 
 #' @importFrom dplyr tbl_df mutate left_join
 #' @importFrom tidyr gather
@@ -29,7 +29,9 @@
 #' 
 #' @export
 #' 
-corrMatrixD_HC <- function(res, names = NULL, rate = 0.5) {
+corrMatrixD_HC <- function(obj, names = NULL, rate = 0.5) {
+  
+  res <- cor(SummarizedExperiment::assay(obj),use = 'pairwise.complete.obs')
   
   df <- as.data.frame(res)
   
