@@ -16,25 +16,23 @@
 #' 
 #' @examples
 #' library(highcharter)
-#' library(DAPAR2)
 #' utils::data(Exp1_R25_pept, package='DAPARdata2')
 #' obj <- Exp1_R25_pept[[2]]
 #' corrMatrixD_HC(obj)
 #' 
-#' @importFrom dplyr tbl_df mutate left_join
+#' @importFrom dplyr mutate left_join
 #' @importFrom tidyr gather
 #' @import highcharter
 #' @importFrom DT JS
-#' @importFrom tibble tibble
+#' @importFrom tibble tibble as_tibble
 #' 
 #' @export
 #' 
 corrMatrixD_HC <- function(obj, names = NULL, rate = 0.5) {
   
   res <- cor(SummarizedExperiment::assay(obj),use = 'pairwise.complete.obs')
-  print("res")
-  print(res)
-  df <- as.data.frame(res)
+   #df <- as.data.frame(res)
+   df <- tibble::as_tibble(res)
   
   if (!is.null(names)){
       colnames(df) <- names
@@ -45,8 +43,9 @@ corrMatrixD_HC <- function(obj, names = NULL, rate = 0.5) {
   dist <- NULL
   
   x <- y <- names(df)
-  
-  df <- dplyr::tbl_df(cbind(x = y, df)) %>% 
+ 
+  df <- tibble::as_tibble(cbind(x = y, df)) %>% 
+     #df <- dplyr::tbl_df(cbind(x = y, df)) %>% 
     tidyr::gather(y, dist, -x) %>% 
     dplyr::mutate(x = as.character(x),
                   y = as.character(y)) %>% 
