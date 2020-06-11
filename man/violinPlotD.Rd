@@ -4,6 +4,7 @@
 \alias{violinPlotD}
 \title{Builds a violinplot from a numeric matrix}
 \usage{
+<<<<<<< HEAD
 violinPlotD(
   qData,
   keyId,
@@ -12,6 +13,9 @@ violinPlotD(
   palette = NULL,
   subset.view = NULL
 )
+=======
+violinPlotD(qData, keyId, legend, palette = NULL, subset.view = NULL)
+>>>>>>> 1fd9d66c2d3c79eb31f1e6bc797ddef71b6a0fae
 }
 \arguments{
 \item{qData}{Numeric matrix}
