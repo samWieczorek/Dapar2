@@ -48,7 +48,7 @@ boxPlotD_HC <- function(qData, conds, sequence=NULL, legend=NULL, palette = NULL
     stop("'conds' is missing.")
   
   if (is.null(legend)) {
-    legend <- paste0("series", 1:ncol(qData))
+    legend <- colnames(qData)
   }
   
   if (!is.null(subset.view)) {

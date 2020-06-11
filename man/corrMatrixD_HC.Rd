@@ -5,15 +5,15 @@
 \title{Displays a correlation matrix of the quantitative data of a
 numeric matrix.}
 \usage{
-corrMatrixD_HC(res, names = NULL, rate = 0.5)
+corrMatrixD_HC(obj, names = NULL, rate = 0.5)
 }
 \arguments{
-\item{res}{xxx}
-
 \item{names}{xxxxx}
 
 \item{rate}{The rate parameter to control the exponential law for 
 the gradient of colors}
+
+\item{res}{xxx}
 }
 \value{
 A colored correlation matrix
@@ -23,11 +23,11 @@ Displays a correlation matrix of the quantitative data of a
 numeric matrix.
 }
 \examples{
+library(highcharter)
+library(DAPAR2)
 utils::data(Exp1_R25_pept, package='DAPARdata2')
-qData <- assay(Exp1_R25_pept[['original']])
-names <- colnames(qData)
-res <- cor(qData,use = 'pairwise.complete.obs')
-corrMatrixD_HC(res, names)
+obj <- Exp1_R25_pept[[2]]
+corrMatrixD_HC(obj)
 
 }
 \author{
