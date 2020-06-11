@@ -36,10 +36,10 @@ Boxplot for quantitative proteomics data using the library \code{highcharter}
 library(Features)
 library(highcharter)
 utils::data(Exp1_R25_pept, package='DAPARdata2')
-qData <- assay(Exp1_R25_pept[['original_log']])
+qData <- assay(Exp1_R25_pept[[2]])
 conds <- colData(Exp1_R25_pept)[["Condition"]]
-seq <- rowData(Exp1_R25_pept[['original_log']])[['Sequence']]
-boxPlotD_HC(qData, conds, sequence=seq, subset.view=1:10)
+seq <- rowData(Exp1_R25_pept[[2]])[['Sequence']]
+boxPlotD_HC(qData, conds, sequence=seq, conds, subset.view=1:10)
 
 }
 \author{

@@ -24,7 +24,7 @@
 #' qData <- assay(Exp1_R25_prot[[2]])
 #' keyId <- rowData(Exp1_R25_prot[[2]])[[ metadata(Exp1_R25_prot)[['keyId']] ]]
 #' conds <- colData(Exp1_R25_prot)[["Condition"]]
-#' violinPlotD(qData, keyId, conds)
+#' violinPlotD(qData, keyId, conds, NULL, NULL, 1:10)
 #' 
 #' @importFrom vioplot vioplot
 #' 
@@ -36,7 +36,7 @@
 #' 
 #' @export
 #' 
-violinPlotD <- function(qData, keyId, legend, palette = NULL, subset.view=NULL){
+violinPlotD <- function(qData, keyId, conds, legend=NULL, palette = NULL, subset.view=NULL){
   
   graphics::plot.new()
   
@@ -45,7 +45,11 @@ violinPlotD <- function(qData, keyId, legend, palette = NULL, subset.view=NULL){
     return(NULL)
   }
   
-  palette <- BuildPalette(legend, palette)
+  palette <- BuildPalette(conds, palette)
+  
+  if (is.null(legend)) {
+    legend <- colnames(qData)
+  }
   
   graphics::plot.window(xlim=c(0,ncol(qData)+1),
                         ylim=c(min(na.omit(qData)),max(na.omit(qData)))
