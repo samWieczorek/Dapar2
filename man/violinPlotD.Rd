@@ -4,7 +4,7 @@
 \alias{violinPlotD}
 \title{Builds a violinplot from a numeric matrix}
 \usage{
-violinPlotD(qData, keyId, legend = NULL, palette = NULL, subset.view = NULL)
+violinPlotD(qData, keyId, legend, palette = NULL, subset.view = NULL)
 }
 \arguments{
 \item{qData}{Numeric matrix}
@@ -31,8 +31,8 @@ library(Features)
 utils::data(Exp1_R25_prot, package='DAPARdata2')
 qData <- assay(Exp1_R25_prot[[2]])
 keyId <- rowData(Exp1_R25_prot[[2]])[[ metadata(Exp1_R25_prot)[['keyId']] ]]
-legend <- colData(Exp1_R25_prot)[["Condition"]]
-violinPlotD(qData, keyId, legend=legend)
+conds <- colData(Exp1_R25_prot)[["Condition"]]
+violinPlotD(qData, keyId, conds)
 
 }
 \author{
