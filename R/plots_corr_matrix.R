@@ -31,6 +31,7 @@
 corrMatrixD_HC <- function(obj, names = NULL, rate = 0.5) {
   
   res <- cor(SummarizedExperiment::assay(obj),use = 'pairwise.complete.obs')
+
    #df <- as.data.frame(res)
    df <- tibble::as_tibble(res)
   

@@ -25,6 +25,7 @@
 #' ft <- Exp1_R25_prot
 #' conds <- colData(Exp1_R25_prot)[['Condition']]
 #' qData <- assay(ft[[2]])[1:100,]
+#' qData <- cbind(qData,qData)
 #' heatmapD(qData, conds, dendro=T)
 #' }
 #' 
@@ -104,14 +105,14 @@ heatmapD <- function(qData, conds, distance="euclidean", cluster="complete", den
     labCol="",
     margins=c(4,12),
     #cexRow=1.5,
-    cexRow= 0.7 + 1/log10(nrow(.data)),
+    cexRow= 1.5 + ncol(.data)*-0.011 ,
     keysize = 1.5,
     lhei = c(1.5, 9),
     lwid = c(1.5, 4),
     lmat = rbind(4:3, 2:1),
     colRow = col_labels
   )
-  #    }
+  
 }
 
 
