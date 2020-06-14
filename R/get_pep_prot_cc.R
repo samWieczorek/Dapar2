@@ -40,8 +40,7 @@ addConnexComp <- function(obj, i){
   
   metadata(obj[[i]])$list.cc <- cc
   
-  print("---- end of compute CC ----")
-  return (obj)
+   return (obj)
 }
 
 

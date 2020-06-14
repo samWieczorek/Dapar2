@@ -1,7 +1,11 @@
 
 #' @title Builds a violinplot from a numeric matrix
 #' 
+#' @description The parameter 'conds' is used to generate the color palette.
+#' 
 #' @param qData Numeric matrix
+#' 
+#' @param conds xxx
 #' 
 #' @param keyId xxx
 #' 
@@ -16,15 +20,14 @@
 #' @author Samuel Wieczorek, Anais Courtier, Enora Fremy
 #' 
 #' @examples
-#' library(DAPAR2)
 #' library(SummarizedExperiment)
 #' library(vioplot)
 #' library(Features)
 #' utils::data(Exp1_R25_prot, package='DAPARdata2')
 #' qData <- assay(Exp1_R25_prot[[2]])
-#' keyId <- rowData(Exp1_R25_prot[[2]])[[ metadata(Exp1_R25_prot)[['keyId']] ]]
+#' key <- rowData(Exp1_R25_prot[[2]])[[ metadata(Exp1_R25_prot)[['keyId']] ]]
 #' conds <- colData(Exp1_R25_prot)[["Condition"]]
-#' violinPlotD(qData, keyId, conds)
+#' violinPlotD(qData, conds, key, subset.view = 1:5)
 #' 
 #' @importFrom vioplot vioplot
 #' 
@@ -36,7 +39,7 @@
 #' 
 #' @export
 #' 
-violinPlotD <- function(qData, keyId, legend, palette = NULL, subset.view=NULL){
+violinPlotD <- function(qData, conds, keyId, legend=NULL, palette = NULL, subset.view=NULL){
   
   graphics::plot.new()
   
@@ -45,7 +48,22 @@ violinPlotD <- function(qData, keyId, legend, palette = NULL, subset.view=NULL){
     return(NULL)
   }
   
-  palette <- BuildPalette(legend, palette)
+  if(missing(conds))
+    stop("'conds' is missing.")
+  
+  if (is.null(legend)) {
+    legend <- conds
+    for (i in unique(conds))
+      legend[which(conds==i)] <- paste0(i,'_', 1:length(which(conds==i)))
+  }
+  
+  if (!is.null(subset.view)) {
+    if (is.null(keyId)|| missing(keyId))
+      stop("'keyId' is missing.")
+  }
+  
+  
+  palette <- BuildPalette(conds, palette)
   
   graphics::plot.window(xlim=c(0,ncol(qData)+1),
                         ylim=c(min(na.omit(qData)),max(na.omit(qData)))

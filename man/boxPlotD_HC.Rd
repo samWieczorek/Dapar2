@@ -7,7 +7,7 @@
 boxPlotD_HC(
   qData,
   conds,
-  sequence = NULL,
+  keyId = NULL,
   legend = NULL,
   palette = NULL,
   subset.view = NULL
@@ -18,7 +18,7 @@ boxPlotD_HC(
 
 \item{conds}{xxx}
 
-\item{sequence}{xxxx}
+\item{keyId}{xxxx}
 
 \item{legend}{A vector of the conditions (one condition per sample).}
 
@@ -38,8 +38,8 @@ library(highcharter)
 utils::data(Exp1_R25_pept, package='DAPARdata2')
 qData <- assay(Exp1_R25_pept[[2]])
 conds <- colData(Exp1_R25_pept)[["Condition"]]
-seq <- rowData(Exp1_R25_pept[[2]])[['Sequence']]
-boxPlotD_HC(qData, conds, sequence=seq, conds, subset.view=1:10)
+key <- rowData(Exp1_R25_pept[[2]])[[metadata(Exp1_R25_pept)$keyId]]
+boxPlotD_HC(qData, conds, keyId=key, conds, subset.view=1:10)
 
 }
 \author{

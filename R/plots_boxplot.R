@@ -6,7 +6,7 @@
 #' 
 #' @param conds xxx
 #' 
-#' @param sequence xxxx
+#' @param keyId xxxx
 #' 
 #' @param legend A vector of the conditions (one condition per sample).
 #' 
@@ -24,8 +24,8 @@
 #' utils::data(Exp1_R25_pept, package='DAPARdata2')
 #' qData <- assay(Exp1_R25_pept[[2]])
 #' conds <- colData(Exp1_R25_pept)[["Condition"]]
-#' seq <- rowData(Exp1_R25_pept[[2]])[['Sequence']]
-#' boxPlotD_HC(qData, conds, sequence=seq, conds, subset.view=1:10)
+#' key <- rowData(Exp1_R25_pept[[2]])[[metadata(Exp1_R25_pept)$keyId]]
+#' boxPlotD_HC(qData, conds, keyId=key, conds, subset.view=1:10)
 #' 
 #' @import highcharter
 #' 
@@ -37,7 +37,7 @@
 #' 
 #' @export
 #' 
-boxPlotD_HC <- function(qData, conds, sequence=NULL, legend=NULL, palette = NULL, subset.view=NULL){
+boxPlotD_HC <- function(qData, conds, keyId=NULL, legend=NULL, palette = NULL, subset.view=NULL){
   
   if (is.null(qData)){
     warning('The dataset in NULL and cannot be shown')
@@ -48,12 +48,14 @@ boxPlotD_HC <- function(qData, conds, sequence=NULL, legend=NULL, palette = NULL
     stop("'conds' is missing.")
   
   if (is.null(legend)) {
-    legend <- paste0("series", 1:ncol(qData))
+    legend <- conds
+    for (i in unique(conds))
+      legend[which(conds==i)] <- paste0(i, '_', 1:length(which(conds==i)))
   }
   
   if (!is.null(subset.view)) {
-    if (is.null(sequence)|| missing(sequence))
-      stop("'sequence' is missing.")
+    if (is.null(keyId)|| missing(keyId))
+      stop("'keyId' is missing.")
   }
   
   
@@ -107,7 +109,7 @@ boxPlotD_HC <- function(qData, conds, sequence=NULL, legend=NULL, palette = NULL
   
   # Display of rows to highlight (index of row in subset.view) 
   if(!is.null(subset.view)){
-    idVector <- sequence
+    idVector <- keyId
     pal=grDevices::colorRampPalette(RColorBrewer::brewer.pal(8, "Set1"))(length(subset.view))    
     n=0
     for(i in subset.view){
