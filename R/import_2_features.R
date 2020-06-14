@@ -232,7 +232,6 @@ createFeatures <- function(data,
   #if (isTRUE(forceNA)) {
   obj <- zeroIsNA(obj,seq_along(obj))
   origin <- addOriginOfValues(obj, 1, namesOrigin)
-  print(str(colnames(origin)))
   metadata(obj)$OriginOfValues <- colnames(origin)
   rowData(obj[['original']]) <- cbind(rowData(obj[['original']]), origin)
   
@@ -264,11 +263,8 @@ createFeatures <- function(data,
   
     if (tolower(typeOfData) == 'peptide')
       {
-      print( "addListAdjacencyMatrices")
       obj <- addListAdjacencyMatrices(obj, 1)
-      print( "addConnexComp")
       obj <- addConnexComp(obj, 1)
-      print(names(metadata(obj[[1]])$list.cc))
     }
 
     

@@ -4,10 +4,19 @@
 \alias{violinPlotD}
 \title{Builds a violinplot from a numeric matrix}
 \usage{
-violinPlotD(qData, keyId, legend, palette = NULL, subset.view = NULL)
+violinPlotD(
+  qData,
+  conds,
+  keyId,
+  legend = NULL,
+  palette = NULL,
+  subset.view = NULL
+)
 }
 \arguments{
 \item{qData}{Numeric matrix}
+
+\item{conds}{xxx}
 
 \item{keyId}{xxx}
 
@@ -21,18 +30,17 @@ violinPlotD(qData, keyId, legend, palette = NULL, subset.view = NULL)
 A violinplot
 }
 \description{
-Builds a violinplot from a numeric matrix
+The parameter 'conds' is used to generate the color palette.
 }
 \examples{
-library(DAPAR2)
 library(SummarizedExperiment)
 library(vioplot)
 library(Features)
 utils::data(Exp1_R25_prot, package='DAPARdata2')
 qData <- assay(Exp1_R25_prot[[2]])
-keyId <- rowData(Exp1_R25_prot[[2]])[[ metadata(Exp1_R25_prot)[['keyId']] ]]
+key <- rowData(Exp1_R25_prot[[2]])[[ metadata(Exp1_R25_prot)[['keyId']] ]]
 conds <- colData(Exp1_R25_prot)[["Condition"]]
-violinPlotD(qData, keyId, conds)
+violinPlotD(qData, conds, key, subset.view = 1:5)
 
 }
 \author{
