@@ -24,6 +24,10 @@ numeric matrix.
 }
 \examples{
 library(highcharter)
+<<<<<<< HEAD
+library(DAPAR2)
+=======
+>>>>>>> 1fd9d66c2d3c79eb31f1e6bc797ddef71b6a0fae
 utils::data(Exp1_R25_pept, package='DAPARdata2')
 obj <- Exp1_R25_pept[[2]]
 corrMatrixD_HC(obj)

@@ -40,6 +40,7 @@
 #' @export
 #' 
 violinPlotD <- function(qData, conds, keyId, legend=NULL, palette = NULL, subset.view=NULL){
+
   
   graphics::plot.new()
   
@@ -48,6 +49,7 @@ violinPlotD <- function(qData, conds, keyId, legend=NULL, palette = NULL, subset
     return(NULL)
   }
   
+
   if(missing(conds))
     stop("'conds' is missing.")
   
@@ -64,6 +66,7 @@ violinPlotD <- function(qData, conds, keyId, legend=NULL, palette = NULL, subset
   
   
   palette <- BuildPalette(conds, palette)
+
   
   graphics::plot.window(xlim=c(0,ncol(qData)+1),
                         ylim=c(min(na.omit(qData)),max(na.omit(qData)))
