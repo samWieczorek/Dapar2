@@ -60,11 +60,8 @@ Proteins with NA in this subset are ignored.
 library(Features)
 utils::data(Exp1_R25_pept, package='DAPARdata2')
 object <- Exp1_R25_pept
-
-object <- addAssay(object, normalizeD(object[['original_log']], method='GlobalQuantileAlignment'), "peptides_norm")
-
 conds <- colData(object)$Condition
-object <- addAssay(object, normalizeD(object[['original_log']], method='SumByColumns', conds=conds, type='overall'), "peptides_norm")
+object <- normalizeD(object, i=2, name = "norm", method='SumByColumns', conds=conds, type='overall')
 
 }
 \author{

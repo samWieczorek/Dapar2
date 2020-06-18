@@ -10,6 +10,15 @@ normalizeMethods.dapar <- function()
     "LOESS", "vsn")
 
 
+#' @title List normalization methods with tracking option
+#' 
+#' @name normalizeMethodsWithTracking.dapar
+#' 
+#' @export
+#'
+normalizeMethodsWithTracking.dapar <- function()
+  c("SumByColumns", "QuantileCentering", "MeanCentering")
+
 
 #' @title Check the validity of the experimental design.
 #'
@@ -54,11 +63,9 @@ normalizeMethods.dapar <- function()
 #' library(Features)
 #' utils::data(Exp1_R25_pept, package='DAPARdata2')
 #' object <- Exp1_R25_pept
-#' 
-#' object <- addAssay(object, normalizeD(object[['original_log']], method='GlobalQuantileAlignment'), "peptides_norm")
-#' 
+
 #' conds <- colData(object)$Condition
-#' object <- addAssay(object, normalizeD(object[['original_log']], method='SumByColumns', conds=conds, type='overall'), "peptides_norm")
+#' object <- normalizeD(object, i=2, name = "norm", method='SumByColumns', conds=conds, type='overall')
 #' 
 "normalizeD"
 
@@ -79,13 +86,12 @@ setMethod("normalizeD", "SummarizedExperiment",
           function(object,
                    method,
                    ...) {
-            argg <- c(as.list(environment()), list(...))
             
             e <- do.call(method, list(assay(object), ...))
             
             rownames(e) <- rownames(assay(object))
             colnames(e) <- colnames(assay(object))
-            SummarizedExperiment::assay(object) <- argg[-match(c('object'), names(argg))]
+            assay(object) <- e
             object
           })
 
@@ -114,9 +120,15 @@ setMethod("normalizeD", "Features",
             if (length(i) != 1)
               stop("Only one assay to be processed at a time")
             if (is.numeric(i)) i <- names(object)[[i]]
+            
+            argg <- c(as.list(environment()), list(...))
+            
+            tmp <-  normalizeD(object[[i]], method, ...)
+            metadata(tmp)$Params <- argg[-match(c('object', 'i', 'name'), names(argg))]
+            
             object <- Features::addAssay(object,
-                               normalizeD(object[[i]], method, ...),
-                               name)
+                                         tmp,
+                                         name)
             Features::addAssayLinkOneToOne(object, from = i, to = name)
           })
 

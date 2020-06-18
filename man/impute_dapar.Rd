@@ -14,7 +14,7 @@ impute_dapar
 
 \S4method{impute_dapar}{SummarizedExperiment}(object, method, ...)
 
-\S4method{impute_dapar}{Features}(object, method, ..., i)
+\S4method{impute_dapar}{Features}(object, i, name, method, ...)
 }
 \arguments{
 \item{object}{A `SummarizedExperiment` or `Features` object with
@@ -29,6 +29,8 @@ function. See [MsCoreUtils::impute_matrix()] for details.}
 
 \item{i}{Defines which element of the `Features` instance to
 impute. If missing, all assays will be imputed.}
+
+\item{name}{xxx}
 }
 \description{
 xxxxxx
@@ -37,7 +39,7 @@ xxxxxx
 library(Features)
 utils::data(Exp1_R25_pept, package='DAPARdata2')
 obj <- Exp1_R25_pept[1:1000,]
-obj <- impute_dapar(obj[[2]], 'det_quant')
+obj <- impute_dapar(obj, 2,'foo',  'det_quant')
 
 }
 \keyword{datasets}

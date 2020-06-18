@@ -29,7 +29,10 @@
 #' @export
 densityPlotD_HC <- function(qData, conds, legend=NULL, palette = NULL){
   
- if(is.null(conds))
+  if(missing(qData))
+    stop("'qData' is missing.")
+  
+  if(missing(conds))
    stop("'conds' is missing.")
   
   palette <- BuildPalette(conds, palette)

@@ -36,6 +36,7 @@ utils::data(Exp1_R25_prot, package='DAPARdata2')
 ft <- Exp1_R25_prot
 conds <- colData(Exp1_R25_prot)[['Condition']]
 qData <- assay(ft[[2]])[1:100,]
+qData <- cbind(qData,qData)
 heatmapD(qData, conds, dendro=T)
 }
 
