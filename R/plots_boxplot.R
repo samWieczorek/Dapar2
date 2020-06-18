@@ -25,7 +25,7 @@
 #' qData <- assay(Exp1_R25_pept[[2]])
 #' conds <- colData(Exp1_R25_pept)[["Condition"]]
 #' key <- rowData(Exp1_R25_pept[[2]])[[metadata(Exp1_R25_pept)$keyId]]
-#' boxPlotD_HC(qData, conds, keyId=key, conds, subset.view=1:10)
+#' boxPlotD_HC(qData, conds, keyId = key, conds, subset.view=1:10)
 #' 
 #' @import highcharter
 #' 

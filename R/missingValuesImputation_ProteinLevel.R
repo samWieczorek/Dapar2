@@ -6,12 +6,16 @@
 #' library(Features)
 #' utils::data(Exp1_R25_pept, package='DAPARdata2')
 #' obj <- Exp1_R25_pept[1:1000,]
-#' obj <- impute_dapar(obj[[2]], 'det_quant')
+#' obj <- impute_dapar(obj, 2,'foo',  'det_quant')
 #' 
 "impute_dapar"
 
 #' @param object A `SummarizedExperiment` or `Features` object with
 #'     missing values to be imputed.
+#'     
+#' @param i xxxx
+#' 
+#' @param name xxx
 #'     
 #' @param method `character(1)` defining the imputation method. See
 #'     `imputeMethods()` for available ones. See
@@ -46,14 +50,22 @@ setMethod("impute_dapar", "SummarizedExperiment",
 #' @rdname impute_dapar
 #' 
 setMethod("impute_dapar", "Features",
-          function(object, method, ..., i) {
+          function(object, i, name, method, ...) {
               if (missing(i))
-                  i  <-  seq_len(length(object))
-              for (ii in i) {
-                  res <- impute_matrix_dapar(assay(object[[ii]]), method, ...)
-                  SummarizedExperiment::assay(object[[ii]]) <- res
-              }
-              object
+                  i  <-  length(object)
+              if (is.numeric(i)) i <- names(object)[[i]]
+              
+              argg <- c(as.list(environment()), list(...))
+              
+              tmp <- object[[i]]
+              res <- impute_matrix_dapar(assay(tmp), method, ...)
+              SummarizedExperiment::assay(tmp) <- res
+              metadata(tmp)$Params <-  argg[-match(c('object', 'i', 'name'), names(argg))]
+              
+              object <- Features::addAssay(object,
+                                           tmp,
+                                           name)
+              Features::addAssayLinkOneToOne(object, from = i, to = name)
           })
 
 
