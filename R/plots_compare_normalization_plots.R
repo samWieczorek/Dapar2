@@ -36,7 +36,7 @@ compareNormalizationD_HC <- function(qDataBefore,
                                      qDataAfter,
                                      conds =NULL,
                                      palette = NULL,
-                                     subset.view=NULL,
+                                     subset.view = NULL,
                                      n = NULL,
                                      type = 'scatter'){
   
@@ -45,10 +45,19 @@ compareNormalizationD_HC <- function(qDataBefore,
     return(NULL)
   }
   
-  if (!is.null(subset.view) || length(subset.view) > 0)
+  print(str(subset.view))
+  print(paste0('subset.view:',subset.view))
+  
+  if (!is.null(subset.view) && length(subset.view) > 0)
   {
-    qDataBefore <- qDataBefore[subset.view,]
-    qDataAfter <- qDataAfter[subset.view,]
+    if (nrow(qDataBefore) > 1)
+      if (length(subset.view)==1){
+        qDataBefore <- as_tibble(cbind(t(qDataBefore[subset.view,])))
+        qDataAfter <- as_tibble(cbind(t(qDataAfter[subset.view,])))
+      } else {
+        qDataBefore <- as_tibble(cbind(qDataBefore[subset.view,]))
+        qDataAfter <- as_tibble(cbind(qDataBefore[subset.view,]))
+      }
   }
   
   
@@ -56,6 +65,7 @@ compareNormalizationD_HC <- function(qDataBefore,
     warning("'type' must be equal to 'scatter' or 'line'.")
     return(NULL)
   }
+  
   
   if (is.null(n)){
     n <- seq_len(nrow(qDataBefore))
@@ -65,9 +75,16 @@ compareNormalizationD_HC <- function(qDataBefore,
               of rows.")
       n <- nrow(qDataBefore)
     }
-    n <- sample(seq_len(nrow(qDataBefore)),n)
-    qDataBefore <- qDataBefore[n,]
-    qDataAfter <- qDataAfter[n,]
+    
+    ind <- sample(seq_len(nrow(qDataBefore)),n)
+    if (nrow(qDataBefore) > 1)
+      if (length(ind) == 1){
+        qDataBefore <- as_tibble(cbind(t(qDataBefore[ind,])))
+        qDataAfter <- as_tibble(cbind(t(qDataAfter[ind,])))
+      } else {
+        qDataBefore <- as_tibble(cbind(qDataBefore[ind,]))
+        qDataAfter <- as_tibble(cbind(qDataAfter[ind,]))
+      }
   }
   
   palette <- BuildPalette(conds, palette)
