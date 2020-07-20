@@ -130,7 +130,7 @@ addOriginOfValues <- function(obj, i, namesOrigin = NULL){
 #' single tabulated-like file for quantitative and meta-data and a dataframe 
 #' for the samples description.
 #' 
-#' @title Creates an object of class \code{MSnSet} from text file
+#' @title Creates an object of class \code{QFeatures} from text file
 #' 
 #' @param data The name of a tab-separated file that contains the data.
 #' 
@@ -138,7 +138,7 @@ addOriginOfValues <- function(obj, i, namesOrigin = NULL){
 #' 
 #' @param indExpData A vector of string where each element is the name
 #' of a column in designTable that have to be integrated in
-#' the \code{fData()} table of the \code{MSnSet} object.
+#' the \code{rowData()} table of the \code{QFeatures} object.
 #' 
 #' @param keyId The indice of the column containing the ID of entities 
 #' (peptides or proteins)
@@ -280,7 +280,7 @@ createQFeatures <- function(data,
 
 
 
-#' @title Creates an object of class \code{MSnSet} from text file
+#' @title Creates an object of class \code{QFeatures} from an object of class \code{MSnSet}
 #' 
 #' @description xxxx
 #' 
