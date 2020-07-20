@@ -63,7 +63,7 @@
 #' @examples
 #' library(QFeatures)
 #' utils::data(Exp1_R25_pept, package='DAPARdata2')
-#' obj <- Exp1_R25_pept[1:1000,]
+#' obj <- Exp1_R25_pept
 #' aggregateFeatures_sam(obj,2, aggType= 'all', name='aggregated', meta.names = 'Sequence', 'aggTopn', n=3)
 #' 
 #' @export aggregateFeatures_sam
@@ -128,7 +128,7 @@ aggregateFeatures_sam <- function(object, i, aggType='all', name, meta.names = N
   aggregated_assay <- aggregate_with_matAdj(assay_i, X, fun, ...)
   
   
-  # aggregated_rowdata <- QFeatures::reduceDataFrame(rowdata_i, rowdata_i[[fcol]],
+  # aggregated_rowdata <- Features::reduceDataFrame(rowdata_i, rowdata_i[[fcol]],
   #                                                 simplify = TRUE, drop = TRUE,
   #                                                 count = TRUE)
   
@@ -467,6 +467,7 @@ GraphPepProt_hc <- function(X, type = 'all'){
 GetNbPeptidesUsed <- function(qPepData, X){
   qPepData[!is.na(qPepData)] <- 1
   qPepData[is.na(qPepData)] <- 0
+  
   pep <- t(X) %*% qPepData
   
   return(pep)
@@ -510,6 +511,7 @@ GetDetailedNbPeptidesUsed <- function(X, qPepData){
   
   qPepData[!is.na(qPepData)] <- 1
   qPepData[is.na(qPepData)] <- 0
+  
   res <- t(X) %*% qPepData
   
   return(res)
@@ -574,6 +576,7 @@ GetDetailedNbPeptides <- function(X){
 
 inner.sum <- function(qPepData, X){
   qPepData[is.na(qPepData)] <- 0
+ 
   Mp <- t(X) %*% qPepData
   return(Mp)
 }
@@ -832,7 +835,7 @@ aggMean <- function(qPepData, X){
 #' obj <- addListAdjacencyMatrices(obj, 2)
 #' X <- GetAdjMat(obj[[2]], 'all')
 #' conditions <- colData(obj)$Condition
-#' aggIterParallel(assay(obj,2), X, conditions)
+#' aggIterParallel(assay(obj,2), as.matrix(X), conditions)
 #' 
 #' @export
 #' 
@@ -849,11 +852,13 @@ aggIterParallel <- function(qPepData, X, conditions=NULL, init.method='Sum', met
   #qPepData <- 2^(qPepData)
   protData <- matrix(rep(0,ncol(X)*nrow(X)), nrow=ncol(X))
   cond <- NULL
-  protData <- foreach(cond = 1:length(unique(conditions)), .combine=cbind) %dopar% {
-    condsIndices <- which(conditions == unique(conditions)[cond])
-    qData <- qPepData[,condsIndices]
-    inner.aggregate.iter(qData, X, init.method, method, n)
-  }
+  protData <- foreach(cond = 1:length(unique(conditions)),
+                      .combine=cbind,
+                      .export=c("inner.aggregate.iter", "inner.sum", "inner.mean","GetNbPeptidesUsed")) %dopar% {
+                        condsIndices <- which(conditions == unique(conditions)[cond])
+                        qData <- qPepData[,condsIndices]
+                        inner.aggregate.iter(qData, X, init.method, method, n) 
+                      }
   
   protData <- protData[,colnames(qPepData)]
   return(protData)
