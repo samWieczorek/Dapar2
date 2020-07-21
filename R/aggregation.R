@@ -835,7 +835,7 @@ aggMean <- function(qPepData, X){
 #' obj <- addListAdjacencyMatrices(obj, 2)
 #' X <- GetAdjMat(obj[[2]], 'all')
 #' conditions <- colData(obj)$Condition
-#' aggIterParallel(assay(obj,2), as.matrix(X), conditions)
+#' aggIterParallel(assay(obj,2), X, conditions)
 #' 
 #' @export
 #' 
@@ -854,7 +854,8 @@ aggIterParallel <- function(qPepData, X, conditions=NULL, init.method='Sum', met
   cond <- NULL
   protData <- foreach(cond = 1:length(unique(conditions)),
                       .combine=cbind,
-                      .export=c("inner.aggregate.iter", "inner.sum", "inner.mean","GetNbPeptidesUsed")) %dopar% {
+                      .export=c("inner.aggregate.iter", "inner.sum", "inner.mean","GetNbPeptidesUsed"),
+                      .packages = "Matrix") %dopar% {
                         condsIndices <- which(conditions == unique(conditions)[cond])
                         qData <- qPepData[,condsIndices]
                         inner.aggregate.iter(qData, X, init.method, method, n) 
@@ -1053,8 +1054,8 @@ rowdata_stats_Aggregation_sam <- function(qPepData, X){
 #' @title This function aggregates features of metadata of peptides into a dataframe that is to be included
 #' in the rowdata of the new protein dataset.
 #' 
-#' @param pepMetadata A data.frame of meta data of peptides. It is the fData 
-#' of the MSnset object.
+#' @param pepMetadata A data.frame of meta data of peptides. It is the rowData 
+#' of the QFeatures object.
 #' 
 #' @param names A vector of column names of the rowdata of peptides.
 #' 
@@ -1135,8 +1136,8 @@ aggMetadata_sam <- function(pepMetadata, names, X, simplify=TRUE){
 #' @title This function aggregates features of metadata of peptides into a dataframe that is to be included
 #' in the rowdata of the new protein dataset.
 #' 
-#' @param pepMetadata A data.frame of meta data of peptides. It is the fData 
-#' of the MSnset object.
+#' @param pepMetadata A data.frame of meta data of peptides. It is the rowData 
+#' of the QFeatures object.
 #' 
 #' @param names A vector of column names of the rowdata of peptides.
 #' 
@@ -1183,7 +1184,7 @@ aggMetadata_parallel_sam <- function(pepMetadata, names, X, simplify=TRUE){
   proteinNames <- colnames(X)
   
   i <- NULL
-  res <- foreach (i=1:length(proteinNames), .combine=rbind) %dopar% {
+  res <- foreach (i=1:length(proteinNames), .combine=rbind, .packages = c("S4Vectors","Matrix")) %dopar% {
     listeIndicePeptides <- names(which(X[,proteinNames[i]] == 1))
     listeData <- pepMetadata[listeIndicePeptides,names]
     
