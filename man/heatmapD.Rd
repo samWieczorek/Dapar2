@@ -34,6 +34,7 @@ Heatmap of the quantitative proteomic data of a \code{data.frame} object
 }
 \examples{
 \dontrun{
+library(QFeatures)
 utils::data(Exp1_R25_prot, package='DAPARdata2')
 ft <- Exp1_R25_prot
 conds <- colData(Exp1_R25_prot)[['Condition']]

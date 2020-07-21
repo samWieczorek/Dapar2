@@ -11,6 +11,7 @@
 #' @return A heatmap
 #' @author Samuel Wieczorek, Thomas Burger, Enora Fremy
 #' @examples
+#' library(QFeatures)
 #' utils::data(Exp1_R25_pept, package='DAPARdata2')
 #' qData <- assay(Exp1_R25_pept[[2]])
 #' conds <- colData(Exp1_R25_pept)[["Condition"]]

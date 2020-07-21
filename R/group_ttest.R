@@ -16,7 +16,7 @@
 #' - `limma.complete.test(object, sampleTab)` uses the package Limma 
 #' 
 #'
-#' @details
+#' @details xxx
 #'
 #'
 #' @examples

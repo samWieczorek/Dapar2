@@ -33,6 +33,7 @@ A violinplot
 The parameter 'conds' is used to generate the color palette.
 }
 \examples{
+library(QFeatures)
 utils::data(Exp1_R25_prot, package='DAPARdata2')
 qData <- assay(Exp1_R25_prot[[2]])
 key <- rowData(Exp1_R25_prot[[2]])[[ metadata(Exp1_R25_prot)[['keyId']] ]]

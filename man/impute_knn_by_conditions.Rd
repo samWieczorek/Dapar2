@@ -20,6 +20,7 @@ The object \code{obj} which has been imputed
 This function imputes the missing values condition by condition.
 }
 \examples{
+library(QFeatures)
 utils::data(Exp1_R25_pept, package='DAPARdata2')
 obj <- Exp1_R25_pept[1:1000,]
 imp <- impute_knn_by_conditions(assay(obj[[2]]), colData(obj)$Condition, 3)

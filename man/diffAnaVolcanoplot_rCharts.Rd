@@ -56,6 +56,7 @@ a point of the scatter plot.
 }
 \examples{
 \donttest{
+library(QFeatures)
 utils::data(Exp1_R25_pept, package='DAPARdata2')
 obj <- QFeatures::filterNA(Exp1_R25_pept,i='original') # remove all rows with NAs
 qData <- assay(obj[['original']])

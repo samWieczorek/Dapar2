@@ -16,6 +16,7 @@
 #' @author Samuel Wieczorek, Enora Fremy
 #' 
 #' @examples
+#' library(QFeatures)
 #' utils::data(Exp1_R25_pept, package='DAPARdata2')
 #' qData <- assay(Exp1_R25_pept[[2]])
 #' condition <- colData(Exp1_R25_pept)[["Condition"]]
@@ -66,6 +67,7 @@ wrapper.pca <- function(qData, condition, var.scaling=TRUE, ncp=NULL){
 #' @return A plot
 #' @author Samuel Wieczorek, Enora Fremy
 #' @examples
+#' library(QFeatures)
 #' utils::data(Exp1_R25_pept, package='DAPARdata2')
 #' qData <- assay(Exp1_R25_pept[['original']])
 #' res.pca <- wrapper.pca(qData)
@@ -96,6 +98,7 @@ plotPCA_Var <- function(res.pca, chosen.axes=c(1,2)){
 #' @return A plot
 #' @author Samuel Wieczorek, Enora Fremy
 #' @examples
+#' library(QFeatures)
 #' utils::data(Exp1_R25_pept, package='DAPARdata2')
 #' qData <- assay(Exp1_R25_pept[['original']])
 #' res.pca <- wrapper.pca(qData)
@@ -120,6 +123,7 @@ plotPCA_Ind <- function(res.pca, chosen.axes=c(1,2)){
 #' @return A histogram
 #' @author Samuel Wieczorek, Enora Fremy
 #' @examples
+#' library(QFeatures)
 #' utils::data(Exp1_R25_pept, package='DAPARdata2')
 #' qData <- assay(Exp1_R25_pept[['original']])
 #' res.pca <- wrapper.pca(qData, ncp=6)

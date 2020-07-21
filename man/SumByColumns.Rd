@@ -23,6 +23,7 @@ A normalized numeric matrix
 Normalisation SumByColumns
 }
 \examples{
+library(QFeatures)
 utils::data(Exp1_R25_pept, package='DAPARdata2')
 library(QFeatures)
 qData <- assay(Exp1_R25_pept[['original_log']])

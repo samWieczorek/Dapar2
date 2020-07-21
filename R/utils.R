@@ -3,7 +3,7 @@
 #' 
 #' @description xxxx
 #' 
-#' @param  conds The extended vector of samples conditions
+#' @param conds The extended vector of samples conditions
 #' 
 #' @param base_palette The basic color (HEX code) used to build the complete palette. This vector have the same length as unique(conds)
 #' 
@@ -13,7 +13,7 @@
 #' 
 #' @examples
 #' utils::data(Exp1_R25_pept, package='DAPARdata2')
-#' conditions <- colData(Exp1_R25_pept)$Condition
+#' conditions <- SummarizedExperiment::colData(Exp1_R25_pept)$Condition
 #' BuildPalette(conditions, c('AAAAAA', 'BBBBBB'))
 #' @export
 #' 
@@ -147,18 +147,18 @@ is.MV <- function(data){
 #' @export
 #' 
 #' @importFrom SummarizedExperiment colData rowData 
-#' @import QFeatures
-#' @import S4Vectors
+#' 
+#' @importFrom S4Vectors sort
 #' 
 getListNbValuesInLines <- function(obj, i, type="wholeMatrix"){
   
   if (is.null(obj)){return(NULL)}
   
   if(is.null(metadata(obj)$OriginOfValues)){
-    data <- as.data.frame(SummarizedExperiment::assay(obj[[i]]))
+    data <- as.data.frame(assay(obj[[i]]))
   }
   else {
-    data <- as.data.frame(SummarizedExperiment::rowData(obj[[i]])[, metadata(obj)$OriginOfValues])
+    data <- as.data.frame(rowData(obj[[i]])[, metadata(obj)$OriginOfValues])
   }
   
   switch(type,
@@ -167,15 +167,15 @@ getListNbValuesInLines <- function(obj, i, type="wholeMatrix"){
          },
          allCond = {
            tmp <- NULL
-           for (cond in unique(SummarizedExperiment::colData(obj)[['Condition']])){
-             tmp <- c(tmp, length(which(SummarizedExperiment::colData(obj)[['Condition']] == cond)))
+           for (cond in unique(colData(obj)[['Condition']])){
+             tmp <- c(tmp, length(which(colData(obj)[['Condition']] == cond)))
            }
            ll <- seq(0,min(tmp))
          },
          atLeastOneCond = {
            tmp <- NULL
-           for (cond in unique(SummarizedExperiment::colData(obj)[['Condition']])){
-             tmp <- c(tmp, length(which(SummarizedExperiment::colData(obj)[['Condition']] == cond)))
+           for (cond in unique(colData(obj)[['Condition']])){
+             tmp <- c(tmp, length(which(colData(obj)[['Condition']] == cond)))
            }
            ll <- seq(0,max(tmp))
          }

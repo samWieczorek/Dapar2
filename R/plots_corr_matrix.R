@@ -15,6 +15,7 @@
 #' @author Samuel Wieczorek, Enora Fremy
 #' 
 #' @examples
+#' library(QFeatures)
 #' utils::data(Exp1_R25_pept, package='DAPARdata2')
 #' obj <- Exp1_R25_pept[[2]]
 #' corrMatrixD_HC(obj)
@@ -28,6 +29,8 @@
 #' @importFrom DT JS
 #' 
 #' @importFrom tibble tibble as_tibble
+#' 
+#' @importFrom stats cor
 #' 
 #' @export
 #' 

@@ -46,7 +46,7 @@ The following functions are currently available:
 - `limma.complete.test(object, sampleTab)` uses the package Limma
 }
 \details{
-
+xxx
 }
 \examples{
 utils::data(Exp1_R25_pept, package='DAPARdata2')

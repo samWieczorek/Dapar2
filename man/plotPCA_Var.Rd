@@ -18,6 +18,7 @@ A plot
 Plots the variables of PCA
 }
 \examples{
+library(QFeatures)
 utils::data(Exp1_R25_pept, package='DAPARdata2')
 qData <- assay(Exp1_R25_pept[['original']])
 res.pca <- wrapper.pca(qData)

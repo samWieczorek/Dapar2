@@ -20,6 +20,7 @@ The object \code{obj} where LAPALA have been reintroduced
 This method is used to put back the LAPALA that have been identified previously
 }
 \examples{
+library(QFeatures)
 utils::data(Exp1_R25_pept, package='DAPARdata2')
 obj <- Exp1_R25_pept[1:1000]
 lapala <- find_MEC(assay(obj[[2]]), colData(obj)$Condition)
