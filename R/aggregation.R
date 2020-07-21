@@ -48,7 +48,7 @@
 #'
 #' - [DAPAR2:aggIterParallel()] same as previous function but use parallelism.
 #'
-#' - [DAPAR::aggTopn] to use the sum of each column;
+#' - [DAPAR2::aggTopn] to use the sum of each column;
 #'
 #' 
 #' @seealso The *QFeatures* vignette provides an extended example and

@@ -16,7 +16,6 @@ A design matrix
 Builds the design matrix for designs of level 3
 }
 \examples{
-library(Features)
 utils::data(Exp1_R25_pept, package='DAPARdata2')
 sTab <-cbind(colData(Exp1_R25_pept), Tech.Rep=1:6)
 make.design.3(sTab)

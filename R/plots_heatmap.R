@@ -7,6 +7,8 @@
 #' 
 #' @param qData A dataframe of numeric values
 #' 
+#' @param conds A vector of the conditions (one condition per sample).
+#' 
 #' @param distance The distance used by the clustering algorithm to compute
 #' the dendrogram. See \code{help(heatmap.2)}
 #' 
@@ -25,7 +27,6 @@
 #' ft <- Exp1_R25_prot
 #' conds <- colData(Exp1_R25_prot)[['Condition']]
 #' qData <- assay(ft[[2]])[1:100,]
-#' qData <- cbind(qData,qData)
 #' heatmapD(qData, conds, dendro=T)
 #' }
 #' 
@@ -33,7 +34,7 @@
 #' 
 #' @importFrom gplots heatmap.2
 #' 
-#' @importFrom stats dist hclust
+#' @importFrom stats dist hclust as.dendrogram
 #' 
 #' @importFrom dendextend get_leaves_branches_col
 #' 

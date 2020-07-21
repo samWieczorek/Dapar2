@@ -13,15 +13,13 @@
 #' 
 #' @param n xxx
 #' 
-#' @param scatter xxx
+#' @param type scatter or line
 #' 
 #' @return A plot
 #' 
 #' @author Samuel Wieczorek, Enora Fremy
 #' 
 #' @examples
-#' library(highcharter)
-#' library(Features)
 #' utils::data(Exp1_R25_pept, package='DAPARdata2')
 #' obj <- Exp1_R25_pept[1:1000,]
 #' conds <- colData(obj)[["Condition"]]
@@ -29,6 +27,8 @@
 #' compareNormalizationD_HC(assay(obj, 2), assay(obj, 3), conds=conds, n=100)
 #' 
 #' @import highcharter
+#' 
+#' @importFrom utils str
 #' 
 #' @export
 #' 

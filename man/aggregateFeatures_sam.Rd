@@ -16,7 +16,7 @@ aggregateFeatures_sam(
 )
 }
 \arguments{
-\item{object}{An instance of class [Features].}
+\item{object}{An instance of class [QFeatures].}
 
 \item{i}{The index or name of the assay which features will be
 aggregated the create the new assay.}
@@ -36,7 +36,7 @@ aggregation. See Details for examples.}
 \item{...}{Additional parameters passed the `fun`.}
 }
 \value{
-A `Features` object with an additional assay.
+A `QFeatures` object with an additional assay.
 }
 \description{
 This function aggregates the quantitative features of an assay,
@@ -58,17 +58,17 @@ thereof are
 
 - [DAPAR2:aggIterParallel()] same as previous function but use parallelism.
 
-- [DAPAR::aggTopn] to use the sum of each column;
+- [DAPAR2::aggTopn] to use the sum of each column;
 }
 \examples{
-library(Features)
+library(QFeatures)
 utils::data(Exp1_R25_pept, package='DAPARdata2')
-obj <- Exp1_R25_pept[1:1000,]
+obj <- Exp1_R25_pept
 aggregateFeatures_sam(obj,2, aggType= 'all', name='aggregated', meta.names = 'Sequence', 'aggTopn', n=3)
 
 }
 \seealso{
-The *Features* vignette provides an extended example and
+The *QFeatures* vignette provides an extended example and
     the *Processing* vignette, for a complete quantitative
     proteomics data processing pipeline.
 }

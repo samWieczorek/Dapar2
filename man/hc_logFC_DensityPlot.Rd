@@ -21,10 +21,10 @@ This function show the density plots of Fold Change (the same as calculated by l
 of the comparisons of conditions in a differnetial analysis.
 }
 \examples{
-library(Features)
+library(QFeatures)
 utils::data(Exp1_R25_pept, package='DAPARdata2')
 obj <- Exp1_R25_pept[1:1000]
-obj <- addAssay(obj, Features::filterNA(obj[[2]],  pNA = 0), name='filtered')
+obj <- addAssay(obj, QFeatures::filterNA(obj[[2]],  pNA = 0), name='filtered')
 se <- t_test_sam(obj[[3]], colData(obj), FUN = compute.t.test)
 ind <- grep('_logFC', colnames(metadata(se)$t_test))
 df <- setNames(as.data.frame(metadata(se)$t_test[,ind]), colnames(metadata(se)$t_test)[ind])

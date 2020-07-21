@@ -22,7 +22,7 @@ A new `matrix` of dimensions xxxx
 This function takes a matrix of quantitative features `x` and a
 factor (of length equal to `nrow(x)`) defining subsets, and
 applies a user-defined function to aggregate each subset into a
-vector of quantitative values. This function is the same as 'aggregate_by_vector' from the package Features
+vector of quantitative values. This function is the same as 'aggregate_by_vector' from the package QFeatures
 and it is used with DAPAR aggregation functions
 
 User-defined functions must thus return a matrix of dimensions equal

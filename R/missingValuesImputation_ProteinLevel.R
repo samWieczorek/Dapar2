@@ -3,14 +3,14 @@
 #' 
 #' 
 #' @examples
-#' library(Features)
+#' library(QFeatures)
 #' utils::data(Exp1_R25_pept, package='DAPARdata2')
 #' obj <- Exp1_R25_pept[1:1000,]
 #' obj <- impute_dapar(obj, 2,'foo',  'det_quant')
 #' 
 "impute_dapar"
 
-#' @param object A `SummarizedExperiment` or `Features` object with
+#' @param object A `SummarizedExperiment` or `QFeatures` object with
 #'     missing values to be imputed.
 #'     
 #' @param i xxxx
@@ -40,7 +40,7 @@ setMethod("impute_dapar", "SummarizedExperiment",
           })
 
 
-#' @param i Defines which element of the `Features` instance to
+#' @param i Defines which element of the `QFeatures` instance to
 #'     impute. If missing, all assays will be imputed.
 #' 
 #' @export
@@ -49,7 +49,7 @@ setMethod("impute_dapar", "SummarizedExperiment",
 #' 
 #' @rdname impute_dapar
 #' 
-setMethod("impute_dapar", "Features",
+setMethod("impute_dapar", "QFeatures",
           function(object, i, name, method, ...) {
               if (missing(i))
                   i  <-  length(object)
@@ -62,10 +62,10 @@ setMethod("impute_dapar", "Features",
               SummarizedExperiment::assay(tmp) <- res
               metadata(tmp)$Params <-  argg[-match(c('object', 'i', 'name'), names(argg))]
               
-              object <- Features::addAssay(object,
+              object <- QFeatures::addAssay(object,
                                            tmp,
                                            name)
-              Features::addAssayLinkOneToOne(object, from = i, to = name)
+              QFeatures::addAssayLinkOneToOne(object, from = i, to = name)
           })
 
 
@@ -80,7 +80,7 @@ setMethod("impute_dapar", "Features",
 #' @param ... xxxxx
 #' 
 #' @examples
-#' library(Features)
+#' library(QFeatures)
 #' utils::data(Exp1_R25_pept, package='DAPARdata2')
 #' obj <- Exp1_R25_pept[1:1000,]
 #' imp <- impute_matrix_dapar(assay(obj[[2]]), method='knn_by_conds', colData(obj)$Condition, 3)
@@ -195,10 +195,10 @@ impute_knn_by_conditions <- function(x, conds=NULL, k=3){
 #' @author Samuel Wieczorek
 #' 
 #' @examples
-#' library(Features)
+#' library(QFeatures)
 #' utils::data(Exp1_R25_pept, package='DAPARdata2')
 #' object <- Exp1_R25_pept[1:1000,]
-#' object <- addAssay(object, Features::filterNA(object[[2]],  pNA = 0.2), name='filtered')
+#' object <- addAssay(object, QFeatures::filterNA(object[[2]],  pNA = 0.2), name='filtered')
 #' imp <- impute_pa(assay(object[['filtered']]), colData(object)$Condition)
 #' 
 #' @export

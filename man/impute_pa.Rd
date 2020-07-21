@@ -20,10 +20,10 @@ The xxxx.
 Imputation of peptides having no values in a biological condition.
 }
 \examples{
-library(Features)
+library(QFeatures)
 utils::data(Exp1_R25_pept, package='DAPARdata2')
 object <- Exp1_R25_pept[1:1000,]
-object <- addAssay(object, Features::filterNA(object[[2]],  pNA = 0.2), name='filtered')
+object <- addAssay(object, QFeatures::filterNA(object[[2]],  pNA = 0.2), name='filtered')
 imp <- impute_pa(assay(object[['filtered']]), colData(object)$Condition)
 
 }

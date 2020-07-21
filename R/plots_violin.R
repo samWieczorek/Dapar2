@@ -20,9 +20,6 @@
 #' @author Samuel Wieczorek, Anais Courtier, Enora Fremy
 #' 
 #' @examples
-#' library(SummarizedExperiment)
-#' library(vioplot)
-#' library(Features)
 #' utils::data(Exp1_R25_prot, package='DAPARdata2')
 #' qData <- assay(Exp1_R25_prot[[2]])
 #' key <- rowData(Exp1_R25_prot[[2]])[[ metadata(Exp1_R25_prot)[['keyId']] ]]

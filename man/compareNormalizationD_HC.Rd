@@ -27,7 +27,7 @@ compareNormalizationD_HC(
 
 \item{n}{xxx}
 
-\item{scatter}{xxx}
+\item{type}{scatter or line}
 }
 \value{
 A plot
@@ -36,8 +36,6 @@ A plot
 Builds a plot from a numeric matrix.
 }
 \examples{
-library(highcharter)
-library(Features)
 utils::data(Exp1_R25_pept, package='DAPARdata2')
 obj <- Exp1_R25_pept[1:1000,]
 conds <- colData(obj)[["Condition"]]

@@ -154,7 +154,7 @@ enrich_GO <- function(data, idFrom, orgdb, ont, readable=FALSE, pval, universe) 
 #' @title A barplot which shows the result of a GO classification, using the package \code{highcharter}
 #' 
 #' @param ggo The result of the GO classification, provides either by the function
-#' \code{group_GO} in the package \code{DAPAR} or the function \code{groupGO} 
+#' \code{group_GO} in the package \code{DAPAR2} or the function \code{groupGO} 
 #' in the package 'clusterProfiler'
 #' 
 #' @param maxRes An integer which is the maximum number of classes to display in the plot 
@@ -208,7 +208,7 @@ barplotGroupGO_HC <- function(ggo, maxRes=5, title=NULL){
 #' @title A barplot that shows the result of a GO enrichment, using the package \code{highcharter}
 #' 
 #' @param ego The result of the GO enrichment, provides either by the function
-#' \code{enrichGO} in the package \code{DAPAR} or the function \code{enrichGO} 
+#' \code{enrichGO} in the package \code{DAPAR2} or the function \code{enrichGO} 
 #' of the package 'clusterProfiler'
 #' 
 #' @param maxRes The maximum number of categories to display in the plot 
@@ -294,7 +294,7 @@ barplotEnrichGO_HC <- function(ego, maxRes = 5, title=NULL){
 #' @title A dotplot that shows the result of a GO enrichment, using the package \code{highcharter}
 #' 
 #' @param ego The result of the GO enrichment, provides either by the function
-#' enrichGO in \code{DAPAR} or the function \code{enrichGO} of the packaage 'clusterProfiler'
+#' enrichGO in \code{DAPAR2} or the function \code{enrichGO} of the packaage 'clusterProfiler'
 #' 
 #' @param maxRes The maximum number of categories to display in the plot
 #' 

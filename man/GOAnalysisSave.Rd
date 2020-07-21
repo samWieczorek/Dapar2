@@ -2,7 +2,7 @@
 % Please edit documentation in R/bioAnalysis.R
 \name{GOAnalysisSave}
 \alias{GOAnalysisSave}
-\title{Returns an \code{MSnSet} object with the results of
+\title{Returns an \code{QFeatures} object with the results of
 the GO analysis performed with the functions \code{enrichGO} and/or 
 \code{groupGO} of the 'clusterProfiler' package.}
 \usage{
@@ -18,12 +18,12 @@ GOAnalysisSave(
 )
 }
 \arguments{
-\item{obj}{An object of the class \code{MSnSet}}
+\item{obj}{An object of the class \code{QFeatures}}
 
 \item{ggo_res}{The object returned by the function \code{group_GO} of the 
-package \code{DAPAR} or the function \code{groupGO} of the package 'clusterProfiler'}
+package \code{DAPAR2} or the function \code{groupGO} of the package 'clusterProfiler'}
 
-\item{ego_res}{The object returned by the function \code{enrich_GO} of the package \code{DAPAR}
+\item{ego_res}{The object returned by the function \code{enrich_GO} of the package \code{DAPAR2}
 or the function \code{enrichGO} of the package 'clusterProfiler'}
 
 \item{organism}{The parameter OrgDb of the functions 'bitr', 'groupGO' and 'enrichGO'}
@@ -38,10 +38,10 @@ or the function \code{enrichGO} of the package 'clusterProfiler'}
 case, a file should be uploaded by the user}
 }
 \value{
-An object of the class \code{MSnSet}
+An object of the class \code{QFeatures}
 }
 \description{
-Returns an \code{MSnSet} object with the results of
+Returns an \code{QFeatures} object with the results of
 the GO analysis performed with the functions \code{enrichGO} and/or 
 \code{groupGO} of the 'clusterProfiler' package.
 }

@@ -3,7 +3,7 @@
 #' @title Displays a correlation matrix of the quantitative data of a
 #' numeric matrix.
 #' 
-#' @param res xxx
+#' @param obj xxx
 #' 
 #' @param names xxxxx
 #' 
@@ -15,15 +15,18 @@
 #' @author Samuel Wieczorek, Enora Fremy
 #' 
 #' @examples
-#' library(highcharter)
 #' utils::data(Exp1_R25_pept, package='DAPARdata2')
 #' obj <- Exp1_R25_pept[[2]]
 #' corrMatrixD_HC(obj)
 #' 
 #' @importFrom dplyr mutate left_join
+#' 
 #' @importFrom tidyr gather
+#' 
 #' @import highcharter
+#' 
 #' @importFrom DT JS
+#' 
 #' @importFrom tibble tibble as_tibble
 #' 
 #' @export

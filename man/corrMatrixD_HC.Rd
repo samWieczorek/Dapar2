@@ -8,12 +8,12 @@ numeric matrix.}
 corrMatrixD_HC(obj, names = NULL, rate = 0.5)
 }
 \arguments{
+\item{obj}{xxx}
+
 \item{names}{xxxxx}
 
 \item{rate}{The rate parameter to control the exponential law for 
 the gradient of colors}
-
-\item{res}{xxx}
 }
 \value{
 A colored correlation matrix
@@ -23,7 +23,6 @@ Displays a correlation matrix of the quantitative data of a
 numeric matrix.
 }
 \examples{
-library(highcharter)
 utils::data(Exp1_R25_pept, package='DAPARdata2')
 obj <- Exp1_R25_pept[[2]]
 corrMatrixD_HC(obj)

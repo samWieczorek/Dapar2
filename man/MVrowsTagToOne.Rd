@@ -24,7 +24,7 @@ Values are : "None", "EmptyLines", "WholeMatrix", "AllCond", "AtLeastOneCond"}
 \item{th}{Either a numeric between 0 and 1 where only the lines which contain
 at least \code{th}% of non NA values are kept.
 Or a integer between 0 and maximum number of samples for 'WholeMatrix' and 
-between 0 and maximum nuber of replicat for "AllCond" and "AtLeastOneCond", where
+between 0 and maximum number of replicate for "AllCond" and "AtLeastOneCond", where
 only the lines which contain at least \code{th} values are kept.}
 
 \item{percent}{TRUE by default. When FALSE, use the number of samples}

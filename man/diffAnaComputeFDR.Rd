@@ -36,10 +36,10 @@ This function is a wrappper to the function adjust.p from the cp4p package. It r
 differential analysis. The FDR is computed with the function \code{p.adjust}\{stats\}..
 }
 \examples{
-library(Features)
+library(QFeatures)
 utils::data(Exp1_R25_pept, package='DAPARdata2')
 obj <- Exp1_R25_pept[1:1000]
-obj <- addAssay(obj, Features::filterNA(obj[[2]],  pNA = 0), name='filtered')
+obj <- addAssay(obj, QFeatures::filterNA(obj[[2]],  pNA = 0), name='filtered')
 se <- t_test_sam(obj[[3]], colData(obj), FUN = compute.t.test)
 ind_logFC <- grep('_logFC', colnames(metadata(se)$t_test))
 logFC <- setNames(as.data.frame(metadata(se)$t_test[,ind_logFC]), colnames(metadata(se)$t_test)[ind_logFC])

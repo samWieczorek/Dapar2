@@ -7,12 +7,12 @@
 addConnexComp(obj, i)
 }
 \arguments{
-\item{obj}{An object of class 'Features'}
+\item{obj}{An object of class 'QFeatures'}
 
 \item{i}{The indice of the dataset (class 'SumarizedExperiment') in the list of 'obj' on which to apply the aggregation.}
 }
 \value{
-An object of class 'Features'
+An object of class 'QFeatures'
 }
 \description{
 xxxxx

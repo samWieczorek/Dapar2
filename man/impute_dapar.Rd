@@ -4,7 +4,7 @@
 \name{impute_dapar}
 \alias{impute_dapar}
 \alias{impute_dapar,SummarizedExperiment-method}
-\alias{impute_dapar,Features-method}
+\alias{impute_dapar,QFeatures-method}
 \title{xxxxxx}
 \format{
 An object of class \code{standardGeneric} of length 1.
@@ -14,10 +14,10 @@ impute_dapar
 
 \S4method{impute_dapar}{SummarizedExperiment}(object, method, ...)
 
-\S4method{impute_dapar}{Features}(object, i, name, method, ...)
+\S4method{impute_dapar}{QFeatures}(object, i, name, method, ...)
 }
 \arguments{
-\item{object}{A `SummarizedExperiment` or `Features` object with
+\item{object}{A `SummarizedExperiment` or `QFeatures` object with
 missing values to be imputed.}
 
 \item{method}{`character(1)` defining the imputation method. See
@@ -27,7 +27,7 @@ missing values to be imputed.}
 \item{...}{Additional parameters passed to the inner imputation
 function. See [MsCoreUtils::impute_matrix()] for details.}
 
-\item{i}{Defines which element of the `Features` instance to
+\item{i}{Defines which element of the `QFeatures` instance to
 impute. If missing, all assays will be imputed.}
 
 \item{name}{xxx}
@@ -36,7 +36,7 @@ impute. If missing, all assays will be imputed.}
 xxxxxx
 }
 \examples{
-library(Features)
+library(QFeatures)
 utils::data(Exp1_R25_pept, package='DAPARdata2')
 obj <- Exp1_R25_pept[1:1000,]
 obj <- impute_dapar(obj, 2,'foo',  'det_quant')

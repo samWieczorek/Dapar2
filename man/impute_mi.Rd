@@ -18,7 +18,7 @@ impute_mi(x, sampleTab, lapala = TRUE, progress.bar = TRUE, ...)
 \item{...}{xxxxxxxx}
 }
 \value{
-The \code{exprs(obj)} matrix with imputed values instead of missing values.
+The \code{assay(obj)} matrix with imputed values instead of missing values.
 }
 \description{
 Missing values imputation using the LSimpute algorithm.
