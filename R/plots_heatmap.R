@@ -23,6 +23,7 @@
 #' 
 #' @examples
 #' \dontrun{
+#' library(QFeatures)
 #' utils::data(Exp1_R25_prot, package='DAPARdata2')
 #' ft <- Exp1_R25_prot
 #' conds <- colData(Exp1_R25_prot)[['Condition']]
@@ -146,6 +147,7 @@ heatmapD <- function(qData, conds, distance="euclidean", cluster="complete", den
 #' @author Samuel Wieczorek, Enora Fremy
 #' 
 #' @examples
+#' library(QFeatures)
 #' utils::data(Exp1_R25_pept, package='DAPARdata2')
 #' qData <- assay(Exp1_R25_pept[[2]])[1:1000,]
 #' heatmap.DAPAR(qData)

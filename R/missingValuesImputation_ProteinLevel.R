@@ -151,6 +151,7 @@ imputeMethodsDapar <- function()
 #' @author Samuel Wieczorek
 #' 
 #' @examples
+#' library(QFeatures)
 #' utils::data(Exp1_R25_pept, package='DAPARdata2')
 #' obj <- Exp1_R25_pept[1:1000,]
 #' imp <- impute_knn_by_conditions(assay(obj[[2]]), colData(obj)$Condition, 3)
@@ -232,6 +233,7 @@ impute_pa <- function(x, conds, q.min = 0.025){
 #' @author Samuel Wieczorek
 #' 
 #' @examples
+#' library(QFeatures)
 #' utils::data(Exp1_R25_pept, package='DAPARdata2')
 #' impute_det_quant(assay(Exp1_R25_pept[[2]]))
 #' 
@@ -266,6 +268,7 @@ impute_det_quant <- function(x,...){
 #' @author Thomas Burger
 #' 
 #' @examples
+#' library(QFeatures)
 #' utils::data(Exp1_R25_pept, package='DAPARdata2')
 #' qData <- assay(Exp1_R25_pept[[2]])
 #' getQuantile4Imp(qData) 
@@ -294,6 +297,7 @@ getQuantile4Imp <- function(x, qval=0.025, factor=1){
 #' @author Samuel Wieczorek
 #' 
 #' @examples
+#' library(QFeatures)
 #' utils::data(Exp1_R25_pept, package='DAPARdata2')
 #' obj <- Exp1_R25_pept[1:1000]
 #' imp <- impute_slsa(assay(obj[[2]]), colData(obj))
@@ -337,6 +341,7 @@ impute_slsa <- function(x, sampleTab){
 #' @author Samuel Wieczorek
 #' 
 #' @examples
+#' library(QFeatures)
 #' utils::data(Exp1_R25_pept, package='DAPARdata2')
 #' obj <- Exp1_R25_pept[1:1000]
 #' lapala <- find_MEC(assay(obj[[2]]), colData(obj)$Condition)
@@ -368,6 +373,7 @@ restore_MEC_matrix <- function(x, conds, MECIndex){
 #' @author Samuel Wieczorek
 #' 
 #' @examples
+#' library(QFeatures)
 #' utils::data(Exp1_R25_pept, package='DAPARdata2')
 #' obj <- Exp1_R25_pept[1:1000]
 #' lapala <- find_MEC_matrix(assay(obj[[2]]), colData(obj)$Condition)

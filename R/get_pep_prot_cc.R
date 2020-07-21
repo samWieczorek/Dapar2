@@ -115,7 +115,8 @@ ComputeConnexComposants <- function(X.list=NULL){
 #' 
 #' @export
 #' 
-#' @import Matrix
+#' @importFrom Matrix %&%
+#' 
 #' @importFrom graph graphAM connComp 
 #' 
 get.pep.prot.cc <- function(X){

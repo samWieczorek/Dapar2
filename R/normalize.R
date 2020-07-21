@@ -174,6 +174,7 @@ GlobalQuantileAlignment <- function(qData) {
 #' @author Samuel Wieczorek, Thomas Burger, Helene Borges, Anais Courtier, Enora Fremy
 #' 
 #' @examples
+#' library(QFeatures)
 #' utils::data(Exp1_R25_pept, package='DAPARdata2')
 #' library(QFeatures)
 #' qData <- assay(Exp1_R25_pept[['original_log']])
@@ -329,6 +330,7 @@ QuantileCentering <- function(qData, conds=NULL, type="overall", subset.norm=NUL
 #' @author Samuel Wieczorek, Thomas Burger, Helene Borges, Anais Courtier, Enora Fremy
 #' 
 #' @examples
+#' library(QFeatures)
 #' utils::data(Exp1_R25_pept, package='DAPARdata2')
 #' qData <- assay(Exp1_R25_pept[['original_log']])
 #' conds <- colData(Exp1_R25_pept)[['Condition']]
@@ -389,6 +391,7 @@ MeanCentering <- function(qData, conds, type='overall', subset.norm=NULL, scalin
 #' @author Thomas Burger, Helene Borges, Anais Courtier, Enora Fremy
 #' 
 #' @examples
+#' library(QFeatures)
 #' utils::data(Exp1_R25_pept, package='DAPARdata2')
 #' qData <- assay(Exp1_R25_pept[['original_log']])
 #' conds <- colData(Exp1_R25_pept)[['Condition']]
@@ -432,6 +435,7 @@ vsn = function(qData, conds, type=NULL) {
 #' @author Thomas Burger, Helene Borges, Anais Courtier, Enora Fremy
 #' 
 #' @examples
+#' library(QFeatures)
 #' utils::data(Exp1_R25_pept, package='DAPARdata2')
 #' qData <- assay(Exp1_R25_pept[['original_log']])
 #' conds <- colData(Exp1_R25_pept)[['Condition']]

@@ -23,6 +23,7 @@ Displays a correlation matrix of the quantitative data of a
 numeric matrix.
 }
 \examples{
+library(QFeatures)
 utils::data(Exp1_R25_pept, package='DAPARdata2')
 obj <- Exp1_R25_pept[[2]]
 corrMatrixD_HC(obj)

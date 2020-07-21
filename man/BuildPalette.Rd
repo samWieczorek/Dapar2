@@ -19,7 +19,7 @@ xxxx
 }
 \examples{
 utils::data(Exp1_R25_pept, package='DAPARdata2')
-conditions <- colData(Exp1_R25_pept)$Condition
+conditions <- SummarizedExperiment::colData(Exp1_R25_pept)$Condition
 BuildPalette(conditions, c('AAAAAA', 'BBBBBB'))
 }
 \author{

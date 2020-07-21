@@ -834,7 +834,7 @@ aggMean <- function(qPepData, X){
 #' obj <- Exp1_R25_pept[1:1000,]
 #' obj <- addListAdjacencyMatrices(obj, 2)
 #' X <- GetAdjMat(obj[[2]], 'all')
-#' conditions <- colData(obj)$Condition
+#' conditions <- SummarizedExperiment::colData(obj)$Condition
 #' aggIterParallel(assay(obj,2), X, conditions)
 #' 
 #' @export
