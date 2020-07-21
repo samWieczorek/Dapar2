@@ -1,14 +1,14 @@
 
 
-#' @title This function exports a \code{MSnSet} object to a Excel file.
+#' @title This function exports a \code{QFeatures} object to a Excel file.
 #' 
-#' @description This function exports a \code{Features} data object to a Excel file.
-#' Each of the three data.frames in the \code{MSnSet} object (ie experimental data,
-#' phenoData and metaData are respectively integrated into separate sheets in
+#' @description This function exports a \code{QFeatures} data object to a Excel file.
+#' Each of the three data.frames in the \code{QFeatures} object (ie expression data,
+#' colData and rowData are respectively integrated into separate sheets in
 #' the Excel file). The colored cells in the experimental data correspond to the 
-#' original missing valueswhich have been imputed.
+#' original missing values which have been imputed.
 #' 
-#' @param obj An object of class \code{Features}.
+#' @param obj An object of class \code{QFeatures}.
 #' 
 #' @param filename A character string for the name of the Excel file.
 #' 
@@ -21,15 +21,15 @@
 #' Sys.setenv("R_ZIPCMD"= Sys.which("zip"))
 #' utils::data(Exp1_R25_pept, package='DAPARdata2')
 #' obj <- Exp1_R25_pept[1:1000]
-#' writeFeaturesToExcel(obj, "foo")
+#' writeQFeaturesToExcel(obj, "foo")
 #' }
 #' 
 #' @export
 #' 
 #' @importFrom openxlsx createStyle createWorkbook addWorksheet writeData addStyle writeData
 #' 
-writeFeaturesToExcel <- function(obj, filename)
-{
+writeQFeaturesToExcel <- function(obj, filename) {
+  
   POV_Style <- openxlsx::createStyle(fgFill = "lightblue")
   MEC_Style <- openxlsx::createStyle(fgFill = "orange")
   
@@ -45,10 +45,10 @@ writeFeaturesToExcel <- function(obj, filename)
     openxlsx::writeData(wb, 
                         sheet=i,
                         cbind(ID = rownames(assay(obj, i)),
-                                           assay(obj, i)),
+                              assay(obj, i)),
                         rowNames = FALSE)
-  
-  
+    
+    
     if (is.null(metadata(obj)$OriginOfValues)){
       listPOV <-  which(is.na(assay(obj, i)), arr.ind=TRUE)
     } else {
@@ -56,7 +56,7 @@ writeFeaturesToExcel <- function(obj, filename)
       listPOV <- which(mat=="POV", arr.ind=TRUE)
       listMEC <- which(mat=="MEC", arr.ind=TRUE)
     }
-  
+    
     openxlsx::addStyle(wb, sheet=i, cols = listPOV[,"col"]+1, rows = listPOV[,"row"]+1, style = POV_Style)
     openxlsx::addStyle(wb, sheet=i, cols = listMEC[,"col"]+1, rows = listMEC[,"row"]+1, style = MEC_Style)
   }
@@ -75,9 +75,9 @@ writeFeaturesToExcel <- function(obj, filename)
   for (i in 1:length(obj)){
     offset <- 1 + length(obj) + i
     openxlsx::addWorksheet(wb, paste0("Meta Data for ", names(obj)[i]))
-     
+    
     openxlsx::writeData(wb, sheet=offset, cbind(ID = rownames(assay(obj, i)),
-                                           rowData(obj[[i]])), rowNames = FALSE)
+                                                rowData(obj[[i]])), rowNames = FALSE)
   }
   
   # if (!is.null(obj@experimentData@other$GGO_analysis))
@@ -101,7 +101,7 @@ writeFeaturesToExcel <- function(obj, filename)
   
   openxlsx::saveWorkbook(wb, name, overwrite=TRUE)
   return(name)
-
+  
 }
 
 
