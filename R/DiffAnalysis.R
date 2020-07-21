@@ -3,8 +3,8 @@
 #'
 #' @description
 #'
-#' This manual page describes the computation of statistical test using [Features] objects. In the following
-#' functions, if `object` is of class `Features`, and optional assay
+#' This manual page describes the computation of statistical test using [QFeatures] objects. In the following
+#' functions, if `object` is of class `QFeatures`, and optional assay
 #' index or name `i` can be specified to define the assay (by name of
 #' index) on which to operate.
 #'
@@ -18,10 +18,10 @@
 #' 
 #'
 #' @examples
-#' library(Features)
+#' library(QFeatures)
 #' utils::data(Exp1_R25_pept, package='DAPARdata2')
 #' object <- Exp1_R25_pept[1:1000,]
-#' object <- addAssay(object, Features::filterNA(object[[2]],  pNA = 0), name='filtered')
+#' object <- addAssay(object, QFeatures::filterNA(object[[2]],  pNA = 0), name='filtered')
 #' sTab <- colData(object)
 #' gttest.se <- t_test_sam(object[[3]], sTab, FUN = compute.t.test)
 #' object <- addAssay(object, gttest.se, name='t-test')
@@ -32,7 +32,7 @@
 #' 
 "diff_analysis_sam"
 
-#' @param  object An object of class `Features` or `SummarizedExperiment`.
+#' @param  object An object of class `QFeatures` or `SummarizedExperiment`.
 #' 
 #' @param ... Additional parameters passed to inner functions.
 #' 
@@ -49,7 +49,7 @@ setMethod("diff_analysis_sam", "SummarizedExperiment",
           })
 
 
-#' @param  object An object of class `Features` or `SummarizedExperiment`.
+#' @param  object An object of class `QFeatures` or `SummarizedExperiment`.
 #' 
 #' @param i A numeric vector or a character vector giving the index or the 
 #'     name, respectively, of the assay(s) to be processed.
@@ -62,7 +62,7 @@ setMethod("diff_analysis_sam", "SummarizedExperiment",
 #' 
 #' @rdname diff_analysis_sam
 #' 
-setMethod("diff_analysis_sam", "Features",
+setMethod("diff_analysis_sam", "QFeatures",
           function(object, i, name = "diffAnaAssay",  ...) {
             if (missing(i))
               stop("Provide index or name of assay to be processed")
@@ -100,10 +100,10 @@ setMethod("diff_analysis_sam", "Features",
 #' @author Samuel Wieczorek
 #' 
 #' @examples
-#' library(Features)
+#' library(QFeatures)
 #' utils::data(Exp1_R25_pept, package='DAPARdata2')
 #' object <- Exp1_R25_pept[1:1000,]
-#' object <- addAssay(object, Features::filterNA(object[[2]],  pNA = 0), name='filtered')
+#' object <- addAssay(object, QFeatures::filterNA(object[[2]],  pNA = 0), name='filtered')
 #' object <- addListAdjacencyMatrices(object, 3)
 #' sTab <- colData(object)
 #' se <- t_test_sam(object[[3]], sTab, FUN = compute.t.test)
@@ -195,10 +195,10 @@ histPValue_HC <- function(pval_ll, bins=80, pi0=1){
 #' @author Samuel Wieczorek
 #' 
 #' @examples
-#' library(Features)
+#' library(QFeatures)
 #' utils::data(Exp1_R25_pept, package='DAPARdata2')
 #' obj <- Exp1_R25_pept[1:1000]
-#' obj <- addAssay(obj, Features::filterNA(obj[[2]],  pNA = 0), name='filtered')
+#' obj <- addAssay(obj, QFeatures::filterNA(obj[[2]],  pNA = 0), name='filtered')
 #' se <- t_test_sam(obj[[3]], colData(obj), FUN = compute.t.test)
 #' ind <- grep('_logFC', colnames(metadata(se)$t_test))
 #' df <- setNames(as.data.frame(metadata(se)$t_test[,ind]), colnames(metadata(se)$t_test)[ind])
@@ -356,7 +356,7 @@ hc_logFC_DensityPlot <-function(df_logFC, threshold_LogFC = 0, palette=NULL){
     )
     
   }
-
+  
   return(hc)
   
 }
@@ -388,10 +388,10 @@ hc_logFC_DensityPlot <-function(df_logFC, threshold_LogFC = 0, palette=NULL){
 #' @author Samuel Wieczorek
 #' 
 #' @examples
-#' library(Features)
+#' library(QFeatures)
 #' utils::data(Exp1_R25_pept, package='DAPARdata2')
 #' obj <- Exp1_R25_pept[1:1000]
-#' obj <- addAssay(obj, Features::filterNA(obj[[2]],  pNA = 0), name='filtered')
+#' obj <- addAssay(obj, QFeatures::filterNA(obj[[2]],  pNA = 0), name='filtered')
 #' se <- t_test_sam(obj[[3]], colData(obj), FUN = compute.t.test)
 #' ind_logFC <- grep('_logFC', colnames(metadata(se)$t_test))
 #' logFC <- setNames(as.data.frame(metadata(se)$t_test[,ind_logFC]), colnames(metadata(se)$t_test)[ind_logFC])
@@ -427,8 +427,8 @@ diffAnaComputeFDR <- function(logFC, pval, threshold_PVal=0, threshold_LogFC = 0
 
 
 
-#' @title Returns list that contains a list of the statistical tests performed with DAPAR and recorded
-#' in an object of class \code{MSnSet}. 
+#' @title Returns list that contains a list of the statistical tests performed with DAPAR2 and recorded
+#' in an object of class \code{QFeatures}. 
 #' 
 #' @description This method returns a list of the statistical tests performed with xxx and formatted as a 
 #' list of two DataFrame: one for the logFC data and one for the p-values data.
@@ -440,10 +440,10 @@ diffAnaComputeFDR <- function(logFC, pval, threshold_PVal=0, threshold_LogFC = 0
 #' @author Samuel Wieczorek
 #' 
 #' @examples
-#' library(Features)
+#' library(QFeatures)
 #' utils::data(Exp1_R25_pept, package='DAPARdata2')
 #' object <- Exp1_R25_pept[1:1000,]
-#' object <- addAssay(object, Features::filterNA(object[[2]],  pNA = 0), name='filtered')
+#' object <- addAssay(object, QFeatures::filterNA(object[[2]],  pNA = 0), name='filtered')
 #' sTab <- colData(object)
 #' gttest.se <- t_test_sam(object[[3]], sTab, FUN = compute.t.test)
 #' object <- addAssay(object, gttest.se, name='t-test')
@@ -483,10 +483,10 @@ Get_AllComparisons <- function(obj){
 
 
 
-#' @title Returns a \code{MSnSet} object with the results of
+#' @title Returns a \code{QFeatures} object with the results of
 #' the differential analysis performed with 'limma package'. 
 #' 
-#' @description This method returns a class \code{MSnSet} object with the results
+#' @description This method returns a class \code{QFeatures} object with the results
 #' of differential analysis
 #' 
 #' @param obj An object of class \code{SUmmarizeExperiment}.
@@ -502,34 +502,34 @@ Get_AllComparisons <- function(obj){
 #' @author Samuel Wieczorek
 #' 
 #' @examples
-#' library(Features)
+#' library(QFeatures)
 #' utils::data(Exp1_R25_pept, package='DAPARdata2')
 #' obj <- Exp1_R25_pept[1:1000]
-#' obj <- addAssay(obj, Features::filterNA(obj[[2]],  pNA = 0), name='filtered')
-#' obj <- addAssay(obj, t_test_sam(obj[[3]], colData(obj), FUN = 't_test_sam'), name='t-test')
+#' obj <- addAssay(obj, QFeatures::filterNA(obj[[2]],  pNA = 0), name='filtered')
+#' obj <- addAssay(obj, t_test_sam(obj[[3]], colData(obj), FUN = 'compute.t.test'), name='t-test')
 #' comp <- '25fmol_vs_10fmol'
 #' da.se <- diffAnalysis(obj[['t-test']], comp, th_pval=0, th_logFC=0)
 #' 
 #' @export
 #' 
 diffAnalysis <- function(obj, comp, th_pval=0, th_logFC=0){
-
-    temp <- obj
-   df <- DataFrame(Significant=rep(0,nrow(obj)))
-   rownames(df) <- names(obj)
-   
-   ##setSignificant info
-    x <- metadata(obj)$t_test[,paste0(comp, '_logFC')]
-    y <- -log10(metadata(obj)$t_test[,paste0(comp, '_pval')])
-    
-    ipval <- which(y >= th_pval)
-    ilogfc <- which(abs(x) >= th_logFC)
-    df$Significant[intersect(ipval, ilogfc)] <- 1
-    
-
-metadata(temp)$Significant <- df
-metadata(temp)$Params$comp <- comp
-metadata(temp)$Params$th_pval <- th_pval
+  
+  temp <- obj
+  df <- DataFrame(Significant=rep(0,nrow(obj)))
+  rownames(df) <- names(obj)
+  
+  ##setSignificant info
+  x <- metadata(obj)$t_test[,paste0(comp, '_logFC')]
+  y <- -log10(metadata(obj)$t_test[,paste0(comp, '_pval')])
+  
+  ipval <- which(y >= th_pval)
+  ilogfc <- which(abs(x) >= th_logFC)
+  df$Significant[intersect(ipval, ilogfc)] <- 1
+  
+  
+  metadata(temp)$Significant <- df
+  metadata(temp)$Params$comp <- comp
+  metadata(temp)$Params$th_pval <- th_pval
   metadata(temp)$Params$th_logFC <- th_logFC
   
   return(temp)

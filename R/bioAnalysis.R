@@ -383,16 +383,16 @@ scatterplotEnrichGO_HC <- function(ego, maxRes = 10, title=NULL){
 
 
 
-#' @title Returns an \code{MSnSet} object with the results of
+#' @title Returns an \code{QFeatures} object with the results of
 #' the GO analysis performed with the functions \code{enrichGO} and/or 
 #' \code{groupGO} of the 'clusterProfiler' package. 
 #' 
-#' @param obj An object of the class \code{MSnSet}
+#' @param obj An object of the class \code{QFeatures}
 #' 
 #' @param ggo_res The object returned by the function \code{group_GO} of the 
-#' package \code{DAPAR} or the function \code{groupGO} of the package 'clusterProfiler'
+#' package \code{DAPAR2} or the function \code{groupGO} of the package 'clusterProfiler'
 #' 
-#' @param ego_res The object returned by the function \code{enrich_GO} of the package \code{DAPAR}
+#' @param ego_res The object returned by the function \code{enrich_GO} of the package \code{DAPAR2}
 #' or the function \code{enrichGO} of the package 'clusterProfiler'
 #' 
 #' @param organism The parameter OrgDb of the functions 'bitr', 'groupGO' and 'enrichGO'
@@ -406,7 +406,7 @@ scatterplotEnrichGO_HC <- function(ego, maxRes = 10, title=NULL){
 #' @param typeUniverse  The type of background to be used. Values are 'Entire Organism', 'Entire dataset' or 'Custom'. In the latter
 #' case, a file should be uploaded by the user
 #' 
-#' @return An object of the class \code{MSnSet}
+#' @return An object of the class \code{QFeatures}
 #' 
 #' @author Samuel Wieczorek
 #' 

@@ -1,16 +1,16 @@
 
 
 
- 
+
 #' @title Add the list of connex components to an assay in the object of classe Feeatures.
 #' 
 #' @description xxxxx
 #' 
-#' @param obj An object of class 'Features' 
+#' @param obj An object of class 'QFeatures' 
 #' 
 #' @param i The indice of the dataset (class 'SumarizedExperiment') in the list of 'obj' on which to apply the aggregation. 
 #' 
-#' @return An object of class 'Features'
+#' @return An object of class 'QFeatures'
 #' 
 #' @author Samuel Wieczorek
 #' 
@@ -31,7 +31,7 @@ addConnexComp <- function(obj, i){
   
   
   if (length(metadata(obj[[i]])$list.matAdj) ==0)
-    {
+  {
     warning("Any adjacency matrix is present in the dataset.")
     return(obj)
   }
@@ -40,7 +40,7 @@ addConnexComp <- function(obj, i){
   
   metadata(obj[[i]])$list.cc <- cc
   
-   return (obj)
+  return (obj)
 }
 
 
@@ -89,13 +89,13 @@ ComputeConnexComposants <- function(X.list=NULL){
   }
   
   return (res)
-
+  
   
 }
 
 
 
- 
+
 #' @title Build the list of connex composant of an adjacency matrix.
 #' 
 #' @description Method to build the list of connex composant of an adjacency matrix
