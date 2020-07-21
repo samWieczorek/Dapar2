@@ -62,6 +62,6 @@ Collate:
     'missingValuesImputation_PeptideLevel.R'
     'missingValuesImputation_ProteinLevel.R'
     'pepa.R'
-RoxygenNote: 7.1.0
+RoxygenNote: 7.1.1
 Packaged: 2017-10-13 11:13:04 UTC; sw175264
 Encoding: UTF-8

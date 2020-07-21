@@ -483,6 +483,8 @@ samLRT <- function(lmm.res.h0, lmm.res.h1, cc, n, p, s1){
 #' 
 #' @importFrom stats pchisq quantile residuals
 #' 
+#' @importFrom utils de
+#' 
 pepa.test <- function(X, y, n1, n2, global=FALSE, use.lm=FALSE){
     
     n <- n1 + n2

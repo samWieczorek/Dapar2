@@ -19,7 +19,6 @@ A list of two items:
 Check if xxxxxx
 }
 \examples{
-library(Features)
 utils::data(Exp1_R25_pept, package='DAPARdata2')
 test.design(colData(Exp1_R25_pept)[,1:3])
 

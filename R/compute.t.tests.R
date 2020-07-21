@@ -1,6 +1,6 @@
 #' @title xxxxxx
 #' 
-#' @description 
+#' @description xxx
 #' 
 #' @param obj xxxxx
 #' 

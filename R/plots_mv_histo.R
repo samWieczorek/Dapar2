@@ -17,8 +17,6 @@
 #' @author Samuel Wieczorek
 #' 
 #' @examples
-#' library(highcharter)
-#' library(DAPAR2)
 #' utils::data(Exp1_R25_pept, package='DAPARdata2')
 #' qData <- assay(Exp1_R25_pept[[2]])
 #' conds <- colData(Exp1_R25_pept)[['Condition']]

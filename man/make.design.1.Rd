@@ -22,11 +22,9 @@ Builds the design matrix for designs of level 1
 Builds the design matrix for designs of level 1
 }
 \examples{
-library(Features)
 utils::data(Exp1_R25_pept, package='DAPARdata2')
 make.design.1(colData(Exp1_R25_pept))
 
-library(Features)
 utils::data(Exp1_R25_pept, package='DAPARdata2')
 make.design.1(colData(Exp1_R25_pept))
 

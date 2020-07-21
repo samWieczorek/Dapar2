@@ -2,7 +2,7 @@
 % Please edit documentation in R/aggregation.R
 \name{GetAdjMat}
 \alias{GetAdjMat}
-\title{Get an adjacency matrix from a Features object}
+\title{Get an adjacency matrix from a QFeatures object}
 \usage{
 GetAdjMat(obj, type = "all")
 }
@@ -15,7 +15,7 @@ GetAdjMat(obj, type = "all")
 An adjacency matrix
 }
 \description{
-Get an adjacency matrix from a Features object
+Get an adjacency matrix from a QFeatures object
 }
 \examples{
 utils::data(Exp1_R25_pept, package='DAPARdata2')

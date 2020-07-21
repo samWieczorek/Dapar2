@@ -18,7 +18,7 @@ A data.frame
 Method to compute the number of quantified peptides used for aggregating each protein
 }
 \examples{
-library(Features)
+library(QFeatures)
 utils::data(Exp1_R25_pept, package='DAPARdata2')
 obj <- Exp1_R25_pept[1:1000,]
 qPepData <- assay(obj,2)

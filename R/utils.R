@@ -12,8 +12,6 @@
 #' @author Samuel Wieczorek
 #' 
 #' @examples
-#' library(Features)
-#' library(SummarizedExperiment)
 #' utils::data(Exp1_R25_pept, package='DAPARdata2')
 #' conditions <- colData(Exp1_R25_pept)$Condition
 #' BuildPalette(conditions, c('AAAAAA', 'BBBBBB'))
@@ -132,7 +130,7 @@ is.MV <- function(data){
 
 #' @title Returns the possible number of values in lines in the data
 #' 
-#' @param obj An object of class \code{Features}
+#' @param obj An object of class \code{QFeatures}
 #' 
 #' @param i The indice of the dataset (SummarizedExperiment) in the object
 #' 
@@ -149,7 +147,7 @@ is.MV <- function(data){
 #' @export
 #' 
 #' @importFrom SummarizedExperiment colData rowData 
-#' @import Features
+#' @import QFeatures
 #' @import S4Vectors
 #' 
 getListNbValuesInLines <- function(obj, i, type="wholeMatrix"){

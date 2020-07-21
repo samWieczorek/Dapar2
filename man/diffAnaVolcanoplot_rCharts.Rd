@@ -45,7 +45,7 @@ named index and allows to retrieve the right row to show in the tooltip.}
 An interactive volcanoplot
 }
 \description{
-#' Plots an interactive volcanoplot after the differential analysis.
+Plots an interactive volcanoplot after the differential analysis.
 Typically, the log of Fold Change is represented on the X-axis and the
 log10 of the p-value is drawn on the Y-axis. When the \code{threshold_pVal}
 and the \code{threshold_logFC} are set, two lines are drawn respectively on
@@ -56,15 +56,12 @@ a point of the scatter plot.
 }
 \examples{
 \donttest{
-library(Features)
-library(DT)
-library(highcharter)
 utils::data(Exp1_R25_pept, package='DAPARdata2')
-obj <- Features::filterNA(Exp1_R25_pept,i='original') # remove all rows with NAs
+obj <- QFeatures::filterNA(Exp1_R25_pept,i='original') # remove all rows with NAs
 qData <- assay(obj[['original']])
 pData <- as.data.frame(colData(obj))
-data <- limmaCompleteTest(qData,pData)
-df <- data.frame(x=data$logFC, y = -log10(data$P_Value),index = as.character(rownames(qData)))
+data <- limma.complete.test(qData,pData)
+df <- data.frame(x=data[,1], y = -log10(data[,2]),index = as.character(rownames(qData)))
 colnames(df) <- c("x", "y", "index")
 tooltipSlot <- c("Sequence", "Score")
 df <- cbind(df,rowData(obj[['original']])[tooltipSlot])

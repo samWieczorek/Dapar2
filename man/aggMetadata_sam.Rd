@@ -8,8 +8,8 @@ in the rowdata of the new protein dataset.}
 aggMetadata_sam(pepMetadata, names, X, simplify = TRUE)
 }
 \arguments{
-\item{pepMetadata}{A data.frame of meta data of peptides. It is the fData 
-of the MSnset object.}
+\item{pepMetadata}{A data.frame of meta data of peptides. It is the rowData 
+of the QFeatures object.}
 
 \item{names}{A vector of column names of the rowdata of peptides.}
 

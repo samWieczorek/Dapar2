@@ -4,7 +4,7 @@
 \name{diff_analysis_sam}
 \alias{diff_analysis_sam}
 \alias{diff_analysis_sam,SummarizedExperiment-method}
-\alias{diff_analysis_sam,Features-method}
+\alias{diff_analysis_sam,QFeatures-method}
 \title{Check the validity of the experimental design}
 \format{
 An object of class \code{standardGeneric} of length 1.
@@ -14,10 +14,10 @@ diff_analysis_sam
 
 \S4method{diff_analysis_sam}{SummarizedExperiment}(object, ...)
 
-\S4method{diff_analysis_sam}{Features}(object, i, name = "diffAnaAssay", ...)
+\S4method{diff_analysis_sam}{QFeatures}(object, i, name = "diffAnaAssay", ...)
 }
 \arguments{
-\item{object}{An object of class `Features` or `SummarizedExperiment`.}
+\item{object}{An object of class `QFeatures` or `SummarizedExperiment`.}
 
 \item{...}{Additional parameters passed to inner functions.}
 
@@ -27,8 +27,8 @@ name, respectively, of the assay(s) to be processed.}
 \item{name}{A `character(1)` naming the new assay name. Default is `ttestAssay`.}
 }
 \description{
-This manual page describes the computation of statistical test using [Features] objects. In the following
-functions, if `object` is of class `Features`, and optional assay
+This manual page describes the computation of statistical test using [QFeatures] objects. In the following
+functions, if `object` is of class `QFeatures`, and optional assay
 index or name `i` can be specified to define the assay (by name of
 index) on which to operate.
 
@@ -41,10 +41,10 @@ The following functions are currently available:
 - `limma.complete.test(object, sampleTab)` uses the package Limma
 }
 \examples{
-library(Features)
+library(QFeatures)
 utils::data(Exp1_R25_pept, package='DAPARdata2')
 object <- Exp1_R25_pept[1:1000,]
-object <- addAssay(object, Features::filterNA(object[[2]],  pNA = 0), name='filtered')
+object <- addAssay(object, QFeatures::filterNA(object[[2]],  pNA = 0), name='filtered')
 sTab <- colData(object)
 gttest.se <- t_test_sam(object[[3]], sTab, FUN = compute.t.test)
 object <- addAssay(object, gttest.se, name='t-test')

@@ -16,7 +16,7 @@ A normalized numeric matrix
 Normalisation GlobalQuantileAlignement
 }
 \examples{
-library(Features)
+library(QFeatures)
 utils::data(Exp1_R25_pept, package='DAPARdata2')
 qData <- assay(Exp1_R25_pept[['original']])
 normalized <- GlobalQuantileAlignment(qData)

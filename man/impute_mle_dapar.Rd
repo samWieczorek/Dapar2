@@ -12,7 +12,7 @@ impute_mle_dapar(x, sampleTab)
 \item{sampleTab}{xxxx}
 }
 \value{
-The \code{exprs(obj)} matrix with imputed values instead of missing values.
+The \code{assay(obj)} matrix with imputed values instead of missing values.
 }
 \description{
 Imputation of peptides having no values in a biological condition.
