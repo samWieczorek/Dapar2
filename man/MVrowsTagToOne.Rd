@@ -9,7 +9,7 @@ MVrowsTagToOne(
   sampleTab = NULL,
   type,
   th = 0,
-  percent = T,
+  percent = TRUE,
   newColName = "newCol"
 )
 }
@@ -52,11 +52,12 @@ The different methods are :
   at least \code{th} values, and for at least one condition, are kept.
 }
 \examples{
+library(QFeatures)
 utils::data(Exp1_R25_pept, package='DAPARdata2')
 sampleTab <- colData(Exp1_R25_pept)
 obj <- Exp1_R25_pept[[2]][100:120,]
-res <- MVrowsTagToOne(obj, sampleTab, "AtLeastOneCond", 3, percent=F, "AtLeastOneCond")
-names(rowData(res)
+res <- MVrowsTagToOne(obj, sampleTab, "AtLeastOneCond", 3, percent=FALSE, "AtLeastOneCond")
+names(rowData(res))
 
 }
 \author{
