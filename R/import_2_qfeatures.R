@@ -311,6 +311,7 @@ createQFeatures <- function(data,
 #' ft <- convertMSnset2QFeatures(obj, 'conv',parentId, keyid )
 #' 
 #' @importFrom Biobase exprs fData pData
+#' 
 #' @importFrom QFeatures readQFeatures
 #' 
 #' @export

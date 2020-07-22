@@ -402,7 +402,7 @@ matAdjStats <- function(X){
 #' utils::data(Exp1_R25_pept, package='DAPARdata2')
 #' obj <- Exp1_R25_pept[1:1000,]
 #' obj <- addListAdjacencyMatrices(obj, 2)
-#' X <- GetAdjMat(obj[[2]], 'all')
+#' X <- as.matrix(GetAdjMat(obj[[2]], 'all'))
 #' GraphPepProt_hc(X)
 #' 
 #' @import highcharter
@@ -459,7 +459,7 @@ GraphPepProt_hc <- function(X, type = 'all'){
 #' obj <- Exp1_R25_pept[1:1000,]
 #' qPepData <- assay(obj,2)
 #' obj <- addListAdjacencyMatrices(obj, 2)
-#' X <- GetAdjMat(obj[[2]], 'all')
+#' X <- as.matrix(GetAdjMat(obj[[2]], 'all'))
 #' n <- GetNbPeptidesUsed(qPepData, X)
 #' 
 #' @export
@@ -498,15 +498,18 @@ GetNbPeptidesUsed <- function(qPepData, X){
 #' @examples
 #' library(QFeatures)
 #' utils::data(Exp1_R25_pept, package='DAPARdata2')
-#' obj <- Exp1_R25_pept[1:1000,]
+#' obj <- Exp1_R25_pept
 #' qPepData <- assay(obj,2)
 #' obj <- addListAdjacencyMatrices(obj, 2)
 #' X <- GetAdjMat(obj[[2]], 'all')
 #' n <- GetDetailedNbPeptidesUsed(X, qPepData)
-#' 
+#'  
 #' @export
 #' 
 GetDetailedNbPeptidesUsed <- function(X, qPepData){
+  
+  X <- as.matrix(X)
+  
   res <- NULL
   
   qPepData[!is.na(qPepData)] <- 1
@@ -568,6 +571,7 @@ GetDetailedNbPeptides <- function(X){
 #' @author Samuel Wieczorek
 #' 
 #' @examples
+#' library(QFeatures)
 #' utils::data(Exp1_R25_pept, package='DAPARdata2')
 #' obj <- Exp1_R25_pept[1:1000,]
 #' obj <- addListAdjacencyMatrices(obj, 2)
@@ -576,6 +580,8 @@ GetDetailedNbPeptides <- function(X){
 
 inner.sum <- function(qPepData, X){
   qPepData[is.na(qPepData)] <- 0
+  
+  X <- as.matrix(X)
  
   Mp <- t(X) %*% qPepData
   return(Mp)
@@ -596,6 +602,7 @@ inner.sum <- function(qPepData, X){
 #' @author Samuel Wieczorek
 #' 
 #' @examples
+#' library(QFeatures)
 #' utils::data(Exp1_R25_pept, package='DAPARdata2')
 #' obj <- Exp1_R25_pept[1:1000,]
 #' obj <- addListAdjacencyMatrices(obj, 2)
@@ -603,6 +610,9 @@ inner.sum <- function(qPepData, X){
 #' inner.mean(assay(obj[[2]]), X)
 #' 
 inner.mean <- function(qPepData, X){
+  
+  X <- as.matrix(X)
+  
   Mp <- inner.sum(qPepData, X)
   Mp <- Mp / GetNbPeptidesUsed(qPepData, X)
   
@@ -629,7 +639,8 @@ inner.mean <- function(qPepData, X){
 #' 
 #' @author Samuel Wieczorek
 #' 
-#' @examples 
+#' @examples
+#' library(QFeatures)
 #' utils::data(Exp1_R25_pept, package='DAPARdata2')
 #' obj <- Exp1_R25_pept[1:1000,]
 #' obj <- addListAdjacencyMatrices(obj, 2)
@@ -638,6 +649,8 @@ inner.mean <- function(qPepData, X){
 #' 
 #' @importFrom stats median
 inner.aggregate.topn <-function(qPepData, X, method='Mean', n=10){
+  
+  X <- as.matrix(X)
   
   med <- apply(qPepData, 1, median)
   xmed <- as(X * med, "dgCMatrix")
@@ -683,7 +696,8 @@ inner.aggregate.topn <-function(qPepData, X, method='Mean', n=10){
 #' 
 #' @author Samuel Wieczorek, Thomas Burger
 #' 
-#' @examples 
+#' @examples
+#' library(QFeatures)
 #' utils::data(Exp1_R25_pept, package='DAPARdata2')
 #' obj <- Exp1_R25_pept[1:1000,]
 #' obj <- addListAdjacencyMatrices(obj, 2)
@@ -757,10 +771,11 @@ inner.aggregate.iter <- function(qPepData, X, init.method='Sum', method='Mean', 
 #' @author Alexia Dorffer, Samuel Wieczorek
 #' 
 #' @examples
+#' library(QFeatures)
 #' utils::data(Exp1_R25_pept, package='DAPARdata2')
 #' obj <- Exp1_R25_pept[1:1000,]
 #' obj <- addListAdjacencyMatrices(obj, 2)
-#' X <- GetAdjMat(obj[[2]], 'all')
+#' X <- as.matrix(GetAdjMat(obj[[2]], 'all'))
 #' aggSum(assay(obj[[2]]), X)
 #' 
 #' @export
@@ -790,10 +805,11 @@ aggSum <- function(qPepData, X){
 #' @author Alexia Dorffer
 #' 
 #' @examples 
+#' library(QFeatures)
 #' utils::data(Exp1_R25_pept, package='DAPARdata2')
 #' obj <- Exp1_R25_pept[1:1000,]
 #' obj <- addListAdjacencyMatrices(obj, 2)
-#' X <- GetAdjMat(obj[[2]], 'all')
+#' X <- as.matrix(GetAdjMat(obj[[2]], 'all'))
 #' aggMean(assay(obj[[2]]), X)
 #' 
 #' @export
@@ -830,10 +846,11 @@ aggMean <- function(qPepData, X){
 #' 
 #' @examples 
 #' library(doParallel)
+#' library(QFeatures)
 #' utils::data(Exp1_R25_pept, package='DAPARdata2')
 #' obj <- Exp1_R25_pept[1:1000,]
 #' obj <- addListAdjacencyMatrices(obj, 2)
-#' X <- GetAdjMat(obj[[2]], 'all')
+#' X <- as.matrix(GetAdjMat(obj[[2]], 'all'))
 #' conditions <- SummarizedExperiment::colData(obj)$Condition
 #' aggIterParallel(assay(obj,2), X, conditions)
 #' 
@@ -888,11 +905,12 @@ aggIterParallel <- function(qPepData, X, conditions=NULL, init.method='Sum', met
 #' 
 #' @author Samuel Wieczorek
 #' 
-#' @examples 
+#' @examples
+#' library(QFeatures)
 #' utils::data(Exp1_R25_pept, package='DAPARdata2')
 #' obj <- Exp1_R25_pept[1:1000,]
 #' obj <- addListAdjacencyMatrices(obj, 2)
-#' X <- GetAdjMat(obj[[2]], 'all')
+#' X <- as.matrix(GetAdjMat(obj[[2]], 'all'))
 #' conditions <- colData(obj)$Condition
 #' aggIter(assay(obj,2), X, conditions)
 #' 
@@ -938,11 +956,12 @@ aggIter <- function(qPepData, X, conditions=NULL, init.method='Sum', method='Mea
 #' 
 #' @author Alexia Dorffer, Samuel Wieczorek
 #' 
-#' @examples 
+#' @examples
+#' library(QFeatures)
 #' utils::data(Exp1_R25_pept, package='DAPARdata2')
 #' obj <- Exp1_R25_pept[1:1000,]
 #' obj <- addListAdjacencyMatrices(obj, 2)
-#' X <- GetAdjMat(obj[[2]], 'all')
+#' X <- as.matrix(GetAdjMat(obj[[2]], 'all'))
 #' aggTopn(assay(obj,2), X, n=3)
 #' 
 #' @export
@@ -1022,6 +1041,7 @@ aggregate_with_matAdj <- function(qPepData, X, FUN, ...){
 #' @export
 #' 
 #' @examples
+#' library(QFeatures)
 #' utils::data(Exp1_R25_pept, package='DAPARdata2')
 #' obj <- Exp1_R25_pept[1:1000,]
 #' obj <- addListAdjacencyMatrices(obj, 2)
@@ -1029,6 +1049,8 @@ aggregate_with_matAdj <- function(qPepData, X, FUN, ...){
 #' rowdata_stats_Aggregation_sam(assay(obj,2), X)
 #' 
 rowdata_stats_Aggregation_sam <- function(qPepData, X){
+  
+  X <- as.matrix(X)
   
   temp <- GetDetailedNbPeptidesUsed(X, qPepData)
   
@@ -1072,10 +1094,11 @@ rowdata_stats_Aggregation_sam <- function(qPepData, X){
 #' @author Samuel Wieczorek
 #' 
 #' @examples
+#' library(QFeatures)
 #' utils::data(Exp1_R25_pept, package='DAPARdata2')
 #' obj <- Exp1_R25_pept[1:1000,]
 #' obj <- addListAdjacencyMatrices(obj, 2)
-#' X <- GetAdjMat(obj[[2]], 'all')
+#' X <- as.matrix(GetAdjMat(obj[[2]], 'all'))
 #' ft <- aggMetadata_sam(rowData(obj[[2]]), c('Sequence'), X)
 #' 
 #' @importFrom stats setNames
@@ -1154,10 +1177,11 @@ aggMetadata_sam <- function(pepMetadata, names, X, simplify=TRUE){
 #' @author Samuel Wieczorek
 #' 
 #' @examples
+#' library(QFeatures)
 #' utils::data(Exp1_R25_pept, package='DAPARdata2')
 #' obj <- Exp1_R25_pept[1:1000,]
 #' obj <- addListAdjacencyMatrices(obj, 2)
-#' X <- GetAdjMat(obj[[2]], 'all')
+#' X <- as.matrix(GetAdjMat(obj[[2]], 'all'))
 #' ft <- aggMetadata_parallel_sam(rowData(obj[[2]]), c('Sequence', 'Proteins'), X)
 #' 
 #' @export

@@ -128,17 +128,18 @@ proportionConRev_HC <- function(lDataset, nBoth = 0, nCont=0, nRev=0){
 #' @author Enora Fremy
 #' 
 #' @examples
+#' library(QFeatures)
 #' utils::data(Exp1_R25_pept, package='DAPARdata2')
 #' sampleTab <- colData(Exp1_R25_pept)
 #' obj <- Exp1_R25_pept[[2]][100:120,]
-#' res <- MVrowsTagToOne(obj, sampleTab, "AtLeastOneCond", 3, percent=F, "AtLeastOneCond")
-#' names(rowData(res)
+#' res <- MVrowsTagToOne(obj, sampleTab, "AtLeastOneCond", 3, percent=FALSE, "AtLeastOneCond")
+#' names(rowData(res))
 #' 
 #' @export
 #' 
 #' @import SummarizedExperiment
 #' 
-MVrowsTagToOne <- function(obj, sampleTab=NULL, type, th=0, percent=T, newColName="newCol") {
+MVrowsTagToOne <- function(obj, sampleTab=NULL, type, th=0, percent=TRUE, newColName="newCol") {
   
   if (is.null(obj)) { return(NULL) }
   

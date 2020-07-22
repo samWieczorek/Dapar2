@@ -21,10 +21,11 @@ This function computes the intensity of proteins based on the sum of the
 intensities of their peptides.
 }
 \examples{
+library(QFeatures)
 utils::data(Exp1_R25_pept, package='DAPARdata2')
 obj <- Exp1_R25_pept[1:1000,]
 obj <- addListAdjacencyMatrices(obj, 2)
-X <- GetAdjMat(obj[[2]], 'all')
+X <- as.matrix(GetAdjMat(obj[[2]], 'all'))
 aggSum(assay(obj[[2]]), X)
 
 }
