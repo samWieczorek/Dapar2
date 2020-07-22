@@ -19,6 +19,7 @@ Returns the \code{SummarizedExperiment} object without the \code{rowData()} extr
 from MVrowsTagToOne
 }
 \examples{
+library(QFeatures)
 utils::data(Exp1_R25_pept, package='DAPARdata2')
 object <- Exp1_R25_pept[[2]]
 sampleTab <- colData(Exp1_R25_pept)

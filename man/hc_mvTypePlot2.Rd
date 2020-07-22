@@ -29,6 +29,7 @@ whereas the y-axis count the number of observed values for this entity
 and the considered condition.
 }
 \examples{
+library(QFeatures)
 utils::data(Exp1_R25_pept, package='DAPARdata2')
 qData <- assay(Exp1_R25_pept[[2]])
 conds <- colData(Exp1_R25_pept)[['Condition']]

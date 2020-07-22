@@ -25,7 +25,7 @@ A barplot that shows the result of a GO enrichment, using the package \code{high
 \donttest{
 library(clusterProfiler)
 library(highcharter)
-library(DAPAR2)
+library(QFeatures)
 utils::data(Exp1_R25_prot, package='DAPARdata2')
 data <- rowData(Exp1_R25_prot[[2]])[['Protein_IDs']]
 univ <- univ_AnnotDbPkg("org.Sc.sgd.db")

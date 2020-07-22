@@ -577,6 +577,9 @@ GetDetailedNbPeptides <- function(X){
 #' obj <- addListAdjacencyMatrices(obj, 2)
 #' X <- GetAdjMat(obj[[2]], 'all')
 #' n <- inner.sum(assay(obj[[2]]), X)
+#' 
+#' @export
+#' 
 
 inner.sum <- function(qPepData, X){
   qPepData[is.na(qPepData)] <- 0
@@ -608,6 +611,8 @@ inner.sum <- function(qPepData, X){
 #' obj <- addListAdjacencyMatrices(obj, 2)
 #' X <- GetAdjMat(obj[[2]], 'all')
 #' inner.mean(assay(obj[[2]]), X)
+#' 
+#' @export
 #' 
 inner.mean <- function(qPepData, X){
   
@@ -648,6 +653,9 @@ inner.mean <- function(qPepData, X){
 #' inner.aggregate.topn(assay(obj[[2]]), X, n=3)
 #' 
 #' @importFrom stats median
+#' 
+#' @export
+#' 
 inner.aggregate.topn <-function(qPepData, X, method='Mean', n=10){
   
   X <- as.matrix(X)
@@ -704,6 +712,8 @@ inner.aggregate.topn <-function(qPepData, X, method='Mean', n=10){
 #' X <- GetAdjMat(obj[[2]], 'all')
 #' qPepData <- assay(obj[[2]])
 #' inner.aggregate.iter(qPepData, X)
+#' 
+#' @export
 #' 
 inner.aggregate.iter <- function(qPepData, X, init.method='Sum', method='Mean', n=NULL){
   

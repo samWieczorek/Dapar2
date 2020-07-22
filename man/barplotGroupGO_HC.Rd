@@ -24,7 +24,7 @@ A barplot which shows the result of a GO classification, using the package \code
 \examples{
 \donttest{
 library(highcharter)
-library(DAPAR2)
+library(QFeatures)
 utils::data(Exp1_R25_prot, package='DAPARdata2')
 data <- rowData(Exp1_R25_prot[[2]])[['Protein_IDs']]
 ggo <- group_GO(data, idFrom="UNIPROT", orgdb="org.Sc.sgd.db", ont="MF", level=2)
