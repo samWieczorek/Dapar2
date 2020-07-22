@@ -12,8 +12,9 @@
 #' @author Samuel Wieczorek
 #' 
 #' @examples
+#' library(QFeatures)
 #' utils::data(Exp1_R25_pept, package='DAPARdata2')
-#' conditions <- SummarizedExperiment::colData(Exp1_R25_pept)$Condition
+#' conditions <- colData(Exp1_R25_pept)$Condition
 #' BuildPalette(conditions, c('AAAAAA', 'BBBBBB'))
 #' @export
 #' 
@@ -48,6 +49,7 @@ BuildPalette <- function(conds, base_palette){
 #' @author Samuel Wieczorek
 #' 
 #' @examples
+#' library(QFeatures)
 #' utils::data(Exp1_R25_pept, package='DAPARdata2')
 #' qData <- assay(Exp1_R25_pept,1)
 #' nEmptyLines(qData)
@@ -74,6 +76,7 @@ nEmptyLines <- function(qData){
 #' @author Samuel Wieczorek
 #' 
 #' @examples
+#' library(QFeatures)
 #' utils::data(Exp1_R25_pept, package='DAPARdata2')
 #' obj <- Exp1_R25_pept
 #' data <- rowData(Exp1_R25_pept[['original']])[,metadata(Exp1_R25_pept)$OriginOfValues]
@@ -105,6 +108,7 @@ is.OfType <- function(data, type){
 #' @author Samuel Wieczorek
 #' 
 #' @examples
+#' library(QFeatures)
 #' utils::data(Exp1_R25_pept, package='DAPARdata2')
 #' obj <- Exp1_R25_pept
 #' data <- rowData(Exp1_R25_pept[['original']])[,metadata(Exp1_R25_pept)$OriginOfValues]

@@ -34,6 +34,7 @@ instance.
 \examples{
 \donttest{
 library(clusterProfiler)
+library(QFeatures)
 utils::data(Exp1_R25_prot, package='DAPARdata2')
 data <- rowData(Exp1_R25_prot[[2]])[['Protein_IDs']]
 ggo <- group_GO(data, idFrom="UNIPROT", orgdb="org.Sc.sgd.db", ont="MF", level=2)

@@ -35,6 +35,7 @@ This method is a variation to the function \code{impute.pa} from the package
 \code{imp4p}.
 }
 \examples{
+library(QFeatures)
 utils::data(Exp1_R25_pept, package='DAPARdata2')
 obj <- Exp1_R25_pept[1:1000]
 x <- assay(obj[[2]])

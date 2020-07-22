@@ -12,6 +12,7 @@
 #' @author Samuel Wieczorek
 #' 
 #' @examples
+#' library(QFeatures)
 #' utils::data(Exp1_R25_pept, package='DAPARdata2')
 #' obj <- Exp1_R25_pept[1:1000,]
 #' sampleTab <- colData(obj)
@@ -60,6 +61,7 @@ impute_mle_dapar <- function(x, sampleTab){
 #' @author Samuel Wieczorek
 #' 
 #' @examples
+#' library(QFeatures)
 #' utils::data(Exp1_R25_pept, package='DAPARdata2')
 #' obj <- Exp1_R25_pept[1:1000,]
 #' x <- assay(obj[[2]])
@@ -209,6 +211,7 @@ translatedRandomBeta <- function(n, min, max, param1=3, param2=1){
 #' @author Thomas Burger, Samuel Wieczorek
 #' 
 #' @examples
+#' library(QFeatures)
 #' utils::data(Exp1_R25_pept, package='DAPARdata2')
 #' obj <- Exp1_R25_pept[1:1000]
 #' x <- assay(obj[[2]])

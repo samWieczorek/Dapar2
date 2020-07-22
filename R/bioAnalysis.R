@@ -28,6 +28,7 @@
 #' @examples
 #' \donttest{
 #' library(clusterProfiler)
+#' library(QFeatures)
 #' utils::data(Exp1_R25_prot, package='DAPARdata2')
 #' data <- rowData(Exp1_R25_prot[[2]])[['Protein_IDs']]
 #' ggo <- group_GO(data, idFrom="UNIPROT", orgdb="org.Sc.sgd.db", ont="MF", level=2)
@@ -117,6 +118,7 @@ univ_AnnotDbPkg <- function(orgdb){
 #' @examples
 #' \donttest{
 #' library(clusterProfiler)
+#' library(QFeatures)
 #' utils::data(Exp1_R25_prot, package='DAPARdata2')
 #' data <- rowData(Exp1_R25_prot[[2]])[['Protein_IDs']]
 #' univ <- univ_AnnotDbPkg("org.Sc.sgd.db")
@@ -168,7 +170,7 @@ enrich_GO <- function(data, idFrom, orgdb, ont, readable=FALSE, pval, universe) 
 #' @examples
 #' \donttest{
 #' library(highcharter)
-#' library(DAPAR2)
+#' library(QFeatures)
 #' utils::data(Exp1_R25_prot, package='DAPARdata2')
 #' data <- rowData(Exp1_R25_prot[[2]])[['Protein_IDs']]
 #' ggo <- group_GO(data, idFrom="UNIPROT", orgdb="org.Sc.sgd.db", ont="MF", level=2)
@@ -223,7 +225,7 @@ barplotGroupGO_HC <- function(ggo, maxRes=5, title=NULL){
 #' \donttest{
 #' library(clusterProfiler)
 #' library(highcharter)
-#' library(DAPAR2)
+#' library(QFeatures)
 #' utils::data(Exp1_R25_prot, package='DAPARdata2')
 #' data <- rowData(Exp1_R25_prot[[2]])[['Protein_IDs']]
 #' univ <- univ_AnnotDbPkg("org.Sc.sgd.db")
@@ -308,7 +310,7 @@ barplotEnrichGO_HC <- function(ego, maxRes = 5, title=NULL){
 #' \donttest{
 #' library(clusterProfiler)
 #' library(highcharter)
-#' library(DAPAR2)
+#' library(QFeatures)
 #' utils::data(Exp1_R25_prot, package='DAPARdata2')
 #' data <- rowData(Exp1_R25_prot[[2]])[['Protein_IDs']]
 #' univ <- univ_AnnotDbPkg("org.Sc.sgd.db")

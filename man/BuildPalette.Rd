@@ -18,8 +18,9 @@ A vector composer of HEX color code for the conditions
 xxxx
 }
 \examples{
+library(QFeatures)
 utils::data(Exp1_R25_pept, package='DAPARdata2')
-conditions <- SummarizedExperiment::colData(Exp1_R25_pept)$Condition
+conditions <- colData(Exp1_R25_pept)$Condition
 BuildPalette(conditions, c('AAAAAA', 'BBBBBB'))
 }
 \author{

@@ -36,6 +36,7 @@ proteins/genes ID. It results an enrichResult instance.
 \examples{
 \donttest{
 library(clusterProfiler)
+library(QFeatures)
 utils::data(Exp1_R25_prot, package='DAPARdata2')
 data <- rowData(Exp1_R25_prot[[2]])[['Protein_IDs']]
 univ <- univ_AnnotDbPkg("org.Sc.sgd.db")
