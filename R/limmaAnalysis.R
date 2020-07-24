@@ -535,7 +535,7 @@ make.contrast <- function(design, condition, contrast=1){
 #' object <- Exp1_R25_pept
 #' object <- addAssay(object, QFeatures::filterNA(object[[2]],  pNA = 0), name='filtered')
 #' sampleTab <- colData(object)
-#' qData <- assay(object, 'filtered')
+#' obj <- object[['filtered']]
 #' limma <- limma.complete.test(qData, sampleTab)
 #' 
 #' @importFrom limma contrasts.fit makeContrasts lmFit
