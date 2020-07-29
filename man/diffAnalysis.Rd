@@ -2,7 +2,7 @@
 % Please edit documentation in R/DiffAnalysis.R
 \name{diffAnalysis}
 \alias{diffAnalysis}
-\title{Returns a \code{MSnSet} object with the results of
+\title{Returns a \code{QFeatures} object with the results of
 the differential analysis performed with 'limma package'.}
 \usage{
 diffAnalysis(obj, comp, th_pval = 0, th_logFC = 0)
@@ -20,15 +20,15 @@ diffAnalysis(obj, comp, th_pval = 0, th_logFC = 0)
 An object of class \code{SummarizedExperiment}
 }
 \description{
-This method returns a class \code{MSnSet} object with the results
+This method returns a class \code{QFeatures} object with the results
 of differential analysis
 }
 \examples{
-library(Features)
+library(QFeatures)
 utils::data(Exp1_R25_pept, package='DAPARdata2')
 obj <- Exp1_R25_pept[1:1000]
-obj <- addAssay(obj, Features::filterNA(obj[[2]],  pNA = 0), name='filtered')
-obj <- addAssay(obj, t_test_sam(obj[[3]], colData(obj), FUN = 't_test_sam'), name='t-test')
+obj <- addAssay(obj, QFeatures::filterNA(obj[[2]],  pNA = 0), name='filtered')
+obj <- addAssay(obj, t_test_sam(obj[[3]], colData(obj), FUN = 'compute.t.test'), name='t-test')
 comp <- '25fmol_vs_10fmol'
 da.se <- diffAnalysis(obj[['t-test']], comp, th_pval=0, th_logFC=0)
 

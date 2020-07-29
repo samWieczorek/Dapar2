@@ -17,7 +17,7 @@ Builds the design matrix for designs of level 2
 }
 \examples{
 \donttest{
-library(Features)
+library(QFeatures)
 utils::data(Exp1_R25_pept, package='DAPARdata2')
 make.design.2(colData(Exp1_R25_pept))
 }

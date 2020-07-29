@@ -2,8 +2,8 @@
 % Please edit documentation in R/DiffAnalysis.R
 \name{Get_AllComparisons}
 \alias{Get_AllComparisons}
-\title{Returns list that contains a list of the statistical tests performed with DAPAR and recorded
-in an object of class \code{MSnSet}.}
+\title{Returns list that contains a list of the statistical tests performed with DAPAR2 and recorded
+in an object of class \code{QFeatures}.}
 \usage{
 Get_AllComparisons(obj)
 }
@@ -18,10 +18,10 @@ This method returns a list of the statistical tests performed with xxx and forma
 list of two DataFrame: one for the logFC data and one for the p-values data.
 }
 \examples{
-library(Features)
+library(QFeatures)
 utils::data(Exp1_R25_pept, package='DAPARdata2')
 object <- Exp1_R25_pept[1:1000,]
-object <- addAssay(object, Features::filterNA(object[[2]],  pNA = 0), name='filtered')
+object <- addAssay(object, QFeatures::filterNA(object[[2]],  pNA = 0), name='filtered')
 sTab <- colData(object)
 gttest.se <- t_test_sam(object[[3]], sTab, FUN = compute.t.test)
 object <- addAssay(object, gttest.se, name='t-test')

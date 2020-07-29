@@ -4,7 +4,7 @@
 \name{normalizeD}
 \alias{normalizeD}
 \alias{normalizeD,SummarizedExperiment-method}
-\alias{normalizeD,Features-method}
+\alias{normalizeD,QFeatures-method}
 \title{Check the validity of the experimental design.}
 \format{
 An object of class \code{standardGeneric} of length 1.
@@ -14,10 +14,10 @@ normalizeD
 
 \S4method{normalizeD}{SummarizedExperiment}(object, method, ...)
 
-\S4method{normalizeD}{Features}(object, i, name = "normalizedAssay", method, ...)
+\S4method{normalizeD}{QFeatures}(object, i, name = "normalizedAssay", method, ...)
 }
 \arguments{
-\item{object}{An object of class `Features`.}
+\item{object}{An object of class `QFeatures`.}
 
 \item{method}{xxxxx. See xxx for methods available.}
 
@@ -32,8 +32,8 @@ An instance of class 'SummerizedExperiment' where the quantitative
 data in the \code{array()} tab has been normalized.
 }
 \description{
-This manual page describes the computation of statistical test using [Features] objects. In the following
-functions, if `object` is of class `Features`, and optional assay
+This manual page describes the computation of statistical test using [QFeatures] objects. In the following
+functions, if `object` is of class `QFeatures`, and optional assay
 index or name `i` can be specified to define the assay (by name of
 index) on which to operate.
 
@@ -57,14 +57,11 @@ Normalization can be based only on a subset of protein.
 Proteins with NA in this subset are ignored.
 }
 \examples{
-library(Features)
+library(QFeatures)
 utils::data(Exp1_R25_pept, package='DAPARdata2')
 object <- Exp1_R25_pept
-
-object <- addAssay(object, normalizeD(object[['original_log']], method='GlobalQuantileAlignment'), "peptides_norm")
-
 conds <- colData(object)$Condition
-object <- addAssay(object, normalizeD(object[['original_log']], method='SumByColumns', conds=conds, type='overall'), "peptides_norm")
+object <- normalizeD(object, i=2, name = "norm", method='SumByColumns', conds=conds, type='overall')
 
 }
 \author{

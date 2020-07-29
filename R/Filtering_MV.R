@@ -1,9 +1,9 @@
-#' The filtering functions of DAPAR have not been all moved to DAPAR2 as we now use the Features package
+#' The filtering functions of DAPAR have not been all moved to DAPAR2 as we now use the QFeatures package
 #' which provides some filtering functions, especially on features that are present in the rowData
 #' of the datasets.
-#'  The filtering functions on numerical values are deleted because the same functions exist in Features
+#'  The filtering functions on numerical values are deleted because the same functions exist in QFeatures.
 #'  For the missing values filtering on conditions, we do not use DAPAR functions anymore. Instead, we use
-#'  the numerical filtering functions in Features. To do so, it is necessary to build some rowdata for the
+#'  the numerical filtering functions in QFeatures. To do so, it is necessary to build some rowdata for the
 #'  SummarizedExperiment (not necessary stored in the object) which count the number of missing values w.r.t.
 #'  the type of filtering: whole matrix, at least one value per condition, etc...
 #'  
@@ -16,7 +16,7 @@
 
 
 #' getPourcentageOfMV <- function(obj)
-#' Voir nNA(object, i) de la classe Features
+#' Voir nNA(object, i) de la classe QFeatures
 
 
 
@@ -115,7 +115,7 @@ proportionConRev_HC <- function(lDataset, nBoth = 0, nCont=0, nRev=0){
 #' @param th Either a numeric between 0 and 1 where only the lines which contain
 #' at least \code{th}% of non NA values are kept.
 #' Or a integer between 0 and maximum number of samples for 'WholeMatrix' and 
-#' between 0 and maximum nuber of replicat for "AllCond" and "AtLeastOneCond", where
+#' between 0 and maximum number of replicate for "AllCond" and "AtLeastOneCond", where
 #' only the lines which contain at least \code{th} values are kept.
 #' 
 #' @param percent TRUE by default. When FALSE, use the number of samples
@@ -128,17 +128,18 @@ proportionConRev_HC <- function(lDataset, nBoth = 0, nCont=0, nRev=0){
 #' @author Enora Fremy
 #' 
 #' @examples
+#' library(QFeatures)
 #' utils::data(Exp1_R25_pept, package='DAPARdata2')
 #' sampleTab <- colData(Exp1_R25_pept)
 #' obj <- Exp1_R25_pept[[2]][100:120,]
-#' res <- MVrowsTagToOne(obj, sampleTab, "AtLeastOneCond", 3, percent=F, "AtLeastOneCond")
-#' names(rowData(res)
+#' res <- MVrowsTagToOne(obj, sampleTab, "AtLeastOneCond", 3, percent=FALSE, "AtLeastOneCond")
+#' names(rowData(res))
 #' 
 #' @export
 #' 
 #' @import SummarizedExperiment
 #' 
-MVrowsTagToOne <- function(obj, sampleTab=NULL, type, th=0, percent=T, newColName="newCol") {
+MVrowsTagToOne <- function(obj, sampleTab=NULL, type, th=0, percent=TRUE, newColName="newCol") {
   
   if (is.null(obj)) { return(NULL) }
   
@@ -252,6 +253,7 @@ MVrowsTagToOne <- function(obj, sampleTab=NULL, type, th=0, percent=T, newColNam
 #' @author Enora Fremy
 #' 
 #' @examples
+#' library(QFeatures)
 #' utils::data(Exp1_R25_pept, package='DAPARdata2')
 #' object <- Exp1_R25_pept[[2]]
 #' sampleTab <- colData(Exp1_R25_pept)

@@ -15,7 +15,7 @@
 #' @author Samuel Wieczorek, Enora Fremy
 #' 
 #' @examples
-#' library(highcharter)
+#' library(QFeatures)
 #' utils::data(Exp1_R25_pept, package='DAPARdata2')
 #' qData <- assay(Exp1_R25_pept[[2]])
 #' conds <- colData(Exp1_R25_pept)[["Condition"]]
@@ -29,7 +29,10 @@
 #' @export
 densityPlotD_HC <- function(qData, conds, legend=NULL, palette = NULL){
   
- if(is.null(conds))
+  if(missing(qData))
+    stop("'qData' is missing.")
+  
+  if(missing(conds))
    stop("'conds' is missing.")
   
   palette <- BuildPalette(conds, palette)

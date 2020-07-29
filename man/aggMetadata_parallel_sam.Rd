@@ -8,8 +8,8 @@ in the rowdata of the new protein dataset.}
 aggMetadata_parallel_sam(pepMetadata, names, X, simplify = TRUE)
 }
 \arguments{
-\item{pepMetadata}{A data.frame of meta data of peptides. It is the fData 
-of the MSnset object.}
+\item{pepMetadata}{A data.frame of meta data of peptides. It is the rowData 
+of the QFeatures object.}
 
 \item{names}{A vector of column names of the rowdata of peptides.}
 
@@ -29,10 +29,11 @@ This function aggregates features of metadata of peptides into a dataframe that 
 in the rowdata of the new protein dataset. It is the same function as aggMetadata_sam but with parallelism.
 }
 \examples{
+library(QFeatures)
 utils::data(Exp1_R25_pept, package='DAPARdata2')
 obj <- Exp1_R25_pept[1:1000,]
 obj <- addListAdjacencyMatrices(obj, 2)
-X <- GetAdjMat(obj[[2]], 'all')
+X <- as.matrix(GetAdjMat(obj[[2]], 'all'))
 ft <- aggMetadata_parallel_sam(rowData(obj[[2]]), c('Sequence', 'Proteins'), X)
 
 }

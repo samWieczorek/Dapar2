@@ -4,7 +4,7 @@
 \name{t_test_sam}
 \alias{t_test_sam}
 \alias{t_test_sam,SummarizedExperiment-method}
-\alias{t_test_sam,Features-method}
+\alias{t_test_sam,QFeatures-method}
 \title{Check the validity of the experimental design}
 \format{
 An object of class \code{standardGeneric} of length 1.
@@ -14,10 +14,10 @@ t_test_sam
 
 \S4method{t_test_sam}{SummarizedExperiment}(object, sampleTab, FUN, ...)
 
-\S4method{t_test_sam}{Features}(object, i, name = "ttestAssay", FUN, ...)
+\S4method{t_test_sam}{QFeatures}(object, i, name = "ttestAssay", FUN, ...)
 }
 \arguments{
-\item{object}{An object of class `Features`.}
+\item{object}{An object of class `QFeatures`.}
 
 \item{sampleTab}{xxxxxxx}
 
@@ -32,8 +32,8 @@ name, respectively, of the assay(s) to be processed.}
 are `ttestAssay`.}
 }
 \description{
-This manual page describes the computation of statistical test using [Features] objects. In the following
-functions, if `object` is of class `Features`, and optional assay
+This manual page describes the computation of statistical test using [QFeatures] objects. In the following
+functions, if `object` is of class `QFeatures`, and optional assay
 index or name `i` can be specified to define the assay (by name of
 index) on which to operate.
 
@@ -46,12 +46,13 @@ The following functions are currently available:
 - `limma.complete.test(object, sampleTab)` uses the package Limma
 }
 \details{
-
+xxx
 }
 \examples{
+library(QFeatures)
 utils::data(Exp1_R25_pept, package='DAPARdata2')
 object <- Exp1_R25_pept[1:1000,]
-object <- addAssay(object, Features::filterNA(object[[2]],  pNA = 0), name='filtered')
+object <- addAssay(object, QFeatures::filterNA(object[[2]],  pNA = 0), name='filtered')
 object <- addListAdjacencyMatrices(object, 3)
 sTab <- colData(object)
 gttest.se <- t_test_sam(object[[3]], sTab, FUN = 'limma.complete.test')

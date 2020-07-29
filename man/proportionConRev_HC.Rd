@@ -19,19 +19,19 @@ proportionConRev_HC(lDataset, nBoth = 0, nCont = 0, nRev = 0)
 A barplot
 }
 \description{
-The filtering functions of DAPAR have not been all moved to DAPAR2 as we now use the Features package
+The filtering functions of DAPAR have not been all moved to DAPAR2 as we now use the QFeatures package
 which provides some filtering functions, especially on features that are present in the rowData
 of the datasets.
- The filtering functions on numerical values are deleted because the same functions exist in Features
+ The filtering functions on numerical values are deleted because the same functions exist in QFeatures.
  For the missing values filtering on conditions, we do not use DAPAR functions anymore. Instead, we use
- the numerical filtering functions in Features. To do so, it is necessary to build some rowdata for the
+ the numerical filtering functions in QFeatures. To do so, it is necessary to build some rowdata for the
  SummarizedExperiment (not necessary stored in the object) which count the number of missing values w.r.t.
  the type of filtering: whole matrix, at least one value per condition, etc...
  
  
  
 getPourcentageOfMV <- function(obj)
-Voir nNA(object, i) de la classe Features
+Voir nNA(object, i) de la classe QFeatures
 }
 \examples{
 proportionConRev_HC(100, 10, 20)

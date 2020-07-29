@@ -1,6 +1,6 @@
 #' @title xxxxxx
 #' 
-#' @description 
+#' @description xxx
 #' 
 #' @param obj xxxxx
 #' 
@@ -24,18 +24,20 @@
 #' @author Florence Combes, Samuel Wieczorek
 #' 
 #' @examples
+#' library(QFeatures)
 #' utils::data(Exp1_R25_pept, package='DAPARdata2')
-#' Exp1_R25_pept <- addAssay(Exp1_R25_pept, Features::filterNA(Exp1_R25_pept[[2]],  pNA = 0), name='filtered')
+#' Exp1_R25_pept <- addAssay(Exp1_R25_pept, 
+#' QFeatures::filterNA(Exp1_R25_pept[[2]],  pNA = 0), name='filtered')
 #' sTab <- as.data.frame(colData(Exp1_R25_pept))
-#' qData <- assay(Exp1_R25_pept[['filtered']])
-#' ttest <- compute.t.test(qData, sTab ,"OnevsOne")
+#' obj <- Exp1_R25_pept[['filtered']]
+#' ttest <- compute.t.test(obj, sTab ,"OnevsOne")
 #' 
 #' @export
 #' 
 #' @importFrom stats t.test
 #' 
 compute.t.test <- function(obj, sampleTab, contrast="OnevsOne", type="Student"){
-
+    
     
     # if (class(sampleTab) != 'data.frame'){
     #     stop("'sampleTab' is not of class data.frame.")
@@ -45,34 +47,34 @@ compute.t.test <- function(obj, sampleTab, contrast="OnevsOne", type="Student"){
     .type <- type=='Student'
     sampleTab <- as.data.frame(sampleTab)
     
-res<-list()
-logFC <- list()
-P_Value <- list()
-
-nbComp <- NULL
-
-sampleTab.old <- sampleTab
-Conditions.f <- factor(sampleTab$Condition, levels=unique(sampleTab$Condition))
-sampleTab <- sampleTab[unlist(lapply(split(sampleTab, Conditions.f), function(x) {x['Sample.name']})),]
-qData <- qData[,unlist(lapply(split(sampleTab.old, Conditions.f), function(x) {x['Sample.name']}))]
-Conditions <- sampleTab$Condition
-
-Cond.Nb<-length(levels(Conditions.f))
-
-
+    res<-list()
+    logFC <- list()
+    P_Value <- list()
+    
+    nbComp <- NULL
+    
+    sampleTab.old <- sampleTab
+    Conditions.f <- factor(sampleTab$Condition, levels=unique(sampleTab$Condition))
+    sampleTab <- sampleTab[unlist(lapply(split(sampleTab, Conditions.f), function(x) {x['Sample.name']})),]
+    qData <- qData[,unlist(lapply(split(sampleTab.old, Conditions.f), function(x) {x['Sample.name']}))]
+    Conditions <- sampleTab$Condition
+    
+    Cond.Nb<-length(levels(Conditions.f))
+    
+    
     if(contrast=="OnevsOne"){
         nbComp <- Cond.Nb*(Cond.Nb-1)/2
-
+        
         for(i in 1:(Cond.Nb-1)){
             for (j in (i+1):Cond.Nb){
-    
+                
                 c1Indice <- which(Conditions==levels(Conditions.f)[i])
                 c2Indice <- which(Conditions==levels(Conditions.f)[j])
-    
+                
                 res.tmp <- apply(qData[,c(c1Indice,c2Indice)], 1, 
                                  function(x) {
-                   stats::t.test(x~Conditions[c(c1Indice,c2Indice)],  var.equal=.type)
-                })
+                                     stats::t.test(x~Conditions[c(c1Indice,c2Indice)],  var.equal=.type)
+                                 })
                 p.tmp <- unlist(lapply(res.tmp,function(x)x$p.value))
                 m1.tmp <- unlist(lapply(res.tmp,function(x)as.numeric(x$estimate[1])))
                 m2.tmp <- unlist(lapply(res.tmp,function(x)as.numeric(x$estimate[2])))
@@ -88,14 +90,14 @@ Cond.Nb<-length(levels(Conditions.f))
             }
         }
     } ##end Contrast==1
-
+    
     if(contrast=="OnevsAll"){
         nbComp <- Cond.Nb
         
         for(i in 1:nbComp){
             
             c1 <- which(Conditions==levels(Conditions.f)[i])
-           
+            
             Cond.t.all<-c(1:length(Conditions))
             Cond.t.all[c1]<-levels(Conditions.f)[i]
             Cond.t.all[-c1]<-"all"
@@ -119,7 +121,7 @@ Cond.Nb<-length(levels(Conditions.f))
         }
     } # End Contrast=2
     
-
+    
     res.l <- DataFrame(logFC, P_Value)
     colnames(res.l) <- c(names(logFC), names(P_Value))
     
@@ -147,12 +149,14 @@ Cond.Nb<-length(levels(Conditions.f))
 #' #' @param type xxxxx
 #' #' @return A list of two items : logFC and P_Value; both are dataframe. The first one contains
 #' #' the logFC values of all the comparisons (one column for one comparison), the second one contains
-#' #' the pvalue of all the comparisons (one column for one comparison). The names of the columns for those two dataframes
+#' #' the pvalue of all the comparisons (one column for one comparison). 
+#' #' The names of the columns for those two dataframes
 #' #' are identical and correspond to the description of the comparison. 
 #' #' @author Florence Combes, Samuel Wieczorek
 #' #' @examples
 #' #' utils::data(Exp1_R25_pept, package='DAPARdata2')
-#' #' Exp1_R25_pept <- addAssay(Exp1_R25_pept, Features::filterNA(Exp1_R25_pept[['original_log']],  pNA = 0), name='filtered')
+#' #' Exp1_R25_pept <- addAssay(Exp1_R25_pept, 
+#' QFeatures::filterNA(Exp1_R25_pept[['original_log']],  pNA = 0), name='filtered')
 #' #' sTab <- as.data.frame(colData(Exp1_R25_pept)@listData)
 #' #' qData <- assay(Exp1_R25_pept[['filtered']])
 #' #' ttest <- compute.t.tests2(qData,sTab ,"OnevsOne")

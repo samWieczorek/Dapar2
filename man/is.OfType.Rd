@@ -18,6 +18,7 @@ A boolean dataframe
 Similar to the function \code{is.na} but focused on the equality with the paramter 'type'.
 }
 \examples{
+library(QFeatures)
 utils::data(Exp1_R25_pept, package='DAPARdata2')
 obj <- Exp1_R25_pept
 data <- rowData(Exp1_R25_pept[['original']])[,metadata(Exp1_R25_pept)$OriginOfValues]

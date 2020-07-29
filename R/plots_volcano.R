@@ -2,7 +2,7 @@
 #' 
 #' @title Volcanoplot of the differential analysis
 #' 
-#' @description #' Plots an interactive volcanoplot after the differential analysis.
+#' @description Plots an interactive volcanoplot after the differential analysis.
 #' Typically, the log of Fold Change is represented on the X-axis and the
 #' log10 of the p-value is drawn on the Y-axis. When the \code{threshold_pVal}
 #' and the \code{threshold_logFC} are set, two lines are drawn respectively on
@@ -43,15 +43,13 @@
 #' 
 #' @examples
 #' \donttest{
-#' library(Features)
-#' library(DT)
-#' library(highcharter)
+#' library(QFeatures)
 #' utils::data(Exp1_R25_pept, package='DAPARdata2')
-#' obj <- Features::filterNA(Exp1_R25_pept,i='original') # remove all rows with NAs
+#' obj <- QFeatures::filterNA(Exp1_R25_pept,i='original') # remove all rows with NAs
 #' qData <- assay(obj[['original']])
 #' pData <- as.data.frame(colData(obj))
-#' data <- limmaCompleteTest(qData,pData)
-#' df <- data.frame(x=data$logFC, y = -log10(data$P_Value),index = as.character(rownames(qData)))
+#' data <- limma.complete.test(qData,pData)
+#' df <- data.frame(x=data[,1], y = -log10(data[,2]),index = as.character(rownames(qData)))
 #' colnames(df) <- c("x", "y", "index")
 #' tooltipSlot <- c("Sequence", "Score")
 #' df <- cbind(df,rowData(obj[['original']])[tooltipSlot])
@@ -59,7 +57,8 @@
 #' if (ncol(df) > 3){
 #'     colnames(df)[4:ncol(df)] <- 
 #'     paste("tooltip_", colnames(df)[4:ncol(df)], sep="")}
-#' hc_clickFunction <- JS("function(event) {Shiny.onInputChange('eventPointClicked', [this.index]+'_'+ [this.series.name]);}")
+#' hc_clickFunction <- JS("function(event) {
+#' Shiny.onInputChange('eventPointClicked', [this.index]+'_'+ [this.series.name]);}")
 #' cond <- unique(colData(obj)[['Condition']])
 #' diffAnaVolcanoplot_rCharts(df, 2.5, 1, cond, hc_clickFunction) 
 #' }
@@ -92,7 +91,6 @@ diffAnaVolcanoplot_rCharts <- function(df,
               g=ifelse(df$y >= threshold_pVal & abs(df$x) >= threshold_logFC, "g1", "g2")
   )
   
-  
   i_tooltip <- which(startsWith(colnames(df),"tooltip"))
   txt_tooltip <- NULL
   for (i in i_tooltip){
@@ -108,6 +106,7 @@ diffAnaVolcanoplot_rCharts <- function(df,
   rightBorder <- data.frame(x=c(max(df$x), threshold_logFC, threshold_logFC),
                             y = c(threshold_pVal, threshold_pVal, max(df$y)))
   
+  
   title <- NULL
   if (isTRUE(swap)){
     title <- paste0(conditions[2], '_vs_', conditions[1])
@@ -115,8 +114,9 @@ diffAnaVolcanoplot_rCharts <- function(df,
     title <- paste0(conditions[1], '_vs_', conditions[2])
   }
   
+  
   h1 <-  highchart() %>%
-    hc_add_series(data = df, type = "scatter", hcaes(df$x,df$y,group=df$g)) %>%
+    hc_add_series(data = df, type = "scatter", hcaes(df$x,df$y, group=g)) %>%
     hc_colors(c(palette$In, palette$Out)) %>%
     dapar_hc_chart(zoomType = "xy",chartType="scatter") %>%
     hc_title(text = title,

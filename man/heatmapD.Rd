@@ -16,6 +16,8 @@ heatmapD(
 \arguments{
 \item{qData}{A dataframe of numeric values}
 
+\item{conds}{A vector of the conditions (one condition per sample).}
+
 \item{distance}{The distance used by the clustering algorithm to compute
 the dendrogram. See \code{help(heatmap.2)}}
 
@@ -32,6 +34,7 @@ Heatmap of the quantitative proteomic data of a \code{data.frame} object
 }
 \examples{
 \dontrun{
+library(QFeatures)
 utils::data(Exp1_R25_prot, package='DAPARdata2')
 ft <- Exp1_R25_prot
 conds <- colData(Exp1_R25_prot)[['Condition']]

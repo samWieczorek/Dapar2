@@ -18,12 +18,13 @@ impute_mi(x, sampleTab, lapala = TRUE, progress.bar = TRUE, ...)
 \item{...}{xxxxxxxx}
 }
 \value{
-The \code{exprs(obj)} matrix with imputed values instead of missing values.
+The \code{assay(obj)} matrix with imputed values instead of missing values.
 }
 \description{
 Missing values imputation using the LSimpute algorithm.
 }
 \examples{
+library(QFeatures)
 utils::data(Exp1_R25_pept, package='DAPARdata2')
 obj <- Exp1_R25_pept[1:1000,]
 x <- assay(obj[[2]])

@@ -7,7 +7,7 @@
 boxPlotD_HC(
   qData,
   conds,
-  sequence = NULL,
+  keyId = NULL,
   legend = NULL,
   palette = NULL,
   subset.view = NULL
@@ -18,7 +18,7 @@ boxPlotD_HC(
 
 \item{conds}{xxx}
 
-\item{sequence}{xxxx}
+\item{keyId}{xxxx}
 
 \item{legend}{A vector of the conditions (one condition per sample).}
 
@@ -33,13 +33,12 @@ A boxplot
 Boxplot for quantitative proteomics data using the library \code{highcharter}
 }
 \examples{
-library(Features)
-library(highcharter)
+library(QFeatures)
 utils::data(Exp1_R25_pept, package='DAPARdata2')
-qData <- assay(Exp1_R25_pept[['original_log']])
+qData <- assay(Exp1_R25_pept[[2]])
 conds <- colData(Exp1_R25_pept)[["Condition"]]
-seq <- rowData(Exp1_R25_pept[['original_log']])[['Sequence']]
-boxPlotD_HC(qData, conds, sequence=seq, subset.view=1:10)
+key <- rowData(Exp1_R25_pept[[2]])[[metadata(Exp1_R25_pept)$keyId]]
+boxPlotD_HC(qData, conds, keyId = key, conds, subset.view=1:10)
 
 }
 \author{

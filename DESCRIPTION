@@ -1,8 +1,8 @@
 Package: DAPAR2
 Type: Package
 Title: Tools for the Differential Analysis of Proteins Abundance with R
-Version: 2.3
-Date: 2020-06-10
+Version: 2.4
+Date: 2020-06-17
 Authors@R: c(person(given = "Samuel", family = "Wieczorek",
             email = "samuel.wieczorek@cea.fr",
             role = c("aut","cre")),
@@ -22,13 +22,59 @@ Description: This package contains a collection of functions for the
     visualisation and the statistical analysis of proteomic data.
 License: Artistic-2.0
 VignetteBuilder: knitr
-Depends: R (>= 3.6.3)
-Suggests: testthat, BiocStyle, knitr, Biobase, DAPARdata2
-Imports: Features,  methods, MsCoreUtils, SummarizedExperiment, MultiAssayExperiment, openxlsx, 
-         preprocessCore, S4Vectors, lme4, AnnotationDbi, vsn, stringr, RColorBrewer, graph, FactoMineR, 
-         factoextra, DT, doParallel, dplyr, foreach, gplots, highcharter, tibble, tidyr, visNetwork, 
-         Matrix, cp4p, limma, vioplot, imp4p (>= 0.9), clusterProfiler, data.table, impute
-biocViews: Proteomics, Normalization, Preprocessing, MassSpectrometry, QualityControl, GO, DataImport
+Depends: R (>= 4.0)
+Suggests: 
+    testthat, 
+    BiocStyle, 
+    knitr,
+    MSnbase,
+    DAPARdata2,
+    DAPARdata
+Imports:
+    Biobase,
+    S4Vectors,
+    AnnotationDbi,
+    QFeatures,
+    methods,
+    MsCoreUtils,
+    SummarizedExperiment,
+    MultiAssayExperiment,
+    openxlsx, 
+    preprocessCore,
+    lme4,
+    vsn, 
+    stringr,
+    RColorBrewer,
+    graph,
+    FactoMineR, 
+    factoextra,
+    DT, 
+    doParallel,
+    dplyr,
+    foreach,
+    gplots,
+    highcharter,
+    tibble,
+    tidyr,
+    visNetwork, 
+    Matrix,
+    cp4p,
+    limma,
+    vioplot,
+    imp4p (>= 0.9),
+    clusterProfiler,
+    data.table,
+    impute,
+    dendextend,
+    readxl
+biocViews: 
+    Proteomics,
+    Normalization,
+    Preprocessing,
+    MassSpectrometry,
+    QualityControl,
+    GO,
+    DataImport
 NeedsCompilation: no
 Collate:
     'AllGenerics.R'
@@ -37,8 +83,8 @@ Collate:
     'DiffAnalysis.R'
     'get_pep_prot_cc.R'
     'group_ttest.R'
-    'export_features.R'
-    'import_2_features.R'
+    'export_qfeatures.R'
+    'import_2_qfeatures.R'
     'limmaAnalysis.R'
     'normalize.R'
     'plots_boxplot.R'
@@ -61,6 +107,6 @@ Collate:
     'missingValuesImputation_PeptideLevel.R'
     'missingValuesImputation_ProteinLevel.R'
     'pepa.R'
-RoxygenNote: 7.1.0
+RoxygenNote: 7.1.1
 Packaged: 2017-10-13 11:13:04 UTC; sw175264
 Encoding: UTF-8

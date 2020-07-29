@@ -16,7 +16,7 @@ A design matrix
 Builds the design matrix
 }
 \examples{
-library(Features)
+library(QFeatures)
 utils::data(Exp1_R25_pept, package='DAPARdata2')
 make.design(colData(Exp1_R25_pept))
 

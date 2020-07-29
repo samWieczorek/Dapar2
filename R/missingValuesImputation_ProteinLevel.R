@@ -3,15 +3,19 @@
 #' 
 #' 
 #' @examples
-#' library(Features)
+#' library(QFeatures)
 #' utils::data(Exp1_R25_pept, package='DAPARdata2')
 #' obj <- Exp1_R25_pept[1:1000,]
-#' obj <- impute_dapar(obj[[2]], 'det_quant')
+#' obj <- impute_dapar(obj, 2,'foo',  'det_quant')
 #' 
 "impute_dapar"
 
-#' @param object A `SummarizedExperiment` or `Features` object with
+#' @param object A `SummarizedExperiment` or `QFeatures` object with
 #'     missing values to be imputed.
+#'     
+#' @param i xxxx
+#' 
+#' @param name xxx
 #'     
 #' @param method `character(1)` defining the imputation method. See
 #'     `imputeMethods()` for available ones. See
@@ -36,7 +40,7 @@ setMethod("impute_dapar", "SummarizedExperiment",
           })
 
 
-#' @param i Defines which element of the `Features` instance to
+#' @param i Defines which element of the `QFeatures` instance to
 #'     impute. If missing, all assays will be imputed.
 #' 
 #' @export
@@ -45,15 +49,23 @@ setMethod("impute_dapar", "SummarizedExperiment",
 #' 
 #' @rdname impute_dapar
 #' 
-setMethod("impute_dapar", "Features",
-          function(object, method, ..., i) {
+setMethod("impute_dapar", "QFeatures",
+          function(object, i, name, method, ...) {
               if (missing(i))
-                  i  <-  seq_len(length(object))
-              for (ii in i) {
-                  res <- impute_matrix_dapar(assay(object[[ii]]), method, ...)
-                  SummarizedExperiment::assay(object[[ii]]) <- res
-              }
-              object
+                  i  <-  length(object)
+              if (is.numeric(i)) i <- names(object)[[i]]
+              
+              argg <- c(as.list(environment()), list(...))
+              
+              tmp <- object[[i]]
+              res <- impute_matrix_dapar(assay(tmp), method, ...)
+              SummarizedExperiment::assay(tmp) <- res
+              metadata(tmp)$Params <-  argg[-match(c('object', 'i', 'name'), names(argg))]
+              
+              object <- QFeatures::addAssay(object,
+                                           tmp,
+                                           name)
+              QFeatures::addAssayLinkOneToOne(object, from = i, to = name)
           })
 
 
@@ -68,7 +80,7 @@ setMethod("impute_dapar", "Features",
 #' @param ... xxxxx
 #' 
 #' @examples
-#' library(Features)
+#' library(QFeatures)
 #' utils::data(Exp1_R25_pept, package='DAPARdata2')
 #' obj <- Exp1_R25_pept[1:1000,]
 #' imp <- impute_matrix_dapar(assay(obj[[2]]), method='knn_by_conds', colData(obj)$Condition, 3)
@@ -139,6 +151,7 @@ imputeMethodsDapar <- function()
 #' @author Samuel Wieczorek
 #' 
 #' @examples
+#' library(QFeatures)
 #' utils::data(Exp1_R25_pept, package='DAPARdata2')
 #' obj <- Exp1_R25_pept[1:1000,]
 #' imp <- impute_knn_by_conditions(assay(obj[[2]]), colData(obj)$Condition, 3)
@@ -183,10 +196,10 @@ impute_knn_by_conditions <- function(x, conds=NULL, k=3){
 #' @author Samuel Wieczorek
 #' 
 #' @examples
-#' library(Features)
+#' library(QFeatures)
 #' utils::data(Exp1_R25_pept, package='DAPARdata2')
 #' object <- Exp1_R25_pept[1:1000,]
-#' object <- addAssay(object, Features::filterNA(object[[2]],  pNA = 0.2), name='filtered')
+#' object <- addAssay(object, QFeatures::filterNA(object[[2]],  pNA = 0.2), name='filtered')
 #' imp <- impute_pa(assay(object[['filtered']]), colData(object)$Condition)
 #' 
 #' @export
@@ -220,6 +233,7 @@ impute_pa <- function(x, conds, q.min = 0.025){
 #' @author Samuel Wieczorek
 #' 
 #' @examples
+#' library(QFeatures)
 #' utils::data(Exp1_R25_pept, package='DAPARdata2')
 #' impute_det_quant(assay(Exp1_R25_pept[[2]]))
 #' 
@@ -254,6 +268,7 @@ impute_det_quant <- function(x,...){
 #' @author Thomas Burger
 #' 
 #' @examples
+#' library(QFeatures)
 #' utils::data(Exp1_R25_pept, package='DAPARdata2')
 #' qData <- assay(Exp1_R25_pept[[2]])
 #' getQuantile4Imp(qData) 
@@ -282,6 +297,7 @@ getQuantile4Imp <- function(x, qval=0.025, factor=1){
 #' @author Samuel Wieczorek
 #' 
 #' @examples
+#' library(QFeatures)
 #' utils::data(Exp1_R25_pept, package='DAPARdata2')
 #' obj <- Exp1_R25_pept[1:1000]
 #' imp <- impute_slsa(assay(obj[[2]]), colData(obj))
@@ -325,9 +341,10 @@ impute_slsa <- function(x, sampleTab){
 #' @author Samuel Wieczorek
 #' 
 #' @examples
+#' library(QFeatures)
 #' utils::data(Exp1_R25_pept, package='DAPARdata2')
 #' obj <- Exp1_R25_pept[1:1000]
-#' lapala <- find_MEC(assay(obj[[2]]), colData(obj)$Condition)
+#' lapala <- find_MEC_matrix(assay(obj[[2]]), colData(obj)$Condition)
 #' assay(obj[[2]]) <- impute_det_quant(assay(obj[[2]]))
 #' assay(obj[[2]]) <- restore_MEC_matrix(assay(obj[[2]]), colData(obj)$Condition, lapala)
 #' 
@@ -356,6 +373,7 @@ restore_MEC_matrix <- function(x, conds, MECIndex){
 #' @author Samuel Wieczorek
 #' 
 #' @examples
+#' library(QFeatures)
 #' utils::data(Exp1_R25_pept, package='DAPARdata2')
 #' obj <- Exp1_R25_pept[1:1000]
 #' lapala <- find_MEC_matrix(assay(obj[[2]]), colData(obj)$Condition)
