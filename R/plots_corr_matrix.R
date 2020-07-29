@@ -30,9 +30,11 @@
 #' 
 corrMatrixD_HC <- function(obj, names = NULL, rate = 0.5) {
   
-  res <- cor(SummarizedExperiment::assay(obj), use = 'pairwise.complete.obs')
-  df <- as_tibble(res)
-  
+
+  res <- cor(SummarizedExperiment::assay(obj),use = 'pairwise.complete.obs')
+
+  df <- as.data.frame(res)
+
   if (!is.null(names)){
       colnames(df) <- names
   } 
@@ -65,6 +67,8 @@ corrMatrixD_HC <- function(obj, names = NULL, rate = 0.5) {
                     list(0.5, '#F8F5F5'),
                     list(1, '#2E86C1')
   )
+  
+  
   highcharter::highchart() %>% 
     dapar_hc_chart(chartType = "heatmap") %>% 
     hc_xAxis(categories = y, title = NULL) %>% 
