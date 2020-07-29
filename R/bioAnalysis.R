@@ -122,7 +122,8 @@ univ_AnnotDbPkg <- function(orgdb){
 #' utils::data(Exp1_R25_prot, package='DAPARdata2')
 #' data <- rowData(Exp1_R25_prot[[2]])[['Protein_IDs']]
 #' univ <- univ_AnnotDbPkg("org.Sc.sgd.db")
-#' ego <- enrich_GO(data, idFrom="UNIPROT", orgdb="org.Sc.sgd.db", ont="MF", pval=0.05, universe = univ)
+#' ego <- enrich_GO(data, idFrom="UNIPROT", orgdb="org.Sc.sgd.db", 
+#' ont="MF", pval=0.05, universe = univ)
 #' }
 #' @export
 #' 
@@ -229,7 +230,12 @@ barplotGroupGO_HC <- function(ggo, maxRes=5, title=NULL){
 #' utils::data(Exp1_R25_prot, package='DAPARdata2')
 #' data <- rowData(Exp1_R25_prot[[2]])[['Protein_IDs']]
 #' univ <- univ_AnnotDbPkg("org.Sc.sgd.db")
-#' ego <- enrich_GO(data, idFrom="UNIPROT", orgdb="org.Sc.sgd.db", ont="MF", pval=0.05, universe = univ)
+#' ego <- enrich_GO(data, 
+#' idFrom="UNIPROT", 
+#' orgdb="org.Sc.sgd.db", 
+#' ont="MF", 
+#' pval=0.05, 
+#' universe = univ)
 #' barplotEnrichGO_HC(ego)
 #' }
 #' 
@@ -314,7 +320,8 @@ barplotEnrichGO_HC <- function(ego, maxRes = 5, title=NULL){
 #' utils::data(Exp1_R25_prot, package='DAPARdata2')
 #' data <- rowData(Exp1_R25_prot[[2]])[['Protein_IDs']]
 #' univ <- univ_AnnotDbPkg("org.Sc.sgd.db")
-#' ego <- enrich_GO(data, idFrom="UNIPROT", orgdb="org.Sc.sgd.db", ont="MF", pval=0.05, universe = univ)
+#' ego <- enrich_GO(data, idFrom="UNIPROT", orgdb="org.Sc.sgd.db", 
+#' ont="MF", pval=0.05, universe = univ)
 #' scatterplotEnrichGO_HC(ego)
 #' }
 #' 
