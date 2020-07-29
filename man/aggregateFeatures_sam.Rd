@@ -64,7 +64,8 @@ thereof are
 library(QFeatures)
 utils::data(Exp1_R25_pept, package='DAPARdata2')
 obj <- Exp1_R25_pept
-aggregateFeatures_sam(obj,2, aggType= 'all', name='aggregated', meta.names = 'Sequence', 'aggTopn', n=3)
+aggregateFeatures_sam(obj,2, aggType= 'all', name='aggregated', 
+meta.names = 'Sequence', fun='aggTopn', n=3)
 
 }
 \seealso{

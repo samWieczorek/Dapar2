@@ -19,7 +19,8 @@ Plots the eigen values of PCA with the highcharts library
 library(QFeatures)
 utils::data(Exp1_R25_pept, package='DAPARdata2')
 qData <- assay(Exp1_R25_pept[['original']])
-res.pca <- wrapper.pca(qData, ncp=6)
+condition <- colData(Exp1_R25_pept)[["Condition"]]
+res.pca <- wrapper.pca(qData, condition)
 plotPCA_Eigen_hc(res.pca)
 }
 \author{

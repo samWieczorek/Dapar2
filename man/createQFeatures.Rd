@@ -68,7 +68,8 @@ namesOrigin <- colnames(data)[43:48]
 parentId <- 'Protein_group_IDs'
 keyid <- 'Sequence'
 analysis <- 'test'
-ft <- createQFeatures(data, sample,indExpData,keyId = keyid, analysis=analysis, namesOrigin = namesOrigin, typeOfData = "peptide", parentProtId = parentId, forceNA=TRUE)
+ft <- createQFeatures(data, sample,indExpData,keyId = keyid, analysis=analysis, 
+namesOrigin = namesOrigin, typeOfData = "peptide", parentProtId = parentId, forceNA=TRUE)
 
 }
 \author{

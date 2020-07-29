@@ -57,7 +57,8 @@
 #' if (ncol(df) > 3){
 #'     colnames(df)[4:ncol(df)] <- 
 #'     paste("tooltip_", colnames(df)[4:ncol(df)], sep="")}
-#' hc_clickFunction <- JS("function(event) {Shiny.onInputChange('eventPointClicked', [this.index]+'_'+ [this.series.name]);}")
+#' hc_clickFunction <- JS("function(event) {
+#' Shiny.onInputChange('eventPointClicked', [this.index]+'_'+ [this.series.name]);}")
 #' cond <- unique(colData(obj)[['Condition']])
 #' diffAnaVolcanoplot_rCharts(df, 2.5, 1, cond, hc_clickFunction) 
 #' }

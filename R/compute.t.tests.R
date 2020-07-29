@@ -26,10 +26,11 @@
 #' @examples
 #' library(QFeatures)
 #' utils::data(Exp1_R25_pept, package='DAPARdata2')
-#' Exp1_R25_pept <- addAssay(Exp1_R25_pept, QFeatures::filterNA(Exp1_R25_pept[[2]],  pNA = 0), name='filtered')
+#' Exp1_R25_pept <- addAssay(Exp1_R25_pept, 
+#' QFeatures::filterNA(Exp1_R25_pept[[2]],  pNA = 0), name='filtered')
 #' sTab <- as.data.frame(colData(Exp1_R25_pept))
 #' obj <- Exp1_R25_pept[['filtered']]
-#' ttest <- compute.t.test(qData, sTab ,"OnevsOne")
+#' ttest <- compute.t.test(obj, sTab ,"OnevsOne")
 #' 
 #' @export
 #' 
@@ -148,12 +149,14 @@ compute.t.test <- function(obj, sampleTab, contrast="OnevsOne", type="Student"){
 #' #' @param type xxxxx
 #' #' @return A list of two items : logFC and P_Value; both are dataframe. The first one contains
 #' #' the logFC values of all the comparisons (one column for one comparison), the second one contains
-#' #' the pvalue of all the comparisons (one column for one comparison). The names of the columns for those two dataframes
+#' #' the pvalue of all the comparisons (one column for one comparison). 
+#' #' The names of the columns for those two dataframes
 #' #' are identical and correspond to the description of the comparison. 
 #' #' @author Florence Combes, Samuel Wieczorek
 #' #' @examples
 #' #' utils::data(Exp1_R25_pept, package='DAPARdata2')
-#' #' Exp1_R25_pept <- addAssay(Exp1_R25_pept, QFeatures::filterNA(Exp1_R25_pept[['original_log']],  pNA = 0), name='filtered')
+#' #' Exp1_R25_pept <- addAssay(Exp1_R25_pept, 
+#' QFeatures::filterNA(Exp1_R25_pept[['original_log']],  pNA = 0), name='filtered')
 #' #' sTab <- as.data.frame(colData(Exp1_R25_pept)@listData)
 #' #' qData <- assay(Exp1_R25_pept[['filtered']])
 #' #' ttest <- compute.t.tests2(qData,sTab ,"OnevsOne")
