@@ -61,7 +61,7 @@ setMEC <- function(origin, qData, conds=NULL){
 #' 
 #' @title Sets the MEC tag in the OriginOfValues
 #' 
-#' @param obj An object of class \code{Features}
+#' @param obj An object of class \code{QFeatures}
 #' 
 #' @param i The indice of the assay in obj to be used to build the Origin of values. Generally, it is the first one
 #' 
@@ -76,7 +76,9 @@ setMEC <- function(origin, qData, conds=NULL){
 #' @examples
 #' \dontrun{
 #' utils::data(Exp1_R25_pept, package='DAPARdata2')
-#' origin <- c("Identification_type_C_R1", "Identification_type_C_R2", "Identification_type_C_R3", "Identification_type_D_R1", "Identification_type_D_R2", "Identification_type_D_R3")
+#' origin <- c("Identification_type_C_R1", "Identification_type_C_R2", 
+#' "Identification_type_C_R3", "Identification_type_D_R1", 
+#' "Identification_type_D_R2", "Identification_type_D_R3")
 #' obj <- addOriginOfValues(Exp1_R25_pept, 2, origin)
 #' }
 #' 
@@ -126,11 +128,11 @@ addOriginOfValues <- function(obj, i, namesOrigin = NULL){
 
 
 
-#' Builds an object of class \code{Features} from a 
+#' Builds an object of class \code{QFeatures} from a 
 #' single tabulated-like file for quantitative and meta-data and a dataframe 
 #' for the samples description.
 #' 
-#' @title Creates an object of class \code{MSnSet} from text file
+#' @title Creates an object of class \code{QFeatures} from text file
 #' 
 #' @param data The name of a tab-separated file that contains the data.
 #' 
@@ -138,7 +140,7 @@ addOriginOfValues <- function(obj, i, namesOrigin = NULL){
 #' 
 #' @param indExpData A vector of string where each element is the name
 #' of a column in designTable that have to be integrated in
-#' the \code{fData()} table of the \code{MSnSet} object.
+#' the \code{rowData()} table of the \code{QFeatures} object.
 #' 
 #' @param keyId The indice of the column containing the ID of entities 
 #' (peptides or proteins)
@@ -162,7 +164,7 @@ addOriginOfValues <- function(obj, i, namesOrigin = NULL){
 #' 
 #' @param analysis xxx
 #' 
-#' @return An instance of class \code{Features}.
+#' @return An instance of class \code{QFeatures}.
 #' 
 #' @author Samuel Wieczorek
 #' 
@@ -176,26 +178,27 @@ addOriginOfValues <- function(obj, i, namesOrigin = NULL){
 #' parentId <- 'Protein_group_IDs'
 #' keyid <- 'Sequence'
 #' analysis <- 'test'
-#' ft <- createFeatures(data, sample,indExpData,keyId = keyid, analysis=analysis, namesOrigin = namesOrigin, typeOfData = "peptide", parentProtId = parentId, forceNA=TRUE)
+#' ft <- createQFeatures(data, sample,indExpData,keyId = keyid, analysis=analysis, 
+#' namesOrigin = namesOrigin, typeOfData = "peptide", parentProtId = parentId, forceNA=TRUE)
 #' 
-#' @import Features
+#' @import QFeatures
 #' @importFrom utils installed.packages
 #' @import SummarizedExperiment
 #' 
 #' @export
 #' 
-createFeatures <- function(data,
-                           sample,
-                           indExpData,
-                           keyId=NULL,
-                           namesOrigin = NULL,
-                           logTransform=FALSE, 
-                           forceNA=FALSE,
-                           typeOfData,
-                           parentProtId = NULL,
-                           analysis='foo',
-                           processes = NULL,
-                           pipelineType = NULL){
+createQFeatures <- function(data,
+                            sample,
+                            indExpData,
+                            keyId=NULL,
+                            namesOrigin = NULL,
+                            logTransform=FALSE, 
+                            forceNA=FALSE,
+                            typeOfData,
+                            parentProtId = NULL,
+                            analysis='foo',
+                            processes = NULL,
+                            pipelineType = NULL){
   
   if(missing(data))
     stop("'data' is required")
@@ -210,14 +213,14 @@ createFeatures <- function(data,
   
   
   if (is.null(keyId) || keyId=='' || nchar(keyId)==0) {
-    obj <- readFeatures(data, 
-                        ecol=indExpData, 
-                        name='original')
+    obj <- QFeatures::readQFeatures(data, 
+                                    ecol=indExpData, 
+                                    name='original')
   } else {
-    obj <- readFeatures(data, 
-                        ecol=indExpData, 
-                        name='original',
-                        fnames = keyId)
+    obj <- QFeatures::readQFeatures(data, 
+                                    ecol=indExpData, 
+                                    name='original',
+                                    fnames = keyId)
   }
   
   
@@ -232,7 +235,6 @@ createFeatures <- function(data,
   #if (isTRUE(forceNA)) {
   obj <- zeroIsNA(obj,seq_along(obj))
   origin <- addOriginOfValues(obj, 1, namesOrigin)
-  print(str(colnames(origin)))
   metadata(obj)$OriginOfValues <- colnames(origin)
   rowData(obj[['original']]) <- cbind(rowData(obj[['original']]), origin)
   
@@ -256,22 +258,19 @@ createFeatures <- function(data,
   )
   
   metadata(obj[['original']])$typeOfData <- typeOfData
-   
+  
   ## Replace all '.' by '_' in names
   #colnames(fd) <- gsub(".", "_", colnames(data)[indFData], fixed=TRUE)
   #colnames(Intensity) <- gsub(".", "_", colnames(data)[indExpData], fixed=TRUE)
   
   
-    if (tolower(typeOfData) == 'peptide')
-      {
-      print( "addListAdjacencyMatrices")
-      obj <- addListAdjacencyMatrices(obj, 1)
-      print( "addConnexComp")
-      obj <- addConnexComp(obj, 1)
-      print(names(metadata(obj[[1]])$list.cc))
-    }
-
-    
+  if (tolower(typeOfData) == 'peptide')
+  {
+    obj <- addListAdjacencyMatrices(obj, 1)
+    obj <- addConnexComp(obj, 1)
+  }
+  
+  
   if (isTRUE(logTransform)) {
     obj <- addAssay(obj, logTransform(obj[['original']]),name = "original_log")
     obj <- addAssayLinkOneToOne(obj, from = "original", to = "original_log")
@@ -284,7 +283,7 @@ createFeatures <- function(data,
 
 
 
-#' @title Creates an object of class \code{MSnSet} from text file
+#' @title Creates an object of class \code{QFeatures} from an object of class \code{MSnSet}
 #' 
 #' @description xxxx
 #' 
@@ -302,24 +301,26 @@ createFeatures <- function(data,
 #' 
 #' @param processes xxxx
 #' 
-#' @return An instance of class \code{Features}.
+#' @return An instance of class \code{QFeatures}.
 #' 
 #' @author Samuel Wieczorek
 #' 
 #' @examples 
-#' library(Features)
+#' library(QFeatures)
+#' library(MSnbase)
 #' utils::data(Exp1_R25_pept, package='DAPARdata')
 #' obj <- Exp1_R25_pept
 #' parentId <- 'Protein_group_IDs'
 #' keyid <- 'Sequence'
-#' ft <- convertMSnset2Features(obj, 'conv',parentId, keyid )
+#' ft <- convertMSnset2QFeatures(obj, 'conv',parentId, keyid )
 #' 
 #' @importFrom Biobase exprs fData pData
-#' @importFrom Features readFeatures
+#' 
+#' @importFrom QFeatures readQFeatures
 #' 
 #' @export
 #' 
-convertMSnset2Features <- function(obj, analysis, parentProtId, keyId, pipelineType = NULL, processes = NULL) {
+convertMSnset2QFeatures <- function(obj, analysis, parentProtId, keyId, pipelineType = NULL, processes = NULL) {
   
   
   if (class(obj) != 'MSnSet')
@@ -339,15 +340,15 @@ convertMSnset2Features <- function(obj, analysis, parentProtId, keyId, pipelineT
   
   df <- cbind(Biobase::fData(obj), Biobase::exprs(obj))
   i <- (ncol(Biobase::fData(obj))+1):(ncol(df))
-  feat <- Features::readFeatures(df, ecol = i, sep = "\t", name = "original", fnames = keyId)
+  feat <- QFeatures::readQFeatures(df, ecol = i, sep = "\t", name = "original", fnames = keyId)
   metadata(feat[['original']])$typeOfData <- obj@experimentData@other$typeOfData
-    
-    
+  
+  
   ## Encoding the sample data
   sample <- lapply(Biobase::pData(obj),function(x){ gsub(".", "_", x, fixed=TRUE)})
   SummarizedExperiment::colData(feat)@listData <- sample
   
-  feat <- Features::zeroIsNA(feat,seq_along(feat))
+  feat <- QFeatures::zeroIsNA(feat,seq_along(feat))
   
   if (is.null(obj@experimentData@other$OriginOfValues))
   {
@@ -363,18 +364,18 @@ convertMSnset2Features <- function(obj, analysis, parentProtId, keyId, pipelineT
   
   
   metadata(feat) <- list(versions = list(Prostar_Version = ProstarVersion,
-                                        DAPAR_Version = daparVersion),
-                        parentProtId = parentProtId,
-                        keyId = keyId,
-                        params = list(),
-                        RawPValues = obj@experimentData@other$RawPValues,
-                        OriginOfValues = origin,
-                        analysis = analysis,
-                        pipelineType = pipelineType,
-                        processes=c('original',processes)
-                    )
-
+                                         DAPAR_Version = daparVersion),
+                         parentProtId = parentProtId,
+                         keyId = keyId,
+                         params = list(),
+                         RawPValues = obj@experimentData@other$RawPValues,
+                         OriginOfValues = origin,
+                         analysis = analysis,
+                         pipelineType = pipelineType,
+                         processes=c('original',processes)
+  )
+  
   return(feat)
-
+  
   
 }

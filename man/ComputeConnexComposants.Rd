@@ -22,7 +22,9 @@ obj <- addListAdjacencyMatrices(obj, 2)
 X.all <- GetAdjMat(obj[[2]], 'all')
 X.onlyShared <- GetAdjMat(obj[[2]], 'onlyShared')
 X.onlySpec <- GetAdjMat(obj[[2]], 'onlySpec')
-X.list <- list(all=GetAdjMat(obj[[2]], 'all'), onlySHared = GetAdjMat(obj[[2]], 'onlyShared'), onlySpec = GetAdjMat(obj[[2]], 'onlyShared'))
+X.list <- list(all=GetAdjMat(obj[[2]], 'all'), 
+onlySHared = GetAdjMat(obj[[2]], 'onlyShared'), 
+onlySpec = GetAdjMat(obj[[2]], 'onlyShared'))
 cc <- ComputeConnexComposants(X.list)
 
 }

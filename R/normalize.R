@@ -10,11 +10,20 @@ normalizeMethods.dapar <- function()
     "LOESS", "vsn")
 
 
+#' @title List normalization methods with tracking option
+#' 
+#' @name normalizeMethodsWithTracking.dapar
+#' 
+#' @export
+#'
+normalizeMethodsWithTracking.dapar <- function()
+  c("SumByColumns", "QuantileCentering", "MeanCentering")
+
 
 #' @title Check the validity of the experimental design.
 #'
-#' @description This manual page describes the computation of statistical test using [Features] objects. In the following
-#' functions, if `object` is of class `Features`, and optional assay
+#' @description This manual page describes the computation of statistical test using [QFeatures] objects. In the following
+#' functions, if `object` is of class `QFeatures`, and optional assay
 #' index or name `i` can be specified to define the assay (by name of
 #' index) on which to operate.
 #'
@@ -51,14 +60,12 @@ normalizeMethods.dapar <- function()
 #' @author Samuel Wieczorek, Thomas Burger, Helene Borges, Anais Courtier, Enora Fremy
 #'
 #' @examples
-#' library(Features)
+#' library(QFeatures)
 #' utils::data(Exp1_R25_pept, package='DAPARdata2')
 #' object <- Exp1_R25_pept
-#' 
-#' object <- addAssay(object, normalizeD(object[['original_log']], method='GlobalQuantileAlignment'), "peptides_norm")
-#' 
+
 #' conds <- colData(object)$Condition
-#' object <- addAssay(object, normalizeD(object[['original_log']], method='SumByColumns', conds=conds, type='overall'), "peptides_norm")
+#' object <- normalizeD(object, i=2, name = "norm", method='SumByColumns', conds=conds, type='overall')
 #' 
 "normalizeD"
 
@@ -79,19 +86,18 @@ setMethod("normalizeD", "SummarizedExperiment",
           function(object,
                    method,
                    ...) {
-            argg <- c(as.list(environment()), list(...))
             
             e <- do.call(method, list(assay(object), ...))
             
             rownames(e) <- rownames(assay(object))
             colnames(e) <- colnames(assay(object))
-            SummarizedExperiment::assay(object) <- argg[-match(c('object'), names(argg))]
+            assay(object) <- e
             object
           })
 
 
 
-#' @param  object An object of class `Features`.
+#' @param  object An object of class `QFeatures`.
 #' 
 #' @param method xxxxx. See xxx for methods available.
 #' 
@@ -103,21 +109,27 @@ setMethod("normalizeD", "SummarizedExperiment",
 #' 
 #' @export
 #' 
-#' @importFrom Features addAssay addAssayLinkOneToOne
+#' @importFrom QFeatures addAssay addAssayLinkOneToOne
 #' 
 #' @rdname normalizeD
 #' 
-setMethod("normalizeD", "Features",
+setMethod("normalizeD", "QFeatures",
           function(object, i, name = "normalizedAssay", method, ...) {
             if (missing(i))
               stop("Provide index or name of assay to be processed")
             if (length(i) != 1)
               stop("Only one assay to be processed at a time")
             if (is.numeric(i)) i <- names(object)[[i]]
-            object <- Features::addAssay(object,
-                               normalizeD(object[[i]], method, ...),
-                               name)
-            Features::addAssayLinkOneToOne(object, from = i, to = name)
+            
+            argg <- c(as.list(environment()), list(...))
+            
+            tmp <-  normalizeD(object[[i]], method, ...)
+            metadata(tmp)$Params <- argg[-match(c('object', 'i', 'name'), names(argg))]
+            
+            object <- QFeatures::addAssay(object,
+                                         tmp,
+                                         name)
+            QFeatures::addAssayLinkOneToOne(object, from = i, to = name)
           })
 
 
@@ -131,7 +143,7 @@ setMethod("normalizeD", "Features",
 #' @author Samuel Wieczorek, Thomas Burger, Helene Borges, Anais Courtier, Enora Fremy
 #' 
 #' @examples
-#' library(Features)
+#' library(QFeatures)
 #' utils::data(Exp1_R25_pept, package='DAPARdata2')
 #' qData <- assay(Exp1_R25_pept[['original']])
 #' normalized <- GlobalQuantileAlignment(qData)
@@ -162,8 +174,9 @@ GlobalQuantileAlignment <- function(qData) {
 #' @author Samuel Wieczorek, Thomas Burger, Helene Borges, Anais Courtier, Enora Fremy
 #' 
 #' @examples
+#' library(QFeatures)
 #' utils::data(Exp1_R25_pept, package='DAPARdata2')
-#' library(Features)
+#' library(QFeatures)
 #' qData <- assay(Exp1_R25_pept[['original_log']])
 #' conds <- colData(Exp1_R25_pept)[["Condition"]]
 #' normalized <- SumByColumns(qData, conds, type="within conditions", subset.norm=1:10)
@@ -243,7 +256,7 @@ SumByColumns <- function(qData, conds=NULL, type=NULL, subset.norm=NULL) {
 #' @author Samuel Wieczorek, Thomas Burger, Helene Borges, Anais Courtier, Enora Fremy
 #' 
 #' @examples
-#' library(Features)
+#' library(QFeatures)
 #' utils::data(Exp1_R25_pept, package='DAPARdata2')
 #' obj <- Exp1_R25_pept[['original_log']]
 #' conds <- colData(Exp1_R25_pept)[['Condition']]
@@ -317,6 +330,7 @@ QuantileCentering <- function(qData, conds=NULL, type="overall", subset.norm=NUL
 #' @author Samuel Wieczorek, Thomas Burger, Helene Borges, Anais Courtier, Enora Fremy
 #' 
 #' @examples
+#' library(QFeatures)
 #' utils::data(Exp1_R25_pept, package='DAPARdata2')
 #' qData <- assay(Exp1_R25_pept[['original_log']])
 #' conds <- colData(Exp1_R25_pept)[['Condition']]
@@ -377,6 +391,7 @@ MeanCentering <- function(qData, conds, type='overall', subset.norm=NULL, scalin
 #' @author Thomas Burger, Helene Borges, Anais Courtier, Enora Fremy
 #' 
 #' @examples
+#' library(QFeatures)
 #' utils::data(Exp1_R25_pept, package='DAPARdata2')
 #' qData <- assay(Exp1_R25_pept[['original_log']])
 #' conds <- colData(Exp1_R25_pept)[['Condition']]
@@ -420,6 +435,7 @@ vsn = function(qData, conds, type=NULL) {
 #' @author Thomas Burger, Helene Borges, Anais Courtier, Enora Fremy
 #' 
 #' @examples
+#' library(QFeatures)
 #' utils::data(Exp1_R25_pept, package='DAPARdata2')
 #' qData <- assay(Exp1_R25_pept[['original_log']])
 #' conds <- colData(Exp1_R25_pept)[['Condition']]

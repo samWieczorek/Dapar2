@@ -16,7 +16,7 @@
 #' @author Samuel Wieczorek, Enora Fremy
 #' 
 #' @examples
-#' library(FactoMineR)
+#' library(QFeatures)
 #' utils::data(Exp1_R25_pept, package='DAPARdata2')
 #' qData <- assay(Exp1_R25_pept[[2]])
 #' condition <- colData(Exp1_R25_pept)[["Condition"]]
@@ -67,10 +67,11 @@ wrapper.pca <- function(qData, condition, var.scaling=TRUE, ncp=NULL){
 #' @return A plot
 #' @author Samuel Wieczorek, Enora Fremy
 #' @examples
-#' library(FactoMineR)
+#' library(QFeatures)
 #' utils::data(Exp1_R25_pept, package='DAPARdata2')
 #' qData <- assay(Exp1_R25_pept[['original']])
-#' res.pca <- wrapper.pca(qData)
+#' condition <- colData(Exp1_R25_pept)[["Condition"]]
+#' res.pca <- wrapper.pca(qData, condition)
 #' plotPCA_Var(res.pca)
 #' @importFrom factoextra fviz_pca_var
 #' @export
@@ -98,10 +99,11 @@ plotPCA_Var <- function(res.pca, chosen.axes=c(1,2)){
 #' @return A plot
 #' @author Samuel Wieczorek, Enora Fremy
 #' @examples
-#' library(FactoMineR)
+#' library(QFeatures)
 #' utils::data(Exp1_R25_pept, package='DAPARdata2')
 #' qData <- assay(Exp1_R25_pept[['original']])
-#' res.pca <- wrapper.pca(qData)
+#' condition <- colData(Exp1_R25_pept)[["Condition"]]
+#' res.pca <- wrapper.pca(qData, condition)
 #' plotPCA_Ind(res.pca)
 #' @importFrom factoextra fviz_pca_ind
 #' @export
@@ -123,11 +125,11 @@ plotPCA_Ind <- function(res.pca, chosen.axes=c(1,2)){
 #' @return A histogram
 #' @author Samuel Wieczorek, Enora Fremy
 #' @examples
-#' library(FactoMineR)
-#' library(highcharter)
+#' library(QFeatures)
 #' utils::data(Exp1_R25_pept, package='DAPARdata2')
 #' qData <- assay(Exp1_R25_pept[['original']])
-#' res.pca <- wrapper.pca(qData, ncp=6)
+#' condition <- colData(Exp1_R25_pept)[["Condition"]]
+#' res.pca <- wrapper.pca(qData, condition)
 #' plotPCA_Eigen_hc(res.pca)
 #' @export
 #' @import highcharter

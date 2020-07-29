@@ -1,5 +1,5 @@
 #' Plots a heatmap of the quantitative data. Each column represent one of
-#' the conditions in the object of class \code{MSnSet} and 
+#' the conditions in the object of class \code{QFeatures} and 
 #' the color is proportional to the mean of intensity for each line of
 #' the dataset.
 #' The lines have been sorted in order to vizualize easily the different
@@ -11,8 +11,9 @@
 #' @return A heatmap
 #' @author Samuel Wieczorek, Thomas Burger, Enora Fremy
 #' @examples
+#' library(QFeatures)
 #' utils::data(Exp1_R25_pept, package='DAPARdata2')
-#' qData <- assay(Exp1_R25_pept[[2]]))
+#' qData <- assay(Exp1_R25_pept[[2]])
 #' conds <- colData(Exp1_R25_pept)[["Condition"]]
 #' mvImage(qData, conds)
 #' @export

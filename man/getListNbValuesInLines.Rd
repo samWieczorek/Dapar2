@@ -7,7 +7,7 @@
 getListNbValuesInLines(obj, i, type = "wholeMatrix")
 }
 \arguments{
-\item{obj}{An object of class \code{Features}}
+\item{obj}{An object of class \code{QFeatures}}
 
 \item{i}{The indice of the dataset (SummarizedExperiment) in the object}
 

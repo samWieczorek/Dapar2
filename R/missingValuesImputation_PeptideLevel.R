@@ -7,11 +7,12 @@
 #' 
 #' @param sampleTab xxxx
 #' 
-#' @return The \code{exprs(obj)} matrix with imputed values instead of missing values.
+#' @return The \code{assay(obj)} matrix with imputed values instead of missing values.
 #' 
 #' @author Samuel Wieczorek
 #' 
 #' @examples
+#' library(QFeatures)
 #' utils::data(Exp1_R25_pept, package='DAPARdata2')
 #' obj <- Exp1_R25_pept[1:1000,]
 #' sampleTab <- colData(obj)
@@ -55,11 +56,12 @@ impute_mle_dapar <- function(x, sampleTab){
 #' 
 #' @param ... xxxxxxxx
 #' 
-#' @return The \code{exprs(obj)} matrix with imputed values instead of missing values.
+#' @return The \code{assay(obj)} matrix with imputed values instead of missing values.
 #' 
 #' @author Samuel Wieczorek
 #' 
 #' @examples
+#' library(QFeatures)
 #' utils::data(Exp1_R25_pept, package='DAPARdata2')
 #' obj <- Exp1_R25_pept[1:1000,]
 #' x <- assay(obj[[2]])
@@ -112,10 +114,10 @@ impute_mi <- function (x, sampleTab, lapala = TRUE, progress.bar=TRUE, ...)
     cat(paste("\n 4/ Multiple imputation strategy with mi.mix ... \n  "))
   }
   data.mi = imp4p::mi.mix(tab = tab, tab.imp = dat.slsa, prob.MCAR = proba, 
-                   conditions = conditions, repbio = repbio, reptech = reptech, ...)
+                          conditions = conditions, repbio = repbio, reptech = reptech, ...)
   colnames(data.mi) <- new.sampleTab$Sample.name
   rownames(data.mi) <- rownames(new.x)  
-    
+  
   if (lapala == TRUE){
     if (progress.bar == TRUE) {
       cat(paste("\n\n 5/ Imputation of rows with only missing values in a condition with impute.pa ... \n  "))
@@ -164,10 +166,10 @@ translatedRandomBeta <- function(n, min, max, param1=3, param2=1){
     stop("'max' is missing.")
   
   
-    scale <- max - min
-    simu <- stats::rbeta(n, param1, param2)
-    res <- (simu*scale) + min
-    return(res)
+  scale <- max - min
+  simu <- stats::rbeta(n, param1, param2)
+  res <- (simu*scale) + min
+  return(res)
 }
 
 
@@ -209,6 +211,7 @@ translatedRandomBeta <- function(n, min, max, param1=3, param2=1){
 #' @author Thomas Burger, Samuel Wieczorek
 #' 
 #' @examples
+#' library(QFeatures)
 #' utils::data(Exp1_R25_pept, package='DAPARdata2')
 #' obj <- Exp1_R25_pept[1:1000]
 #' x <- assay(obj[[2]])
@@ -230,41 +233,41 @@ impute_pa2 <- function (x, sampleTab, q.min = 0, q.norm = 3, eps = 0, distributi
   # sort conditions to be compliant with impute.mle (from imp4p version 0.9) which only manage ordered samples     old.sample.name <- sampleTab$Sample.name
   old.sample.name <- sampleTab$Sample.name
   new.order <- order(sampleTab$Condition)
-    new.sampleTab <- sampleTab[new.order,]
-    conds <- factor(new.sampleTab$Condition, levels=unique(new.sampleTab$Condition))
-    tab_imp <- x[,new.order]
-
-    conditions <-  as.factor(new.sampleTab$Condition)
-
-    qu = apply(tab_imp, 2, quantile, na.rm = TRUE, q.min)
-    nb_cond = length(levels(conditions))
-    nb_rep = rep(0, nb_cond)
-    k = 1
-    j = 1
-    for (i in 1:nb_cond) {
-        nb_rep[i] = sum((conditions == levels(conditions)[i]))
-        sde = apply(tab_imp[, (k:(k + nb_rep[i] - 1))], 1, sd, 
-                    na.rm = TRUE)
-        while (j < (k + nb_rep[i])) {
-            if(distribution == "unif")
-            {
-                tab_imp[which(is.na(tab_imp[, j])), j] = stats::runif(n = sum(is.na(tab_imp[,j])), 
-                                                               min = qu[j] - eps - q.norm * median(sde, na.rm = TRUE), 
-                                                               max = qu[j] - eps)
-            } else if (distribution == "beta"){
-                tab_imp[which(is.na(tab_imp[, j])), j] = translatedRandomBeta(n = sum(is.na(tab_imp[,j])), 
-                                                                              min = qu[j] - eps - q.norm * median(sde, na.rm = TRUE), 
-                                                                              max = qu[j] - eps,
-                                                                              param1 = 3,
-                                                                              param2 = 1)
-            }
-            j = j + 1
-        }
-        k = k + nb_rep[i]
+  new.sampleTab <- sampleTab[new.order,]
+  conds <- factor(new.sampleTab$Condition, levels=unique(new.sampleTab$Condition))
+  tab_imp <- x[,new.order]
+  
+  conditions <-  as.factor(new.sampleTab$Condition)
+  
+  qu = apply(tab_imp, 2, quantile, na.rm = TRUE, q.min)
+  nb_cond = length(levels(conditions))
+  nb_rep = rep(0, nb_cond)
+  k = 1
+  j = 1
+  for (i in 1:nb_cond) {
+    nb_rep[i] = sum((conditions == levels(conditions)[i]))
+    sde = apply(tab_imp[, (k:(k + nb_rep[i] - 1))], 1, sd, 
+                na.rm = TRUE)
+    while (j < (k + nb_rep[i])) {
+      if(distribution == "unif")
+      {
+        tab_imp[which(is.na(tab_imp[, j])), j] = stats::runif(n = sum(is.na(tab_imp[,j])), 
+                                                              min = qu[j] - eps - q.norm * median(sde, na.rm = TRUE), 
+                                                              max = qu[j] - eps)
+      } else if (distribution == "beta"){
+        tab_imp[which(is.na(tab_imp[, j])), j] = translatedRandomBeta(n = sum(is.na(tab_imp[,j])), 
+                                                                      min = qu[j] - eps - q.norm * median(sde, na.rm = TRUE), 
+                                                                      max = qu[j] - eps,
+                                                                      param1 = 3,
+                                                                      param2 = 1)
+      }
+      j = j + 1
     }
-    
-    tab_imp <- tab_imp[,old.sample.name]
-    return(tab_imp)
+    k = k + nb_rep[i]
+  }
+  
+  tab_imp <- tab_imp[,old.sample.name]
+  return(tab_imp)
 }
 
 

@@ -9,7 +9,7 @@ MVrowsTagToOne(
   sampleTab = NULL,
   type,
   th = 0,
-  percent = T,
+  percent = TRUE,
   newColName = "newCol"
 )
 }
@@ -24,7 +24,7 @@ Values are : "None", "EmptyLines", "WholeMatrix", "AllCond", "AtLeastOneCond"}
 \item{th}{Either a numeric between 0 and 1 where only the lines which contain
 at least \code{th}% of non NA values are kept.
 Or a integer between 0 and maximum number of samples for 'WholeMatrix' and 
-between 0 and maximum nuber of replicat for "AllCond" and "AtLeastOneCond", where
+between 0 and maximum number of replicate for "AllCond" and "AtLeastOneCond", where
 only the lines which contain at least \code{th} values are kept.}
 
 \item{percent}{TRUE by default. When FALSE, use the number of samples}
@@ -52,11 +52,12 @@ The different methods are :
   at least \code{th} values, and for at least one condition, are kept.
 }
 \examples{
+library(QFeatures)
 utils::data(Exp1_R25_pept, package='DAPARdata2')
 sampleTab <- colData(Exp1_R25_pept)
 obj <- Exp1_R25_pept[[2]][100:120,]
-res <- MVrowsTagToOne(obj, sampleTab, "AtLeastOneCond", 3, percent=F, "AtLeastOneCond")
-names(rowData(res)
+res <- MVrowsTagToOne(obj, sampleTab, "AtLeastOneCond", 3, percent=FALSE, "AtLeastOneCond")
+names(rowData(res))
 
 }
 \author{

@@ -20,10 +20,10 @@ A plot
 Plots a histogram of p-values
 }
 \examples{
-library(Features)
+library(QFeatures)
 utils::data(Exp1_R25_pept, package='DAPARdata2')
 object <- Exp1_R25_pept[1:1000,]
-object <- addAssay(object, Features::filterNA(object[[2]],  pNA = 0), name='filtered')
+object <- addAssay(object, QFeatures::filterNA(object[[2]],  pNA = 0), name='filtered')
 object <- addListAdjacencyMatrices(object, 3)
 sTab <- colData(object)
 se <- t_test_sam(object[[3]], sTab, FUN = compute.t.test)

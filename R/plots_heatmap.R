@@ -7,6 +7,8 @@
 #' 
 #' @param qData A dataframe of numeric values
 #' 
+#' @param conds A vector of the conditions (one condition per sample).
+#' 
 #' @param distance The distance used by the clustering algorithm to compute
 #' the dendrogram. See \code{help(heatmap.2)}
 #' 
@@ -21,6 +23,7 @@
 #' 
 #' @examples
 #' \dontrun{
+#' library(QFeatures)
 #' utils::data(Exp1_R25_prot, package='DAPARdata2')
 #' ft <- Exp1_R25_prot
 #' conds <- colData(Exp1_R25_prot)[['Condition']]
@@ -32,7 +35,7 @@
 #' 
 #' @importFrom gplots heatmap.2
 #' 
-#' @importFrom stats dist hclust
+#' @importFrom stats dist hclust as.dendrogram
 #' 
 #' @importFrom dendextend get_leaves_branches_col
 #' 
@@ -75,7 +78,7 @@ heatmapD <- function(qData, conds, distance="euclidean", cluster="complete", den
   x[is.na(x)] <- -1e5
   dist= dist(x, method=distance)
   hcluster = hclust(dist, method=cluster)
-  cols_branches <- DAPAR2::BuildPalette(conds, NULL)
+  cols_branches <- BuildPalette(conds, NULL)
   dend1 <- as.dendrogram(hcluster)
   dend1 <- dendextend::color_branches(dend1, k = length(conds), col = cols_branches)
   col_labels <- dendextend::get_leaves_branches_col(dend1)
@@ -104,14 +107,14 @@ heatmapD <- function(qData, conds, distance="euclidean", cluster="complete", den
     labCol="",
     margins=c(4,12),
     #cexRow=1.5,
-    cexRow= 0.7 + 1/log10(nrow(.data)),
+    cexRow= 1.5 + ncol(.data)*-0.011 ,
     keysize = 1.5,
     lhei = c(1.5, 9),
     lwid = c(1.5, 4),
     lmat = rbind(4:3, 2:1),
     colRow = col_labels
   )
-  #    }
+  
 }
 
 
@@ -144,6 +147,7 @@ heatmapD <- function(qData, conds, distance="euclidean", cluster="complete", den
 #' @author Samuel Wieczorek, Enora Fremy
 #' 
 #' @examples
+#' library(QFeatures)
 #' utils::data(Exp1_R25_pept, package='DAPARdata2')
 #' qData <- assay(Exp1_R25_pept[[2]])[1:1000,]
 #' heatmap.DAPAR(qData)

@@ -1,7 +1,7 @@
 #' This method shows density plots which represents the repartition of
 #' Partial Observed Values for each replicate in the dataset.
 #' The colors correspond to the different conditions (Condition in colData of
-#' the object of class \code{Features}).
+#' the object of class \code{QFeatures}).
 #' The x-axis represent the mean of intensity for one condition and one
 #' entity in the dataset (i. e. a protein) 
 #' whereas the y-axis count the number of observed values for this entity
@@ -15,8 +15,7 @@
 #' @return Density plots
 #' @author Samuel Wieczorek, Enora Fremy
 #' @examples
-#' library(Features)
-#' library(highcharter)
+#' library(QFeatures)
 #' utils::data(Exp1_R25_pept, package='DAPARdata2')
 #' qData <- assay(Exp1_R25_pept[[2]])
 #' conds <- colData(Exp1_R25_pept)[['Condition']]

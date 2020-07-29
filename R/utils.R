@@ -3,7 +3,7 @@
 #' 
 #' @description xxxx
 #' 
-#' @param  conds The extended vector of samples conditions
+#' @param conds The extended vector of samples conditions
 #' 
 #' @param base_palette The basic color (HEX code) used to build the complete palette. This vector have the same length as unique(conds)
 #' 
@@ -12,8 +12,7 @@
 #' @author Samuel Wieczorek
 #' 
 #' @examples
-#' library(Features)
-#' library(SummarizedExperiment)
+#' library(QFeatures)
 #' utils::data(Exp1_R25_pept, package='DAPARdata2')
 #' conditions <- colData(Exp1_R25_pept)$Condition
 #' BuildPalette(conditions, c('AAAAAA', 'BBBBBB'))
@@ -50,6 +49,7 @@ BuildPalette <- function(conds, base_palette){
 #' @author Samuel Wieczorek
 #' 
 #' @examples
+#' library(QFeatures)
 #' utils::data(Exp1_R25_pept, package='DAPARdata2')
 #' qData <- assay(Exp1_R25_pept,1)
 #' nEmptyLines(qData)
@@ -76,6 +76,7 @@ nEmptyLines <- function(qData){
 #' @author Samuel Wieczorek
 #' 
 #' @examples
+#' library(QFeatures)
 #' utils::data(Exp1_R25_pept, package='DAPARdata2')
 #' obj <- Exp1_R25_pept
 #' data <- rowData(Exp1_R25_pept[['original']])[,metadata(Exp1_R25_pept)$OriginOfValues]
@@ -107,6 +108,7 @@ is.OfType <- function(data, type){
 #' @author Samuel Wieczorek
 #' 
 #' @examples
+#' library(QFeatures)
 #' utils::data(Exp1_R25_pept, package='DAPARdata2')
 #' obj <- Exp1_R25_pept
 #' data <- rowData(Exp1_R25_pept[['original']])[,metadata(Exp1_R25_pept)$OriginOfValues]
@@ -132,7 +134,7 @@ is.MV <- function(data){
 
 #' @title Returns the possible number of values in lines in the data
 #' 
-#' @param obj An object of class \code{Features}
+#' @param obj An object of class \code{QFeatures}
 #' 
 #' @param i The indice of the dataset (SummarizedExperiment) in the object
 #' 
@@ -149,18 +151,18 @@ is.MV <- function(data){
 #' @export
 #' 
 #' @importFrom SummarizedExperiment colData rowData 
-#' @import Features
-#' @import S4Vectors
+#' 
+#' @importFrom S4Vectors sort
 #' 
 getListNbValuesInLines <- function(obj, i, type="wholeMatrix"){
   
   if (is.null(obj)){return(NULL)}
   
   if(is.null(metadata(obj)$OriginOfValues)){
-    data <- as.data.frame(SummarizedExperiment::assay(obj[[i]]))
+    data <- as.data.frame(assay(obj[[i]]))
   }
   else {
-    data <- as.data.frame(SummarizedExperiment::rowData(obj[[i]])[, metadata(obj)$OriginOfValues])
+    data <- as.data.frame(rowData(obj[[i]])[, metadata(obj)$OriginOfValues])
   }
   
   switch(type,
@@ -169,15 +171,15 @@ getListNbValuesInLines <- function(obj, i, type="wholeMatrix"){
          },
          allCond = {
            tmp <- NULL
-           for (cond in unique(SummarizedExperiment::colData(obj)[['Condition']])){
-             tmp <- c(tmp, length(which(SummarizedExperiment::colData(obj)[['Condition']] == cond)))
+           for (cond in unique(colData(obj)[['Condition']])){
+             tmp <- c(tmp, length(which(colData(obj)[['Condition']] == cond)))
            }
            ll <- seq(0,min(tmp))
          },
          atLeastOneCond = {
            tmp <- NULL
-           for (cond in unique(SummarizedExperiment::colData(obj)[['Condition']])){
-             tmp <- c(tmp, length(which(SummarizedExperiment::colData(obj)[['Condition']] == cond)))
+           for (cond in unique(colData(obj)[['Condition']])){
+             tmp <- c(tmp, length(which(colData(obj)[['Condition']] == cond)))
            }
            ll <- seq(0,max(tmp))
          }

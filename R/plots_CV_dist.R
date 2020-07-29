@@ -20,8 +20,7 @@
 #' @author Samuel Wieczorek, Enora Fremy
 #' 
 #' @examples
-#' library(Features)
-#' library(SummarizedExperiment)
+#' library(QFeatures)
 #' utils::data(Exp1_R25_pept, package='DAPARdata2')
 #' qData <- assay(Exp1_R25_pept[[2]])[1:10,]
 #' conds <- colData(Exp1_R25_pept)[["Condition"]]

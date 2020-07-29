@@ -18,6 +18,7 @@ A DataFrame
 Imputation of peptides having no values in a biological condition.
 }
 \examples{
+library(QFeatures)
 utils::data(Exp1_R25_pept, package='DAPARdata2')
 obj <- Exp1_R25_pept[1:1000]
 imp <- impute_slsa(assay(obj[[2]]), colData(obj))

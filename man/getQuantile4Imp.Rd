@@ -20,6 +20,7 @@ A list of two vectors, respectively containing the imputation values and the res
 This method returns the q-th quantile of each colum of an expression set, up to a scaling factor
 }
 \examples{
+library(QFeatures)
 utils::data(Exp1_R25_pept, package='DAPARdata2')
 qData <- assay(Exp1_R25_pept[[2]])
 getQuantile4Imp(qData) 

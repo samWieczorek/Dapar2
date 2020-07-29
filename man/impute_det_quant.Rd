@@ -18,6 +18,7 @@ An imputed instance of class \code{DataFrame}
 xxx
 }
 \examples{
+library(QFeatures)
 utils::data(Exp1_R25_pept, package='DAPARdata2')
 impute_det_quant(assay(Exp1_R25_pept[[2]]))
 

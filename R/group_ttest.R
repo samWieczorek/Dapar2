@@ -2,8 +2,8 @@
 #'
 #' @description
 #'
-#' This manual page describes the computation of statistical test using [Features] objects. In the following
-#' functions, if `object` is of class `Features`, and optional assay
+#' This manual page describes the computation of statistical test using [QFeatures] objects. In the following
+#' functions, if `object` is of class `QFeatures`, and optional assay
 #' index or name `i` can be specified to define the assay (by name of
 #' index) on which to operate.
 #'
@@ -16,13 +16,14 @@
 #' - `limma.complete.test(object, sampleTab)` uses the package Limma 
 #' 
 #'
-#' @details
+#' @details xxx
 #'
 #'
 #' @examples
+#' library(QFeatures)
 #' utils::data(Exp1_R25_pept, package='DAPARdata2')
 #' object <- Exp1_R25_pept[1:1000,]
-#' object <- addAssay(object, Features::filterNA(object[[2]],  pNA = 0), name='filtered')
+#' object <- addAssay(object, QFeatures::filterNA(object[[2]],  pNA = 0), name='filtered')
 #' object <- addListAdjacencyMatrices(object, 3)
 #' sTab <- colData(object)
 #' gttest.se <- t_test_sam(object[[3]], sTab, FUN = 'limma.complete.test')
@@ -57,7 +58,7 @@ setMethod("t_test_sam", "SummarizedExperiment",
           })
 
 
-#' @param  object An object of class `Features`.
+#' @param  object An object of class `QFeatures`.
 #' 
 #' @param i A numeric vector or a character vector giving the index or the 
 #'     name, respectively, of the assay(s) to be processed.
@@ -73,7 +74,7 @@ setMethod("t_test_sam", "SummarizedExperiment",
 #' 
 #' @rdname t_test_sam
 #'
-setMethod("t_test_sam", "Features",
+setMethod("t_test_sam", "QFeatures",
           function(object, i, name = "ttestAssay", FUN,  ...) {
             if (missing(i))
               stop("Provide index or name of assay to be processed")
@@ -108,13 +109,16 @@ setMethod("t_test_sam", "Features",
 #' @author Thomas Burger, Samuel Wieczorek
 #' 
 #' @examples
+#' library(QFeatures)
 #' utils::data(Exp1_R25_pept, package='DAPARdata2')
 #' obj <- Exp1_R25_pept[1:1000,]
-#' obj <- addAssay(obj, Features::filterNA(obj[[2]],  pNA = 0), name='filtered')
+#' obj <- addAssay(obj, QFeatures::filterNA(obj[[2]],  pNA = 0), name='filtered')
 #' obj <- addListAdjacencyMatrices(obj, 3)
 #' qData <- assay(obj[['filtered']])
 #' X <- GetAdjMat(obj[[3]], 'onlySpec')
 #' gttest <- groupttest(X, qData[,1:3], qData[,4:6])
+#' 
+#' @export
 #' 
 groupttest <- function(X, qData1=NULL, qData2 = NULL){
   res <- list()
@@ -161,10 +165,10 @@ groupttest <- function(X, qData1=NULL, qData2 = NULL){
 #' @author Thomas Burger, Samuel Wieczorek
 #' 
 #' @examples
-#' library(Features)
+#' library(QFeatures)
 #' utils::data(Exp1_R25_pept, package='DAPARdata2')
 #' obj <- Exp1_R25_pept[1:1000,]
-#' obj <- addAssay(obj, Features::filterNA(obj[[2]],  pNA = 0), name='filtered')
+#' obj <- addAssay(obj, QFeatures::filterNA(obj[[2]],  pNA = 0), name='filtered')
 #' obj <- addListAdjacencyMatrices(obj, 3)
 #' sTab <- colData(obj)
 #' gttest <- compute.group.t.test(obj[[3]], sTab)

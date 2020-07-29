@@ -20,9 +20,10 @@ xxxxx
 xxxxxx
 }
 \examples{
+library(QFeatures)
 utils::data(Exp1_R25_pept, package='DAPARdata2')
 obj <- Exp1_R25_pept[1:1000,]
-obj <- addAssay(obj, Features::filterNA(obj[[2]],  pNA = 0), name='filtered')
+obj <- addAssay(obj, QFeatures::filterNA(obj[[2]],  pNA = 0), name='filtered')
 obj <- addListAdjacencyMatrices(obj, 3)
 qData <- assay(obj[['filtered']])
 X <- GetAdjMat(obj[[3]], 'onlySpec')

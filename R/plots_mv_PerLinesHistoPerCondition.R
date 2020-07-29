@@ -20,8 +20,8 @@
 #' @examples
 #' library(highcharter)
 #' utils::data(Exp1_R25_pept, package='DAPARdata2')
-#' qData <- assay(Exp1_R25_pept[[2]])
-#' samplesData <- colData(Exp1_R25_pept)
+#' qData <- SummarizedExperiment::assay(Exp1_R25_pept[[2]])
+#' samplesData <- SummarizedExperiment::colData(Exp1_R25_pept)
 #' mvPerLinesHistoPerCondition_HC(qData, samplesData)
 #' 
 #' @export

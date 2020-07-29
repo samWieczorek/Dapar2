@@ -1,16 +1,16 @@
 
 
 
- 
+
 #' @title Add the list of connex components to an assay in the object of classe Feeatures.
 #' 
 #' @description xxxxx
 #' 
-#' @param obj An object of class 'Features' 
+#' @param obj An object of class 'QFeatures' 
 #' 
 #' @param i The indice of the dataset (class 'SumarizedExperiment') in the list of 'obj' on which to apply the aggregation. 
 #' 
-#' @return An object of class 'Features'
+#' @return An object of class 'QFeatures'
 #' 
 #' @author Samuel Wieczorek
 #' 
@@ -31,7 +31,7 @@ addConnexComp <- function(obj, i){
   
   
   if (length(metadata(obj[[i]])$list.matAdj) ==0)
-    {
+  {
     warning("Any adjacency matrix is present in the dataset.")
     return(obj)
   }
@@ -40,7 +40,6 @@ addConnexComp <- function(obj, i){
   
   metadata(obj[[i]])$list.cc <- cc
   
-  print("---- end of compute CC ----")
   return (obj)
 }
 
@@ -66,7 +65,9 @@ addConnexComp <- function(obj, i){
 #' X.all <- GetAdjMat(obj[[2]], 'all')
 #' X.onlyShared <- GetAdjMat(obj[[2]], 'onlyShared')
 #' X.onlySpec <- GetAdjMat(obj[[2]], 'onlySpec')
-#' X.list <- list(all=GetAdjMat(obj[[2]], 'all'), onlySHared = GetAdjMat(obj[[2]], 'onlyShared'), onlySpec = GetAdjMat(obj[[2]], 'onlyShared'))
+#' X.list <- list(all=GetAdjMat(obj[[2]], 'all'), 
+#' onlySHared = GetAdjMat(obj[[2]], 'onlyShared'), 
+#' onlySpec = GetAdjMat(obj[[2]], 'onlyShared'))
 #' cc <- ComputeConnexComposants(X.list)
 #' 
 #' @export
@@ -90,13 +91,13 @@ ComputeConnexComposants <- function(X.list=NULL){
   }
   
   return (res)
-
+  
   
 }
 
 
 
- 
+
 #' @title Build the list of connex composant of an adjacency matrix.
 #' 
 #' @description Method to build the list of connex composant of an adjacency matrix
@@ -116,7 +117,8 @@ ComputeConnexComposants <- function(X.list=NULL){
 #' 
 #' @export
 #' 
-#' @import Matrix
+#' @importFrom Matrix %&%
+#' 
 #' @importFrom graph graphAM connComp 
 #' 
 get.pep.prot.cc <- function(X){

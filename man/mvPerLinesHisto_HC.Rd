@@ -22,7 +22,7 @@ This method plots a bar plot which represents the distribution of the
 number of missing values (NA) per lines (ie proteins).
 }
 \examples{
-library(highcharter)
+library(QFeatures)
 utils::data(Exp1_R25_pept, package='DAPARdata2')
 qData <- assay(Exp1_R25_pept[[2]])
 samplesData <- colData(Exp1_R25_pept)

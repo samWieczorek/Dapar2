@@ -16,7 +16,7 @@ A list
 Check if the design of conditions is valid
 }
 \examples{
-library(Features)
+library(QFeatures)
 utils::data(Exp1_R25_pept, package='DAPARdata2')
 check.conditions(colData(Exp1_R25_pept)$Condition)
 

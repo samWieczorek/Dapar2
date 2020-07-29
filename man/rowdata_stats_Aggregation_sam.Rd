@@ -19,6 +19,7 @@ A protein object of class \code{SummarizedExperiment}
 Method to finalize the aggregation process
 }
 \examples{
+library(QFeatures)
 utils::data(Exp1_R25_pept, package='DAPARdata2')
 obj <- Exp1_R25_pept[1:1000,]
 obj <- addListAdjacencyMatrices(obj, 2)

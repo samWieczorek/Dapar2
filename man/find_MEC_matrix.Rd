@@ -18,6 +18,7 @@ A data.frame that contains the indexes of LAPALA
 Finds the LAPALA into a \code{MSnSet} object
 }
 \examples{
+library(QFeatures)
 utils::data(Exp1_R25_pept, package='DAPARdata2')
 obj <- Exp1_R25_pept[1:1000]
 lapala <- find_MEC_matrix(assay(obj[[2]]), colData(obj)$Condition)

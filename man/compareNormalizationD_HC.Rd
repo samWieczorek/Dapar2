@@ -7,9 +7,11 @@
 compareNormalizationD_HC(
   qDataBefore,
   qDataAfter,
-  condsForLegend = NULL,
-  indData2Show = NULL,
-  palette = NULL
+  conds = NULL,
+  palette = NULL,
+  subset.view = NULL,
+  n = NULL,
+  type = "scatter"
 )
 }
 \arguments{
@@ -17,13 +19,15 @@ compareNormalizationD_HC(
 
 \item{qDataAfter}{A numeric matrix that contains quantitative data after normalization.}
 
-\item{condsForLegend}{A vector of the conditions (one condition per sample).}
-
-\item{indData2Show}{A vector of the indices of the columns to show in 
-the plot. The indices are those of indices of 
-the columns int the data.frame qDataBefore.}
+\item{conds}{A vector of the conditions (one condition per sample).}
 
 \item{palette}{xxx}
+
+\item{subset.view}{xxx}
+
+\item{n}{xxx}
+
+\item{type}{scatter or line}
 }
 \value{
 A plot
@@ -32,16 +36,12 @@ A plot
 Builds a plot from a numeric matrix.
 }
 \examples{
-library(highcharter)
-library(Features)
+library(QFeatures)
 utils::data(Exp1_R25_pept, package='DAPARdata2')
 obj <- Exp1_R25_pept[1:1000,]
 conds <- colData(obj)[["Condition"]]
-objBefore <- obj[['original_log']]
-qDataBefore <- assay(objBefore)
-objAfter <- normalizeD(object[['original_log']], method='SumByColumns', conds=conds, type='overall')
-qDataAfter <- assay(objAfter)
-compareNormalizationD_HC(qDataBefore, qDataAfter, condsForLegend=conds)
+obj <- normalizeD(obj, 2, name='norm', method='SumByColumns', conds=conds, type='overall')
+compareNormalizationD_HC(assay(obj, 2), assay(obj, 3), conds=conds, n=100)
 
 }
 \author{
