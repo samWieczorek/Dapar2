@@ -78,7 +78,7 @@ heatmapD <- function(qData, conds, distance="euclidean", cluster="complete", den
   x[is.na(x)] <- -1e5
   dist= dist(x, method=distance)
   hcluster = hclust(dist, method=cluster)
-  cols_branches <- DAPAR2::BuildPalette(conds, NULL)
+  cols_branches <- BuildPalette(conds, NULL)
   dend1 <- as.dendrogram(hcluster)
   dend1 <- dendextend::color_branches(dend1, k = length(conds), col = cols_branches)
   col_labels <- dendextend::get_leaves_branches_col(dend1)

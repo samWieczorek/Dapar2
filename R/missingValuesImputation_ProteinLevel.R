@@ -344,7 +344,7 @@ impute_slsa <- function(x, sampleTab){
 #' library(QFeatures)
 #' utils::data(Exp1_R25_pept, package='DAPARdata2')
 #' obj <- Exp1_R25_pept[1:1000]
-#' lapala <- find_MEC(assay(obj[[2]]), colData(obj)$Condition)
+#' lapala <- find_MEC_matrix(assay(obj[[2]]), colData(obj)$Condition)
 #' assay(obj[[2]]) <- impute_det_quant(assay(obj[[2]]))
 #' assay(obj[[2]]) <- restore_MEC_matrix(assay(obj[[2]]), colData(obj)$Condition, lapala)
 #' 
