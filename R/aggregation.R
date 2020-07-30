@@ -64,7 +64,8 @@
 #' library(QFeatures)
 #' utils::data(Exp1_R25_pept, package='DAPARdata2')
 #' obj <- Exp1_R25_pept
-#' aggregateFeatures_sam(obj,2, aggType= 'all', name='aggregated', meta.names = 'Sequence', 'aggTopn', n=3)
+#' aggregateFeatures_sam(object = obj,i = 2, aggType= 'all', name='aggregated', 
+#' meta.names = 'Sequence', fun = 'aggTopn', n=3)
 #' 
 #' @export aggregateFeatures_sam
 #' 
@@ -160,7 +161,7 @@ aggregateFeatures_sam <- function(object, i, aggType='all', name, meta.names = N
   to <- test[,'row']
   hits <- S4Vectors::Hits(from=from, 
                           to=to, 
-                          nLnode=length(from), 
+                          nLnode=ncol(X), 
                           nRnode=nrow(X),
                           sort.by.query=TRUE
   )
@@ -871,7 +872,7 @@ aggMean <- function(qPepData, X){
 #' 
 aggIterParallel <- function(qPepData, X, conditions=NULL, init.method='Sum', method='Mean', n=NULL){
   if (is.null(conditions)){
-    warning('The parameter conds is NULL: the aggregation cannot be process.')
+    warning('The parameter \'conditions\' is NULL: the aggregation cannot be process.')
     return(NULL)
   }
   doParallel::registerDoParallel()
@@ -1243,5 +1244,4 @@ aggMetadata_parallel_sam <- function(pepMetadata, names, X, simplify=TRUE){
   }
   return(res)
 }
-
 
