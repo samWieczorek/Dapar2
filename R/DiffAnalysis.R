@@ -394,9 +394,11 @@ hc_logFC_DensityPlot <-function(df_logFC, threshold_LogFC = 0, palette=NULL){
 #' obj <- addAssay(obj, QFeatures::filterNA(obj[[2]],  pNA = 0), name='filtered')
 #' se <- t_test_sam(obj[[3]], colData(obj), FUN = compute.t.test)
 #' ind_logFC <- grep('_logFC', colnames(metadata(se)$t_test))
-#' logFC <- setNames(as.data.frame(metadata(se)$t_test[,ind_logFC]), colnames(metadata(se)$t_test)[ind_logFC])
+#' logFC <- setNames(as.data.frame(metadata(se)$t_test[,ind_logFC]), 
+#' colnames(metadata(se)$t_test)[ind_logFC])
 #' ind_pval <- grep('_pval', colnames(metadata(se)$t_test))
-#' pval <- setNames(as.data.frame(metadata(se)$t_test[,ind_pval]), colnames(metadata(se)$t_test)[ind_pval])
+#' pval <- setNames(as.data.frame(metadata(se)$t_test[,ind_pval]), 
+#' colnames(metadata(se)$t_test)[ind_pval])
 #' diffAnaComputeFDR(logFC[,1], pval[,1])
 #' 
 #' @importFrom cp4p adjust.p
