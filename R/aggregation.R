@@ -466,6 +466,7 @@ GraphPepProt_hc <- function(X, type = 'all'){
 #' @export
 #' 
 GetNbPeptidesUsed <- function(qPepData, X){
+
   qPepData[!is.na(qPepData)] <- 1
   qPepData[is.na(qPepData)] <- 0
   
@@ -509,13 +510,11 @@ GetNbPeptidesUsed <- function(qPepData, X){
 #' 
 GetDetailedNbPeptidesUsed <- function(X, qPepData){
   
-  X <- as.matrix(X)
-  
   res <- NULL
   
   qPepData[!is.na(qPepData)] <- 1
   qPepData[is.na(qPepData)] <- 0
-  
+
   res <- t(X) %*% qPepData
   
   return(res)
@@ -585,8 +584,6 @@ GetDetailedNbPeptides <- function(X){
 inner.sum <- function(qPepData, X){
   qPepData[is.na(qPepData)] <- 0
   
-  X <- as.matrix(X)
- 
   Mp <- t(X) %*% qPepData
   return(Mp)
 }
