@@ -161,7 +161,7 @@ aggregateFeatures_sam <- function(object, i, aggType='all', name, meta.names = N
   to <- test[,'row']
   hits <- S4Vectors::Hits(from=from, 
                           to=to, 
-                          nLnode=length(from), 
+                          nLnode=ncol(X), 
                           nRnode=nrow(X),
                           sort.by.query=TRUE
   )
@@ -466,6 +466,7 @@ GraphPepProt_hc <- function(X, type = 'all'){
 #' @export
 #' 
 GetNbPeptidesUsed <- function(qPepData, X){
+
   qPepData[!is.na(qPepData)] <- 1
   qPepData[is.na(qPepData)] <- 0
   
@@ -509,13 +510,11 @@ GetNbPeptidesUsed <- function(qPepData, X){
 #' 
 GetDetailedNbPeptidesUsed <- function(X, qPepData){
   
-  X <- as.matrix(X)
-  
   res <- NULL
   
   qPepData[!is.na(qPepData)] <- 1
   qPepData[is.na(qPepData)] <- 0
-  
+
   res <- t(X) %*% qPepData
   
   return(res)
@@ -585,8 +584,6 @@ GetDetailedNbPeptides <- function(X){
 inner.sum <- function(qPepData, X){
   qPepData[is.na(qPepData)] <- 0
   
-  X <- as.matrix(X)
- 
   Mp <- t(X) %*% qPepData
   return(Mp)
 }
@@ -872,7 +869,7 @@ aggMean <- function(qPepData, X){
 #' 
 aggIterParallel <- function(qPepData, X, conditions=NULL, init.method='Sum', method='Mean', n=NULL){
   if (is.null(conditions)){
-    warning('The parameter conds is NULL: the aggregation cannot be process.')
+    warning('The parameter \'conditions\' is NULL: the aggregation cannot be process.')
     return(NULL)
   }
   doParallel::registerDoParallel()
@@ -1244,5 +1241,4 @@ aggMetadata_parallel_sam <- function(pepMetadata, names, X, simplify=TRUE){
   }
   return(res)
 }
-
 
