@@ -4,19 +4,10 @@
 \alias{MVrowsTagToOne}
 \title{Filter lines in the matrix of intensities w.r.t. some criteria}
 \usage{
-MVrowsTagToOne(
-  obj,
-  sampleTab = NULL,
-  type,
-  th = 0,
-  percent = TRUE,
-  newColName = "newCol"
-)
+MVrowsTagToOne(object, type, th = 0, percent = TRUE, newColName = "tagNA")
 }
 \arguments{
-\item{obj}{An object of class \code{SummarizedExperiment}}
-
-\item{sampleTab}{\code{colData()} of obj}
+\item{object}{An object of class \code{QFeatures}}
 
 \item{type}{Method used to choose the lines to delete.
 Values are : "None", "EmptyLines", "WholeMatrix", "AllCond", "AtLeastOneCond"}
@@ -30,6 +21,8 @@ only the lines which contain at least \code{th} values are kept.}
 \item{percent}{TRUE by default. When FALSE, use the number of samples}
 
 \item{newColName}{Name of the new column containing the filtration information}
+
+\item{sampleTab}{\code{colData()} of obj}
 }
 \value{
 The object of class \code{SummarizedExperiment} with extra column in rowData
@@ -54,12 +47,11 @@ The different methods are :
 \examples{
 library(QFeatures)
 utils::data(Exp1_R25_pept, package='DAPARdata2')
-sampleTab <- colData(Exp1_R25_pept)
-obj <- Exp1_R25_pept[[2]][100:120,]
-res <- MVrowsTagToOne(obj, sampleTab, "AtLeastOneCond", 3, percent=FALSE, "AtLeastOneCond")
+obj <- Exp1_R25_pept[100:120,]
+res <- MVrowsTagToOne(obj, 2, type = "AtLeastOneCond", th=3, percent=FALSE, newColName="tagNA")
 names(rowData(res))
 
 }
 \author{
-Enora Fremy
+Enora Fremy, Samuel Wieczorek
 }

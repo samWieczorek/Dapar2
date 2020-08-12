@@ -105,7 +105,7 @@ proportionConRev_HC <- function(lDataset, nBoth = 0, nCont=0, nRev=0){
 #' @title An object of class \code{SummarizedExperiment} where the rowData gets an extra column 
 #' containing the information of the fitration.
 #'
-#' @param obj An object of class \code{SummarizedExperiment}
+#' @param object An object of class \code{QFeatures}
 #' 
 #' @param sampleTab \code{colData()} of obj
 #' 
@@ -125,23 +125,31 @@ proportionConRev_HC <- function(lDataset, nBoth = 0, nCont=0, nRev=0){
 #' @return The object of class \code{SummarizedExperiment} with extra column in rowData
 #' indicating 1 for the lines to remove, else 0.
 #' 
-#' @author Enora Fremy
+#' @author Enora Fremy, Samuel Wieczorek
 #' 
 #' @examples
 #' library(QFeatures)
 #' utils::data(Exp1_R25_pept, package='DAPARdata2')
-#' sampleTab <- colData(Exp1_R25_pept)
-#' obj <- Exp1_R25_pept[[2]][100:120,]
-#' res <- MVrowsTagToOne(obj, sampleTab, "AtLeastOneCond", 3, percent=FALSE, "AtLeastOneCond")
+#' obj <- Exp1_R25_pept[100:120,]
+#' res <- MVrowsTagToOne(obj, 2, type = "AtLeastOneCond", th=3, percent=FALSE, newColName="tagNA")
 #' names(rowData(res))
 #' 
 #' @export
 #' 
 #' @import SummarizedExperiment
 #' 
-MVrowsTagToOne <- function(obj, sampleTab=NULL, type, th=0, percent=TRUE, newColName="newCol") {
+MVrowsTagToOne <- function(object, type, th=0, percent=TRUE, newColName="tagNA") {
   
-  if (is.null(obj)) { return(NULL) }
+  if (is.null(object)) { return(NULL) }
+  
+  i <- length(experiments(object))
+  
+  ## Create a fictive coluln for each assays otherwise the filter method
+  ## of QFeatures will truncate the object
+  for (k in 1:length(experiments(object)))
+    rowData(object[[k]])[newColName] <- rep(0, nrow(object[[k]]))
+  
+  sampleTab <- colData(object)
   
   # # check Type param
   # paramtype<-c("None", "EmptyLines", "WholeMatrix", "AllCond", "AtLeastOneCond") 
@@ -182,10 +190,10 @@ MVrowsTagToOne <- function(obj, sampleTab=NULL, type, th=0, percent=TRUE, newCol
   
   # Filtration
   keepThat <- NULL
-  if (is.null(metadata(obj)$OriginOfValues)) {
-    data <- as.data.frame(assay(obj))
+  if (is.null(metadata(object[[i]])$OriginOfValues)) {
+    data <- as.data.frame(assay(object[[i]]))
   } else {
-    data <- dplyr::select(rowData(obj),metadata(obj)$OriginOfValues)
+    data <- dplyr::select(rowData(object[[i]]),metadata(object[[i]])$OriginOfValues)
   }
   
   if (type == "None") {
@@ -231,10 +239,9 @@ MVrowsTagToOne <- function(obj, sampleTab=NULL, type, th=0, percent=TRUE, newCol
     }
   }
   
-  rowData(obj)[[newColName]]<-1
-  rowData(obj)[[newColName]][keepThat]<-0
+    rowData(object[[i]])[[newColName]][-keepThat] <- 1 
   
-  return(obj)
+  return(object)
 }
 
 
@@ -244,36 +251,41 @@ MVrowsTagToOne <- function(obj, sampleTab=NULL, type, th=0, percent=TRUE, newCol
 #'
 #' @title Restore the rowData() before MVrowsTagToOne
 #' 
-#' @param obj An object of class \code{SummarizedExperiment}
+#' @param object An object of class \code{QFeatures}
 #' 
 #' @param colToRemove Column to remove
 #' 
 #' @return The \code{SummarizedExperiment} object without the rowData colToRemove column
 #' 
-#' @author Enora Fremy
+#' @author Enora Fremy, Samuel Wieczorek
 #' 
 #' @examples
 #' library(QFeatures)
 #' utils::data(Exp1_R25_pept, package='DAPARdata2')
 #' object <- Exp1_R25_pept[[2]]
 #' sampleTab <- colData(Exp1_R25_pept)
-#' obj<-MVrowsTagToOne(obj=object, sampleTab, newColName="LinesKept", type="AllCond", th=2)
-#' obj<-removeAdditionalCol(obj,colToRemove="None" )
+#' obj <- MVrowsTagToOne(obj=object, i=2, sampleTab, newColName="LinesKept", type="AllCond", th=2)
+#' obj <- removeAdditionalCol(obj, i=2, colToRemove="LinesKept" )
 #' 
 #' @export
 #' 
 #' @import SummarizedExperiment
 #' 
-removeAdditionalCol <- function(obj, colToRemove) {
+removeAdditionalCol <- function(object, colToRemove=NULL) {
   
-  if(is.null(obj)) { return(NULL) }
+  if(is.null(object)) { return(NULL) }
+  if(is.null(colToRemove)){return(NULL)} 
   
-  if( is.na(match(colToRemove,names(rowData(obj)))) ) {
-    print(paste0("Warning: ",colToRemove," isn't a column name of rowData(obj)"))
+  
+  for (k in 1:length(experiments(object)))
+    {
+    if( is.na(match(colToRemove,names(rowData(object[[k]])))) ) {
+      print(paste0("Warning: ",colToRemove," isn't a column name of rowData(obj)"))
+    }
+    else 
+      rowData(object[[k]]) <- rowData(object[[k]])[,-which(colnames(rowData(object[[k]]))==colToRemove)]
   }
   
-  rowData(obj)[[colToRemove]] <- NULL
-  
-  return(obj)
+  return(object)
   
 }
