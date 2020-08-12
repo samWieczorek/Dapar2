@@ -4,10 +4,10 @@
 \alias{removeAdditionalCol}
 \title{Restore the rowData() before MVrowsTagToOne}
 \usage{
-removeAdditionalCol(obj, colToRemove)
+removeAdditionalCol(object, colToRemove = NULL)
 }
 \arguments{
-\item{obj}{An object of class \code{SummarizedExperiment}}
+\item{object}{An object of class \code{QFeatures}}
 
 \item{colToRemove}{Column to remove}
 }
@@ -23,10 +23,10 @@ library(QFeatures)
 utils::data(Exp1_R25_pept, package='DAPARdata2')
 object <- Exp1_R25_pept[[2]]
 sampleTab <- colData(Exp1_R25_pept)
-obj<-MVrowsTagToOne(obj=object, sampleTab, newColName="LinesKept", type="AllCond", th=2)
-obj<-removeAdditionalCol(obj,colToRemove="None" )
+obj <- MVrowsTagToOne(obj=object, i=2, sampleTab, newColName="LinesKept", type="AllCond", th=2)
+obj <- removeAdditionalCol(obj, i=2, colToRemove="LinesKept" )
 
 }
 \author{
-Enora Fremy
+Enora Fremy, Samuel Wieczorek
 }
