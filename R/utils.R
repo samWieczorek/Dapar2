@@ -117,12 +117,12 @@ is.OfType <- function(data, type){
 #' @export
 #' 
 is.MV <- function(data){
-  if (class(data) != 'data.frame'){
-    warning('The parameter param is not a data.frame.')
-    return(NULL)
-  }
-  POV = is.OfType(data, "POV")
-  MEC = is.OfType(data, "MEC")
+  # if (class(data) != 'data.frame'){
+  #   warning('The parameter param is not a data.frame.')
+  #   return(NULL)
+  # }
+  #POV = is.OfType(data, "POV")
+  #MEC = is.OfType(data, "MEC")
   isNA = is.na(data)
   df <- POV | MEC | isNA
   
@@ -138,7 +138,7 @@ is.MV <- function(data){
 #' 
 #' @param i The indice of the dataset (SummarizedExperiment) in the object
 #' 
-#' @param type wholeMatrix, allCond or atLeastOneCond
+#' @param type WholeMatrix, AllCond or AtLeastOneCond
 #' 
 #' @return An integer
 #' 
@@ -154,29 +154,28 @@ is.MV <- function(data){
 #' 
 #' @importFrom S4Vectors sort
 #' 
-getListNbValuesInLines <- function(obj, i, type="wholeMatrix"){
+getListNbValuesInLines <- function(obj, i, type="WholeMatrix"){
   
   if (is.null(obj)){return(NULL)}
+  if(missing(i))
+    stop("'i' is required")
+  if (!(type %in% c('None', 'WholeMatrix', 'AtLeastOneCond', 'AllCond')))
+    stop("'type' is not one of: 'None', 'WholeMatrix', 'AtLeastOneCond', 'AllCond'")
   
-  if(is.null(metadata(obj)$OriginOfValues)){
-    data <- as.data.frame(assay(obj[[i]]))
-  }
-  else {
-    data <- as.data.frame(rowData(obj[[i]])[, metadata(obj)$OriginOfValues])
-  }
+  data <- as.data.frame(assay(obj[[i]]))
   
   switch(type,
-         wholeMatrix= {
-           ll <- unique(ncol(data) - apply(is.MV(data), 1, sum))
+         WholeMatrix= {
+           ll <- unique(ncol(data) - apply(is.na(data), 1, sum))
          },
-         allCond = {
+         AllCond = {
            tmp <- NULL
            for (cond in unique(colData(obj)[['Condition']])){
              tmp <- c(tmp, length(which(colData(obj)[['Condition']] == cond)))
            }
            ll <- seq(0,min(tmp))
          },
-         atLeastOneCond = {
+         AtLeastOneCond = {
            tmp <- NULL
            for (cond in unique(colData(obj)[['Condition']])){
              tmp <- c(tmp, length(which(colData(obj)[['Condition']] == cond)))
