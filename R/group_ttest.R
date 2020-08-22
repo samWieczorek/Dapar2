@@ -82,7 +82,7 @@ setMethod("t_test_sam", "QFeatures",
               stop("Only one assay to be processed at a time")
             if (is.numeric(i)) i <- names(object)[[i]]
             
-            if (is.null(GetAdjMat(object[[i]])))
+            if (is.null(GetAdjMat(object[[i]])) && metadata(object[[i]])$typeOfData == 'peptide')
               object <- addListAdjacencyMatrices(object, i)
             
             object <- addAssay(object,
