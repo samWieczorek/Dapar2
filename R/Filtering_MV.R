@@ -11,94 +11,97 @@
 #'  
 
 
-#' #' @title Check the validity of the experimental design
-#' #'
-#' #' @description
-#' #'
-#' #' This manual page describes the computation of statistical test using [QFeatures] objects. In the following
-#' #' functions, if `object` is of class `QFeatures`, and optional assay
-#' #' index or name `i` can be specified to define the assay (by name of
-#' #' index) on which to operate.
-#' #'
-#' #' The following functions are currently available:
-#' #'
-#' #' - `compute.t.test(xxxxx)` xxxxx.
-#' #'
-#' #' - `compute.group.t.test(xxxxx)` xxxxx.
-#' #'   
-#' #' - `limma.complete.test(object, sampleTab)` uses the package Limma 
-#' #' 
-#' #'
-#' #' @details xxx
-#' #'
-#' #'
-#' #' @examples
-#' #' library(QFeatures)
-#' #' utils::data(Exp1_R25_pept, package='DAPARdata2')
-#' #' object <- Exp1_R25_pept[1:1000,]
-#' #' object <- addAssay(object, QFeatures::filterNA(object[[2]],  pNA = 0), name='filtered')
-#' #' object <- addListAdjacencyMatrices(object, 3)
-#' #' sTab <- colData(object)
-#' #' gttest.se <- t_test_sam(object[[3]], sTab, FUN = 'limma.complete.test')
-#' #' 
-#' #' object <- t_test_sam(object, 3, name = "ttestAssay", FUN = 'compute.t.test', contrast = 'OnevsOne')
-#' #' 
-#' "filterFeatures_sam"
-#' 
-#' #' @param  object An object of class `QFeatures`.
-#' #'
-#' #' @param name A `character(1)` naming the new assay name. Defaults
-#' #'     are `ttestAssay`.
-#' #' 
-#' #' @param FUN xxx
-#' #' 
-#' #' @param ... Additional parameters passed to inner functions.
-#' #' 
-#' #' @export
-#' #' 
-#' #' @rdname filterFeatures_sam
-#' #'
-#' setMethod("filterFeatures_sam", "QFeatures",
-#'           function(object, name = "filterAssay", filterName,  ...) {
-#'             if (missing(i))
-#'               stop("Provide index or name of assay to be processed")
-#'             if (length(i) != 1)
-#'               stop("Only one assay to be processed at a time")
-#'             if (is.numeric(i)) i <- names(object)[[i]]
-#'             
-#'             
-#'             
-#'             
-#'             argg <- c(as.list(environment()), list(...))
-#'             df <- do.call(FUN, list(object, sampleTab, ...))
-#'             
-#'             metadata(object)$t_test <- df
-#'             metadata(object)$Params <- argg[-match(c('object', 'sampleTab'), names(argg))]
-#'             object
-#'             
-#'             tmp <- NULL
-#'             switch(filterName,
-#'                    na = {
-#'                      tmp <- MVrowsTagToOne(object, ...)
-#'                      na_filter <- VariableFilter(field = "tagNA", value = "0", condition = "==")
-#'                      tmp <- filterFeatures(rv.filter$dataIn, na_filter)
-#'                      tmp <- removeAdditionalCol(rv.filter$dataIn, "tagNA")
-#'                    },
-#'                    value = {
-#'                      
-#'                      tmp <- 
-#'                    }
-#'             )
-#'             
-#'             
-#'             
-#'             object <- addAssay(object,
-#'                                tmp[[length(experiments(tmp))]],
-#'                                name)
-#'             addAssayLinkOneToOne(object, from = i, to = name)
-#'           })
-#' 
+#' @title Check the validity of the experimental design
+#'
+#' @description
+#'
+#' This manual page describes the computation of statistical test using [QFeatures] objects. In the following
+#' functions, if `object` is of class `QFeatures`, and optional assay
+#' index or name `i` can be specified to define the assay (by name of
+#' index) on which to operate.
+#'
+#' The following functions are currently available:
+#'
+#' - `compute.t.test(xxxxx)` xxxxx.
+#'
+#' - `compute.group.t.test(xxxxx)` xxxxx.
+#'
+#' - `limma.complete.test(object, sampleTab)` uses the package Limma
+#'
+#'
+#' @details xxx
+#'
+#'
+#' @examples
+#' library(QFeatures)
+#' utils::data(Exp1_R25_pept, package='DAPARdata2')
+#'
+"filterFeatures_sam"
 
+#' @param  object An object of class `QFeatures`.
+#'
+#' @param name A `character(1)` naming the new assay name. Defaults
+#'     are `ttestAssay`.
+#'
+#' @param FUN xxx
+#'
+#' @param ... Additional parameters passed to inner functions.
+#'
+#' @export
+#'
+#' @rdname filterFeatures_sam
+#'
+setMethod("filterFeatures_sam",
+          c("QFeatures", "AnnotationFilter"),
+          function(object, i,  name = "filterAssay", filter, na.rm = FALSE, ...){
+           
+
+            if (missing(i))
+              stop("Provide index or name of assay to be processed")
+            if (length(i) != 1)
+              stop("Only one assay to be processed at a time")
+            if (is.numeric(i)) i <- names(object)[[i]]
+
+
+
+
+            argg <- c(as.list(environment()), list(...))
+            #df <- do.call(FUN, list(object, sampleTab, ...))
+
+            #metadata(object)$t_test <- df
+            #metadata(object)$Params <- argg[-match(c('object', 'sampleTab'), names(argg))]
+            #object
+
+            
+
+            object <- addAssay(object,
+                               filterFeaturesWithAnnotationFilter_sam(object, i, filter, na.rm, ...),
+                               name)
+            addAssayLinkOneToOne(object, from = i, to = name)
+          }
+          
+          )
+
+
+
+
+
+##' @importFrom BiocGenerics do.call
+filterFeaturesWithAnnotationFilter_sam <- function(object, i, filter, na.rm, ...) {
+  exp <- experiments(object)[i]
+  
+  x <- rowData(exp)
+  sel <- if (field(filter) %in% names(x))
+       do.call(condition(filter),
+                            list(x[, field(filter)],
+                                 value(filter)))
+                  else
+                    rep(FALSE, nrow(x))
+
+  sel[is.na(sel)] <- !na.rm
+
+  sel
+}
 
 
 
