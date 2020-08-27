@@ -6,4 +6,4 @@ setGeneric("normalizeD", function(object, ...) standardGeneric("normalizeD"))
 
 setGeneric("impute_dapar", function(object, ...) standardGeneric("impute_dapar"))
 
-setMethod("filterFeatures_sam", function(object, ...) standardGeneric("filterFeatures_sam"))
+setGeneric("filterFeaturesSam", function(object, ...) standardGeneric("filterFeaturesSam"))

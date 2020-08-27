@@ -4,14 +4,14 @@
 \alias{getListNbValuesInLines}
 \title{Returns the possible number of values in lines in the data}
 \usage{
-getListNbValuesInLines(obj, i, type = "wholeMatrix")
+getListNbValuesInLines(obj, i, type = "WholeMatrix")
 }
 \arguments{
 \item{obj}{An object of class \code{QFeatures}}
 
 \item{i}{The indice of the dataset (SummarizedExperiment) in the object}
 
-\item{type}{wholeMatrix, allCond or atLeastOneCond}
+\item{type}{WholeMatrix, AllCond or AtLeastOneCond}
 }
 \value{
 An integer
