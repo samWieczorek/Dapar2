@@ -4,7 +4,7 @@
 \alias{MVrowsTagToOne}
 \title{Filter lines in the matrix of intensities w.r.t. some criteria}
 \usage{
-MVrowsTagToOne(object, type, th = 0, percent = TRUE, newColName = "tagNA")
+MVrowsTagToOne(object, type, th = 0, percent = TRUE)
 }
 \arguments{
 \item{object}{An object of class \code{QFeatures}}
@@ -20,9 +20,9 @@ only the lines which contain at least \code{th} values are kept.}
 
 \item{percent}{TRUE by default. When FALSE, use the number of samples}
 
-\item{newColName}{Name of the new column containing the filtration information}
-
 \item{sampleTab}{\code{colData()} of obj}
+
+\item{newColName}{Name of the new column containing the filtration information}
 }
 \value{
 The object of class \code{SummarizedExperiment} with extra column in rowData
@@ -47,9 +47,8 @@ The different methods are :
 \examples{
 library(QFeatures)
 utils::data(Exp1_R25_pept, package='DAPARdata2')
-obj <- Exp1_R25_pept[100:120,]
-res <- MVrowsTagToOne(obj, 2, type = "AtLeastOneCond", th=3, percent=FALSE, newColName="tagNA")
-names(rowData(res))
+object <- Exp1_R25_pept
+res <- MVrowsTagToOne(object, type = "WholeMatrix", th=1, percent=FALSE)
 
 }
 \author{
