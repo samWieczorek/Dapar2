@@ -1,8 +1,13 @@
 Package: DAPAR2
 Type: Package
 Title: Tools for the Differential Analysis of Proteins Abundance with R
+<<<<<<< HEAD
 Version: 0.5
 Date: 2020-08-24
+=======
+Version: 0.4
+Date: 2020-08-25
+>>>>>>> db1ca192d0953d8c5db5d3e19881cba56ba02da5
 Authors@R: c(person(given = "Samuel", family = "Wieczorek",
             email = "samuel.wieczorek@cea.fr",
             role = c("aut","cre")),
