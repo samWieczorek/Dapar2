@@ -4,7 +4,7 @@
 \alias{removeAdditionalCol}
 \title{Restore the rowData() before MVrowsTagToOne}
 \usage{
-removeAdditionalCol(object, colToRemove = NULL)
+removeAdditionalCol(object = NULL, colToRemove = NULL)
 }
 \arguments{
 \item{object}{An object of class \code{QFeatures}}

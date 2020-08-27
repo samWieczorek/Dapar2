@@ -5,3 +5,5 @@ setGeneric("diff_analysis_sam", function(object, ...) standardGeneric("diff_anal
 setGeneric("normalizeD", function(object, ...) standardGeneric("normalizeD"))
 
 setGeneric("impute_dapar", function(object, ...) standardGeneric("impute_dapar"))
+
+setGeneric("filterFeatures_sam", function(object, i, filter,...) standardGeneric("filterFeatures_sam"))

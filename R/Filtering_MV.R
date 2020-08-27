@@ -11,94 +11,118 @@
 #'  
 
 
-#' #' @title Check the validity of the experimental design
-#' #'
-#' #' @description
-#' #'
-#' #' This manual page describes the computation of statistical test using [QFeatures] objects. In the following
-#' #' functions, if `object` is of class `QFeatures`, and optional assay
-#' #' index or name `i` can be specified to define the assay (by name of
-#' #' index) on which to operate.
-#' #'
-#' #' The following functions are currently available:
-#' #'
-#' #' - `compute.t.test(xxxxx)` xxxxx.
-#' #'
-#' #' - `compute.group.t.test(xxxxx)` xxxxx.
-#' #'   
-#' #' - `limma.complete.test(object, sampleTab)` uses the package Limma 
-#' #' 
-#' #'
-#' #' @details xxx
-#' #'
-#' #'
-#' #' @examples
-#' #' library(QFeatures)
-#' #' utils::data(Exp1_R25_pept, package='DAPARdata2')
-#' #' object <- Exp1_R25_pept[1:1000,]
-#' #' object <- addAssay(object, QFeatures::filterNA(object[[2]],  pNA = 0), name='filtered')
-#' #' object <- addListAdjacencyMatrices(object, 3)
-#' #' sTab <- colData(object)
-#' #' gttest.se <- t_test_sam(object[[3]], sTab, FUN = 'limma.complete.test')
-#' #' 
-#' #' object <- t_test_sam(object, 3, name = "ttestAssay", FUN = 'compute.t.test', contrast = 'OnevsOne')
-#' #' 
-#' "filterFeatures_sam"
-#' 
-#' #' @param  object An object of class `QFeatures`.
-#' #'
-#' #' @param name A `character(1)` naming the new assay name. Defaults
-#' #'     are `ttestAssay`.
-#' #' 
-#' #' @param FUN xxx
-#' #' 
-#' #' @param ... Additional parameters passed to inner functions.
-#' #' 
-#' #' @export
-#' #' 
-#' #' @rdname filterFeatures_sam
-#' #'
-#' setMethod("filterFeatures_sam", "QFeatures",
-#'           function(object, name = "filterAssay", filterName,  ...) {
-#'             if (missing(i))
-#'               stop("Provide index or name of assay to be processed")
-#'             if (length(i) != 1)
-#'               stop("Only one assay to be processed at a time")
-#'             if (is.numeric(i)) i <- names(object)[[i]]
-#'             
-#'             
-#'             
-#'             
-#'             argg <- c(as.list(environment()), list(...))
-#'             df <- do.call(FUN, list(object, sampleTab, ...))
-#'             
-#'             metadata(object)$t_test <- df
-#'             metadata(object)$Params <- argg[-match(c('object', 'sampleTab'), names(argg))]
-#'             object
-#'             
-#'             tmp <- NULL
-#'             switch(filterName,
-#'                    na = {
-#'                      tmp <- MVrowsTagToOne(object, ...)
-#'                      na_filter <- VariableFilter(field = "tagNA", value = "0", condition = "==")
-#'                      tmp <- filterFeatures(rv.filter$dataIn, na_filter)
-#'                      tmp <- removeAdditionalCol(rv.filter$dataIn, "tagNA")
-#'                    },
-#'                    value = {
-#'                      
-#'                      tmp <- 
-#'                    }
-#'             )
-#'             
-#'             
-#'             
-#'             object <- addAssay(object,
-#'                                tmp[[length(experiments(tmp))]],
-#'                                name)
-#'             addAssayLinkOneToOne(object, from = i, to = name)
-#'           })
-#' 
+#' @title Check the validity of the experimental design
+#'
+#' @description
+#'
+#' This manual page describes the computation of statistical test using [QFeatures] objects. In the following
+#' functions, if `object` is of class `QFeatures`, and optional assay
+#' index or name `i` can be specified to define the assay (by name of
+#' index) on which to operate.
+#'
+#' The following functions are currently available:
+#'
+#' - `compute.t.test(xxxxx)` xxxxx.
+#'
+#' - `compute.group.t.test(xxxxx)` xxxxx.
+#'
+#' - `limma.complete.test(object, sampleTab)` uses the package Limma
+#'
+#'
+#' @details xxx
+#'
+#'
+#' @examples
+#' library(QFeatures)
+#' utils::data(Exp1_R25_pept, package='DAPARdata2')
+#' object <- Exp1_R25_pept[1:1000,]
+#' object <- addAssay(object, QFeatures::filterNA(object[[2]],  pNA = 0), name='filtered')
+#' object <- addListAdjacencyMatrices(object, 3)
+#' sTab <- colData(object)
+#' gttest.se <- t_test_sam(object[[3]], sTab, FUN = 'limma.complete.test')
+#'
+#' object <- t_test_sam(object, 3, name = "ttestAssay", FUN = 'compute.t.test', contrast = 'OnevsOne')
+#'
+"filterFeatures_sam"
 
+#' @param  object An object of class `QFeatures`.
+#'
+#' @param name A `character(1)` naming the new assay name. Defaults
+#'     are `ttestAssay`.
+#'
+#' @param FUN xxx
+#'
+#' @param ... Additional parameters passed to inner functions.
+#'
+#' @export
+#'
+#' @rdname filterFeatures_sam
+#'
+#' @example 
+#' library(QFeatures)
+#' utils::data(Exp1_R25_prot, package='DAPARdata2')
+#' object <- Exp1_R25_prot
+#' filter <- VariableFilter(field='Reverse', value='+', condition='!=')
+#' object <- filterFeatures_sam(object, 2, filter)
+#' 
+setMethod("filterFeatures_sam", "QFeatures",
+          function(object, i, name = "filterAssay", filter) {
+            if (missing(i))
+              stop("Provide index or name of assay to be processed")
+            if (length(i) != 1)
+              stop("Only one assay to be processed at a time")
+            if (is.numeric(i)) i <- names(object)[[i]]
+
+ 
+
+            argg <- c(as.list(environment()))
+            tmp <-  filterFeatures_sam(object[[i]], filter)
+
+            
+            object <- addAssay(object,
+                               tmp,
+                               name)
+            addAssayLinkOneToOne(object, from = i, to = name)
+          })
+
+
+
+#' @importFrom AnnotationFilter condition, field
+setMethod("filterFeatures_sam", "SummarizedExperiment",
+          function(object, filter) {
+            x <- rowData(object)
+            if (field(filter) %in% names(x)){
+              sel <- do.call(condition(filter),
+                      list(x[, field(filter)], value(filter))
+                      )
+            } else {
+              sel <- rep(FALSE, nrow(x))
+            }
+            object[sel, ]
+          }
+          )
+
+
+
+#' @importFrom BiocGenerics do.call
+filterFeaturesWithAnnotationFilter <- function(object, filter, na.rm, ...) {
+  sel <- lapply(experiments(object),
+                function(exp) {
+                  x <- rowData(exp)
+                  if (field(filter) %in% names(x))
+                    do.call(condition(filter),
+                            list(x[, field(filter)],
+                                 value(filter)))
+                  else
+                    rep(FALSE, nrow(x))
+                })
+  sel <- lapply(sel, function(x) {
+    x[is.na(x)] <- !na.rm
+    x
+  })
+  if (not(filter)) sel <- lapply(sel, "!")
+  object[sel, ]
+}
 
 
 
@@ -125,8 +149,6 @@
 #'
 #' @param object An object of class \code{QFeatures}
 #' 
-#' @param sampleTab \code{colData()} of obj
-#' 
 #' @param type Method used to choose the lines to delete.
 #' Values are : "None", "EmptyLines", "WholeMatrix", "AllCond", "AtLeastOneCond"
 #' 
@@ -138,8 +160,6 @@
 #' 
 #' @param percent TRUE by default. When FALSE, use the number of samples
 #' 
-#' @param newColName Name of the new column containing the filtration information
-#' 
 #' @return The object of class \code{SummarizedExperiment} with extra column in rowData
 #' indicating 1 for the lines to remove, else 0.
 #' 
@@ -148,22 +168,23 @@
 #' @examples
 #' library(QFeatures)
 #' utils::data(Exp1_R25_pept, package='DAPARdata2')
-#' object <- Exp1_R25_pept
-#' res <- MVrowsTagToOne(object, type = "WholeMatrix", th=1, percent=FALSE)
+#' res <- MVrowsTagToOne(Exp1_R25_pept, type = "WholeMatrix", th=1, percent=FALSE)
 #' 
 #' @export
 #' 
 #' @import SummarizedExperiment
 #' 
-MVrowsTagToOne <- function(object, type, th=0, percent=TRUE) {
+MVrowsTagToOne <- function(object=NULL, type=NULL, th=0, percent=TRUE) {
   
-  if (is.null(object)) { return(NULL) }
+  if (is.null(object) || is.null(type)) { return(NULL) }
   
+  if (missing(object))
+    stop("'object' is required")
   if (missing(type))
     stop("'type' is required")
   
   if (!(type %in% c('None', 'EmptyLines', 'WholeMatrix', 'AtLeastOneCond', 'AllCond')))
-      stop("'type' is not one of: 'None', 'EmptyLines', 'WholeMatrix', 'AtLeastOneCond', 'AllCond'")
+      stop("Available values for 'type' are not one of: 'None', 'EmptyLines', 'WholeMatrix', 'AtLeastOneCond', 'AllCond'")
       
   newColName <- "tagNA"
   i <- length(experiments(object))
@@ -302,10 +323,18 @@ MVrowsTagToOne <- function(object, type, th=0, percent=TRUE) {
 #' 
 #' @import SummarizedExperiment
 #' 
-removeAdditionalCol <- function(object, colToRemove=NULL) {
+removeAdditionalCol <- function(object=NULL, colToRemove=NULL) {
   
   if(is.null(object)) { return(NULL) }
   if(is.null(colToRemove)){return(NULL)} 
+  
+  if (missing(object))
+    stop("'object' is required")
+  if (missing(colToRemove))
+    stop("'colToRemove' is required")
+  
+  
+  
   colToRemove <- "tagNA"
   
   for (k in 1:length(experiments(object)))
