@@ -35,6 +35,7 @@
 #' @examples
 #' library(QFeatures)
 #' utils::data(Exp1_R25_pept, package='DAPARdata2')
+<<<<<<< HEAD
 #' object <- Exp1_R25_pept[1:1000,]
 #' object <- addAssay(object, QFeatures::filterNA(object[[2]],  pNA = 0), name='filtered')
 #' object <- addListAdjacencyMatrices(object, 3)
@@ -100,10 +101,58 @@ setMethod("filterFeatures_sam", "SummarizedExperiment",
             }
             object[sel, ]
           }
+=======
+#'
+"filterFeatures_sam"
+
+#' @param  object An object of class `QFeatures`.
+#'
+#' @param name A `character(1)` naming the new assay name. Defaults
+#'     are `ttestAssay`.
+#'
+#' @param FUN xxx
+#'
+#' @param ... Additional parameters passed to inner functions.
+#'
+#' @export
+#'
+#' @rdname filterFeatures_sam
+#'
+setMethod("filterFeatures_sam",
+          c("QFeatures", "AnnotationFilter"),
+          function(object, i,  name = "filterAssay", filter, na.rm = FALSE, ...){
+           
+
+            if (missing(i))
+              stop("Provide index or name of assay to be processed")
+            if (length(i) != 1)
+              stop("Only one assay to be processed at a time")
+            if (is.numeric(i)) i <- names(object)[[i]]
+
+
+
+
+            argg <- c(as.list(environment()), list(...))
+            #df <- do.call(FUN, list(object, sampleTab, ...))
+
+            #metadata(object)$t_test <- df
+            #metadata(object)$Params <- argg[-match(c('object', 'sampleTab'), names(argg))]
+            #object
+
+            
+
+            object <- addAssay(object,
+                               filterFeaturesWithAnnotationFilter_sam(object, i, filter, na.rm, ...),
+                               name)
+            addAssayLinkOneToOne(object, from = i, to = name)
+          }
+          
+>>>>>>> db1ca192d0953d8c5db5d3e19881cba56ba02da5
           )
 
 
 
+<<<<<<< HEAD
 #' @importFrom BiocGenerics do.call
 filterFeaturesWithAnnotationFilter <- function(object, filter, na.rm, ...) {
   sel <- lapply(experiments(object),
@@ -111,10 +160,22 @@ filterFeaturesWithAnnotationFilter <- function(object, filter, na.rm, ...) {
                   x <- rowData(exp)
                   if (field(filter) %in% names(x))
                     do.call(condition(filter),
+=======
+
+
+##' @importFrom BiocGenerics do.call
+filterFeaturesWithAnnotationFilter_sam <- function(object, i, filter, na.rm, ...) {
+  exp <- experiments(object)[i]
+  
+  x <- rowData(exp)
+  sel <- if (field(filter) %in% names(x))
+       do.call(condition(filter),
+>>>>>>> db1ca192d0953d8c5db5d3e19881cba56ba02da5
                             list(x[, field(filter)],
                                  value(filter)))
                   else
                     rep(FALSE, nrow(x))
+<<<<<<< HEAD
                 })
   sel <- lapply(sel, function(x) {
     x[is.na(x)] <- !na.rm
@@ -122,6 +183,12 @@ filterFeaturesWithAnnotationFilter <- function(object, filter, na.rm, ...) {
   })
   if (not(filter)) sel <- lapply(sel, "!")
   object[sel, ]
+=======
+
+  sel[is.na(sel)] <- !na.rm
+
+  sel
+>>>>>>> db1ca192d0953d8c5db5d3e19881cba56ba02da5
 }
 
 
