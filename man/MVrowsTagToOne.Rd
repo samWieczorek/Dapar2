@@ -4,7 +4,7 @@
 \alias{MVrowsTagToOne}
 \title{Filter lines in the matrix of intensities w.r.t. some criteria}
 \usage{
-MVrowsTagToOne(object, type, th = 0, percent = TRUE, newColName = "tagNA")
+MVrowsTagToOne(object = NULL, type = NULL, th = 0, percent = TRUE)
 }
 \arguments{
 \item{object}{An object of class \code{QFeatures}}
@@ -19,10 +19,6 @@ between 0 and maximum number of replicate for "AllCond" and "AtLeastOneCond", wh
 only the lines which contain at least \code{th} values are kept.}
 
 \item{percent}{TRUE by default. When FALSE, use the number of samples}
-
-\item{newColName}{Name of the new column containing the filtration information}
-
-\item{sampleTab}{\code{colData()} of obj}
 }
 \value{
 The object of class \code{SummarizedExperiment} with extra column in rowData
@@ -44,12 +40,109 @@ The different methods are :
 - "AtLeastOneCond": given a threshold \code{th}, only the lines that contain
   at least \code{th} values, and for at least one condition, are kept.
 }
+\details{
+The filtering functions of DAPAR have not been all moved to DAPAR2 as we now use the QFeatures package
+which provides some filtering functions, especially on features that are present in the rowData
+of the datasets.
+ The filtering functions on numerical values are deleted because the same functions exist in QFeatures.
+ For the missing values filtering on conditions, we do not use DAPAR functions anymore. Instead, we use
+ the numerical filtering functions in QFeatures. To do so, it is necessary to build some rowdata for the
+ SummarizedExperiment (not necessary stored in the object) which count the number of missing values w.r.t.
+ the type of filtering: whole matrix, at least one value per condition, etc...
+ 
+ 
+ 
+#' @title Check the validity of the experimental design
+#'
+#' @description
+#'
+#' This manual page describes the computation of statistical test using [QFeatures] objects. In the following
+#' functions, if `object` is of class `QFeatures`, and optional assay
+#' index or name `i` can be specified to define the assay (by name of
+#' index) on which to operate.
+#'
+#' The following functions are currently available:
+#'
+#' - `compute.t.test(xxxxx)` xxxxx.
+#'
+#' - `compute.group.t.test(xxxxx)` xxxxx.
+#'   
+#' - `limma.complete.test(object, sampleTab)` uses the package Limma 
+#' 
+#'
+#' @details xxx
+#'
+#'
+#' @examples
+#' library(QFeatures)
+#' utils::data(Exp1_R25_pept, package='DAPARdata2')
+#' object <- Exp1_R25_pept[1:1000,]
+#' object <- addAssay(object, QFeatures::filterNA(object[[2]],  pNA = 0), name='filtered')
+#' object <- addListAdjacencyMatrices(object, 3)
+#' sTab <- colData(object)
+#' gttest.se <- t_test_sam(object[[3]], sTab, FUN = 'limma.complete.test')
+#' 
+#' object <- t_test_sam(object, 3, name = "ttestAssay", FUN = 'compute.t.test', contrast = 'OnevsOne')
+#' 
+"filterFeatures_sam"
+
+#' @param  object An object of class `QFeatures`.
+#'
+#' @param name A `character(1)` naming the new assay name. Defaults
+#'     are `ttestAssay`.
+#' 
+#' @param FUN xxx
+#' 
+#' @param ... Additional parameters passed to inner functions.
+#' 
+#' @export
+#' 
+#' @rdname filterFeatures_sam
+#'
+setMethod("filterFeatures_sam", "QFeatures",
+          function(object, name = "filterAssay", filterName,  ...) {
+            if (missing(i))
+              stop("Provide index or name of assay to be processed")
+            if (length(i) != 1)
+              stop("Only one assay to be processed at a time")
+            if (is.numeric(i)) i <- names(object)[[i]]
+            
+            
+            
+            
+            argg <- c(as.list(environment()), list(...))
+            df <- do.call(FUN, list(object, sampleTab, ...))
+            
+            metadata(object)$t_test <- df
+            metadata(object)$Params <- argg[-match(c('object', 'sampleTab'), names(argg))]
+            object
+            
+            tmp <- NULL
+            switch(filterName,
+                   na = {
+                     tmp <- MVrowsTagToOne(object, ...)
+                     na_filter <- VariableFilter(field = "tagNA", value = "0", condition = "==")
+                     tmp <- filterFeatures(rv.filter$dataIn, na_filter)
+                     tmp <- removeAdditionalCol(rv.filter$dataIn, "tagNA")
+                   },
+                   value = {
+                     
+                     tmp <- 
+                   }
+            )
+            
+            
+            
+            object <- addAssay(object,
+                               tmp[[length(experiments(tmp))]],
+                               name)
+            addAssayLinkOneToOne(object, from = i, to = name)
+          })
+}
 \examples{
 library(QFeatures)
 utils::data(Exp1_R25_pept, package='DAPARdata2')
-obj <- Exp1_R25_pept[100:120,]
-res <- MVrowsTagToOne(obj, 2, type = "AtLeastOneCond", th=3, percent=FALSE, newColName="tagNA")
-names(rowData(res))
+res <- MVrowsTagToOne(Exp1_R25_pept, type = "WholeMatrix", th=1, percent=FALSE)
 
 }
 \author{
