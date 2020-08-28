@@ -1,21 +1,28 @@
 
-##' Plots a heatmap of the quantitative data. Each column represent one of
-##' the conditions in the object of class \code{MSnSet} and 
-##' the color is proportional to the mean of intensity for each line of
-##' the dataset.
-##' The lines have been sorted in order to vizualize easily the different
-##' number of missing values. A white square is plotted for missing values.
-##' 
-##' @title Heatmap of missing values from a \code{MSnSet} object
-##' @param obj An object of class \code{MSnSet}.
-##' @return A heatmap
-##' @author Alexia Dorffer
-##' @examples
-##' utils::data(Exp1_R25_pept, package='DAPARdata')
-##' obj <- Exp1_R25_pept
-##' keepThat <- mvFilterGetIndices(obj, 'wholeMatrix', 1)
-##' obj <- mvFilterFromIndices(obj, keepThat)
-##' wrapper.mvImage(obj)
+#' Plots a heatmap of the quantitative data. Each column represent one of
+#' the conditions in the object of class \code{MSnSet} and 
+#' the color is proportional to the mean of intensity for each line of
+#' the dataset.
+#' The lines have been sorted in order to vizualize easily the different
+#' number of missing values. A white square is plotted for missing values.
+#' 
+#' @title Heatmap of missing values from a \code{MSnSet} object
+#' 
+#' @param obj An object of class \code{MSnSet}.
+#' 
+#' @return A heatmap
+#' 
+#' @author Alexia Dorffer
+#' 
+#' @examples
+#' utils::data(Exp1_R25_pept, package='DAPARdata')
+#' obj <- Exp1_R25_pept
+#' keepThat <- mvFilterGetIndices(obj, 'wholeMatrix', 1)
+#' obj <- mvFilterFromIndices(obj, keepThat)
+#' wrapper.mvImage(obj)
+#' 
+#' @export
+#' 
 wrapper.mvImage <- function(obj){
   qData <- Biobase::exprs(obj)
   conds <- Biobase::pData(obj)[,"Condition"]
@@ -36,25 +43,32 @@ wrapper.mvImage <- function(obj){
 
 
 
-##' Plots a heatmap of the quantitative data. Each column represent one of
-##' the conditions in the object of class \code{MSnSet} and 
-##' the color is proportional to the mean of intensity for each line of
-##' the dataset.
-##' The lines have been sorted in order to vizualize easily the different
-##' number of missing values. A white square is plotted for missing values.
-##' 
-##' @title Heatmap of missing values
-##' @param qData A dataframe that contains quantitative data.
-##' @param conds A vector of the conditions (one condition per sample).
-##' @return A heatmap
-##' @author Samuel Wieczorek, Thomas Burger
-##' @examples
+#' Plots a heatmap of the quantitative data. Each column represent one of
+#' the conditions in the object of class \code{MSnSet} and 
+#' the color is proportional to the mean of intensity for each line of
+#' the dataset.
+#' The lines have been sorted in order to vizualize easily the different
+#' number of missing values. A white square is plotted for missing values.
+#' 
+#' @title Heatmap of missing values
+#' 
+#' @param qData A dataframe that contains quantitative data.
+#' 
+#' @param conds A vector of the conditions (one condition per sample).
+#' 
+#' @return A heatmap
+#' 
+#' @author Samuel Wieczorek, Thomas Burger
+#' 
+#' @examples
 #' library(QFeatures)
 #' utils::data(Exp1_R25_pept, package='DAPARdata2')
 #' qData <- assay(Exp1_R25_pept[[2]])[1:1000,]
 #' conds <- colData(Exp1_R25_pept)[['Condition']]
 #' mvImage(qData, conds)
+#' 
 #' @export
+#' 
 mvImage <- function(qData, conds){
   
   ### build indices of conditions
