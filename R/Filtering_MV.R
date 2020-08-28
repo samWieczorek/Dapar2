@@ -25,7 +25,7 @@
 #' library(QFeatures)
 #' utils::data(Exp1_R25_prot, package='DAPARdata2')
 #' object <- Exp1_R25_prot
-#' reverse_filter <- VariableFilter(field='Reverse', value='+', condition='!=')
+#' filter_600 <- VariableFilter(field='Sequence_length', value=as.numeric('600'), condition='>')
 #' object <- filterFeaturesSam(object, i=2, filter=reverse_filter)
 #'
 #'
@@ -85,11 +85,17 @@ setMethod("filterFeaturesSam", "QFeatures",
             
             
             argg <- c(as.list(environment()))
+            tmp <- filterFeaturesSam(object[[i]], filter)
             
-            object <- addAssay(object,
-                               filterFeaturesSam(object[[i]], filter),
+            if (nrow(tmp) == 0){
+              warning('The filtering has not been proceeded beacause it empties all the dataset.')
+              object
+              } else {
+                object <- addAssay(object,
+                               tmp,
                                name)
             addAssayLink(object, from = i, to = name)
+              }
           }
           
 )
