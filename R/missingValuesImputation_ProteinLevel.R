@@ -114,12 +114,18 @@ impute_matrix_dapar <- function(x,
         res <- impute_pa(x, ...)
     } else if (method == "det_quant") {
         res <- impute_det_quant(x, ...)
-    } else if (method == "slsa") {
+    } else if (method == "POV_det_quant") {
+      res <- POV_impute_det_quant(x, ...)
+    }else if (method == "slsa") {
         res <- impute_slsa(x, ...)
+    } else if (method == "POV_slsa") {
+      res <- POV_impute_slsa(x, ...)
     } else if (method == "mle_dapar") {
         res <- impute_mle_dapar(x, ...)
     } else if (method == "mi") {
         res <- impute_mi(x, ...)
+    } else if (method == "fixed_val") {
+      res <- impute_fixed_value(x, ...)
     }
     ## else method == "none" -- do nothing
     res
@@ -133,6 +139,22 @@ impute_matrix_dapar <- function(x,
 #' 
 imputeMethodsDapar <- function()
     c("knn_by_conds", "pa", "det_quant", "slsa", "mle_dapar", "none")
+
+#' @title List the methods available in DAPAR to impute Partially Observed Values (POV)
+#' 
+#' @export
+#' 
+impute_POV_Methods <- function()
+  c("knn_by_conds", "det_quant", "slsa","none")
+
+
+#' @title List the methods in DAPAR to impute Missing Entire Condition (MEC)
+#' 
+#' @export
+#' 
+impute_MEC_Methods <- function()
+  c("knn_by_conds", "pa", "det_quant", "slsa", "mle_dapar", "none")
+
 
 
 
@@ -238,7 +260,7 @@ impute_pa <- function(x, conds, q.min = 0.025){
 #' impute_det_quant(assay(Exp1_R25_pept[[2]]))
 #' 
 #' @export
-impute_det_quant <- function(x,...){
+impute_det_quant <- function(x, ...){
     if (is.null(x)){return(NULL)}
     
     values <- getQuantile4Imp(x, ...)
@@ -247,15 +269,50 @@ impute_det_quant <- function(x,...){
         col <- x[,i]
         col[which(is.na(col))] <- values$shiftedImpVal[i]
         x[,i] <- col
-    }
+   }
+   
     return(x)
 }
 
-
+#' @title Imputation of the POV with the method of deterministic Quantile
+#' 
+#' @param x An instance of class \code{DataFrame}
+#' 
+#' @param sampleTab xxx
+#' 
+#' @param ... Additional arguments
+#' 
+#' @return An imputed instance of class \code{DataFrame}
+#' 
+#' @author Samuel Wieczorek
+#' 
+#' @examples
+#' library(QFeatures)
+#' utils::data(Exp1_R25_pept, package='DAPARdata2')
+#' POV_impute_det_quant(assay(Exp1_R25_pept[[2]]), colData(Exp1_R25_pept))
+#' 
+#' @export
+POV_impute_det_quant <- function(x, sampleTab, ...){
+  if (is.null(x)){return(NULL)}
+  
+  MECIndex <- find_MEC_matrix(x, sampleTab)
+  
+  values <- getQuantile4Imp(x, ...)
+  res <- x
+  for(i in 1:dim(x)[2]){
+    col <- x[,i]
+    col[which(is.na(col))] <- values$shiftedImpVal[i]
+    x[,i] <- col
+  }
+  
+  x <- restore_MEC_matrix(x, sampleTab$Condition, MECIndex)
+  
+  return(x)
+}
 
 #' @title Quantile imputation value definition
 #' 
-#' @description This method returns the q-th quantile of each colum of an expression set, up to a scaling factor
+#' @description This method returns the q-th quantile of each column of an expression set, up to a scaling factor
 #' 
 #' @param x An expression set containing quantitative values of various replicates
 #' 
@@ -321,6 +378,66 @@ impute_slsa <- function(x, sampleTab){
     return (res)
 }
 
+
+
+#' @title Imputation of peptides having no values in a biological condition.
+#' 
+#' @param x A DataFrame.
+#' 
+#' @param sampleTab xxxxx
+#' 
+#' @return A DataFrame
+#' 
+#' @author Samuel Wieczorek
+#' 
+#' @examples
+#' library(QFeatures)
+#' utils::data(Exp1_R25_pept, package='DAPARdata2')
+#' obj <- Exp1_R25_pept[1:1000]
+#' imp <- POV_impute_slsa(assay(obj[[2]]), colData(obj))
+#' 
+#' @export
+#' 
+#' @importFrom imp4p impute.slsa
+#' 
+POV_impute_slsa <- function(x, sampleTab){
+  
+  MECIndex <- find_MEC_matrix(x, sampleTab$Condition)
+  
+  # sort conditions to be compliant with impute.slsa (from imp4p version 0.9) which only manage ordered samples 
+  old.sample.name <- sampleTab$Sample.name
+  new.order <- order(sampleTab$Condition)
+  new.sampleTab <- sampleTab[new.order,]
+  conds <- factor(new.sampleTab$Condition, levels=unique(new.sampleTab$Condition))
+  new.x <- x[,new.order]
+  
+  res <- imp4p::impute.slsa(new.x, conditions=conds, nknn=6, selec="all", weight=1, ind.comp=1)
+  #restore old order
+  res <- res[,old.sample.name]
+  
+  res <- restore_MEC_matrix(x, sampleTab$Condition, MECIndex)
+  
+  return (res)
+}
+
+
+#' This method is a wrapper to
+#' objects of class \code{MSnSet} and imputes missing values with a fixed value.
+#'
+#' @title Missing values imputation from a \code{MSnSet} object
+#' @param x An assay of a SummarizedExperiment
+#' @param value A float .
+#' @return The object \code{obj} which has been imputed
+#' @author Samuel Wieczorek
+#' @examples
+#' utils::data(Exp1_R25_pept, package='DAPARdata')
+#' wrapper.impute.fixedValue(Exp1_R25_pept[1:1000], 0.001)
+#' @export
+impute_fixed_value <- function(x, value){
+  
+  x[is.na(x)] <- fixVal
+  return (x)
+}
 
 
 

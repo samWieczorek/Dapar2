@@ -39,6 +39,7 @@ Imports:
     MsCoreUtils,
     SummarizedExperiment,
     MultiAssayExperiment,
+    AnnotationFilter,
     openxlsx, 
     preprocessCore,
     lme4,

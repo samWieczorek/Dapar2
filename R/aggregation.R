@@ -515,7 +515,7 @@ GetDetailedNbPeptidesUsed <- function(X, qPepData){
   qPepData[!is.na(qPepData)] <- 1
   qPepData[is.na(qPepData)] <- 0
 
-  res <- t(X) %*% qPepData
+  res <- t(as.matrix(X)) %*% qPepData
   
   return(res)
 }
