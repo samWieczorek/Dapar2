@@ -120,8 +120,6 @@ setMethod("filterFeaturesSam", "QFeatures",
 #'
 #' @param object An object of class \code{QFeatures}
 #' 
-#' @param sampleTab \code{colData()} of obj
-#' 
 #' @param type Method used to choose the lines to delete.
 #' Values are : "None", "EmptyLines", "WholeMatrix", "AllCond", "AtLeastOneCond"
 #' 

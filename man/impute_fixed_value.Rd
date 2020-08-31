@@ -20,8 +20,9 @@ objects of class \code{MSnSet} and imputes missing values with a fixed value.
 }
 \examples{
 utils::data(Exp1_R25_pept, package='DAPARdata')
-wrapper.impute.fixedValue(Exp1_R25_pept[1:1000], 0.001)
+impute_fixed_value(assay(Exp1_R25_pept[1:1000], 2), 0.001)
+
 }
 \author{
-Samuel Wieczorek
+Samuel Wieczoreklibrary(DAPAR2)
 }

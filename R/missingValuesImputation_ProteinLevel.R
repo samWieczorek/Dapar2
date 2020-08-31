@@ -138,7 +138,7 @@ impute_matrix_dapar <- function(x,
 #' @export
 #' 
 imputeMethodsDapar <- function()
-    c("knn_by_conds", "pa", "det_quant", "slsa", "mle_dapar", "none")
+    c("knn_by_conds", "pa", "det_quant", "slsa", "mle_dapar", 'fixed_value', 'mi', 'POV_slsa', 'POV_det_quant', "none")
 
 #' @title List the methods available in DAPAR to impute Partially Observed Values (POV)
 #' 
@@ -425,17 +425,24 @@ POV_impute_slsa <- function(x, sampleTab){
 #' objects of class \code{MSnSet} and imputes missing values with a fixed value.
 #'
 #' @title Missing values imputation from a \code{MSnSet} object
+#' 
 #' @param x An assay of a SummarizedExperiment
+#' 
 #' @param value A float .
+#' 
 #' @return The object \code{obj} which has been imputed
-#' @author Samuel Wieczorek
+#' 
+#' @author Samuel Wieczoreklibrary(DAPAR2)
+#' 
 #' @examples
 #' utils::data(Exp1_R25_pept, package='DAPARdata')
-#' wrapper.impute.fixedValue(Exp1_R25_pept[1:1000], 0.001)
+#' impute_fixed_value(assay(Exp1_R25_pept[1:1000], 2), 0.001)
+#' 
 #' @export
+#' 
 impute_fixed_value <- function(x, value){
   
-  x[is.na(x)] <- fixVal
+  x[is.na(x)] <- value
   return (x)
 }
 
