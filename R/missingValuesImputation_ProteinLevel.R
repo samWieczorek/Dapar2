@@ -469,7 +469,7 @@ POV_impute_slsa <- function(x, sampleTab){
   #restore old order
   res <- res[,old.sample.name]
   
-  res <- restore_MEC_matrix(x, sampleTab$Condition, MECIndex)
+  res <- restore_MEC_matrix(res, sampleTab$Condition, MECIndex)
   
   return (res)
 }
