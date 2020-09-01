@@ -13,9 +13,9 @@
 #' 
 #' @param i A vector of the conditions (one condition per sample).
 #' 
-#' @param palette The different colors for conditions
-#' 
 #' @param title The title of the plot
+#' 
+#' @param palette The different colors for conditions
 #' 
 #' @return Density plots
 #' 
@@ -30,7 +30,7 @@
 #' 
 #' @import highcharter
 #' 
-hc_mvTypePlot2 <- function(obj, i, palette = NULL, title=NULL){
+hc_mvTypePlot2 <- function(obj, i, title=NULL, palette = NULL){
   
   if(missing(obj))
     stop("'obj' is required.")
