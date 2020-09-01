@@ -89,6 +89,7 @@ setMethod("filterFeaturesSam", "QFeatures",
             
             if (nrow(tmp) == 0){
               warning('The filtering has not been proceeded beacause it empties all the dataset.')
+              ## The object is not affected
               object
               } else {
                 object <- addAssay(object,
