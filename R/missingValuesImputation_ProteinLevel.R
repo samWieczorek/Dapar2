@@ -6,7 +6,7 @@
 #' library(QFeatures)
 #' utils::data(Exp1_R25_pept, package='DAPARdata2')
 #' obj <- Exp1_R25_pept[1:1000,]
-#' obj <- impute_dapar(obj, 2,'foo',  'det_quant')
+#' obj <- impute_dapar(obj, 2,'foo1',  'POV_det_quant', conds=colData(obj)$Condition)
 #' 
 "impute_dapar"
 
@@ -60,8 +60,9 @@ setMethod("impute_dapar", "QFeatures",
               tmp <- object[[i]]
               res <- impute_matrix_dapar(assay(tmp), method, ...)
               SummarizedExperiment::assay(tmp) <- res
-              metadata(tmp)$Params <-  argg[-match(c('object', 'i', 'name'), names(argg))]
-              
+              #metadata(tmp)$Params <-  argg[-match(c('object', 'i', 'name'), names(argg))]
+              p <- argg[-match(c('object', 'i', 'name'), names(argg))]
+              metadata(tmp)$Params <-  paste0(names(p),'=', p, collapse=', ')
               object <- QFeatures::addAssay(object,
                                            tmp,
                                            name)
@@ -101,25 +102,35 @@ impute_matrix_dapar <- function(x,
     if (!anyNA(x)) return(x)
     if (missing(method))
         stop("Please specify an imputation method. ")
+  
+    if (!(method %in% imputeMethodsDapar()))
+        stop("'method' is not a valid method in DAPAR.")
     method <- match.arg(method,
                         choices = imputeMethodsDapar(),
                         several.ok = FALSE)
     res <- x
-    if (method %in% c("impute_pa"))
-        requireNamespace("imp4p")
     
-    if (method == "knn_by_conds") {
+    if (method == "POV_knn_by_conds") {
+      res <- POV_impute_knn_by_conditions(x, ...)
+    } else if (method == "knn_by_conds") {
         res <- impute_knn_by_conditions(x, ...)
     } else if (method == "pa") {
+        requireNamespace("imp4p")
         res <- impute_pa(x, ...)
     } else if (method == "det_quant") {
         res <- impute_det_quant(x, ...)
-    } else if (method == "slsa") {
+    } else if (method == "POV_det_quant") {
+      res <- POV_impute_det_quant(x, ...)
+    }else if (method == "slsa") {
         res <- impute_slsa(x, ...)
+    } else if (method == "POV_slsa") {
+      res <- POV_impute_slsa(x, ...)
     } else if (method == "mle_dapar") {
         res <- impute_mle_dapar(x, ...)
     } else if (method == "mi") {
         res <- impute_mi(x, ...)
+    } else if (method == "fixed_val") {
+      res <- impute_fixed_value(x, ...)
     }
     ## else method == "none" -- do nothing
     res
@@ -132,7 +143,72 @@ impute_matrix_dapar <- function(x,
 #' @export
 #' 
 imputeMethodsDapar <- function()
-    c("knn_by_conds", "pa", "det_quant", "slsa", "mle_dapar", "none")
+    c('POV_knn_by_conds', "knn_by_conds", "pa", "det_quant", "slsa", "mle_dapar", 'fixed_val', 'mi', 'POV_slsa', 'POV_det_quant', "none")
+
+#' @title List the methods available in DAPAR to impute Partially Observed Values (POV)
+#' 
+#' @export
+#' 
+impute_POV_Methods <- function()
+  c(imputeMethodsDapar()[grep('POV', imputeMethodsDapar())],"none")
+
+
+#' @title List the methods in DAPAR to impute Missing Entire Condition (MEC)
+#' 
+#' @export
+#' 
+impute_MEC_Methods <- function()
+  c("knn_by_conds", "pa", "det_quant", "slsa", "mle_dapar", "none")
+
+
+#' @title KNN missing values imputation by conditions
+#' 
+#' @description This function imputes the missing values condition by condition.
+#' 
+#' @param x xxxx
+#' 
+#' @param conds xxx
+#' 
+#' @param k the number of neighbors.
+#' 
+#' @return The object \code{obj} which has been imputed
+#' 
+#' @author Samuel Wieczorek
+#' 
+#' @examples
+#' library(QFeatures)
+#' utils::data(Exp1_R25_pept, package='DAPARdata2')
+#' obj <- Exp1_R25_pept[1:1000,]
+#' imp <- POV_impute_knn_by_conditions(assay(obj[[2]]), colData(obj)$Condition, 3)
+#' 
+#' @export
+#' 
+#' @importFrom impute impute.knn
+#' 
+POV_impute_knn_by_conditions <- function(x, conds=NULL, k=3){
+  
+  if(missing(conds))
+    stop("'conds' is missing.")
+  
+  if (is.null(conds))
+    stop("'conds' is empty.")
+  
+  MECIndex <- find_MEC_matrix(x, conds)
+
+  res <-x
+  u_conds <- unique(conds)
+  
+  
+  for (i in 1:length(u_conds)){
+    ind <- which(conds == u_conds[i])
+    resKNN <- impute::impute.knn(res[,ind] ,k = k, rowmax = 0.99, colmax = 0.99, maxp = 1500, rng.seed = sample(1:1000,1))
+    res[,ind] <- resKNN[[1]]
+  }
+  
+  res <- restore_MEC_matrix(res, conds, MECIndex)
+  
+  return(res)
+}
 
 
 
@@ -238,7 +314,7 @@ impute_pa <- function(x, conds, q.min = 0.025){
 #' impute_det_quant(assay(Exp1_R25_pept[[2]]))
 #' 
 #' @export
-impute_det_quant <- function(x,...){
+impute_det_quant <- function(x, ...){
     if (is.null(x)){return(NULL)}
     
     values <- getQuantile4Imp(x, ...)
@@ -247,15 +323,50 @@ impute_det_quant <- function(x,...){
         col <- x[,i]
         col[which(is.na(col))] <- values$shiftedImpVal[i]
         x[,i] <- col
-    }
+   }
+   
     return(x)
 }
 
-
+#' @title Imputation of the POV with the method of deterministic Quantile
+#' 
+#' @param x An instance of class \code{DataFrame}
+#' 
+#' @param conds xxx
+#' 
+#' @param ... Additional arguments
+#' 
+#' @return An imputed instance of class \code{DataFrame}
+#' 
+#' @author Samuel Wieczorek
+#' 
+#' @examples
+#' library(QFeatures)
+#' utils::data(Exp1_R25_pept, package='DAPARdata2')
+#' POV_impute_det_quant(assay(Exp1_R25_pept[[2]]), colData(Exp1_R25_pept)$Condition)
+#' 
+#' @export
+POV_impute_det_quant <- function(x, conds, ...){
+  if (is.null(x)){return(NULL)}
+  
+  MECIndex <- find_MEC_matrix(x, conds)
+  
+  values <- getQuantile4Imp(x, ...)
+  res <- x
+  for(i in 1:dim(x)[2]){
+    col <- x[,i]
+    col[which(is.na(col))] <- values$shiftedImpVal[i]
+    x[,i] <- col
+  }
+  
+  x <- restore_MEC_matrix(x, conds, MECIndex)
+  
+  return(x)
+}
 
 #' @title Quantile imputation value definition
 #' 
-#' @description This method returns the q-th quantile of each colum of an expression set, up to a scaling factor
+#' @description This method returns the q-th quantile of each column of an expression set, up to a scaling factor
 #' 
 #' @param x An expression set containing quantitative values of various replicates
 #' 
@@ -323,6 +434,73 @@ impute_slsa <- function(x, sampleTab){
 
 
 
+#' @title Imputation of peptides having no values in a biological condition.
+#' 
+#' @param x A DataFrame.
+#' 
+#' @param sampleTab xxxxx
+#' 
+#' @return A DataFrame
+#' 
+#' @author Samuel Wieczorek
+#' 
+#' @examples
+#' library(QFeatures)
+#' utils::data(Exp1_R25_pept, package='DAPARdata2')
+#' obj <- Exp1_R25_pept[1:1000]
+#' imp <- POV_impute_slsa(assay(obj[[2]]), colData(obj))
+#' 
+#' @export
+#' 
+#' @importFrom imp4p impute.slsa
+#' 
+POV_impute_slsa <- function(x, sampleTab){
+  
+  MECIndex <- find_MEC_matrix(x, sampleTab$Condition)
+  
+  # sort conditions to be compliant with impute.slsa (from imp4p version 0.9) which only manage ordered samples 
+  old.sample.name <- sampleTab$Sample.name
+  new.order <- order(sampleTab$Condition)
+  new.sampleTab <- sampleTab[new.order,]
+  conds <- factor(new.sampleTab$Condition, levels=unique(new.sampleTab$Condition))
+  new.x <- x[,new.order]
+  
+  res <- imp4p::impute.slsa(new.x, conditions=conds, nknn=6, selec="all", weight=1, ind.comp=1)
+  #restore old order
+  res <- res[,old.sample.name]
+  
+  res <- restore_MEC_matrix(x, sampleTab$Condition, MECIndex)
+  
+  return (res)
+}
+
+
+#' This method is a wrapper to
+#' objects of class \code{MSnSet} and imputes missing values with a fixed value.
+#'
+#' @title Missing values imputation from a \code{MSnSet} object
+#' 
+#' @param x An assay of a SummarizedExperiment
+#' 
+#' @param value A float .
+#' 
+#' @return The object \code{obj} which has been imputed
+#' 
+#' @author Samuel Wieczoreklibrary(DAPAR2)
+#' 
+#' @examples
+#' utils::data(Exp1_R25_pept, package='DAPARdata')
+#' impute_fixed_value(assay(Exp1_R25_pept[1:1000], 2), 0.001)
+#' 
+#' @export
+#' 
+impute_fixed_value <- function(x, value){
+  
+  x[is.na(x)] <- value
+  return (x)
+}
+
+
 
 #' 
 #'
@@ -382,6 +560,10 @@ restore_MEC_matrix <- function(x, conds, MECIndex){
 #' 
 find_MEC_matrix <- function(x, conds){
     
+ # if(class(x)!='matrix')
+ #   stop("'c' must be an instance of class 'SummarizedExperiment'.")
+  
+  
     u_conds <- unique(conds)
     nbCond <- length(u_conds)
     
@@ -395,7 +577,6 @@ find_MEC_matrix <- function(x, conds){
             tmp <- data.frame(i,which(apply(is.na(x[,ind]), 1, sum)==length(ind)))
             names(tmp) <- c("Condition", "Line")
             s <- rbind(s,tmp)
-            
         }
     }
     return(s)

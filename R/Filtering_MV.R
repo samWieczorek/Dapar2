@@ -41,7 +41,7 @@
 #'
 #' @rdname filterFeaturesSam
 #'
-#' @importFrom AnnotationFilter field value
+#' @importFrom AnnotationFilter field value condition
 #' 
 setMethod("filterFeaturesSam", "SummarizedExperiment",
           function(object, filter, ...) {
@@ -127,8 +127,6 @@ setMethod("filterFeaturesSam", "QFeatures",
 #'
 #' @param object An object of class \code{QFeatures}
 #' 
-#' @param sampleTab \code{colData()} of obj
-#' 
 #' @param type Method used to choose the lines to delete.
 #' Values are : "None", "EmptyLines", "WholeMatrix", "AllCond", "AtLeastOneCond"
 #' 
@@ -139,8 +137,6 @@ setMethod("filterFeaturesSam", "QFeatures",
 #' only the lines which contain at least \code{th} values are kept.
 #' 
 #' @param percent TRUE by default. When FALSE, use the number of samples
-#' 
-#' @param newColName Name of the new column containing the filtration information
 #' 
 #' @return The object of class \code{SummarizedExperiment} with extra column in rowData
 #' indicating 1 for the lines to remove, else 0.
