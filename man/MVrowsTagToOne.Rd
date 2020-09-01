@@ -19,10 +19,6 @@ between 0 and maximum number of replicate for "AllCond" and "AtLeastOneCond", wh
 only the lines which contain at least \code{th} values are kept.}
 
 \item{percent}{TRUE by default. When FALSE, use the number of samples}
-
-\item{sampleTab}{\code{colData()} of obj}
-
-\item{newColName}{Name of the new column containing the filtration information}
 }
 \value{
 The object of class \code{SummarizedExperiment} with extra column in rowData
