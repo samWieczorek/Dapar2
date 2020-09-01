@@ -100,21 +100,35 @@ impute_mi <- function (x, sampleTab, lapala = TRUE, progress.bar=TRUE, ...)
   if (progress.bar == TRUE) {
     cat(paste("\n 2/ Estimation of the mixture model in each sample... \n  "))
   }
-  res = imp4p::estim.mix(tab = tab, tab.imp = dat.slsa, conditions = conditions,...)
+  res = imp4p::estim.mix(tab = tab, 
+                         tab.imp = dat.slsa, 
+                         conditions = conditions, 
+                         x.step.mod = 300, 
+                         x.step.pi = 300, 
+                         nb.rei = 100)
   
   
   if (progress.bar == TRUE) {
     cat(paste("\n 3/ Estimation of the probabilities each missing value is MCAR... \n  "))
   }
-  born = imp4p::estim.bound(tab = tab, conditions = conditions,...)
+  born = imp4p::estim.bound(tab = tab, 
+                            conditions = conditions, 
+                            q = 0.95)
+  
   proba = imp4p::prob.mcar.tab(born$tab.upper, res)
   
   
   if (progress.bar == TRUE) {
     cat(paste("\n 4/ Multiple imputation strategy with mi.mix ... \n  "))
   }
-  data.mi = imp4p::mi.mix(tab = tab, tab.imp = dat.slsa, prob.MCAR = proba, 
-                          conditions = conditions, repbio = repbio, reptech = reptech, ...)
+  data.mi = imp4p::mi.mix(tab = tab, 
+                          tab.imp = dat.slsa, 
+                          prob.MCAR = proba, 
+                          conditions = conditions, 
+                          repbio = repbio, 
+                          reptech = reptech, 
+                          ...)
+  
   colnames(data.mi) <- new.sampleTab$Sample.name
   rownames(data.mi) <- rownames(new.x)  
   
@@ -122,7 +136,9 @@ impute_mi <- function (x, sampleTab, lapala = TRUE, progress.bar=TRUE, ...)
     if (progress.bar == TRUE) {
       cat(paste("\n\n 5/ Imputation of rows with only missing values in a condition with impute.pa ... \n  "))
     }
-    data.final <- impute_pa2(data.mi, new.sampleTab, ...)
+    data.final <- impute_pa2(data.mi, 
+                             new.sampleTab, 
+                             ...)
   } else {
     data.final <- data.mi
   }
