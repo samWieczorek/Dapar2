@@ -33,7 +33,7 @@
 #' 
 #' @export
 #' 
-corrMatrixD_HC <- function(obj, names = NULL, rate = 0.5) {
+corrMatrixD_HC <- function(obj, names = NULL, rate = 0.5, showDataLabels=TRUE) {
   
 
   res <- cor(SummarizedExperiment::assay(obj),use = 'pairwise.complete.obs')
@@ -86,7 +86,7 @@ corrMatrixD_HC <- function(obj, names = NULL, rate = 0.5) {
       series = list(
         boderWidth = 0,
         dataConditions = list(enabled = TRUE),
-        dataLabels = list(enabled = TRUE)
+        dataLabels = list(enabled = showDataLabels)
       )) %>% 
     hc_tooltip(formatter = fntltp) %>% 
     hc_legend(align = "right", layout = "vertical",
