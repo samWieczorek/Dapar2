@@ -5,7 +5,7 @@
 \title{Displays a correlation matrix of the quantitative data of a
 numeric matrix.}
 \usage{
-corrMatrixD_HC(obj, names = NULL, rate = 0.5)
+corrMatrixD_HC(obj, names = NULL, rate = 0.5, showValues = TRUE)
 }
 \arguments{
 \item{obj}{xxx}
@@ -14,6 +14,8 @@ corrMatrixD_HC(obj, names = NULL, rate = 0.5)
 
 \item{rate}{The rate parameter to control the exponential law for 
 the gradient of colors}
+
+\item{showValues}{xxx}
 }
 \value{
 A colored correlation matrix

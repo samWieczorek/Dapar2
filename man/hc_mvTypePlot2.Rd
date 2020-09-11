@@ -4,16 +4,16 @@
 \alias{hc_mvTypePlot2}
 \title{Distribution of Observed values with respect to intensity values}
 \usage{
-hc_mvTypePlot2(obj, i, palette = NULL, title = NULL)
+hc_mvTypePlot2(obj, i, title = NULL, palette = NULL)
 }
 \arguments{
 \item{obj}{A matrix that contains quantitative data.}
 
 \item{i}{A vector of the conditions (one condition per sample).}
 
-\item{palette}{The different colors for conditions}
-
 \item{title}{The title of the plot}
+
+\item{palette}{The different colors for conditions}
 }
 \value{
 Density plots

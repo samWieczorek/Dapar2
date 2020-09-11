@@ -32,11 +32,8 @@
 #' }
 #' 
 #' @importFrom grDevices colorRampPalette
-#' 
 #' @importFrom gplots heatmap.2
-#' 
 #' @importFrom stats dist hclust as.dendrogram
-#' 
 #' @importFrom dendextend get_leaves_branches_col
 #' 
 #' @export

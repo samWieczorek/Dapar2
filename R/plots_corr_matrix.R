@@ -10,6 +10,8 @@
 #' @param rate The rate parameter to control the exponential law for 
 #' the gradient of colors
 #' 
+#' @param showValues xxx
+#' 
 #' @return A colored correlation matrix
 #' 
 #' @author Samuel Wieczorek, Enora Fremy
@@ -33,7 +35,7 @@
 #' 
 #' @export
 #' 
-corrMatrixD_HC <- function(obj, names = NULL, rate = 0.5, showDataLabels=TRUE) {
+corrMatrixD_HC <- function(obj, names = NULL, rate = 0.5, showValues=TRUE) {
   
 
   res <- cor(SummarizedExperiment::assay(obj),use = 'pairwise.complete.obs')
@@ -86,7 +88,7 @@ corrMatrixD_HC <- function(obj, names = NULL, rate = 0.5, showDataLabels=TRUE) {
       series = list(
         boderWidth = 0,
         dataConditions = list(enabled = TRUE),
-        dataLabels = list(enabled = showDataLabels)
+        dataLabels = list(enabled = showValues)
       )) %>% 
     hc_tooltip(formatter = fntltp) %>% 
     hc_legend(align = "right", layout = "vertical",

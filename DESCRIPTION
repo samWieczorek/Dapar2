@@ -67,7 +67,15 @@ Imports:
     data.table,
     impute,
     dendextend,
-    readxl
+    readxl,
+    forcats,
+    methods,
+    apcluster,
+    Mfuzz,
+    diptest,
+    cluster,
+    multcomp,
+    purrr
 biocViews: 
     Proteomics,
     Normalization,
