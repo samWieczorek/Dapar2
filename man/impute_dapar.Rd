@@ -39,7 +39,7 @@ xxxxxx
 library(QFeatures)
 utils::data(Exp1_R25_pept, package='DAPARdata2')
 obj <- Exp1_R25_pept[1:1000,]
-obj <- impute_dapar(obj, 2,'foo',  'det_quant')
+obj <- impute_dapar(obj, 2,'foo1',  'POV_det_quant', conds=colData(obj)$Condition)
 
 }
 \keyword{datasets}

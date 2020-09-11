@@ -275,6 +275,152 @@ MVrowsTagToOne <- function(object, type, th=0, percent=TRUE) {
 
 
 
+
+
+
+#' Filter missing values by proportion
+#'
+#' @description Remove lines in the data according to the proportion of missing
+#' values. This proportion is calculated differently depending on whether we
+#' want a certain proportion of missing values (NA) to remain on:
+#' * the entire matrix, regardless of the conditions: the rows containing a
+#' proportion of NA equal or below the threshold will be kept.
+#' * all the conditions: the lines for which all the conditions have a NA
+#' proportion equal to or less than the fixed proportion will be kept.
+#' * at least one condition: the lines for which at least one condition is
+#' equal to or less than the fixed proportion of NA will be kept.
+#'
+#' @param obj  An object of class \code{MSnSet} containing quantitative data
+#' and phenotype data.
+#' 
+#' @param intensities_proportion float between 0 and 1 corresponding to the proportion
+#' of intensities to keep in the lines.
+#' 
+#' @param mode character string. Four possibilities corresponding to the
+#' description above: "None", wholeMatrix", "allCond" and "atLeastOneCond".
+#' 
+#' @return the object given as input but with the lines not respecting the
+#' proportion of NA requested in less.
+#' 
+#' @author Hélène Borges
+#' 
+#' @examples
+#' utils::data(Exp1_R25_prot, package='DAPARdata')
+#' filtered <- filterByProportion(obj = Exp1_R25_prot, intensities_proportion = 0.8, mode = "atLeastOneCond")
+#' 
+#' @export
+#' 
+#' @importFrom stringr str_glue
+#' @importFrom Biobase exprs pData fData
+#' @import dplyr
+#' @importFrom tidyr pivot_longer
+#' @importFrom methods is
+#' 
+filterByProportion <- function(obj, intensities_proportion, mode = "None"){
+  # check if mode is valid
+  if(!(mode %in% c("None","wholeMatrix", "allCond", "atLeastOneCond"))){
+    stop(stringr::str_glue("Wrong mode: {mode} is not a valid string.
+                     Please choose between 'None', wholeMatrix', 'allCond' or 'atLeastOneCond'.",
+                           call. =FALSE))
+  }
+  # check if intensities_proportion is valid
+  if(!methods::is(intensities_proportion, "numeric" )){
+    stop(stringr::str_glue("Wrong parameter: intensities_proportion needs to be numeric"))
+  }else if(!dplyr::between(intensities_proportion,0,1)){
+    stop(stringr::str_glue("Wrong parameter: intensities_proportion must be between 0 and 1"))
+  }
+  
+  print(stringr::str_glue("chosen proportion of intensities to be present: {intensities_proportion}"))
+  print(stringr::str_glue("chosen mode: {mode}"))
+  intensities <- Biobase::exprs(obj)
+  sTab <- Biobase::pData(obj)
+  sTab$Condition <- as.factor(sTab$Condition)
+  
+  intensities_t <- as.data.frame(t(intensities))
+  intensities_t <- dplyr::bind_cols(intensities_t,
+                                    condition = sTab$Condition,
+                                    sample = rownames(intensities_t))
+  tbl_intensities <- dplyr::as_tibble(intensities_t, rownames = NA)
+  longer_intensities <- tbl_intensities %>%
+    tidyr::pivot_longer(-c(condition,sample), names_to = "feature", values_to = "intensity")
+  # group_by does not keep the initial order when it is not a factor so to keep
+  # the protein order, we cheat by transforming feature into a factor.
+  longer_intensities$feature <- factor(longer_intensities$feature,
+                                       levels = unique(longer_intensities$feature))
+  if(mode == "None"){
+    to_keep <- obj
+  }else if(mode == "wholeMatrix"){
+    nb_samples <- ncol(intensities)
+    threshold <- ceiling(nb_samples*intensities_proportion)
+    print(stringr::str_glue("missing value threshold {threshold}"))
+    # for each feature (protein / peptide) we count the number of intensities present
+    feat_grp <- longer_intensities %>%
+      dplyr::group_by(feature) %>%
+      dplyr::summarise(non_na = sum(!is.na(intensity)))
+    to_keep <- obj[which(feat_grp$non_na >= threshold),]
+    
+  }else if(mode == "allCond" || mode == "atLeastOneCond"){
+    workforces <- longer_intensities %>%
+      dplyr::group_by(feature, condition) %>%
+      dplyr::count(condition)
+    # the number of samples per condition
+    workforces <- workforces$n[seq_len(length(levels(sTab$Condition)))]
+    
+    # for each condition of each feature, we count the number of intensities present
+    feat_grp <- longer_intensities %>%
+      dplyr::group_by(feature, condition) %>%
+      dplyr::summarise(non_na = sum(!is.na(intensity)))
+    # the threshold for each condition
+    thresholds <- ceiling(workforces*intensities_proportion)
+    print(stringr::str_glue("for condition {unique(levels(longer_intensities$condition))} number of samples is {workforces}, so missing value threshold is {thresholds} "))
+    # For each feature, each condition is compared with its respective
+    # threshold, we put 0 if the protein has a number of intensities lower than
+    # the threshold of the corresponding condition, and 1 otherwise
+    check_th <- feat_grp %>%
+      dplyr::group_by(feature) %>%
+      dplyr::mutate(non_na = dplyr::case_when(
+        non_na < thresholds ~ 0,
+        TRUE ~ 1
+      )) %>%
+      dplyr::ungroup()
+    # if it is allCond then we must find the features for which all the conditions
+    # respect the threshold
+    if(mode == "allCond"){
+      all_cond_ok <- check_th %>%
+        dplyr::group_by(feature) %>%
+        dplyr::filter(all(non_na ==1)) %>%
+        dplyr::ungroup() %>%
+        as.data.frame()
+      all_cond_ok$feature <- as.character(all_cond_ok$feature)
+      to_keep <- obj[which(rownames(obj) %in% all_cond_ok$feature),]
+    }else if(mode == "atLeastOneCond"){
+      # if it is atLeastOneCond then we must find the features for which at
+      # least one condition that respects the threshold
+      any_cond_ok <- check_th %>%
+        dplyr::group_by(feature) %>%
+        dplyr::filter(any(non_na ==1)) %>%
+        dplyr::ungroup() %>%
+        as.data.frame()
+      any_cond_ok$feature <- as.character(any_cond_ok$feature)
+      to_keep <- obj[which(rownames(obj) %in% any_cond_ok$feature),]
+    }
+  }
+  print(stringr::str_glue("There were initially {nrow(intensities)} features.
+                 After filtering out the missing values, {nrow(exprs(to_keep))} remain."))
+  return(to_keep)
+}
+
+
+
+
+
+
+
+
+
+
+
+
 #' Returns the \code{SummarizedExperiment} object without the \code{rowData()} extra column
 #' from MVrowsTagToOne
 #'

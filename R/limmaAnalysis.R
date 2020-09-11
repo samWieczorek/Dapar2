@@ -520,14 +520,14 @@ make.contrast <- function(design, condition, contrast=1){
 #' @param sampleTab A DataFrame of experimental design. 
 #' 
 #' @param comp.type A string that corresponds to the type of comparison. 
-#' Values are: 'OnevsOne' and 'OnevsAll'; default is 'OnevsOne'.
+#' Values are: 'anova1way', 'OnevsOne' and 'OnevsAll'; default is 'OnevsOne'.
 #' 
 #' @return A list of two dataframes : logFC and P_Value. The first one contains
 #' the logFC values of all the comparisons (one column for one comparison), the second one contains
 #' the pvalue of all the comparisons (one column for one comparison). The names of the columns for those two dataframes
 #' are identical and correspond to the description of the comparison. 
 #' 
-#' @author Thomas Burger, Quentin Giai-Gianetto, Samuel Wieczorek
+#' @author Hélène Borges, Thomas Burger, Quentin Giai-Gianetto, Samuel Wieczorek
 #' 
 #' @examples
 #' library(QFeatures)
@@ -536,7 +536,7 @@ make.contrast <- function(design, condition, contrast=1){
 #' object <- addAssay(object, QFeatures::filterNA(object[[2]],  pNA = 0), name='filtered')
 #' sampleTab <- colData(object)
 #' obj <- object[['filtered']]
-#' limma <- limma.complete.test(obj, sampleTab)
+#' limma <- limmaCompleteTest(qData, sTab, comp.type='anova1way')
 #' 
 #' @importFrom limma contrasts.fit makeContrasts lmFit
 #' 
@@ -560,10 +560,28 @@ limma.complete.test <- function(obj, sampleTab, comp.type="OnevsOne"){
   res.l <- NULL
   design.matrix <- make.design(sampleTab)
   if(!is.null(design.matrix)) {
-    contra <- make.contrast(design.matrix,condition=conds, contrast)
-    cmtx <- limma::makeContrasts(contrasts=contra,levels=make.names(colnames(design.matrix)))
-    fit <- limma::eBayes(limma::contrasts.fit(limma::lmFit(qData, design.matrix), cmtx))
-    res.l <- formatLimmaResult(fit, conds, contrast)
+    if(comp.type == 'OnevsOne' || comp.type == "OnevsAll"){
+      contra <- make.contrast(design.matrix,condition=conds, contrast)
+      cmtx <- limma::makeContrasts(contrasts=contra,
+                                   levels=make.names(colnames(design.matrix)))
+      fit <- limma::eBayes(limma::contrasts.fit(limma::lmFit(qData, design.matrix), cmtx))
+      res.l <- formatLimmaResult(fit, conds, contrast)
+    }else if(comp.type == "anova1way"){
+      # make the orthogonal contrasts
+      contrasts <- tidyr::crossing(A = colnames(design.matrix), B = colnames(design.matrix), .name_repair = "minimal") %>%
+        dplyr::filter(A!=B)
+      orthogonal_contrasts <- dplyr::filter(contrasts, !duplicated(paste0(pmax(A, B), pmin(A, B)))) %>%
+        dplyr::mutate(contrasts = stringr::str_glue("{A}-{B}"))
+      # make the contrasts in a format adapted for limma functions
+      contrasts_limma_format <- limma::makeContrasts(contrasts = orthogonal_contrasts$contrasts,
+                                                     levels = colnames(design.matrix))
+      ebayes_fit <- limma::eBayes(limma::contrasts.fit(limma::lmFit(qData, design.matrix), contrasts_limma_format))
+      fit_table <- limma::topTable(ebayes_fit, sort.by = "none", number = nrow(qData))
+      fit_pvalue <- dplyr::select(fit_table, "anova_1way_pval" = P.Value)
+      res.l <- list("logFC" = data.frame("anova_1way_logFC" = matrix(NA, nrow = nrow(fit_pvalue)),
+                                         row.names = rownames(fit_pvalue)),
+                    "P_Value" = fit_pvalue)
+    }
   }
   
   return(res.l)

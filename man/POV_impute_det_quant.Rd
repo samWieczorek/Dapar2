@@ -4,12 +4,12 @@
 \alias{POV_impute_det_quant}
 \title{Imputation of the POV with the method of deterministic Quantile}
 \usage{
-POV_impute_det_quant(x, sampleTab, ...)
+POV_impute_det_quant(x, conds, ...)
 }
 \arguments{
 \item{x}{An instance of class \code{DataFrame}}
 
-\item{sampleTab}{xxx}
+\item{conds}{xxx}
 
 \item{...}{Additional arguments}
 }
@@ -22,7 +22,7 @@ Imputation of the POV with the method of deterministic Quantile
 \examples{
 library(QFeatures)
 utils::data(Exp1_R25_pept, package='DAPARdata2')
-POV_impute_det_quant(assay(Exp1_R25_pept[[2]]), colData(Exp1_R25_pept))
+POV_impute_det_quant(assay(Exp1_R25_pept[[2]]), colData(Exp1_R25_pept)$Condition)
 
 }
 \author{
