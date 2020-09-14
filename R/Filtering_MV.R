@@ -91,12 +91,12 @@ setMethod("filterFeaturesSam", "QFeatures",
               warning('The filtering has not been proceeded beacause it empties all the dataset.')
               ## The object is not affected
               object
-              } else {
-                object <- addAssay(object,
-                               tmp,
-                               name)
-            addAssayLink(object, from = i, to = name)
-              }
+            } else {
+              object <- addAssay(object,
+                                 tmp,
+                                 name)
+              addAssayLink(object, from = i, to = name)
+            }
           }
           
 )
@@ -253,12 +253,12 @@ MVrowsTagToOne <- function(object, type, th=0, percent=TRUE) {
 #' of intensities to keep in the lines.
 #' 
 #' @param mode character string. Four possibilities corresponding to the
-#' description above: "None", wholeMatrix", "allCond" and "atLeastOneCond".
+#' description above: "None", WholeMatrix", "AllCond" and "AtLeastOneCond".
 #' 
 #' @return the object given as input but with the lines not respecting the
 #' proportion of NA requested in less.
 #' 
-#' @author HÃ©lÃ¨ne Borges, Samuel Wieczorek
+#' @author Hélène Borges, Samuel Wieczorek
 #' 
 #' @examples
 #' library(QFeatures)
@@ -266,7 +266,7 @@ MVrowsTagToOne <- function(object, type, th=0, percent=TRUE) {
 #' obj <- Exp1_R25_pept
 #' sTab <- colData(obj)
 #' 
-#' obj <- MVrowsTagToOne_HB(obj, sTab, mode = 'atLeastOneCond', int.prop = 0.7)
+#' obj <- MVrowsTagToOne_HB(obj, sTab, mode = 'AtLeastOneCond', int.prop = 0.7)
 #' na_filter_percent <- VariableFilter(field = "tagNA", value = "0", condition = "==")
 #' obj <- filterFeaturesSam(object = obj, i = 2, name = 'na_filter_percent', filter=na_filter_percent)
 #' obj <- removeAdditionalCol(obj, "tagNA")
@@ -281,28 +281,28 @@ MVrowsTagToOne <- function(object, type, th=0, percent=TRUE) {
 MVrowsTagToOne_HB <- function(obj, sTab, int.prop, mode = "None"){
   
   if(class(obj) != 'QFeatures')
-     stop("'obj' must be of class 'SummarizedExperiment'")
-     
+    stop("'obj' must be of class 'SummarizedExperiment'")
+  
   if(missing(sTab))
     stop("'sTab' is required")
   
   # check if mode is valid
-  if(!(mode %in% c("None","wholeMatrix", "allCond", "atLeastOneCond"))){
+  if(!(mode %in% c("None","WholeMatrix", "AllCond", "AtLeastOneCond"))){
     stop(stringr::str_glue("Wrong mode: {mode} is not a valid string.
-                     Please choose between 'None', wholeMatrix', 'allCond' or 'atLeastOneCond'.",
+                     Please choose between 'None', 'WholeMatrix', 'AllCond' or 'AtLeastOneCond'.",
                            call. =FALSE))
   }
   # check if int.prop is valid
   if(missing(int.prop))
     stop("'int.prop' is needed")
   else 
-    {
-      if(!methods::is(int.prop, "numeric" )){
-        stop(stringr::str_glue("Wrong parameter: int.prop needs to be numeric"))
-      } else if(!dplyr::between(int.prop, 0, 1)){
-        stop(stringr::str_glue("Wrong parameter: int.prop must be between 0 and 1"))
-      }
+  {
+    if(!methods::is(int.prop, "numeric" )){
+      stop(stringr::str_glue("Wrong parameter: int.prop needs to be numeric"))
+    } else if(!dplyr::between(int.prop, 0, 1)){
+      stop(stringr::str_glue("Wrong parameter: int.prop must be between 0 and 1"))
     }
+  }
   
   
   newColName <- "tagNA"
@@ -312,7 +312,7 @@ MVrowsTagToOne_HB <- function(obj, sTab, int.prop, mode = "None"){
   ## of QFeatures will truncate the object
   for (k in 1:length(experiments(obj)))
     rowData(obj[[k]]) <- setNames(cbind(rowData(obj[[k]]),tmp=rep(0, nrow(obj[[k]]))),
-                                     c(names(rowData(obj[[k]])),newColName)
+                                  c(names(rowData(obj[[k]])),newColName)
     )
   
   
@@ -339,7 +339,7 @@ MVrowsTagToOne_HB <- function(obj, sTab, int.prop, mode = "None"){
                                        levels = unique(longer_intensities$feature))
   if(mode == "None"){
     to_keep <- 1:nrow(obj)
-  }else if(mode == "wholeMatrix"){
+  }else if(mode == "WholeMatrix"){
     nb_samples <- ncol(intensities)
     threshold <- ceiling(nb_samples*int.prop)
     print(stringr::str_glue("missing value threshold {threshold}"))
@@ -349,7 +349,7 @@ MVrowsTagToOne_HB <- function(obj, sTab, int.prop, mode = "None"){
       dplyr::summarise(non_na = sum(!is.na(intensity)))
     to_keep <- which(feat_grp$non_na >= threshold)
     
-  }else if(mode == "allCond" || mode == "atLeastOneCond"){
+  }else if(mode == "AllCond" || mode == "AtLeastOneCond"){
     workforces <- longer_intensities %>%
       dplyr::group_by(feature, condition) %>%
       dplyr::count(condition)
@@ -373,9 +373,9 @@ MVrowsTagToOne_HB <- function(obj, sTab, int.prop, mode = "None"){
         TRUE ~ 1
       )) %>%
       dplyr::ungroup()
-    # if it is allCond then we must find the features for which all the conditions
+    # if it is AllCond then we must find the features for which all the conditions
     # respect the threshold
-    if(mode == "allCond"){
+    if(mode == "AllCond"){
       all_cond_ok <- check_th %>%
         dplyr::group_by(feature) %>%
         dplyr::filter(all(non_na ==1)) %>%
@@ -383,8 +383,8 @@ MVrowsTagToOne_HB <- function(obj, sTab, int.prop, mode = "None"){
         as.data.frame()
       all_cond_ok$feature <- as.character(all_cond_ok$feature)
       to_keep <- which(rownames(obj[[length(experiments(obj))]]) %in% all_cond_ok$feature)
-    }else if(mode == "atLeastOneCond"){
-      # if it is atLeastOneCond then we must find the features for which at
+    }else if(mode == "AtLeastOneCond"){
+      # if it is AtLeastOneCond then we must find the features for which at
       # least one condition that respects the threshold
       any_cond_ok <- check_th %>%
         dplyr::group_by(feature) %>%
@@ -397,10 +397,10 @@ MVrowsTagToOne_HB <- function(obj, sTab, int.prop, mode = "None"){
   }
   print(stringr::str_glue("There were initially {nrow(intensities)} features.
                  After filtering out the missing values, {nrow(to_keep)} remain."))
-
-
+  
+  
   rowData(obj[[length(experiments(obj))]])[-to_keep, newColName] <- 1 
-   
+  
   return(obj)
 }
 
