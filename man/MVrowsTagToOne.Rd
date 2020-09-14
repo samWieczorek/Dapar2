@@ -44,7 +44,7 @@ The different methods are :
 library(QFeatures)
 utils::data(Exp1_R25_pept, package='DAPARdata2')
 object <- Exp1_R25_pept
-res <- MVrowsTagToOne(object, type = "WholeMatrix", th=1, percent=FALSE)
+res <- MVrowsTagToOne(object, type = "AtLeastOneCond", th=0.7, percent=TRUE)
 
 }
 \author{

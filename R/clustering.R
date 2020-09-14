@@ -1,4 +1,26 @@
+
+#' @title xxx
+#' 
+#' @description This code is an adaptation of the standardise function in the package Mfuzz
+#' it works directly on a matrix or data.frame of intensities
+#' 
+#' @param data
+#' 
+standardise <- function (data) 
+{
+  
+  for (i in 1:dim(data)[[1]]) {
+    data[i, ] <- (data[i, ] - mean(data[i, ], na.rm = TRUE))/sd(data[i, ], na.rm = TRUE)
+  }
+  data
+}
+
+
+
 #' Average and standardize protein/peptide abundances for each condition studied
+
+
+
 #'
 #' @description Calculate the average of the abundances for each protein in
 #' each condition for an ExpressionSet or MSnSet. Needs to have the array
@@ -6,53 +28,62 @@
 #' the array data in the same order than the condition column in the phenotype
 #' data).
 #'
-#' @param ESet_obj ExpressionSet object containing all the data
+#' @param obj SummarizedExperiment object containing all the data
+#' 
+#' @param sTab xxx
+#' 
 #' @return a dataframe in wide format providing (in the case of 3 or more
 #' conditions) the standardized means of intensities for each protein/peptide
 #' in each condition. If there are less than 3 conditions, standardization
 #' cannot be performed and only the means of intensities are returned.
+#' 
 #' @author Hélène Borges
+#' 
 #' @examples
-#' standardiseMeanIntensities(my_expresion_set)
+#' library(QFeatures)
+#' utils::data(Exp1_R25_prot, package='DAPARdata2')
+#' obj <- Exp1_R25_prot
+#' sTab <- colData(obj)
+#' standards <- standardiseMeanIntensities(obj[[2]], sTab)
 #' 
 #' @export
 #' 
 #' @importFrom dplyr bind_cols as_tibble group_by summarise
-#' @importFrom Biobase exprs pData fData ExpressionSet
 #' @importFrom tidyr pivot_wider
-#' @importFrom Mfuzz standardise 
 #' 
-standardiseMeanIntensities <- function(ESet_obj){
-  intensities <- Biobase::exprs(ESet_obj)
-  sTab <- Biobase::pData(ESet_obj)
+standardiseMeanIntensities <- function(obj, sTab){
+  intensities <- assay(obj)
+  
   sTab$Condition <- as.factor(sTab$Condition)
   intensities_t <- as.data.frame(t(intensities))
   intensities_t <- dplyr::bind_cols(intensities_t, condition = sTab$Condition, sample = rownames(intensities_t))
   tbl_intensities <- dplyr::as_tibble(intensities_t, rownames = NA)
+  
   longer_intensities <- tbl_intensities %>%
-    tidyr::pivot_longer(-c(condition,sample), names_to = "feature", values_to = "intensity")
+    tidyr::pivot_longer(-c(condition, sample), names_to = "feature", values_to = "intensity")
   mean_intensities <- longer_intensities %>%
     dplyr::group_by(condition, feature) %>%
     dplyr::summarise(mean = mean(intensity))
+  
   mean_intensities_wide <- tidyr::pivot_wider(mean_intensities,
                                               names_from = condition,
                                               values_from = mean)
   averaged_data <- as.data.frame(mean_intensities_wide)
   rownames(averaged_data) <- averaged_data[,1]
+  
   if(length(levels(sTab$Condition)) > 2){
     # on standardise les données pour rendre les protéines/peptides comparables
-    eset <- Biobase::ExpressionSet(assayData = as.matrix(averaged_data[,-1]))
-    eset_s <- Mfuzz::standardise(eset)
-    standards <- eset_s@assayData$exprs
+    standards <- standardise(as.matrix(averaged_data[,-1]))
     standardized_means <- dplyr::bind_cols(feature = dplyr::as_tibble(averaged_data[,1]), dplyr::as_tibble(standards))
-    return(standardized_means)
+    value <- standardized_means
   }else{
     message("There are no sufficient conditions to achieve standardization
                 (minimum is 3). This is why no standardization is carried out on
                 the data. Only mean intensities are returned. ")
-    return(averaged_data)
+    value <- averaged_data
   }
   
+  return(value)
   
 }
 
@@ -119,7 +150,9 @@ checkClusterability <- function(standards){
 #' @author Hélène Borges
 #' 
 #' @examples
-#' test_anova <- wrapperClassic1wayAnova(fibrose)
+#' library(QFeatures)
+#' utils::data(Exp1_R25_pept, package='DAPARdata2')
+#' test_anova <- wrapperClassic1wayAnova(Exp1_R25_pept)
 #' vizu <- visualizeClusters(dat = standardized_means,
 #'                           clust_model = km_model,
 #'                           adjusted_pValues = test_anova$P_Value$anova1way,
@@ -135,7 +168,7 @@ checkClusterability <- function(standards){
 #'              
 visualizeClusters <- function(dat, clust_model, adjusted_pValues, FDR_th = NULL, ttl = "", subttl = ""){
   if(is.null(FDR_th)){
-    FDR_th <- c(0.001,0.005,0.01,0.05)
+    FDR_th <- c(0.001, 0.005, 0.01, 0.05)
   }else if(length(FDR_th) > 4){
     message("Too many FDR thresholds provided. Please do not exceed 4 values")
     return(NULL)
@@ -144,7 +177,7 @@ visualizeClusters <- function(dat, clust_model, adjusted_pValues, FDR_th = NULL,
   str_try <- stringr::str_glue("<{FDR_th}")
   str_max <- stringr::str_glue(">{max(FDR_th)}")
   
-  dat$FDR_threshold <- cut(adjusted_pValues, breaks = c(-Inf,FDR_th,Inf), labels = c(str_try, str_max))
+  dat$FDR_threshold <- cut(adjusted_pValues, breaks = c(-Inf, FDR_th, Inf), labels = c(str_try, str_max))
   desc_th <- FDR_th[order(FDR_th, decreasing = TRUE)]
   str_desc <- stringr::str_glue("<{desc_th}")
   
@@ -209,22 +242,32 @@ visualizeClusters <- function(dat, clust_model, adjusted_pValues, FDR_th = NULL,
 #' clustering model and its graph from average abundances of proteins/peptides.
 #'  It is possible to carry out either a kmeans model or an affinity
 #'  propagation model. See details for exact steps.
-#' @param obj ExpressionSet or MSnSet object.
+#'  
+#' @param obj QFeatures object.
+#' 
+#' @param i xxxx
+#' 
 #' @param clustering_method character string. Three possible values are "kmeans",
 #' "affinityProp" and "affinityPropReduced. See the details section for more
 #' explanation.
+#' 
 #' @param k_clusters integer or NULL. Number of clusters to run the kmeans
 #' algorithm. If `clustering_method` is set to "kmeans" and this parameter is
 #' set to NULL, then a kmeans model will be realized with an optimal number of
 #' clusters `k` estimated by the Gap statistic method. Ignored for the Affinity
 #'  propagation model.
+#'  
 #' @param conditions_order vector specifying the order of the Condition factor
 #' levels in the phenotype data. Default value is NULL, which means that it is the
 #' order of the condition present in the phenotype data of "obj" which is
 #' taken to create the profiles.
+#' 
 #' @param adjusted_pvals vector of adjusted pvalues returned by the [wrapperClassic1wayAnova()]
+#' 
 #' @param ttl the title for the final plot
+#' 
 #' @param subttl the subtitle for the final plot
+#' 
 #' @param FDR_thresholds vector containing the different threshold
 #' values to be used to color the profiles according to their adjusted pvalue.
 #' The default value (NULL) generates 4 thresholds: [0.001, 0.005, 0.01, 0.05].
@@ -233,6 +276,7 @@ visualizeClusters <- function(dat, clust_model, adjusted_pValues, FDR_th = NULL,
 #'  0.01 and 0.05, and those> 0.05. The highest given value will be considered
 #'  as the threshold of insignificance, the profiles having a pvalue> this
 #'  threshold value will then be colored in gray.
+#'  
 #' @details The first step consists in averaging the abundances of
 #' proteins/peptides according to the different conditions defined in the
 #' phenotype data of the expressionSet / MSnSet. Then we standardize the data,
@@ -277,29 +321,42 @@ visualizeClusters <- function(dat, clust_model, adjusted_pValues, FDR_th = NULL,
 #' @importFrom apcluster apcluster
 #' @importFrom forcats as_factor fct_relevel
 #' 
-wrapperRunClustering <- function(obj, clustering_method, conditions_order = NULL, k_clusters = NULL, adjusted_pvals, ttl = "", subttl = "", FDR_thresholds = NULL){
+wrapperRunClustering <- function(obj, 
+                                 i,
+                                 clustering_method, 
+                                 conditions_order = NULL, 
+                                 k_clusters = NULL, 
+                                 adjusted_pvals, 
+                                 ttl = "", 
+                                 subttl = "",
+                                 FDR_thresholds = NULL){
+  
+  
+  tmp <- obj
   res <- list("model" = NULL, "ggplot" = NULL)
   # reorder conditions if requested
   if(!is.null(conditions_order)){
     # check that given levels are correct in number...
-    if(length(conditions_order) == length(levels(forcats::as_factor(obj@phenoData@data$Condition)))){
+    if(length(conditions_order) == length(levels(forcats::as_factor(colData(tmp)$Condition)))){
       # ...and have same labels
-      if(all(conditions_order %in% levels(forcats::as_factor(obj@phenoData@data$Condition)))){
-        obj@phenoData@data$Condition <- forcats::fct_relevel(obj@phenoData@data$Condition, conditions_order)
+      if(all(conditions_order %in% levels(forcats::as_factor(colData(tmp)$Condition)))){
+        colData(tmp)$Condition <- forcats::fct_relevel(colData(tmp)$Condition, conditions_order)
       }else{
-        valid_labels <- str_c(levels(forcats::as_factor(obj@phenoData@data$Condition)), collapse = ", ")
+        valid_labels <- str_c(levels(forcats::as_factor(colData(tmp)$Condition)), collapse = ", ")
         message(stringr::str_glue("Wrong labels given. The valid labels are {valid_labels}"))
         return(NULL)
       }
     }else{
       y <- length(conditions_order)
-      n <- length(levels(forcats::as_factor(obj@phenoData@data$Condition)))
+      n <- length(levels(forcats::as_factor(colData(tmp)$Condition)))
       message(stringr::str_glue("Wrong number of given levels. There are currently {n} levels for Condition. You provided {y} levels."))
       return(NULL)
     }
   }
+  
+  
   print("average and standardization step...")
-  standardized_means <- standardiseMeanIntensities(obj)
+  standardized_means <- standardiseMeanIntensities(tmp)
   standardized_means <- na.omit(standardized_means)
   print("average and standardization step...done")
   if(clustering_method == "affinityProp"){

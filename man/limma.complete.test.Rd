@@ -12,7 +12,7 @@ limma.complete.test(obj, sampleTab, comp.type = "OnevsOne")
 \item{sampleTab}{A DataFrame of experimental design.}
 
 \item{comp.type}{A string that corresponds to the type of comparison. 
-Values are: 'OnevsOne' and 'OnevsAll'; default is 'OnevsOne'.}
+Values are: 'anova1way', 'OnevsOne' and 'OnevsAll'; default is 'OnevsOne'.}
 }
 \value{
 A list of two dataframes : logFC and P_Value. The first one contains
@@ -30,9 +30,9 @@ object <- Exp1_R25_pept
 object <- addAssay(object, QFeatures::filterNA(object[[2]],  pNA = 0), name='filtered')
 sampleTab <- colData(object)
 obj <- object[['filtered']]
-limma <- limma.complete.test(obj, sampleTab)
+limma <- limma.complete.test(qData, sTab, comp.type='anova1way')
 
 }
 \author{
-Thomas Burger, Quentin Giai-Gianetto, Samuel Wieczorek
+Hélène Borges, Thomas Burger, Quentin Giai-Gianetto, Samuel Wieczorek
 }

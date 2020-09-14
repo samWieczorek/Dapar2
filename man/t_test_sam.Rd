@@ -54,10 +54,10 @@ utils::data(Exp1_R25_pept, package='DAPARdata2')
 object <- Exp1_R25_pept[1:1000,]
 object <- addAssay(object, QFeatures::filterNA(object[[2]],  pNA = 0), name='filtered')
 object <- addListAdjacencyMatrices(object, 3)
-sTab <- colData(object)
-gttest.se <- t_test_sam(object[[3]], sTab, FUN = 'limma.complete.test')
 
-object <- t_test_sam(object, 3, name = "ttestAssay", FUN = 'compute.t.test', contrast = 'OnevsOne')
+object <- t_test_sam(object, i=3, name = "ttestAssay", FUN = 'compute.t.test', contrast = 'OnevsOne')
+object <- t_test_sam(object, i=3, name = "ttestLimma", FUN = 'limma.complete.test', comp.type= 'OnevsOne')
+object <- t_test_sam(object, i=3, name = "ttestAssay2", FUN = 'wrapperClassic1wayAnova', with_post_hoc=TRUE, post_hoc_test='Dunnett')
 
 }
 \keyword{datasets}
