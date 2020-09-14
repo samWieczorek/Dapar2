@@ -1,3 +1,19 @@
+#' @title List of hypothesis tests methods
+#' 
+#' @name HypothesisTestMethods
+#' 
+#' @export
+#'
+HypothesisTestMethods <- function()
+  c('compute.t.test',
+    'compute.group.t.test',
+    'limma.complete.test',
+    'wrapperClassic1wayAnova')
+
+
+
+
+
 #' @title Check the validity of the experimental design
 #'
 #' @description
@@ -25,10 +41,10 @@
 #' object <- Exp1_R25_pept[1:1000,]
 #' object <- addAssay(object, QFeatures::filterNA(object[[2]],  pNA = 0), name='filtered')
 #' object <- addListAdjacencyMatrices(object, 3)
-#' sTab <- colData(object)
-#' gttest.se <- t_test_sam(object[[3]], sTab, FUN = 'limma.complete.test')
 #' 
-#' object <- t_test_sam(object, 3, name = "ttestAssay", FUN = 'compute.t.test', contrast = 'OnevsOne')
+#' object <- t_test_sam(object, i=3, name = "ttestAssay", FUN = 'compute.t.test', contrast = 'OnevsOne')
+#' object <- t_test_sam(object, i=3, name = "ttestLimma", FUN = 'limma.complete.test', comp.type= 'OnevsOne')
+#' object <- t_test_sam(object, i=3, name = "ttestAssay2", FUN = 'wrapperClassic1wayAnova', with_post_hoc=TRUE, post_hoc_test='Dunnett')
 #' 
 "t_test_sam"
 
@@ -81,7 +97,8 @@ setMethod("t_test_sam", "QFeatures",
             if (length(i) != 1)
               stop("Only one assay to be processed at a time")
             if (is.numeric(i)) i <- names(object)[[i]]
-            
+            if (!(FUN %in% HypothesisTestMethods()))
+              stop(paste0("'FUN' must be one of the following:", HypothesisTestMethods()))
             if (is.null(GetAdjMat(object[[i]])) && metadata(object[[i]])$typeOfData == 'peptide')
               object <- addListAdjacencyMatrices(object, i)
             

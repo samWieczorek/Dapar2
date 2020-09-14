@@ -536,9 +536,11 @@ make.contrast <- function(design, condition, contrast=1){
 #' object <- addAssay(object, QFeatures::filterNA(object[[2]],  pNA = 0), name='filtered')
 #' sampleTab <- colData(object)
 #' obj <- object[['filtered']]
-#' limma <- limmaCompleteTest(qData, sTab, comp.type='anova1way')
+#' limma <- limma.complete.test(qData, sTab, comp.type='anova1way')
 #' 
 #' @importFrom limma contrasts.fit makeContrasts lmFit
+#' @importFrom tidyr crossing %>%
+#' @importFrom dplyr mutate filter select
 #' 
 #' @export
 #' 
@@ -643,7 +645,7 @@ formatLimmaResult <- function(fit, conds, contrast){
       #cn[i]<-paste(levels(Conditions)[as.numeric(compa[1,2])], "vs(all-",levels(Conditions)[as.numeric(compa[1,2])], ")", sep="")
       
       #hier and non hier
-      compa<-str_match_all(colnames(fit$p.value)[i], "[[:space:]]Condition([[:digit:]]+)")[[1]]
+      compa <- stringr::str_match_all(colnames(fit$p.value)[i], "[[:space:]]Condition([[:digit:]]+)")[[1]]
       cn[i]<-paste(unique(conds)[as.numeric(compa[1,2])], "_vs_(all-",unique(conds)[as.numeric(compa[1,2])], ")", sep="")
     }
   }

@@ -49,7 +49,7 @@ library(QFeatures)
 utils::data(Exp1_R25_prot, package='DAPARdata2')
 object <- Exp1_R25_prot
 filter_600 <- VariableFilter(field='Sequence_length', value=as.numeric('600'), condition='>')
-object <- filterFeaturesSam(object, i=2, filter=reverse_filter)
+object <- filterFeaturesSam(object, i=2, filter=reverse_600)
 
 
 }
