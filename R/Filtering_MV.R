@@ -26,7 +26,7 @@
 #' utils::data(Exp1_R25_prot, package='DAPARdata2')
 #' object <- Exp1_R25_prot
 #' filter_600 <- VariableFilter(field='Sequence_length', value=as.numeric('600'), condition='>')
-#' object <- filterFeaturesSam(object, i=2, filter=reverse_filter)
+#' object <- filterFeaturesSam(object, i=2, filter=reverse_600)
 #'
 #'
 "filterFeaturesSam"
@@ -147,7 +147,7 @@ setMethod("filterFeaturesSam", "QFeatures",
 #' library(QFeatures)
 #' utils::data(Exp1_R25_pept, package='DAPARdata2')
 #' object <- Exp1_R25_pept
-#' res <- MVrowsTagToOne(object, type = "WholeMatrix", th=1, percent=FALSE)
+#' res <- MVrowsTagToOne(object, type = "AtLeastOneCond", th=0.7, percent=TRUE)
 #' 
 #' @export
 #' 
@@ -176,52 +176,10 @@ MVrowsTagToOne <- function(object, type, th=0, percent=TRUE) {
   
   sampleTab <- colData(object)
   
-  # # check Type param
-  # paramtype<-c("None", "EmptyLines", "WholeMatrix", "AllCond", "AtLeastOneCond") 
-  # if (sum(is.na(match(type, paramtype)==TRUE))>0)
-  #   stop("Param type is not correct.")
-  
-  # # check Threshold/Percent param
-  # if (!is.numeric(th)) stop("th must be numeric.")
-  # if (th < 0) {
-  #   warning("Param th can't be inferior to zero.")
-  #   th<-0
-  #   cat("th set to 0.\n")
-  # }
-  # if (th==0) { cat("All row with NAs are kept.\n") }
-  
-  # if (isTRUE(percent)) {
-  #   if (th>1) {
-  #     th<-1
-  #     warning("When percent=T, th can't be superior to one.")
-  #     cat("th set to 1.\n")
-  #   }
-  #   if (th != 0) { cat("Row(s) containing",round(th, digits = 2)*100,"% NAs or more are removed.\n") 
-  #   }
-  # }
-  # else { # !isTRUE(percent)
-  #   if (th!=0) {
-  #     if (th%%1 != 0) {
-  #       stop("Param th have to be an integer.")
-  #     }
-  #     if (th > nrow(sampleTab)) {
-  #       warning("When percent=F, param th can't be superior to the number of samples.")
-  #       th<-nrow(sampleTab)
-  #       cat("th set to the number of samples.\n")
-  #     }
-  #     cat("Rows are removed when at least",th,"sample(s) contain NAs.\n")
-  #   }
-  # }
   
   # Filtration
   keepThat <- df <- NULL
-  #if (is.null(metadata(object[[i]])$OriginOfValues)) {
-  #  print('ok')
   df <- as.data.frame(assay(object[[i]]))
-  #} else {
-  #  print('pas ok')
-  #  df <- dplyr::select(rowData(object[[i]]),metadata(object[[i]])$OriginOfValues)
-  #}
   
   
   if (type == "None") {
@@ -268,14 +226,10 @@ MVrowsTagToOne <- function(object, type, th=0, percent=TRUE) {
   }
   
   
-  rowData(object[[i]])[-keepThat,newColName] <- 1 
+  rowData(object[[i]])[-keepThat, newColName] <- 1 
   
   return(object)
 }
-
-
-
-
 
 
 #' Filter missing values by proportion
@@ -290,10 +244,12 @@ MVrowsTagToOne <- function(object, type, th=0, percent=TRUE) {
 #' * at least one condition: the lines for which at least one condition is
 #' equal to or less than the fixed proportion of NA will be kept.
 #'
-#' @param obj  An object of class \code{MSnSet} containing quantitative data
+#' @param obj  An object of class \code{SummarizedExperiment} containing quantitative data
 #' and phenotype data.
 #' 
-#' @param intensities_proportion float between 0 and 1 corresponding to the proportion
+#' @param sTab xxxx
+#' 
+#' @param int.prop float between 0 and 1 corresponding to the proportion
 #' of intensities to keep in the lines.
 #' 
 #' @param mode character string. Four possibilities corresponding to the
@@ -302,38 +258,72 @@ MVrowsTagToOne <- function(object, type, th=0, percent=TRUE) {
 #' @return the object given as input but with the lines not respecting the
 #' proportion of NA requested in less.
 #' 
-#' @author Hélène Borges
+#' @author Hélène Borges, Samuel Wieczorek
 #' 
 #' @examples
-#' utils::data(Exp1_R25_prot, package='DAPARdata')
-#' filtered <- filterByProportion(obj = Exp1_R25_prot, intensities_proportion = 0.8, mode = "atLeastOneCond")
+#' library(QFeatures)
+#' utils::data(Exp1_R25_prot, package='DAPARdata2')
+#' obj <- Exp1_R25_pept
+#' sTab <- colData(obj)
+#' 
+#' obj <- MVrowsTagToOne_HB(obj, sTab, mode = 'atLeastOneCond', int.prop = 0.7)
+#' na_filter_percent <- VariableFilter(field = "tagNA", value = "0", condition = "==")
+#' obj <- filterFeaturesSam(object = obj, i = 2, name = 'na_filter_percent', filter=na_filter_percent)
+#' obj <- removeAdditionalCol(obj, "tagNA")
 #' 
 #' @export
 #' 
 #' @importFrom stringr str_glue
-#' @importFrom Biobase exprs pData fData
 #' @import dplyr
-#' @importFrom tidyr pivot_longer
+#' @importFrom tidyr pivot_longer %>%
 #' @importFrom methods is
 #' 
-filterByProportion <- function(obj, intensities_proportion, mode = "None"){
+MVrowsTagToOne_HB <- function(obj, sTab, int.prop, mode = "None"){
+  
+  if(class(obj) != 'QFeatures')
+     stop("'obj' must be of class 'SummarizedExperiment'")
+     
+  if(missing(sTab))
+    stop("'sTab' is required")
+  
   # check if mode is valid
   if(!(mode %in% c("None","wholeMatrix", "allCond", "atLeastOneCond"))){
     stop(stringr::str_glue("Wrong mode: {mode} is not a valid string.
                      Please choose between 'None', wholeMatrix', 'allCond' or 'atLeastOneCond'.",
                            call. =FALSE))
   }
-  # check if intensities_proportion is valid
-  if(!methods::is(intensities_proportion, "numeric" )){
-    stop(stringr::str_glue("Wrong parameter: intensities_proportion needs to be numeric"))
-  }else if(!dplyr::between(intensities_proportion,0,1)){
-    stop(stringr::str_glue("Wrong parameter: intensities_proportion must be between 0 and 1"))
-  }
+  # check if int.prop is valid
+  if(missing(int.prop))
+    stop("'int.prop' is needed")
+  else 
+    {
+      if(!methods::is(int.prop, "numeric" )){
+        stop(stringr::str_glue("Wrong parameter: int.prop needs to be numeric"))
+      } else if(!dplyr::between(int.prop, 0, 1)){
+        stop(stringr::str_glue("Wrong parameter: int.prop must be between 0 and 1"))
+      }
+    }
   
-  print(stringr::str_glue("chosen proportion of intensities to be present: {intensities_proportion}"))
-  print(stringr::str_glue("chosen mode: {mode}"))
-  intensities <- Biobase::exprs(obj)
-  sTab <- Biobase::pData(obj)
+  
+  newColName <- "tagNA"
+  i <- length(experiments(obj))
+  
+  ## Create a fictive column for each assays otherwise the filter method
+  ## of QFeatures will truncate the object
+  for (k in 1:length(experiments(obj)))
+    rowData(obj[[k]]) <- setNames(cbind(rowData(obj[[k]]),tmp=rep(0, nrow(obj[[k]]))),
+                                     c(names(rowData(obj[[k]])),newColName)
+    )
+  
+  
+  
+  
+  
+  
+  
+  print(stringr::str_glue("Choosen proportion of intensities to be present: {int.prop}"))
+  print(stringr::str_glue("Choosen mode: {mode}"))
+  intensities <- assay(obj)
   sTab$Condition <- as.factor(sTab$Condition)
   
   intensities_t <- as.data.frame(t(intensities))
@@ -342,22 +332,22 @@ filterByProportion <- function(obj, intensities_proportion, mode = "None"){
                                     sample = rownames(intensities_t))
   tbl_intensities <- dplyr::as_tibble(intensities_t, rownames = NA)
   longer_intensities <- tbl_intensities %>%
-    tidyr::pivot_longer(-c(condition,sample), names_to = "feature", values_to = "intensity")
+    tidyr::pivot_longer(-c(condition, sample), names_to = "feature", values_to = "intensity")
   # group_by does not keep the initial order when it is not a factor so to keep
   # the protein order, we cheat by transforming feature into a factor.
   longer_intensities$feature <- factor(longer_intensities$feature,
                                        levels = unique(longer_intensities$feature))
   if(mode == "None"){
-    to_keep <- obj
+    to_keep <- 1:nrow(obj)
   }else if(mode == "wholeMatrix"){
     nb_samples <- ncol(intensities)
-    threshold <- ceiling(nb_samples*intensities_proportion)
+    threshold <- ceiling(nb_samples*int.prop)
     print(stringr::str_glue("missing value threshold {threshold}"))
     # for each feature (protein / peptide) we count the number of intensities present
     feat_grp <- longer_intensities %>%
       dplyr::group_by(feature) %>%
       dplyr::summarise(non_na = sum(!is.na(intensity)))
-    to_keep <- obj[which(feat_grp$non_na >= threshold),]
+    to_keep <- which(feat_grp$non_na >= threshold)
     
   }else if(mode == "allCond" || mode == "atLeastOneCond"){
     workforces <- longer_intensities %>%
@@ -371,7 +361,7 @@ filterByProportion <- function(obj, intensities_proportion, mode = "None"){
       dplyr::group_by(feature, condition) %>%
       dplyr::summarise(non_na = sum(!is.na(intensity)))
     # the threshold for each condition
-    thresholds <- ceiling(workforces*intensities_proportion)
+    thresholds <- ceiling(workforces*int.prop)
     print(stringr::str_glue("for condition {unique(levels(longer_intensities$condition))} number of samples is {workforces}, so missing value threshold is {thresholds} "))
     # For each feature, each condition is compared with its respective
     # threshold, we put 0 if the protein has a number of intensities lower than
@@ -392,7 +382,7 @@ filterByProportion <- function(obj, intensities_proportion, mode = "None"){
         dplyr::ungroup() %>%
         as.data.frame()
       all_cond_ok$feature <- as.character(all_cond_ok$feature)
-      to_keep <- obj[which(rownames(obj) %in% all_cond_ok$feature),]
+      to_keep <- which(rownames(obj[[length(experiments(obj))]]) %in% all_cond_ok$feature)
     }else if(mode == "atLeastOneCond"){
       # if it is atLeastOneCond then we must find the features for which at
       # least one condition that respects the threshold
@@ -402,12 +392,16 @@ filterByProportion <- function(obj, intensities_proportion, mode = "None"){
         dplyr::ungroup() %>%
         as.data.frame()
       any_cond_ok$feature <- as.character(any_cond_ok$feature)
-      to_keep <- obj[which(rownames(obj) %in% any_cond_ok$feature),]
+      to_keep <- which(rownames(obj[[length(experiments(obj))]]) %in% any_cond_ok$feature)
     }
   }
   print(stringr::str_glue("There were initially {nrow(intensities)} features.
-                 After filtering out the missing values, {nrow(exprs(to_keep))} remain."))
-  return(to_keep)
+                 After filtering out the missing values, {nrow(to_keep)} remain."))
+
+
+  rowData(obj[[length(experiments(obj))]])[-to_keep, newColName] <- 1 
+   
+  return(obj)
 }
 
 
