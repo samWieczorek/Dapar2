@@ -152,6 +152,8 @@ groupttest <- function(X, qData1=NULL, qData2 = NULL){
       res[[i]] <- NA
     }
   }
+  #browser()
+  names(res) <- colnames(X)
   return(res)
 }
 
@@ -295,9 +297,6 @@ compute.group.t.test <- function(obj, sampleTab, logFC = NULL, contrast="OnevsOn
   res.l <- DataFrame(logFC, P_Value)
   colnames(res.l) <- c(names(logFC), names(P_Value))
 
-  rownames(res.l) <- rownames(qData)
-                       
-  
   return(res.l) 
   
 }
