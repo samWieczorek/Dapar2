@@ -320,6 +320,7 @@ visualizeClusters <- function(dat, clust_model, adjusted_pValues, FDR_th = NULL,
 #' 
 #' @importFrom apcluster apcluster
 #' @importFrom forcats as_factor fct_relevel
+#' @importFrom stats kmeans
 #' 
 wrapperRunClustering <- function(obj, 
                                  i,
@@ -368,7 +369,7 @@ wrapperRunClustering <- function(obj,
   }else if(clustering_method == "kmeans"){
     if(is.null(k_clusters)){
       res <- list("model" = NULL, "dip" = dip_test, "ggplot" = NULL)
-      checked_means <- checkClusterability(standardized_means)
+      checked_means <- checkClusterability(standardized_means[, -1])
       res$dip <- checked_means$dip_test
       best_k <- checked_means$gap_cluster
       res$model <- kmeans(standardized_means, centers = best_k, nstart = 25)

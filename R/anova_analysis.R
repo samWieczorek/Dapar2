@@ -10,6 +10,8 @@
 #' 
 #' @return A named vector containing all the different values of the aov model
 #' 
+#' @importFrom stats aov
+#' 
 #' @export
 #' 
 classic1wayAnova <- function(current_line, conditions){
