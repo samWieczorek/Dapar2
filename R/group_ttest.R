@@ -42,9 +42,10 @@ HypothesisTestMethods <- function()
 #' object <- addAssay(object, QFeatures::filterNA(object[[2]],  pNA = 0), name='filtered')
 #' object <- addListAdjacencyMatrices(object, 3)
 #' 
-#' object <- t_test_sam(object, i=3, name = "ttestAssay", FUN = 'compute.t.test', contrast = 'OnevsOne')
-#' object <- t_test_sam(object, i=3, name = "ttestLimma", FUN = 'limma.complete.test', comp.type= 'OnevsOne')
-#' object <- t_test_sam(object, i=3, name = "ttestAssay2", FUN = 'wrapperClassic1wayAnova', with_post_hoc=TRUE, post_hoc_test='Dunnett')
+#' object <- t_test_sam(object, i=3, name = "ttest", FUN = 'compute.t.test', contrast = 'OnevsAll')
+#' object <- t_test_sam(object, i=3, name = "ttest_group", FUN = 'compute.group.t.test', contrast = 'OnevsAll')
+#' object <- t_test_sam(object, i=3, name = "ttest_Limma", FUN = 'limma.complete.test', comp.type= 'OnevsAll')
+#' object <- t_test_sam(object, i=3, name = "ttest_Anova", FUN = 'wrapperClassic1wayAnova', with_post_hoc=TRUE, post_hoc_test='Dunnett')
 #' 
 "t_test_sam"
 
@@ -188,7 +189,7 @@ groupttest <- function(X, qData1=NULL, qData2 = NULL){
 #' obj <- addAssay(obj, QFeatures::filterNA(obj[[2]],  pNA = 0), name='filtered')
 #' obj <- addListAdjacencyMatrices(obj, 3)
 #' sTab <- colData(obj)
-#' gttest <- compute.group.t.test(obj[[3]], sTab)
+#' gttest <- compute.group.t.test(obj[[3]], sTab, contrast="OnevsAll",)
 #' 
 #' @export
 #' 
@@ -196,7 +197,13 @@ groupttest <- function(X, qData1=NULL, qData2 = NULL){
 #' 
 compute.group.t.test <- function(obj, sampleTab, logFC = NULL, contrast="OnevsOne", type="Student"){
 
- 
+  if(missing(obj))
+    stop("'obj' is required.")
+  if(missing(sampleTab))
+    stop("'sampleTab' is required.")
+ if (!(contrast %in% c('OnevsOne', 'OnevsAll')))
+   stop("'contrast' must be one of the following: 'OnevsOne' or 'OnevsAll")
+  
   qData <- assay(obj)
   X <- GetAdjMat(obj,'all')
   X.spec <- GetAdjMat(obj, 'onlySpec')
@@ -260,7 +267,7 @@ compute.group.t.test <- function(obj, sampleTab, logFC = NULL, contrast="OnevsOn
       # Cond.t.all[c1Indice] <- levels(Conditions.f)[i]
       # Cond.t.all[-c1Indice] <- "all"
       #c1Indice <- which(Conditions==levels(Conditions.f)[i])
-      res.tmp <- groupttest(X.spec,qData[,c1Indice], qData[,-c1Indice] )
+      res.tmp <- groupttest(X.spec, qData[,c1Indice], qData[,-c1Indice] )
       
       
       p.tmp <- unlist(lapply(res.tmp,function(x) x["p.value"]))
@@ -287,6 +294,8 @@ compute.group.t.test <- function(obj, sampleTab, logFC = NULL, contrast="OnevsOn
   
   res.l <- DataFrame(logFC, P_Value)
   colnames(res.l) <- c(names(logFC), names(P_Value))
+
+  rownames(res.l) <- rownames(qData)
                        
   
   return(res.l) 

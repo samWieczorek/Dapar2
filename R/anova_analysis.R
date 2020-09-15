@@ -59,7 +59,8 @@ classic1wayAnova <- function(current_line, conditions){
 #' @importFrom dplyr select
 #' 
 wrapperClassic1wayAnova <- function(obj, sampleTab, with_post_hoc = FALSE, post_hoc_test = NULL){
-  qData <- as_tibble(assay(obj))
+ # browser()
+  qData <- as.data.frame(assay(obj))
   
   if (!(with_post_hoc %in% c(TRUE, FALSE)))
     stop("Wrong with_post_hoc parameter. Please choose between FALSE or TRUE")
@@ -71,7 +72,7 @@ wrapperClassic1wayAnova <- function(obj, sampleTab, with_post_hoc = FALSE, post_
   if(!isTRUE(with_post_hoc)){
     anova_tests <- as.data.frame(t(apply(qData,1,function(x) unlist(summary(classic1wayAnova(x,conditions=as.factor(sampleTab$Condition)))))))
     results <- dplyr::select(anova_tests, `Pr(>F)1`)
-    to_return <- list("logFC" = data.frame("anova_1way_logFC" = matrix(NA, nrow = nrow(results)), row.names = rownames(results)),
+    to_return <- DataFrame("logFC" = data.frame("anova_1way_logFC" = matrix(NA, nrow = nrow(results)), row.names = rownames(results)),
                       "P_Value" = data.frame("anova_1way_pval" = results$`Pr(>F)1`, row.names = rownames(results)))
   } else {
       anova_tests <- t(apply(qData, 1, classic1wayAnova, conditions=as.factor(sampleTab$Condition)))
@@ -93,9 +94,12 @@ wrapperClassic1wayAnova <- function(obj, sampleTab, with_post_hoc = FALSE, post_
 #' 
 #' @author Hélène Borges
 #' 
+#' @examples
+#' 
 #' @importFrom purrr map_dfr
 #' 
 formatPHResults <- function(post_hoc_models_summaries){
+  
   # récupérer les différences entre les moyennes
   res_coeffs <- lapply(post_hoc_models_summaries, function(x) x$test$coefficients)
   logFC <- data.frame(purrr::map_dfr(res_coeffs, cbind),
@@ -106,16 +110,11 @@ formatPHResults <- function(post_hoc_models_summaries){
   pvals <- data.frame(purrr::map_dfr(res_pvals, cbind),
                       row.names = names(post_hoc_models_summaries[[1]]$test$coefficients))
   pvals <- as.data.frame(t(pvals))
+  
   res <- DataFrame(logFC, pvals)
-
-  colnames(res.) <- c(names(logFC), names(pvals))
-  
-  
-  # formatting of column names for consistency with the limma and t-test code
-  colnames(res$logFC) <- stringr::str_replace(colnames(res$logFC), " - ", "_vs_")
-  colnames(res$P_Value) <- stringr::str_replace(colnames(res$P_Value), " - ", "_vs_")
-  colnames(res$logFC) <- stringr::str_c(colnames(res$logFC), "_logFC")
-  colnames(res$P_Value) <- stringr::str_c(colnames(res$P_Value), "_pval")
+  names(logFC) <- stringr::str_c(stringr::str_replace(colnames(logFC), " - ", "_vs_"), "_logFC")
+  names(pvals) <- stringr::str_c(stringr::str_replace(colnames(pvals), " - ", "_vs_"), "_pval")
+  colnames(res) <- c(names(logFC), names(pvals))
   
   return(res)
 }
@@ -159,6 +158,10 @@ formatPHResults <- function(post_hoc_models_summaries){
 #' 
 #' @author Hélène Borges
 #' 
+#' @examples 
+#' 
+#' 
+#' 
 #' @export
 #' 
 #' @importFrom multcomp glht adjusted mcp
@@ -176,7 +179,8 @@ postHocTest <- function(aov_fits, post_hoc_test = "TukeyHSD"){
   # use of adjusted("none") to obtain raw p-values (and not adjusted ones)
     models_summaries <- lapply(aov_fits,
                                      function(x) summary(multcomp::glht(x, linfct = multcomp::mcp(conditions = post_hoc_test)),
-                                                         test = multcomp::adjusted("none")))
+                                                       test = multcomp::adjusted("none")))
+   
     res <- formatPHResults(models_summaries)
   
   return(res)
