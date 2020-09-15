@@ -70,7 +70,7 @@ wrapperClassic1wayAnova <- function(obj, sampleTab, with_post_hoc = FALSE, post_
   
   
   if(!isTRUE(with_post_hoc)){
-    anova_tests <- as.data.frame(t(apply(qData,1,function(x) unlist(summary(classic1wayAnova(x,conditions=as.factor(sampleTab$Condition)))))))
+    anova_tests <- as.data.frame(t(apply(qData, 1, function(x) unlist(summary(classic1wayAnova(x, conditions=as.factor(sampleTab$Condition)))))))
     results <- dplyr::select(anova_tests, `Pr(>F)1`)
     to_return <- DataFrame("logFC" = data.frame("anova_1way_logFC" = matrix(NA, nrow = nrow(results)), row.names = rownames(results)),
                       "P_Value" = data.frame("anova_1way_pval" = results$`Pr(>F)1`, row.names = rownames(results)))
