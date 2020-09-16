@@ -15,8 +15,7 @@ removeAdditionalCol(object, colToRemove = NULL)
 The \code{SummarizedExperiment} object without the rowData colToRemove column
 }
 \description{
-Returns the \code{SummarizedExperiment} object without the \code{rowData()} extra column
-from MVrowsTagToOne
+Restore the rowData() before MVrowsTagToOne
 }
 \examples{
 library(QFeatures)

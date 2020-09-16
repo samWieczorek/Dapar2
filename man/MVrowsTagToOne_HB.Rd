@@ -16,7 +16,7 @@ and phenotype data.}
 of intensities to keep in the lines.}
 
 \item{mode}{character string. Four possibilities corresponding to the
-description above: "None", wholeMatrix", "allCond" and "atLeastOneCond".}
+description above: "None", WholeMatrix", "AllCond" and "AtLeastOneCond".}
 }
 \value{
 the object given as input but with the lines not respecting the
@@ -39,12 +39,12 @@ utils::data(Exp1_R25_prot, package='DAPARdata2')
 obj <- Exp1_R25_pept
 sTab <- colData(obj)
 
-obj <- MVrowsTagToOne_HB(obj, sTab, mode = 'atLeastOneCond', int.prop = 0.7)
+obj <- MVrowsTagToOne_HB(obj, sTab, mode = 'AtLeastOneCond', int.prop = 0.7)
 na_filter_percent <- VariableFilter(field = "tagNA", value = "0", condition = "==")
 obj <- filterFeaturesSam(object = obj, i = 2, name = 'na_filter_percent', filter=na_filter_percent)
 obj <- removeAdditionalCol(obj, "tagNA")
 
 }
 \author{
-Hélène Borges, Samuel Wieczorek
+H?l?ne Borges, Samuel Wieczorek
 }

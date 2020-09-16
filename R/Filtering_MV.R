@@ -122,9 +122,6 @@ setMethod("filterFeaturesSam", "QFeatures",
 #' - "AtLeastOneCond": given a threshold \code{th}, only the lines that contain
 #'   at least \code{th} values, and for at least one condition, are kept.
 #'
-#' @title An object of class \code{SummarizedExperiment} where the rowData gets an extra column 
-#' containing the information of the fitration.
-#'
 #' @param object An object of class \code{QFeatures}
 #' 
 #' @param type Method used to choose the lines to delete.
@@ -258,7 +255,7 @@ MVrowsTagToOne <- function(object, type, th=0, percent=TRUE) {
 #' @return the object given as input but with the lines not respecting the
 #' proportion of NA requested in less.
 #' 
-#' @author Hélène Borges, Samuel Wieczorek
+#' @author H?l?ne Borges, Samuel Wieczorek
 #' 
 #' @examples
 #' library(QFeatures)
@@ -414,10 +411,6 @@ MVrowsTagToOne_HB <- function(obj, sTab, int.prop, mode = "None"){
 
 
 
-
-#' Returns the \code{SummarizedExperiment} object without the \code{rowData()} extra column
-#' from MVrowsTagToOne
-#'
 #' @title Restore the rowData() before MVrowsTagToOne
 #' 
 #' @param object An object of class \code{QFeatures}

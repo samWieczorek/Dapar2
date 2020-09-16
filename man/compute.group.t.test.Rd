@@ -35,7 +35,7 @@ obj <- Exp1_R25_pept[1:1000,]
 obj <- addAssay(obj, QFeatures::filterNA(obj[[2]],  pNA = 0), name='filtered')
 obj <- addListAdjacencyMatrices(obj, 3)
 sTab <- colData(obj)
-gttest <- compute.group.t.test(obj[[3]], sTab)
+gttest <- compute.group.t.test(obj[[3]], sTab, contrast="OnevsAll",)
 
 }
 \author{

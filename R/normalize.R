@@ -85,7 +85,11 @@ else
 setMethod("normalizeD", "SummarizedExperiment",
           function(object,
                    method,
+                   withTracking=FALSE,
                    ...) {
+            
+            if(!(method %in% normalizeMethods.dapar(withTracking)))
+              stop("'method' is not correct. See 'normalizeMethods.dapar()' for details.")
             
             e <- do.call(method, list(assay(object), ...))
             

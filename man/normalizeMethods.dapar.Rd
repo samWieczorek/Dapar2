@@ -4,7 +4,7 @@
 \alias{normalizeMethods.dapar}
 \title{List normalization methods}
 \usage{
-normalizeMethods.dapar()
+normalizeMethods.dapar(withTracking = FALSE)
 }
 \description{
 List normalization methods
