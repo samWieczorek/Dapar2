@@ -12,7 +12,7 @@ An object of class \code{standardGeneric} of length 1.
 \usage{
 normalizeD
 
-\S4method{normalizeD}{SummarizedExperiment}(object, method, ...)
+\S4method{normalizeD}{SummarizedExperiment}(object, method, withTracking = FALSE, ...)
 
 \S4method{normalizeD}{QFeatures}(object, i, name = "normalizedAssay", method, ...)
 }

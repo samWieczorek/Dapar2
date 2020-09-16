@@ -16,6 +16,9 @@ each comparison.
 \description{
 Extract logFC and raw pvalues from multiple post-hoc models summaries
 }
+\examples{
+
+}
 \author{
 Hélène Borges
 }

@@ -39,6 +39,11 @@ group), but also to midly unbalanced designs.
 The Dunnett's test compares a single control group to all other groups.
 Make sure the factor levels are properly ordered.
 }
+\examples{
+
+
+
+}
 \author{
 Hélène Borges
 }

@@ -55,9 +55,10 @@ object <- Exp1_R25_pept[1:1000,]
 object <- addAssay(object, QFeatures::filterNA(object[[2]],  pNA = 0), name='filtered')
 object <- addListAdjacencyMatrices(object, 3)
 
-object <- t_test_sam(object, i=3, name = "ttestAssay", FUN = 'compute.t.test', contrast = 'OnevsOne')
-object <- t_test_sam(object, i=3, name = "ttestLimma", FUN = 'limma.complete.test', comp.type= 'OnevsOne')
-object <- t_test_sam(object, i=3, name = "ttestAssay2", FUN = 'wrapperClassic1wayAnova', with_post_hoc=TRUE, post_hoc_test='Dunnett')
+object <- t_test_sam(object, i=3, name = "ttest", FUN = 'compute.t.test', contrast = 'OnevsAll')
+object <- t_test_sam(object, i=3, name = "ttest_group", FUN = 'compute.group.t.test', contrast = 'OnevsAll')
+object <- t_test_sam(object, i=3, name = "ttest_Limma", FUN = 'limma.complete.test', comp.type= 'OnevsAll')
+object <- t_test_sam(object, i=3, name = "ttest_Anova", FUN = 'wrapperClassic1wayAnova', with_post_hoc=TRUE, post_hoc_test='Dunnett')
 
 }
 \keyword{datasets}
