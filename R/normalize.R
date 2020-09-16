@@ -4,20 +4,20 @@
 #' 
 #' @export
 #'
-normalizeMethods.dapar <- function()
-  c("GlobalQuantileAlignment", "SumByColumns",
-    "QuantileCentering", "MeanCentering",
-    "LOESS", "vsn")
+normalizeMethods.dapar <- function(withTracking=FALSE){
+  if (isTRUE(withTracking))
+    c("SumByColumns", 
+      "QuantileCentering", 
+      "MeanCentering")
+else
+  c("GlobalQuantileAlignment", 
+    "SumByColumns",
+    "QuantileCentering", 
+    "MeanCentering",
+    "LOESS", 
+    "vsn")
+}
 
-
-#' @title List normalization methods with tracking option
-#' 
-#' @name normalizeMethodsWithTracking.dapar
-#' 
-#' @export
-#'
-normalizeMethodsWithTracking.dapar <- function()
-  c("SumByColumns", "QuantileCentering", "MeanCentering")
 
 
 #' @title Check the validity of the experimental design.
