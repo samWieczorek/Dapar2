@@ -4,7 +4,7 @@
 \alias{compute.t.test}
 \title{xxxxxx}
 \usage{
-\method{compute}{t.test}(obj, sampleTab, contrast = "OnevsOne", type = "Student")
+compute.t.test(obj, sampleTab, contrast = "OnevsOne", type = "Student")
 }
 \arguments{
 \item{obj}{xxxxx}

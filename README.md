@@ -1,1 +1,20 @@
+<img src="./logo.png" width=100 alt="Stan Logo"/>
+
 # DAPAR2
+
+DAPAR and ProStaR are software tools to perform the statistical analysis of label-free XIC-based quantitative discovery proteomics experiments. DAPAR contains procedures to filter, normalize, impute missing value, aggregate peptide intensities, perform null hypothesis significance tests and select the most likely differentially abundant proteins with a corresponding false discovery rate. ProStaR is a graphical user interface that allows friendly access to the DAPAR functionalities through a web browser.
+
+## Installation
+
+DAPAR and ProStaR are implemented in the R language and are available on the website of the Bioconductor project (http://www.bioconductor.org/). A complete tutorial and a toy dataset are accompanying the packages.
+
+
+```r
+BiocManager::install("DAPAR2")
+```
+
+## Usage
+
+## Contact
+
+samuel.wieczorek@cea.fr, florence.combes@cea.fr, thomas.burger@cea.fr.

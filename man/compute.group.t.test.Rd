@@ -4,7 +4,13 @@
 \alias{compute.group.t.test}
 \title{xxxxxx}
 \usage{
-\method{compute}{group.t.test}(obj, sampleTab, logFC = NULL, contrast = "OnevsOne", type = "Student")
+compute.group.t.test(
+  obj,
+  sampleTab,
+  logFC = NULL,
+  contrast = "OnevsOne",
+  type = "Student"
+)
 }
 \arguments{
 \item{obj}{xxxxx}
