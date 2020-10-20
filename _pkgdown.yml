@@ -1,3 +1,20 @@
+navbar:
+  title: "DAPAR2"
+  left:
+    - icon: fas fa-home fa-lg
+      href: index.html
+    - text: Reference
+      href: reference/index.html
+    # - articles
+    # - tutorials
+    - text: News
+      href: news/index.html
+  right: 
+    - icon: fa-github
+      href: https://github.com/samWieczorek/DAPAR2/tree/clone_pkgdown
+   
+      
+      
 reference:
 - title: Dataset initialization
   contents:
