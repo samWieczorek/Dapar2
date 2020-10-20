@@ -370,8 +370,25 @@ build_reference()
 
 
 #############################################################################################
-build_articles()
-#############################################################################################
-build_tutorials()
+# copy paste vignettes/ from master/Prostar for test
+build_articles_index()
+# Writing 'articles/index.html'
+# [1] TRUE
+# Warning message:
+#   In '_pkgdown.yml', topic must be valid R code
+# x Not '``' 
+
+# need _pkgdown.yml. Next to build_tutorials(). build_articles_index() after build_site
+build_articles_index() # do nothing
+
+
 #############################################################################################
 build_news()
+# -- Building news -----------------------------------------------------------------------------------
+#   Writing 'news/index.html'
+# -- Previewing site ---------------------------------------------------------------------------------
+
+
+
+################################# END #################################
+build_site()
