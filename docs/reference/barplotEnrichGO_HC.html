@@ -95,6 +95,9 @@
 <li>
   <a href="../reference/index.html">Reference</a>
 </li>
+<li>
+  <a href="../news/index.html">Changelog</a>
+</li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
         
@@ -155,26 +158,26 @@ of the package 'clusterProfiler'</p></td>
 #&gt; <span class='message'></span>
 #&gt; <span class='message'>If you use clusterProfiler in published research, please cite:</span>
 #&gt; <span class='message'>Guangchuang Yu, Li-Gen Wang, Yanyan Han, Qing-Yu He. clusterProfiler: an R package for comparing biological themes among gene clusters. OMICS: A Journal of Integrative Biology. 2012, 16(5):284-287.</span></div><div class='output co'>#&gt; <span class='message'></span>
-#&gt; <span class='message'>Attaching package: ‘clusterProfiler’</span></div><div class='output co'>#&gt; <span class='message'>The following object is masked from ‘package:DelayedArray’:</span>
+#&gt; <span class='message'>Attachement du package : 'clusterProfiler'</span></div><div class='output co'>#&gt; <span class='message'>The following object is masked from 'package:DelayedArray':</span>
 #&gt; <span class='message'></span>
-#&gt; <span class='message'>    simplify</span></div><div class='output co'>#&gt; <span class='message'>The following object is masked from ‘package:IRanges’:</span>
+#&gt; <span class='message'>    simplify</span></div><div class='output co'>#&gt; <span class='message'>The following object is masked from 'package:IRanges':</span>
 #&gt; <span class='message'></span>
-#&gt; <span class='message'>    slice</span></div><div class='output co'>#&gt; <span class='message'>The following object is masked from ‘package:S4Vectors’:</span>
+#&gt; <span class='message'>    slice</span></div><div class='output co'>#&gt; <span class='message'>The following object is masked from 'package:S4Vectors':</span>
 #&gt; <span class='message'></span>
-#&gt; <span class='message'>    rename</span></div><div class='output co'>#&gt; <span class='message'>The following object is masked from ‘package:stats’:</span>
+#&gt; <span class='message'>    rename</span></div><div class='output co'>#&gt; <span class='message'>The following object is masked from 'package:stats':</span>
 #&gt; <span class='message'></span>
 #&gt; <span class='message'>    filter</span></div><div class='input'><span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='http://jkunst.com/highcharter'>highcharter</a></span><span class='op'>)</span>
 </div><div class='output co'>#&gt; <span class='message'>Highcharts (www.highcharts.com) is a Highsoft software product which is</span></div><div class='output co'>#&gt; <span class='message'>not free for commercial and Governmental use</span></div><div class='input'><span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://github.com/RforMassSpectrometry/QFeatures'>QFeatures</a></span><span class='op'>)</span>
 <span class='fu'>utils</span><span class='fu'>::</span><span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span><span class='op'>(</span><span class='va'>Exp1_R25_prot</span>, package<span class='op'>=</span><span class='st'>'DAPARdata2'</span><span class='op'>)</span>
 <span class='va'>data</span> <span class='op'>&lt;-</span> <span class='fu'>rowData</span><span class='op'>(</span><span class='va'>Exp1_R25_prot</span><span class='op'>[[</span><span class='fl'>2</span><span class='op'>]</span><span class='op'>]</span><span class='op'>)</span><span class='op'>[[</span><span class='st'>'Protein_IDs'</span><span class='op'>]</span><span class='op'>]</span>
 <span class='va'>univ</span> <span class='op'>&lt;-</span> <span class='fu'><a href='univ_AnnotDbPkg.html'>univ_AnnotDbPkg</a></span><span class='op'>(</span><span class='st'>"org.Sc.sgd.db"</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; <span class='message'>Loading required package: org.Sc.sgd.db</span></div><div class='output co'>#&gt; <span class='warning'>Warning: there is no package called ‘org.Sc.sgd.db’</span></div><div class='output co'>#&gt; <span class='error'>Error in h(simpleError(msg, call)): erreur d'évaluation de l'argument 'x' lors de la sélection d'une méthode pour la fonction 'keys' : objet 'org.Sc.sgd.db' introuvable</span></div><div class='input'><span class='va'>ego</span> <span class='op'>&lt;-</span> <span class='fu'><a href='enrich_GO.html'>enrich_GO</a></span><span class='op'>(</span><span class='va'>data</span>, 
+</div><div class='output co'>#&gt; <span class='message'>Le chargement a nécessité le package : org.Sc.sgd.db</span></div><div class='output co'>#&gt; <span class='warning'>Warning: aucun package nommé 'org.Sc.sgd.db' n'est trouvé</span></div><div class='output co'>#&gt; <span class='error'>Error in h(simpleError(msg, call)): erreur d'évaluation de l'argument 'x' lors de la sélection d'une méthode pour la fonction 'keys' : objet 'org.Sc.sgd.db' introuvable</span></div><div class='input'><span class='va'>ego</span> <span class='op'>&lt;-</span> <span class='fu'><a href='enrich_GO.html'>enrich_GO</a></span><span class='op'>(</span><span class='va'>data</span>, 
 idFrom<span class='op'>=</span><span class='st'>"UNIPROT"</span>, 
 orgdb<span class='op'>=</span><span class='st'>"org.Sc.sgd.db"</span>, 
 ont<span class='op'>=</span><span class='st'>"MF"</span>, 
 pval<span class='op'>=</span><span class='fl'>0.05</span>, 
 universe <span class='op'>=</span> <span class='va'>univ</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; <span class='message'>Loading required package: org.Sc.sgd.db</span></div><div class='output co'>#&gt; <span class='warning'>Warning: there is no package called ‘org.Sc.sgd.db’</span></div><div class='output co'>#&gt; <span class='error'>Error in eval(parse(text = OrgDb)): objet 'org.Sc.sgd.db' introuvable</span></div><div class='input'><span class='fu'>barplotEnrichGO_HC</span><span class='op'>(</span><span class='va'>ego</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; <span class='message'>Le chargement a nécessité le package : org.Sc.sgd.db</span></div><div class='output co'>#&gt; <span class='warning'>Warning: aucun package nommé 'org.Sc.sgd.db' n'est trouvé</span></div><div class='output co'>#&gt; <span class='error'>Error in eval(parse(text = OrgDb)): objet 'org.Sc.sgd.db' introuvable</span></div><div class='input'><span class='fu'>barplotEnrichGO_HC</span><span class='op'>(</span><span class='va'>ego</span><span class='op'>)</span>
 </div><div class='output co'>#&gt; <span class='error'>Error in barplotEnrichGO_HC(ego): objet 'ego' introuvable</span></div><div class='input'><span class='co'># }</span>
 
 </div></pre>

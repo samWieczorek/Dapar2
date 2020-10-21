@@ -95,6 +95,9 @@
 <li>
   <a href="../reference/index.html">Reference</a>
 </li>
+<li>
+  <a href="../news/index.html">Changelog</a>
+</li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
         
@@ -167,20 +170,38 @@
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://github.com/RforMassSpectrometry/QFeatures'>QFeatures</a></span><span class='op'>)</span>
-</div><div class='output co'>#&gt; <span class='message'>Loading required package: MultiAssayExperiment</span></div><div class='output co'>#&gt; <span class='message'>Loading required package: SummarizedExperiment</span></div><div class='output co'>#&gt; <span class='warning'>Warning: package ‘SummarizedExperiment’ was built under R version 4.0.2</span></div><div class='output co'>#&gt; <span class='message'>Loading required package: GenomicRanges</span></div><div class='output co'>#&gt; <span class='message'>Loading required package: stats4</span></div><div class='output co'>#&gt; <span class='message'>Loading required package: S4Vectors</span></div><div class='output co'>#&gt; <span class='message'></span>
-#&gt; <span class='message'>Attaching package: ‘S4Vectors’</span></div><div class='output co'>#&gt; <span class='message'>The following object is masked from ‘package:base’:</span>
+</div><div class='output co'>#&gt; <span class='message'>Le chargement a nécessité le package : MultiAssayExperiment</span></div><div class='output co'>#&gt; <span class='message'>Le chargement a nécessité le package : SummarizedExperiment</span></div><div class='output co'>#&gt; <span class='warning'>Warning: le package 'SummarizedExperiment' a été compilé avec la version R 4.0.2</span></div><div class='output co'>#&gt; <span class='message'>Le chargement a nécessité le package : GenomicRanges</span></div><div class='output co'>#&gt; <span class='message'>Le chargement a nécessité le package : stats4</span></div><div class='output co'>#&gt; <span class='message'>Le chargement a nécessité le package : BiocGenerics</span></div><div class='output co'>#&gt; <span class='message'>Le chargement a nécessité le package : parallel</span></div><div class='output co'>#&gt; <span class='message'></span>
+#&gt; <span class='message'>Attachement du package : 'BiocGenerics'</span></div><div class='output co'>#&gt; <span class='message'>The following objects are masked from 'package:parallel':</span>
 #&gt; <span class='message'></span>
-#&gt; <span class='message'>    expand.grid</span></div><div class='output co'>#&gt; <span class='message'>Loading required package: IRanges</span></div><div class='output co'>#&gt; <span class='message'></span>
-#&gt; <span class='message'>Attaching package: ‘IRanges’</span></div><div class='output co'>#&gt; <span class='message'>The following object is masked from ‘package:grDevices’:</span>
+#&gt; <span class='message'>    clusterApply, clusterApplyLB, clusterCall, clusterEvalQ,</span>
+#&gt; <span class='message'>    clusterExport, clusterMap, parApply, parCapply, parLapply,</span>
+#&gt; <span class='message'>    parLapplyLB, parRapply, parSapply, parSapplyLB</span></div><div class='output co'>#&gt; <span class='message'>The following objects are masked from 'package:stats':</span>
 #&gt; <span class='message'></span>
-#&gt; <span class='message'>    windows</span></div><div class='output co'>#&gt; <span class='message'>Loading required package: GenomeInfoDb</span></div><div class='output co'>#&gt; <span class='warning'>Warning: package ‘GenomeInfoDb’ was built under R version 4.0.2</span></div><div class='output co'>#&gt; <span class='message'>Loading required package: DelayedArray</span></div><div class='output co'>#&gt; <span class='warning'>Warning: package ‘DelayedArray’ was built under R version 4.0.2</span></div><div class='output co'>#&gt; <span class='message'>Loading required package: Matrix</span></div><div class='output co'>#&gt; <span class='message'></span>
-#&gt; <span class='message'>Attaching package: ‘Matrix’</span></div><div class='output co'>#&gt; <span class='message'>The following object is masked from ‘package:S4Vectors’:</span>
+#&gt; <span class='message'>    IQR, mad, sd, var, xtabs</span></div><div class='output co'>#&gt; <span class='message'>The following objects are masked from 'package:base':</span>
 #&gt; <span class='message'></span>
-#&gt; <span class='message'>    expand</span></div><div class='output co'>#&gt; <span class='message'>Loading required package: MatrixGenerics</span></div><div class='output co'>#&gt; <span class='warning'>Warning: package ‘MatrixGenerics’ was built under R version 4.0.2</span></div><div class='output co'>#&gt; <span class='message'>Loading required package: matrixStats</span></div><div class='output co'>#&gt; <span class='warning'>Warning: package ‘matrixStats’ was built under R version 4.0.2</span></div><div class='output co'>#&gt; <span class='message'></span>
-#&gt; <span class='message'>Attaching package: ‘matrixStats’</span></div><div class='output co'>#&gt; <span class='message'>The following objects are masked from ‘package:Biobase’:</span>
+#&gt; <span class='message'>    anyDuplicated, append, as.data.frame, basename, cbind, colnames,</span>
+#&gt; <span class='message'>    dirname, do.call, duplicated, eval, evalq, Filter, Find, get, grep,</span>
+#&gt; <span class='message'>    grepl, intersect, is.unsorted, lapply, Map, mapply, match, mget,</span>
+#&gt; <span class='message'>    order, paste, pmax, pmax.int, pmin, pmin.int, Position, rank,</span>
+#&gt; <span class='message'>    rbind, Reduce, rownames, sapply, setdiff, sort, table, tapply,</span>
+#&gt; <span class='message'>    union, unique, unsplit, which.max, which.min</span></div><div class='output co'>#&gt; <span class='message'>Le chargement a nécessité le package : S4Vectors</span></div><div class='output co'>#&gt; <span class='message'></span>
+#&gt; <span class='message'>Attachement du package : 'S4Vectors'</span></div><div class='output co'>#&gt; <span class='message'>The following object is masked from 'package:base':</span>
+#&gt; <span class='message'></span>
+#&gt; <span class='message'>    expand.grid</span></div><div class='output co'>#&gt; <span class='message'>Le chargement a nécessité le package : IRanges</span></div><div class='output co'>#&gt; <span class='message'></span>
+#&gt; <span class='message'>Attachement du package : 'IRanges'</span></div><div class='output co'>#&gt; <span class='message'>The following object is masked from 'package:grDevices':</span>
+#&gt; <span class='message'></span>
+#&gt; <span class='message'>    windows</span></div><div class='output co'>#&gt; <span class='message'>Le chargement a nécessité le package : GenomeInfoDb</span></div><div class='output co'>#&gt; <span class='warning'>Warning: le package 'GenomeInfoDb' a été compilé avec la version R 4.0.2</span></div><div class='output co'>#&gt; <span class='message'>Le chargement a nécessité le package : Biobase</span></div><div class='output co'>#&gt; <span class='message'>Welcome to Bioconductor</span>
+#&gt; <span class='message'></span>
+#&gt; <span class='message'>    Vignettes contain introductory material; view with</span>
+#&gt; <span class='message'>    'browseVignettes()'. To cite Bioconductor, see</span>
+#&gt; <span class='message'>    'citation("Biobase")', and for packages 'citation("pkgname")'.</span></div><div class='output co'>#&gt; <span class='message'>Le chargement a nécessité le package : DelayedArray</span></div><div class='output co'>#&gt; <span class='warning'>Warning: le package 'DelayedArray' a été compilé avec la version R 4.0.2</span></div><div class='output co'>#&gt; <span class='message'>Le chargement a nécessité le package : Matrix</span></div><div class='output co'>#&gt; <span class='message'></span>
+#&gt; <span class='message'>Attachement du package : 'Matrix'</span></div><div class='output co'>#&gt; <span class='message'>The following object is masked from 'package:S4Vectors':</span>
+#&gt; <span class='message'></span>
+#&gt; <span class='message'>    expand</span></div><div class='output co'>#&gt; <span class='message'>Le chargement a nécessité le package : MatrixGenerics</span></div><div class='output co'>#&gt; <span class='warning'>Warning: le package 'MatrixGenerics' a été compilé avec la version R 4.0.2</span></div><div class='output co'>#&gt; <span class='message'>Le chargement a nécessité le package : matrixStats</span></div><div class='output co'>#&gt; <span class='warning'>Warning: le package 'matrixStats' a été compilé avec la version R 4.0.2</span></div><div class='output co'>#&gt; <span class='message'></span>
+#&gt; <span class='message'>Attachement du package : 'matrixStats'</span></div><div class='output co'>#&gt; <span class='message'>The following objects are masked from 'package:Biobase':</span>
 #&gt; <span class='message'></span>
 #&gt; <span class='message'>    anyMissing, rowMedians</span></div><div class='output co'>#&gt; <span class='message'></span>
-#&gt; <span class='message'>Attaching package: ‘MatrixGenerics’</span></div><div class='output co'>#&gt; <span class='message'>The following objects are masked from ‘package:matrixStats’:</span>
+#&gt; <span class='message'>Attachement du package : 'MatrixGenerics'</span></div><div class='output co'>#&gt; <span class='message'>The following objects are masked from 'package:matrixStats':</span>
 #&gt; <span class='message'></span>
 #&gt; <span class='message'>    colAlls, colAnyNAs, colAnys, colAvgsPerRowSet, colCollapse,</span>
 #&gt; <span class='message'>    colCounts, colCummaxs, colCummins, colCumprods, colCumsums,</span>
@@ -196,15 +217,15 @@
 #&gt; <span class='message'>    rowOrderStats, rowProds, rowQuantiles, rowRanges, rowRanks,</span>
 #&gt; <span class='message'>    rowSdDiffs, rowSds, rowSums2, rowTabulates, rowVarDiffs, rowVars,</span>
 #&gt; <span class='message'>    rowWeightedMads, rowWeightedMeans, rowWeightedMedians,</span>
-#&gt; <span class='message'>    rowWeightedSds, rowWeightedVars</span></div><div class='output co'>#&gt; <span class='message'>The following object is masked from ‘package:Biobase’:</span>
+#&gt; <span class='message'>    rowWeightedSds, rowWeightedVars</span></div><div class='output co'>#&gt; <span class='message'>The following object is masked from 'package:Biobase':</span>
 #&gt; <span class='message'></span>
 #&gt; <span class='message'>    rowMedians</span></div><div class='output co'>#&gt; <span class='message'></span>
-#&gt; <span class='message'>Attaching package: ‘DelayedArray’</span></div><div class='output co'>#&gt; <span class='message'>The following objects are masked from ‘package:base’:</span>
+#&gt; <span class='message'>Attachement du package : 'DelayedArray'</span></div><div class='output co'>#&gt; <span class='message'>The following objects are masked from 'package:base':</span>
 #&gt; <span class='message'></span>
 #&gt; <span class='message'>    aperm, apply, rowsum</span></div><div class='output co'>#&gt; <span class='message'></span>
-#&gt; <span class='message'>Attaching package: ‘QFeatures’</span></div><div class='output co'>#&gt; <span class='message'>The following object is masked from ‘package:DelayedArray’:</span>
+#&gt; <span class='message'>Attachement du package : 'QFeatures'</span></div><div class='output co'>#&gt; <span class='message'>The following object is masked from 'package:DelayedArray':</span>
 #&gt; <span class='message'></span>
-#&gt; <span class='message'>    sweep</span></div><div class='output co'>#&gt; <span class='message'>The following object is masked from ‘package:base’:</span>
+#&gt; <span class='message'>    sweep</span></div><div class='output co'>#&gt; <span class='message'>The following object is masked from 'package:base':</span>
 #&gt; <span class='message'></span>
 #&gt; <span class='message'>    sweep</span></div><div class='input'><span class='fu'>utils</span><span class='fu'>::</span><span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span><span class='op'>(</span><span class='va'>Exp1_R25_pept</span>, package<span class='op'>=</span><span class='st'>'DAPARdata2'</span><span class='op'>)</span>
 <span class='va'>obj</span> <span class='op'>&lt;-</span> <span class='va'>Exp1_R25_pept</span><span class='op'>[</span><span class='fl'>1</span><span class='op'>:</span><span class='fl'>1000</span>,<span class='op'>]</span>
@@ -379,7 +400,510 @@
 #&gt; [164,] 26.49631 26.53921 26.50511 26.53671 26.54206 26.63686
 #&gt; [165,]      NaN 22.89770 23.03922 19.83501 22.47417 23.42085
 #&gt; [166,] 25.34279      NaN      NaN      NaN      NaN 26.01704
-#&gt;  [ getOption("max.print") est atteint -- 504 lignes omises ]</div><div class='input'>
+#&gt; [167,]      NaN 21.10527 22.11189 22.53458 22.37857 22.90185
+#&gt; [168,]      NaN      NaN      NaN 29.47983 29.51200 29.49840
+#&gt; [169,] 23.26084 22.98819 23.17841      NaN      NaN 23.44872
+#&gt; [170,] 23.99981 23.62923 23.69710 23.55801 23.47321 23.67433
+#&gt; [171,]      NaN      NaN      NaN      NaN 22.99205      NaN
+#&gt; [172,] 24.04874 23.52253 23.85609 24.06624 24.01661 23.76528
+#&gt; [173,] 30.69785 30.70891 30.83816 30.60805 30.66662 30.65224
+#&gt; [174,]      NaN      NaN 22.98848 21.15394      NaN 22.91064
+#&gt; [175,]      NaN      NaN 24.34875      NaN      NaN      NaN
+#&gt; [176,] 26.51000 26.45331 26.61121 24.64438 25.19991 25.53361
+#&gt; [177,] 25.75297 25.75642 25.74579 24.89924 24.97491 24.78217
+#&gt; [178,]      NaN      NaN      NaN 23.08451      NaN 22.90338
+#&gt; [179,] 20.47892      NaN 20.82765 20.24516 20.03389 20.66778
+#&gt; [180,]      NaN      NaN      NaN      NaN      NaN      NaN
+#&gt; [181,] 24.53884 24.39767 24.77254 24.44607 24.62310 24.41177
+#&gt; [182,] 22.62734 22.40294 23.02059 22.58213 22.42168 22.84405
+#&gt; [183,]      NaN      NaN 21.74710 22.05351      NaN 21.83696
+#&gt; [184,] 24.75299 24.47501 24.75456 24.52173 24.55780 24.68310
+#&gt; [185,] 21.22394 22.10738 22.17454 22.47687 22.67075 22.31923
+#&gt; [186,]      NaN      NaN      NaN      NaN      NaN      NaN
+#&gt; [187,] 23.50373 26.21477 25.55198 23.58416 23.91628 21.89048
+#&gt; [188,] 23.97508 24.09213 24.29259 24.17949 23.99054 24.04247
+#&gt; [189,] 25.45482 25.44881 25.55582 26.12562 26.23288 26.09804
+#&gt; [190,] 23.88551 23.81954 22.86280 23.50674 23.36520 23.33920
+#&gt; [191,] 21.62176 21.33134 21.73343 21.51306 23.47246 21.67814
+#&gt; [192,]      NaN      NaN      NaN 22.57953 22.96088 23.02712
+#&gt; [193,] 22.62841 22.79430 22.78997 22.87314 22.53938 22.77034
+#&gt; [194,]      NaN 22.38914      NaN 22.20932 21.93693 22.03093
+#&gt; [195,]      NaN      NaN      NaN      NaN      NaN      NaN
+#&gt; [196,] 25.15165 24.88073 25.02925 24.57743 23.77458 24.48922
+#&gt; [197,]      NaN      NaN      NaN      NaN      NaN      NaN
+#&gt; [198,]      NaN      NaN 20.70227 21.97694 21.56756 21.45257
+#&gt; [199,] 27.67175 27.72091 27.37832 26.90086 26.72633 26.74349
+#&gt; [200,] 26.20025 26.27035 26.26748 26.22883 26.13581 26.14552
+#&gt; [201,] 22.88258 22.98796 22.94126      NaN      NaN      NaN
+#&gt; [202,] 25.12384 25.07006 25.00217 25.32701 25.07300 24.93674
+#&gt; [203,] 26.53651 26.56981 26.65641 26.41512 26.49145 26.42880
+#&gt; [204,] 23.58703 24.32286 24.35582 23.68378 24.36252 23.90426
+#&gt; [205,] 24.28270 24.10291 24.90571 23.25240 23.16750 22.74151
+#&gt; [206,] 23.14232 22.96385 22.13659      NaN      NaN      NaN
+#&gt; [207,] 23.83297 23.57092 23.82755 23.15822 23.61672 23.78137
+#&gt; [208,] 22.26227 22.00618 22.38764 22.58724 22.46316 22.61675
+#&gt; [209,] 25.59997 25.33439 25.08310 25.19129 25.26785 25.10933
+#&gt; [210,]      NaN      NaN      NaN      NaN      NaN      NaN
+#&gt; [211,] 21.54402 21.58311 22.16214 22.02273 21.86854 21.93557
+#&gt; [212,] 28.54504 28.68764 28.60583 28.57992 28.48969 28.53006
+#&gt; [213,] 22.53675 22.76529 22.70900 22.85890 22.41772 22.42293
+#&gt; [214,] 22.77258 22.78732 22.97848 23.08874 22.79128 22.58839
+#&gt; [215,] 24.49796 24.09668 24.29446 24.15314 24.37749 24.49460
+#&gt; [216,] 27.66309 27.73163 27.82960 27.60477 27.65983 27.65949
+#&gt; [217,] 24.34895 24.25854 24.15707      NaN      NaN      NaN
+#&gt; [218,] 22.14759 22.31188 21.85472      NaN 21.88383 22.15205
+#&gt; [219,] 24.08489 23.76476 24.20926 23.95420 23.92551 23.87511
+#&gt; [220,]      NaN      NaN      NaN      NaN      NaN      NaN
+#&gt; [221,]      NaN      NaN      NaN 23.57980 23.63799 23.40963
+#&gt; [222,]      NaN      NaN      NaN 24.68833 24.72624 24.75623
+#&gt; [223,] 24.16223 23.31451 21.91572      NaN 23.43314 22.94138
+#&gt; [224,]      NaN      NaN      NaN      NaN 23.55602 23.54073
+#&gt; [225,] 22.61385 22.22673 23.08432 22.35089 22.03835 22.21481
+#&gt; [226,] 26.32502 26.48004 26.49445 26.46101 26.44063 26.52030
+#&gt; [227,] 21.97980      NaN 22.20538 22.24525      NaN 21.80089
+#&gt; [228,]      NaN      NaN      NaN 24.10574 23.27071 23.97202
+#&gt; [229,] 27.04945 26.96387 27.04750 26.92752 26.94911 27.04602
+#&gt; [230,] 25.39529 25.38663 25.53863 24.92325 24.87355 24.97591
+#&gt; [231,] 25.69168 25.69970 25.56349 25.74912 25.69785 25.63730
+#&gt; [232,] 21.81426 21.94535 21.98280 22.21267 21.96353 21.95865
+#&gt; [233,] 27.54078 27.48988 27.51016 27.41652 27.35563 27.42330
+#&gt; [234,] 24.60377 24.97334 24.44310 23.84029 23.27782 23.23978
+#&gt; [235,]      NaN      NaN      NaN      NaN      NaN      NaN
+#&gt; [236,]      NaN 22.13352 22.45566      NaN      NaN 22.60356
+#&gt; [237,] 23.29460 23.07253 23.31990      NaN      NaN      NaN
+#&gt; [238,] 25.20493 24.80151 25.03929 25.27987 24.90482 24.85160
+#&gt; [239,] 23.08327 22.90584 22.95807 23.23419 23.10923 23.23181
+#&gt; [240,] 22.60498 22.76623 22.88963 22.90193 22.57902 22.97091
+#&gt; [241,] 21.17042 20.87222 20.81120      NaN 21.15653 21.43624
+#&gt; [242,] 22.71106      NaN 23.68966      NaN 22.75786 23.30786
+#&gt; [243,] 25.67250 25.68094 25.76277 25.65889 25.65770 25.58862
+#&gt; [244,] 25.80971 25.74492 26.48907 25.67130 26.25006 25.99907
+#&gt; [245,] 22.72549 23.01129 23.86872 23.34381 23.19855 24.35542
+#&gt; [246,] 23.85348 23.58095 23.68816 23.59833 23.70767 23.47333
+#&gt; [247,] 23.10066      NaN 23.97316 24.36152 24.09869 24.76157
+#&gt; [248,]      NaN      NaN      NaN 24.49607 24.11513 24.40100
+#&gt; [249,] 31.42367 31.29049 31.11942 31.74363 31.59988 31.48807
+#&gt; [250,] 23.53160      NaN      NaN 23.18666      NaN 23.38126
+#&gt; [251,] 22.04510 21.57029      NaN 21.80515 20.96670 21.00594
+#&gt; [252,]      NaN      NaN      NaN 23.70830 23.08949 23.47259
+#&gt; [253,]      NaN      NaN      NaN 24.49582 24.17820 24.29207
+#&gt; [254,] 25.66126 25.58073 25.73998 24.63484 24.64955 24.80440
+#&gt; [255,] 27.73117 27.70425 27.56660 27.77593 27.63346 27.69690
+#&gt; [256,] 22.87170      NaN      NaN 21.94935      NaN      NaN
+#&gt; [257,]      NaN      NaN      NaN      NaN      NaN      NaN
+#&gt; [258,] 26.09806 26.04183 26.26613 26.21097 26.11709 26.34005
+#&gt; [259,]      NaN      NaN      NaN      NaN      NaN 23.38469
+#&gt; [260,] 23.12406 23.19254 23.22037 23.05792 23.11141 23.04097
+#&gt; [261,] 23.00526 23.17254 23.29660 22.82714 23.12032 23.21228
+#&gt; [262,]      NaN      NaN      NaN 23.61414 23.35703 24.46750
+#&gt; [263,] 28.79860 28.69265 28.78444 28.72537 28.60212 28.75789
+#&gt; [264,] 25.71722 25.83224 25.89088 23.64152 25.89164 26.13252
+#&gt; [265,]      NaN      NaN 22.29782 22.40491 22.06019 22.22173
+#&gt; [266,] 25.50746 24.99752 25.69490 25.06442 24.96179 25.58451
+#&gt; [267,] 21.45499 21.13907 21.71465 21.78769 21.44538 21.33358
+#&gt; [268,] 23.13641      NaN      NaN 23.13292 23.67939      NaN
+#&gt; [269,] 28.07835 28.09890 28.23777 28.06936 28.01996 28.07085
+#&gt; [270,] 23.35878 23.04413 23.66661 23.51063 23.31845 22.98786
+#&gt; [271,] 24.42470 24.58055 24.85038 24.04394 24.40743 24.48653
+#&gt; [272,] 22.69177 22.27045 22.16451 22.66830      NaN 22.37053
+#&gt; [273,] 24.85584 24.80347 24.76248 24.99835 24.64161 24.86586
+#&gt; [274,] 23.67228 23.82639 23.22613 24.20926 23.73614 23.99309
+#&gt; [275,]      NaN 22.80855 22.41658      NaN      NaN 22.55733
+#&gt; [276,] 24.77107 24.61178 24.72250 24.41041 24.68014 24.91812
+#&gt; [277,] 25.58580 25.61555 25.50306 25.56532 25.53623 25.52692
+#&gt; [278,]      NaN      NaN      NaN 25.19423 25.29267 25.40009
+#&gt; [279,] 25.50879 25.53452 25.69046 25.54713 25.63082 25.50126
+#&gt; [280,]      NaN 22.55579 22.45126      NaN 22.86461      NaN
+#&gt; [281,] 25.50130 25.35262 25.39875 25.16223 25.47510 25.25032
+#&gt; [282,] 22.87917 23.10271 23.68878 23.11004 23.01820 23.13935
+#&gt; [283,] 23.41622 22.85802 22.60168 22.95851 23.43860 23.42816
+#&gt; [284,] 27.23827 27.13055 27.23444 27.08669 27.24145 27.11486
+#&gt; [285,] 24.51492 24.38680 24.61957 24.51710 24.46588 24.37231
+#&gt; [286,] 22.14127 22.44660 22.62807 22.19060 22.27665 22.46044
+#&gt; [287,] 23.47222      NaN 23.29712      NaN      NaN      NaN
+#&gt; [288,] 24.33851 24.18790 24.16254 24.01052 24.15561 24.26420
+#&gt; [289,] 24.57646 24.60264 24.54339 24.53925 24.32237 24.90467
+#&gt; [290,]      NaN 22.86439 22.53467      NaN 23.10161 23.15442
+#&gt; [291,] 23.76598 23.53303 23.96199 23.72910 23.66915 24.07757
+#&gt; [292,]      NaN      NaN      NaN      NaN 22.11572      NaN
+#&gt; [293,]      NaN      NaN      NaN      NaN      NaN      NaN
+#&gt; [294,] 24.52981 24.60105 24.60919 24.13938 24.51929 24.51328
+#&gt; [295,] 24.37987 24.49467 24.51983 24.68367 24.30243 24.25508
+#&gt; [296,] 26.38358 26.20166 26.62162 26.24191 26.15954 26.26666
+#&gt; [297,]      NaN      NaN 23.93562 23.21410 23.76304      NaN
+#&gt; [298,]      NaN      NaN      NaN      NaN      NaN 22.47070
+#&gt; [299,] 24.59315 24.14266 24.30508 24.42899 25.92309 25.81370
+#&gt; [300,] 25.09434 24.77279 24.74289 24.65824 24.72057 24.86712
+#&gt; [301,] 25.94505 25.43755 26.48222 24.65078 24.35595 24.77554
+#&gt; [302,] 25.15221 24.90440 25.13739 25.04323 24.74006 23.99430
+#&gt; [303,] 23.83576 23.30368 23.42406 23.35716 23.27952 23.54156
+#&gt; [304,]      NaN 23.39467      NaN 23.29134 23.97719 24.11712
+#&gt; [305,]      NaN      NaN 23.23989      NaN      NaN 23.01759
+#&gt; [306,]      NaN      NaN      NaN      NaN      NaN      NaN
+#&gt; [307,] 21.79994 22.12142 21.79205      NaN 21.50378 21.69574
+#&gt; [308,] 23.32416 23.73148 23.55227 23.27810 23.61784 23.54038
+#&gt; [309,] 24.86637 24.56703 24.47029 24.59895 24.74919 24.90738
+#&gt; [310,] 24.39983 24.73841 24.42425 23.48499 23.47046 23.40036
+#&gt; [311,] 25.42463 25.20945 25.52577 25.71888 25.15334 25.66182
+#&gt; [312,] 26.84074 26.82905 26.83425 26.72312 26.59021 26.66871
+#&gt; [313,] 23.36159 23.38956      NaN      NaN 24.19895 24.21801
+#&gt; [314,] 23.90919 22.91494 24.38863 25.27583 24.24937 23.88698
+#&gt; [315,] 26.75162 26.69697 26.78294 26.72429 26.75353 26.70425
+#&gt; [316,] 24.20598 23.96393 24.37994 24.33497 24.07006 24.29418
+#&gt; [317,] 23.62288 23.78915 23.76182 23.54898 23.48800 23.76436
+#&gt; [318,]      NaN      NaN      NaN 22.77241 23.05762 22.40624
+#&gt; [319,] 23.84479 23.79769 24.05937 24.23118 24.00625 24.06521
+#&gt; [320,]      NaN      NaN      NaN 23.81851 23.64933 23.77304
+#&gt; [321,] 22.94192 22.81355 22.91676 23.51196 23.12207 23.65666
+#&gt; [322,] 23.53206 23.63810 23.67204 23.63219 23.71851 23.73977
+#&gt; [323,] 23.16518      NaN 22.65424      NaN 23.55637      NaN
+#&gt; [324,]      NaN 20.99797 21.57980      NaN      NaN      NaN
+#&gt; [325,] 23.25969 23.52061 23.38443 23.11119 23.19092 23.16066
+#&gt; [326,] 25.61593 25.51389 25.81236 25.37657 25.32166 25.54141
+#&gt; [327,]      NaN      NaN      NaN 23.11264      NaN      NaN
+#&gt; [328,] 25.28510 25.51701 26.17627 25.52645 22.92013 25.11291
+#&gt; [329,]      NaN      NaN      NaN 22.30627 22.21824 22.16576
+#&gt; [330,]      NaN      NaN      NaN      NaN 21.91412      NaN
+#&gt; [331,] 25.72385 25.57437 25.73749 25.63983 25.60670 25.60708
+#&gt; [332,] 24.16806 24.16392 24.18170 24.07030 24.14429 24.14911
+#&gt; [333,] 23.48800 23.38007 23.26127 23.53671 22.93229 23.18595
+#&gt; [334,] 23.54392 23.51051      NaN      NaN      NaN      NaN
+#&gt; [335,] 24.59235 24.41654 24.68319 24.52689 24.49954 24.65009
+#&gt; [336,] 24.96512 23.74066 24.89878 24.94699 23.73579 23.57108
+#&gt; [337,] 21.99293      NaN 22.37917      NaN 22.78955 22.10140
+#&gt; [338,] 24.14600 23.52910      NaN 24.02166 23.01952      NaN
+#&gt; [339,] 22.06819 22.20476 22.14781 21.78887 22.36290 22.11394
+#&gt; [340,] 22.52962 22.76685 22.68607 22.64264 22.58256 22.28768
+#&gt; [341,]      NaN      NaN      NaN      NaN      NaN      NaN
+#&gt; [342,]      NaN      NaN      NaN      NaN 22.58575      NaN
+#&gt; [343,] 25.72840 25.22640 25.85966 25.77985 25.69984 25.20384
+#&gt; [344,]      NaN      NaN      NaN      NaN      NaN      NaN
+#&gt; [345,] 25.99475 24.86491 25.04802 24.81622 25.56581 24.90100
+#&gt; [346,] 21.72692 21.82194 22.14193 21.94806 22.43858 21.58417
+#&gt; [347,]      NaN      NaN      NaN      NaN      NaN      NaN
+#&gt; [348,] 22.59825 22.48598 22.43593 22.63742 22.47321 22.45297
+#&gt; [349,]      NaN      NaN      NaN      NaN 20.82446      NaN
+#&gt; [350,] 23.88418 24.05482 24.17356 23.99542 23.97071 24.08359
+#&gt; [351,]      NaN      NaN      NaN      NaN 25.67050      NaN
+#&gt; [352,]      NaN 21.85544 21.31002 21.25303 21.19671 20.73157
+#&gt; [353,] 27.77203 27.82098 27.93989 27.90472 27.83304 28.02189
+#&gt; [354,]      NaN      NaN      NaN      NaN      NaN      NaN
+#&gt; [355,]      NaN      NaN      NaN 24.83937      NaN 24.71717
+#&gt; [356,] 24.28390 24.16300 24.25515 25.74146 25.57901 25.56580
+#&gt; [357,]      NaN      NaN 23.10613      NaN      NaN      NaN
+#&gt; [358,] 26.60608 26.46775 26.33528 26.44903 25.58187 26.54660
+#&gt; [359,] 20.39770 18.48801 23.45714 20.19099 19.30855 19.33418
+#&gt; [360,] 25.12022 24.84879 25.07578 25.27699 25.18232 25.13864
+#&gt; [361,] 22.12054 21.78756 21.56946      NaN 22.09326 21.72729
+#&gt; [362,]      NaN      NaN      NaN      NaN      NaN      NaN
+#&gt; [363,] 23.00823 22.62945 21.91148 23.39767 23.24056 23.20628
+#&gt; [364,]      NaN      NaN      NaN      NaN      NaN      NaN
+#&gt; [365,] 24.89524 24.85507 25.19328 24.95667 24.92811 24.97008
+#&gt; [366,]      NaN      NaN 26.34562      NaN      NaN      NaN
+#&gt; [367,] 22.13821      NaN 22.86361 21.53469 21.62565 22.24013
+#&gt; [368,] 23.47717 23.82377 23.25407 23.91242 23.99904 23.81548
+#&gt; [369,] 23.16359 23.11291 23.30520 23.34844 23.02986 23.08483
+#&gt; [370,] 25.55492 25.30002 25.58081 25.55603 25.37796 25.47745
+#&gt; [371,]      NaN      NaN      NaN      NaN      NaN      NaN
+#&gt; [372,] 22.69662 22.04597      NaN 22.18634 22.59571      NaN
+#&gt; [373,]      NaN      NaN      NaN      NaN      NaN      NaN
+#&gt; [374,]      NaN      NaN      NaN      NaN      NaN      NaN
+#&gt; [375,] 24.21208 23.88176 23.88837 24.22361 23.85091 23.68560
+#&gt; [376,]      NaN      NaN      NaN      NaN      NaN      NaN
+#&gt; [377,] 25.77145 25.70754 25.82556 25.38805 25.31883 25.32804
+#&gt; [378,] 24.24205 23.27952 24.30020 23.57704 23.74735      NaN
+#&gt; [379,] 25.68752 25.45729 25.52076 25.98553 25.45563 25.62731
+#&gt; [380,] 25.23473 25.57822 25.38281 25.36993 25.33565 25.66348
+#&gt; [381,] 24.92799 24.74032 26.00866 25.04801 25.06069 25.03209
+#&gt; [382,]      NaN      NaN      NaN      NaN      NaN      NaN
+#&gt; [383,] 25.06050 25.09999 25.14361 24.90180 24.89284 24.98741
+#&gt; [384,] 22.12174      NaN 23.91397 22.10002      NaN      NaN
+#&gt; [385,] 24.83848 25.11735 25.22222 25.43303 25.28591 25.51060
+#&gt; [386,] 24.46176 24.34306 24.24680 24.60346 24.51476 24.58116
+#&gt; [387,] 22.97004 22.41529 22.68136      NaN 22.27870 22.93535
+#&gt; [388,] 24.11862 23.92370 23.87089 24.06011 24.32320 23.83682
+#&gt; [389,] 26.53308 26.58258 26.37237 27.31424 27.45278 27.28295
+#&gt; [390,] 23.98494 23.90702 23.66936 23.55356 23.92162 24.72088
+#&gt; [391,] 22.63283 22.48013 22.54741 22.54875 22.86109 22.70793
+#&gt; [392,]      NaN      NaN      NaN      NaN      NaN      NaN
+#&gt; [393,]      NaN      NaN      NaN      NaN      NaN      NaN
+#&gt; [394,] 24.85610 24.52761 24.83186 24.43212 24.42124 24.45507
+#&gt; [395,] 27.80748 27.63539 28.22894 27.84250 27.64492 27.95104
+#&gt; [396,] 24.56471 23.97299 23.34706 24.47772 24.25818 24.52001
+#&gt; [397,] 22.27631      NaN      NaN      NaN      NaN      NaN
+#&gt; [398,] 27.68326 27.59625 27.60646 27.87364 27.67584 27.80907
+#&gt; [399,] 24.70906 24.69080 24.80509 24.70924 24.65182 24.61232
+#&gt; [400,]      NaN 23.49179 24.19626      NaN 24.06661 23.24489
+#&gt; [401,] 24.75562 24.43919 24.60944 24.29503 24.14725 24.50630
+#&gt; [402,] 23.59708 23.41983 23.73014 23.49875 23.39231      NaN
+#&gt; [403,] 24.91123 25.02251 25.33409 25.28380 25.16875 25.20676
+#&gt; [404,] 26.30715 23.90329 25.48997 26.13024 24.17078 24.70641
+#&gt; [405,]      NaN 23.15795      NaN      NaN 22.37215      NaN
+#&gt; [406,] 24.34799 23.97111 24.21656 24.23234 24.28876 24.05366
+#&gt; [407,] 22.29160 22.40148 22.26152 21.83927 21.97470 22.20979
+#&gt; [408,]      NaN      NaN 23.18189      NaN      NaN      NaN
+#&gt; [409,] 25.72109 25.84338 24.97351 24.96899 24.88600 24.82789
+#&gt; [410,] 30.60525 30.56843 30.67496 30.60526 30.54657 30.63189
+#&gt; [411,] 22.45361 23.08952 22.73981 23.84556 23.06984 22.56653
+#&gt; [412,] 25.81473 24.52391 24.49169 24.34722 24.26482 24.42556
+#&gt; [413,] 23.34055 23.15687 22.86378 22.66733 24.69397 22.94571
+#&gt; [414,] 25.30424 25.43492 25.22122 25.85524 25.92728 25.85305
+#&gt; [415,] 24.74581 24.47067 24.24793 24.47450 24.35108 24.27285
+#&gt; [416,] 27.61161 27.72618 27.75812 27.98577 27.91274 27.99394
+#&gt; [417,]      NaN      NaN 24.13868      NaN      NaN      NaN
+#&gt; [418,] 20.66397 19.93891 23.88679 20.41338 20.08447 20.51817
+#&gt; [419,] 27.57273 27.53932 27.56215 27.67759 27.67170 27.71252
+#&gt; [420,] 28.93160 28.91234 28.89891 28.78244 28.78803 28.80378
+#&gt; [421,] 29.99415 30.02789 29.95199 30.12805 30.04752 30.04583
+#&gt; [422,] 27.58118 27.53823 27.54141 27.68425 27.85781 27.76066
+#&gt; [423,] 28.50436 28.51719 28.61062 28.68510 28.65239 28.79915
+#&gt; [424,] 22.11496 22.73248 22.44670 23.07584 22.83902 23.66460
+#&gt; [425,] 30.07839 30.12386 30.10525 30.07597 30.05414 30.13418
+#&gt; [426,]      NaN      NaN      NaN      NaN      NaN      NaN
+#&gt; [427,]      NaN 26.99540 26.96741 25.14706 25.18391 24.65228
+#&gt; [428,] 26.80772 26.63782 26.81946 26.61386 26.68886 26.45366
+#&gt; [429,] 26.16682 26.21666 26.13034 25.87975 26.00862 25.96532
+#&gt; [430,] 27.38639 27.35821 27.42925 27.44400 27.43828 27.38206
+#&gt; [431,] 23.50543 23.51135 23.77364 23.39205 23.02501 23.39545
+#&gt; [432,] 26.73637 26.72399 26.81294 26.70829 26.72507 26.72420
+#&gt; [433,]      NaN      NaN      NaN      NaN      NaN      NaN
+#&gt; [434,] 26.66925 26.74448 26.84954 28.05748 28.07304 28.14861
+#&gt; [435,] 29.54392 29.62803 29.69031 29.62357 29.57183 29.49797
+#&gt; [436,]      NaN      NaN      NaN      NaN      NaN      NaN
+#&gt; [437,] 20.47892      NaN 20.82765 20.24516 20.03389 20.66778
+#&gt; [438,] 25.01647 25.16567 25.06046 24.98932 24.80754 24.91487
+#&gt; [439,]      NaN      NaN 21.85901      NaN      NaN      NaN
+#&gt; [440,] 27.34824 27.30610 27.31291 25.95257 24.09811 26.31617
+#&gt; [441,] 23.36324 24.29138 23.87356 23.66579 24.05104 23.89960
+#&gt; [442,] 25.58003 25.63876 25.51307 25.48422 25.45767 25.60278
+#&gt; [443,] 25.98618 25.91796 26.16521 25.85391 25.83971 26.05550
+#&gt; [444,] 29.27895 29.28217 29.27935 29.34506 29.28401 29.27513
+#&gt; [445,]      NaN      NaN 23.43161      NaN      NaN 20.02770
+#&gt; [446,]      NaN 22.29735      NaN      NaN      NaN 21.85939
+#&gt; [447,] 21.63817 21.65718 21.14737 21.46732 21.81948 21.49267
+#&gt; [448,]      NaN      NaN      NaN 23.92080 23.85529 23.76860
+#&gt; [449,] 27.25432 27.20634 27.13883 25.61790 25.72944 25.72002
+#&gt; [450,] 23.06865 22.69128 22.21006 23.81059 22.73857 22.43357
+#&gt; [451,]      NaN      NaN      NaN      NaN      NaN      NaN
+#&gt; [452,] 25.84372 25.80351 25.93845 25.72557 25.82995 25.87575
+#&gt; [453,] 25.34371 25.28729 25.15969 25.54557 25.48919 25.22935
+#&gt; [454,] 21.38190 21.97320 21.62725 22.33418 21.66830 21.55183
+#&gt; [455,] 24.13837 24.04368 24.55988 24.25609 24.31465 23.90702
+#&gt; [456,] 24.37458 24.63198 24.43369 24.16556 24.36379 24.18314
+#&gt; [457,] 27.53905 27.36194 27.58484 25.89715 25.87368 26.00528
+#&gt; [458,] 26.09894 27.33570 27.14561 26.04608 25.92568 26.57951
+#&gt; [459,] 24.34476 24.24474 24.47110      NaN 22.79066 22.70586
+#&gt; [460,] 24.58932 24.03305 24.26635 24.16676 23.67422 24.06373
+#&gt; [461,] 24.79650 24.66275 24.94525 24.91994 24.80085 24.89481
+#&gt; [462,] 23.83820 24.03584 24.67641 24.08008 24.34345 23.84003
+#&gt; [463,] 26.39277 26.44361 26.33269 25.15503 25.28574 25.15623
+#&gt; [464,]      NaN      NaN      NaN      NaN      NaN 22.41687
+#&gt; [465,] 26.82845 26.90127 26.70213 26.77178 26.73982 26.76737
+#&gt; [466,] 27.19667 27.17579 26.74248 26.49271 26.58035 26.48924
+#&gt; [467,]      NaN      NaN      NaN 24.08788 23.86590 24.33490
+#&gt; [468,] 23.65938 23.92319 24.42911 23.39599 24.17614 23.75105
+#&gt; [469,] 23.56256 23.55368 23.61885 23.43924 23.47358 23.51485
+#&gt; [470,]      NaN      NaN      NaN      NaN      NaN      NaN
+#&gt; [471,] 26.31339 26.23874 26.51721 26.13938 26.28919 26.29605
+#&gt; [472,]      NaN      NaN      NaN      NaN      NaN      NaN
+#&gt; [473,]      NaN      NaN      NaN      NaN      NaN      NaN
+#&gt; [474,] 24.32288 24.22551 24.57528 24.19929 24.32838 24.41473
+#&gt; [475,] 26.48442 26.41387 26.48235 24.91552 24.94437 24.90940
+#&gt; [476,] 26.59149 26.16486 26.48167 26.78203 26.81052 26.79870
+#&gt; [477,] 23.69891 23.28701 23.98598 23.79551 23.64647 23.45375
+#&gt; [478,] 24.82163 24.87666 25.01495 24.76502 24.73433 24.95584
+#&gt; [479,] 24.99000 25.38196 25.65630 25.63495 25.48798 25.53827
+#&gt; [480,] 24.51281 24.68849 25.01519 25.08055 24.92715 25.20664
+#&gt; [481,] 23.64845 23.48431 23.75827 24.42803 24.10254 24.14957
+#&gt; [482,] 22.70316 21.53872 24.29411 22.72013 22.11569 23.14995
+#&gt; [483,] 25.71683 26.99146 27.11534 25.55631 25.52412 25.55875
+#&gt; [484,] 24.73486 25.39767 24.68992 25.37859 25.18575 25.30103
+#&gt; [485,] 27.76541 27.64966 27.80199 25.92225 26.00477 26.05329
+#&gt; [486,] 22.93276 22.90967 23.68902      NaN 22.99762      NaN
+#&gt; [487,] 23.81158 25.65736 25.08691 24.00707 25.64251 25.71905
+#&gt; [488,]      NaN 22.31363 22.33304      NaN 22.31269 22.82153
+#&gt; [489,] 25.55584 25.56651 25.64290 25.56145 25.50479 25.46314
+#&gt; [490,] 23.76385 23.74796 23.80282 23.83673 23.50809 23.95260
+#&gt; [491,] 26.49109 26.35642 26.40695 25.80869 25.62525 25.94446
+#&gt; [492,] 27.11316 27.12303 27.18585 27.08698 27.10924 27.17884
+#&gt; [493,] 25.59525 25.20617 25.53961 24.38001      NaN 24.20851
+#&gt; [494,]      NaN      NaN      NaN 22.30025 21.96856 22.26682
+#&gt; [495,] 26.30008 26.67248 26.55009 26.74558 26.98227 27.11330
+#&gt; [496,] 22.14034 24.02056 24.11545 23.53955 24.11156 23.75297
+#&gt; [497,]      NaN      NaN      NaN      NaN      NaN      NaN
+#&gt; [498,] 23.27997 22.41910 22.55096 23.67422 22.75602 23.18798
+#&gt; [499,] 28.50904 28.51683 28.81094 28.59124 28.52798 28.58803
+#&gt; [500,]      NaN 23.48665 23.90665      NaN      NaN 23.47172
+#&gt; [501,] 24.25875 24.12542 24.03322 24.20538 24.08829 24.28228
+#&gt; [502,] 20.59177 20.91947      NaN 22.46660 22.92962 22.31327
+#&gt; [503,] 25.91775 25.58892 25.79333 25.58603 25.79077 25.76709
+#&gt; [504,] 23.37186 23.34746 23.10096      NaN 23.19409 22.99258
+#&gt; [505,] 24.46220 24.91848 24.61756 21.46881 24.41203 21.88662
+#&gt; [506,] 22.63034 22.79029 22.76937 23.15689 22.94473 23.36866
+#&gt; [507,] 22.22935 22.76119      NaN      NaN 21.94614 21.92864
+#&gt; [508,] 22.34188 22.52884      NaN 23.31714      NaN      NaN
+#&gt; [509,]      NaN      NaN      NaN      NaN 23.68271      NaN
+#&gt; [510,]      NaN      NaN      NaN 25.55678 25.44862 25.60546
+#&gt; [511,] 24.56703 24.34672 24.43192 24.33429 24.35474 24.58526
+#&gt; [512,] 23.24124      NaN 23.04365 22.88703 23.45739      NaN
+#&gt; [513,]      NaN      NaN      NaN      NaN      NaN      NaN
+#&gt; [514,] 22.78546 22.66917      NaN 22.63653 22.98184 23.32251
+#&gt; [515,]      NaN 22.37645 22.92770 22.71121 22.81204      NaN
+#&gt; [516,] 26.08746 25.87825 26.07794 25.95624 25.78452 25.52877
+#&gt; [517,] 21.78285 21.72684 21.87579 22.28608 22.18435 21.92626
+#&gt; [518,] 25.34245 25.40022 25.49531 25.73348 25.35736 25.72952
+#&gt; [519,]      NaN      NaN      NaN      NaN      NaN      NaN
+#&gt; [520,] 24.29168 24.39473 24.51280 24.48614 24.50642 24.50237
+#&gt; [521,] 23.86212 23.83817 23.78177 24.14048 23.69349 23.86372
+#&gt; [522,] 24.24972 24.01859 24.41244 24.31763 24.76344 24.67126
+#&gt; [523,] 28.49137 28.49812 28.61709 28.79634 28.65174 28.67125
+#&gt; [524,] 27.00346 27.06979 25.75521 23.96477 27.04781 26.99518
+#&gt; [525,]      NaN      NaN      NaN      NaN      NaN      NaN
+#&gt; [526,] 22.72648 22.85719 23.14233 23.11294 23.12917 23.18982
+#&gt; [527,] 24.19016 24.23557 24.31534 24.50416 24.25746 24.21941
+#&gt; [528,] 23.71240 23.02159 21.65263      NaN      NaN 21.85133
+#&gt; [529,]      NaN      NaN      NaN      NaN      NaN      NaN
+#&gt; [530,] 26.59206 26.73467 26.71986 26.61344 26.61583 26.63686
+#&gt; [531,] 22.82180 23.68849 23.82250 23.67874 23.25312 23.50458
+#&gt; [532,] 26.12814 25.95136 26.33422 26.60215 26.34761 26.03046
+#&gt; [533,] 25.63145 25.73154 25.99878 25.72070 25.78753 25.74031
+#&gt; [534,] 24.21963 24.19731 24.39434 24.30703 24.13226 24.45870
+#&gt; [535,] 23.76375      NaN 23.73738 23.82367 24.08383 24.22729
+#&gt; [536,] 22.97836 22.41356 22.41746 22.90005 22.57316 22.83959
+#&gt; [537,] 30.15774 29.97856 30.04934 29.96072 29.84721 29.86616
+#&gt; [538,]      NaN 19.97561      NaN      NaN      NaN      NaN
+#&gt; [539,] 24.89042 25.09455 25.10778 25.20017 24.92217 25.01588
+#&gt; [540,] 26.64113 26.44774 26.66221 25.03741 24.81142 25.02187
+#&gt; [541,]      NaN      NaN      NaN 23.98564 24.00230 24.00445
+#&gt; [542,] 26.26151 26.16710 26.47859 24.51455 24.57952 24.83880
+#&gt; [543,] 24.33617 24.56510 24.74759 24.03357 24.49086 24.65528
+#&gt; [544,]      NaN      NaN 23.57219      NaN 22.72084 22.19764
+#&gt; [545,]      NaN 24.20352 24.09434 24.39172 23.74314 23.73531
+#&gt; [546,]      NaN      NaN      NaN      NaN      NaN 25.97520
+#&gt; [547,] 27.42502 27.04718 24.67196      NaN      NaN      NaN
+#&gt; [548,] 25.71319 25.78004 26.08930 26.02471 25.98839 26.26064
+#&gt; [549,] 24.16154 24.02030 24.16461 24.21119 24.21549 24.09313
+#&gt; [550,] 21.97376 20.95156 23.60399 21.84518 22.41160 22.98021
+#&gt; [551,]      NaN      NaN      NaN      NaN      NaN      NaN
+#&gt; [552,]      NaN 22.26965 23.02704 22.50368 23.18082 23.09241
+#&gt; [553,]      NaN      NaN 22.04560 22.60080 22.90277      NaN
+#&gt; [554,] 26.27768 26.30019 26.42598 26.59036 26.59958 26.69659
+#&gt; [555,]      NaN      NaN      NaN      NaN      NaN      NaN
+#&gt; [556,] 22.65279 22.79082 22.68464      NaN 22.89049 23.29081
+#&gt; [557,] 24.15430 24.11648 23.71649      NaN 23.83161 24.26964
+#&gt; [558,] 24.50549 23.41635 24.14903 22.77981 23.10484 23.35380
+#&gt; [559,]      NaN      NaN      NaN      NaN      NaN      NaN
+#&gt; [560,] 27.54959 27.36936 27.40649 27.51510 27.51803 27.64870
+#&gt; [561,] 28.77266 28.61295 28.80104 28.71967 28.65578 28.80464
+#&gt; [562,] 27.13626 27.16054 27.22204 27.21742 27.35515 27.41344
+#&gt; [563,]      NaN      NaN      NaN      NaN      NaN      NaN
+#&gt; [564,] 26.31180 26.43598 26.77077 26.57421 26.51847 26.41766
+#&gt; [565,]      NaN      NaN      NaN 24.30973 26.15848 26.46449
+#&gt; [566,] 23.21328 23.52289 23.20629 22.45066 22.33137 23.52981
+#&gt; [567,] 24.50021 24.22007 24.16500      NaN      NaN      NaN
+#&gt; [568,] 27.88105 27.76154 28.00860 27.78019 27.80520 27.86673
+#&gt; [569,]      NaN      NaN      NaN      NaN 21.94764      NaN
+#&gt; [570,]      NaN      NaN 26.36378      NaN      NaN      NaN
+#&gt; [571,]      NaN      NaN      NaN      NaN 22.47823      NaN
+#&gt; [572,] 24.42188 23.56116      NaN 24.77535 23.77545      NaN
+#&gt; [573,] 24.90559 25.08869 25.08966 25.22718 25.22273 25.47568
+#&gt; [574,] 24.85472 24.56837 24.79724 24.79645 24.87886 24.76319
+#&gt; [575,] 22.35361      NaN      NaN 22.10875      NaN      NaN
+#&gt; [576,] 21.81722      NaN 22.16791 21.94567 21.95745 21.52483
+#&gt; [577,] 24.56331 24.60524 24.71277 24.41590 24.43460 24.42368
+#&gt; [578,] 27.62415 27.47738 27.51871 27.51171 27.52006 27.54067
+#&gt; [579,] 24.43441 24.02957 23.79098 24.79351 24.54099 25.78614
+#&gt; [580,] 23.55532 23.68250 23.17019 23.42278 23.68902      NaN
+#&gt; [581,] 28.26154 28.20695 28.20158 28.76459 28.45846 28.54019
+#&gt; [582,] 24.96146 24.98846 24.90495 25.02064 24.79862 25.13809
+#&gt; [583,] 25.88010 25.66955 25.68416 25.74448 25.75768 25.78374
+#&gt; [584,] 22.68742 22.65762 22.80692 22.76634 22.41083 22.82382
+#&gt; [585,] 28.59303 28.24098 28.50348 28.66988 28.57942 28.29656
+#&gt; [586,] 25.58003 25.63876 25.51307 25.48422 25.45767 25.60278
+#&gt; [587,]      NaN      NaN      NaN      NaN      NaN      NaN
+#&gt; [588,]      NaN      NaN      NaN      NaN      NaN      NaN
+#&gt; [589,] 24.32649      NaN 24.37915 24.15908      NaN      NaN
+#&gt; [590,] 24.99524 25.24205 25.09035 25.09483 25.24402 25.35326
+#&gt; [591,] 23.49668 23.35582 23.00946 23.87652 23.80518 23.72557
+#&gt; [592,] 24.28821 24.20933 24.35084 24.18511 22.92608 24.00740
+#&gt; [593,] 24.05499 24.26607 24.50057 24.64052 24.56720 24.48796
+#&gt; [594,] 26.66017 25.36122 27.19396 26.78173 25.23153 27.13501
+#&gt; [595,]      NaN 24.75944      NaN 24.64653      NaN      NaN
+#&gt; [596,]      NaN 22.78445 23.23149 19.64816      NaN 22.90064
+#&gt; [597,] 23.94842 24.05084 24.25039 24.07725 23.38034 24.01648
+#&gt; [598,]      NaN      NaN 24.34082 23.53891 23.31846 23.79263
+#&gt; [599,] 23.40587 23.14043 22.96955 22.96886 23.11694 23.18929
+#&gt; [600,] 24.01725 23.97106 24.07022 24.11783 23.95180 24.11696
+#&gt; [601,] 23.30020 23.35111 23.17295 24.01461      NaN      NaN
+#&gt; [602,] 23.95571 23.92696 24.06143 23.66046 24.19460 23.99404
+#&gt; [603,] 24.76289 26.13266 27.12278 24.94138 26.26276 26.88960
+#&gt; [604,] 24.38265 24.05408 24.57277 24.05573 24.05961 24.11854
+#&gt; [605,]      NaN      NaN      NaN      NaN      NaN      NaN
+#&gt; [606,] 24.88409 24.57617 24.75567 24.68024 24.67589 24.86825
+#&gt; [607,] 25.62672 25.59114 25.40019 25.05254 25.18956 25.24532
+#&gt; [608,]      NaN      NaN      NaN 27.86118 27.87426 27.88373
+#&gt; [609,] 22.56639 22.07777 23.36346 22.28932 22.04303 22.59234
+#&gt; [610,] 26.28854 26.19549 26.50259 26.13475 26.23692 26.28198
+#&gt; [611,] 26.41578 26.41257 26.59643 26.71145 26.78221 26.70398
+#&gt; [612,] 22.85356 22.89565 23.49412 23.23786 22.84084 23.29866
+#&gt; [613,]      NaN      NaN      NaN 25.82019 24.66500 25.72033
+#&gt; [614,] 22.40932 23.02910      NaN      NaN      NaN      NaN
+#&gt; [615,] 23.29250 23.41914 23.89391 23.20695 23.09355 23.15593
+#&gt; [616,]      NaN      NaN      NaN      NaN      NaN      NaN
+#&gt; [617,] 22.68571 23.13232 22.46835 22.72178 22.68638 22.36136
+#&gt; [618,]      NaN      NaN      NaN      NaN      NaN      NaN
+#&gt; [619,]      NaN      NaN      NaN      NaN      NaN      NaN
+#&gt; [620,] 24.82357 25.03149 24.97561 25.29719 25.05345 25.36913
+#&gt; [621,] 23.81176 24.08001 23.93715 23.92252 23.96710 23.47420
+#&gt; [622,] 22.63973 23.21061 22.92646 22.82770 22.80359 23.62723
+#&gt; [623,]      NaN      NaN      NaN      NaN      NaN      NaN
+#&gt; [624,] 23.18826 22.74154 22.94633      NaN      NaN      NaN
+#&gt; [625,]      NaN      NaN      NaN      NaN      NaN      NaN
+#&gt; [626,] 24.06669 24.16023 23.96622      NaN      NaN      NaN
+#&gt; [627,] 24.65436 24.67093 25.04843 24.74335 24.64818 24.91159
+#&gt; [628,] 23.35340 23.05892 23.33033 23.60082 23.72920 23.88883
+#&gt; [629,]      NaN      NaN      NaN 25.16181 25.23623 25.74643
+#&gt; [630,] 24.63151 24.29985 24.68624 24.41680 24.41777 24.41622
+#&gt; [631,] 24.64719 24.63544 25.02914 24.21395 24.10604 24.13541
+#&gt; [632,] 24.84067 24.92134 24.63290 25.03149 24.70150 24.39571
+#&gt; [633,] 22.49831      NaN      NaN 22.53360 22.34335 22.64768
+#&gt; [634,] 25.15804      NaN 24.99265 25.02758 24.95925 24.92945
+#&gt; [635,]      NaN      NaN      NaN 25.05308 24.73076 25.13097
+#&gt; [636,] 23.56139 23.53623 23.39113 23.15508 23.44721 23.34962
+#&gt; [637,]      NaN      NaN 24.02741 23.22609 24.18775 23.89013
+#&gt; [638,] 24.43059 24.11744      NaN 23.86938 23.34340      NaN
+#&gt; [639,] 22.20108 22.00361 22.62825 22.17192 22.36242 22.17864
+#&gt; [640,]      NaN      NaN 23.03110      NaN      NaN      NaN
+#&gt; [641,]      NaN      NaN      NaN      NaN      NaN      NaN
+#&gt; [642,] 23.80658 23.25689 24.01249 23.66037 23.67461 23.96424
+#&gt; [643,] 20.83499      NaN      NaN 21.24010 21.68132      NaN
+#&gt; [644,]      NaN      NaN      NaN      NaN 22.28045      NaN
+#&gt; [645,] 26.56522 24.95505 22.84824 25.98203 25.54424 25.31403
+#&gt; [646,] 25.25494 25.16158 25.25868 25.05858 25.28584 25.20747
+#&gt; [647,]      NaN      NaN      NaN      NaN 21.65927      NaN
+#&gt; [648,] 28.42174 27.18565 28.36123 27.25746 27.21317 27.22527
+#&gt; [649,] 27.14948 27.09386 27.24227 27.04041 26.92162 26.95105
+#&gt; [650,] 24.53961 25.59315 25.47011 25.58712 25.54242 25.58124
+#&gt; [651,] 24.12131 24.25054 24.44872      NaN      NaN      NaN
+#&gt; [652,]      NaN      NaN      NaN      NaN      NaN      NaN
+#&gt; [653,] 26.54501 26.04951 27.03685 26.42466 26.31855 26.59263
+#&gt; [654,] 22.99452 22.53541 22.49599 22.49740 22.06299 22.40219
+#&gt; [655,] 24.16454 24.36426 24.16362 23.39008 23.48702 24.12384
+#&gt; [656,] 22.19877 22.25710 22.59621 22.49064 22.72711 22.44821
+#&gt; [657,]      NaN      NaN      NaN      NaN      NaN      NaN
+#&gt; [658,] 29.00603 28.83993 29.03708 28.87150 28.83957 28.93340
+#&gt; [659,] 23.59744 22.80168 23.60366 23.41510 23.57007 23.70258
+#&gt; [660,] 28.24617 28.13922 28.13482 28.08977 28.01855 28.06317
+#&gt; [661,]      NaN      NaN      NaN      NaN      NaN      NaN
+#&gt; [662,]      NaN      NaN      NaN      NaN      NaN      NaN
+#&gt; [663,] 22.73105 22.69967 23.08737 23.01793 22.76128 22.87496
+#&gt; [664,] 25.91857 25.88944 26.12451 26.11957 25.95360 25.90442
+#&gt; [665,] 24.15414 24.05250 24.43848 24.55368 24.64037 24.80196
+#&gt; [666,]      NaN      NaN 21.08213      NaN      NaN      NaN
+#&gt; [667,]      NaN 23.74848      NaN      NaN      NaN 23.47346
+#&gt; [668,] 24.95549 24.69938 25.32684 24.47373 24.18887 24.48282
+#&gt; [669,] 24.21897 24.25775 24.17265 24.01899 23.76496 24.06898
+#&gt; [670,] 27.79347 27.71151 27.80093 28.05850 27.76337 27.79447</div><div class='input'>
 </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

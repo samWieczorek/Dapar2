@@ -95,6 +95,9 @@
 <li>
   <a href="../reference/index.html">Reference</a>
 </li>
+<li>
+  <a href="../news/index.html">Changelog</a>
+</li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
         
@@ -155,9 +158,9 @@ enrichGO in <code>DAPAR2</code> or the function <code>enrichGO</code> of the pac
 <span class='fu'>utils</span><span class='fu'>::</span><span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span><span class='op'>(</span><span class='va'>Exp1_R25_prot</span>, package<span class='op'>=</span><span class='st'>'DAPARdata2'</span><span class='op'>)</span>
 <span class='va'>data</span> <span class='op'>&lt;-</span> <span class='fu'>rowData</span><span class='op'>(</span><span class='va'>Exp1_R25_prot</span><span class='op'>[[</span><span class='fl'>2</span><span class='op'>]</span><span class='op'>]</span><span class='op'>)</span><span class='op'>[[</span><span class='st'>'Protein_IDs'</span><span class='op'>]</span><span class='op'>]</span>
 <span class='va'>univ</span> <span class='op'>&lt;-</span> <span class='fu'><a href='univ_AnnotDbPkg.html'>univ_AnnotDbPkg</a></span><span class='op'>(</span><span class='st'>"org.Sc.sgd.db"</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; <span class='message'>Loading required package: org.Sc.sgd.db</span></div><div class='output co'>#&gt; <span class='warning'>Warning: there is no package called ‘org.Sc.sgd.db’</span></div><div class='output co'>#&gt; <span class='error'>Error in h(simpleError(msg, call)): erreur d'évaluation de l'argument 'x' lors de la sélection d'une méthode pour la fonction 'keys' : objet 'org.Sc.sgd.db' introuvable</span></div><div class='input'><span class='va'>ego</span> <span class='op'>&lt;-</span> <span class='fu'><a href='enrich_GO.html'>enrich_GO</a></span><span class='op'>(</span><span class='va'>data</span>, idFrom<span class='op'>=</span><span class='st'>"UNIPROT"</span>, orgdb<span class='op'>=</span><span class='st'>"org.Sc.sgd.db"</span>, 
+</div><div class='output co'>#&gt; <span class='message'>Le chargement a nécessité le package : org.Sc.sgd.db</span></div><div class='output co'>#&gt; <span class='warning'>Warning: aucun package nommé 'org.Sc.sgd.db' n'est trouvé</span></div><div class='output co'>#&gt; <span class='error'>Error in h(simpleError(msg, call)): erreur d'évaluation de l'argument 'x' lors de la sélection d'une méthode pour la fonction 'keys' : objet 'org.Sc.sgd.db' introuvable</span></div><div class='input'><span class='va'>ego</span> <span class='op'>&lt;-</span> <span class='fu'><a href='enrich_GO.html'>enrich_GO</a></span><span class='op'>(</span><span class='va'>data</span>, idFrom<span class='op'>=</span><span class='st'>"UNIPROT"</span>, orgdb<span class='op'>=</span><span class='st'>"org.Sc.sgd.db"</span>, 
 ont<span class='op'>=</span><span class='st'>"MF"</span>, pval<span class='op'>=</span><span class='fl'>0.05</span>, universe <span class='op'>=</span> <span class='va'>univ</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; <span class='message'>Loading required package: org.Sc.sgd.db</span></div><div class='output co'>#&gt; <span class='warning'>Warning: there is no package called ‘org.Sc.sgd.db’</span></div><div class='output co'>#&gt; <span class='error'>Error in eval(parse(text = OrgDb)): objet 'org.Sc.sgd.db' introuvable</span></div><div class='input'><span class='fu'>scatterplotEnrichGO_HC</span><span class='op'>(</span><span class='va'>ego</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; <span class='message'>Le chargement a nécessité le package : org.Sc.sgd.db</span></div><div class='output co'>#&gt; <span class='warning'>Warning: aucun package nommé 'org.Sc.sgd.db' n'est trouvé</span></div><div class='output co'>#&gt; <span class='error'>Error in eval(parse(text = OrgDb)): objet 'org.Sc.sgd.db' introuvable</span></div><div class='input'><span class='fu'>scatterplotEnrichGO_HC</span><span class='op'>(</span><span class='va'>ego</span><span class='op'>)</span>
 </div><div class='output co'>#&gt; <span class='error'>Error in scatterplotEnrichGO_HC(ego): objet 'ego' introuvable</span></div><div class='input'><span class='co'># }</span>
 
 </div></pre>
