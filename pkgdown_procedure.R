@@ -2,6 +2,13 @@ setwd("Github/AdaptedForFeatures/DAPAR2_pkgdown/")
 library(pkgdown)
 # copy logo.png in "."
 
+usethis::use_pkgdown()
+# ok Setting active project to 'C:/Users/EF249002/Documents/Github/AdaptedForFeatures/DAPAR2_pkgdown'
+# ok Adding '^_pkgdown\\.yml$', '^docs$' to '.Rbuildignore'
+# ok Adding '^pkgdown$' to '.Rbuildignore'
+# ok Adding 'docs' to '.gitignore'
+# * Modify '_pkgdown.yml'
+
 #############################################################################################
 init_site()
 # One time
@@ -55,18 +62,18 @@ build_reference()
 # Loading required package: BiocGenerics
 # Loading required package: parallel
 # 
-# Attaching package: ‘BiocGenerics’
+# Attaching package: BiocGenerics
 # 
-# The following objects are masked from ‘package:parallel’:
+# The following objects are masked from package:parallel:
 #   
 #   clusterApply, clusterApplyLB, clusterCall, clusterEvalQ, clusterExport, clusterMap, parApply,
 # parCapply, parLapply, parLapplyLB, parRapply, parSapply, parSapplyLB
 # 
-# The following objects are masked from ‘package:stats’:
+# The following objects are masked from package:stats:
 #   
 #   IQR, mad, sd, var, xtabs
 # 
-# The following objects are masked from ‘package:base’:
+# The following objects are masked from package:base:
 #   
 #   anyDuplicated, append, as.data.frame, basename, cbind, colnames, dirname, do.call,
 # duplicated, eval, evalq, Filter, Find, get, grep, grepl, intersect, is.unsorted, lapply, Map,
@@ -80,9 +87,9 @@ build_reference()
 # see 'citation("Biobase")', and for packages 'citation("pkgname")'.
 # 
 # 
-# Attaching package: ‘DynDoc’
+# Attaching package: DynDoc
 # 
-# The following object is masked from ‘package:BiocGenerics’:
+# The following object is masked from package:BiocGenerics:
 #   
 #   path
 # 
@@ -364,22 +371,40 @@ build_reference()
 # Writing 'reference/writeQFeaturesToExcel.html'
 # -- Previewing site -------------------------------------------------------------
 #   Warning messages:
-# 1: multiple methods tables found for ‘rowRanges’ 
-# 2: replacing previous import ‘dplyr::last’ by ‘data.table::last’ when loading ‘DAPAR2’ 
-# 3: package ‘testthat’ was built under R version 4.0.2
+# 1: multiple methods tables found for rowRanges 
+# 2: replacing previous import dplyr::last by data.table::last when loading DAPAR2 
+# 3: package testthat was built under R version 4.0.2
 
 
 #############################################################################################
-# copy paste vignettes/ from master/Prostar for test
-build_articles_index()
+# copy paste vignettes/ in Rmd from Prostar2 for test
+build_articles()
+# -- Building articles ---------------------------------------------------
 # Writing 'articles/index.html'
-# [1] TRUE
-# Warning message:
-#   In '_pkgdown.yml', topic must be valid R code
-# x Not '``' 
+# Reading 'vignettes/Build-a-pipeline-module.Rmd'
+# Writing 'articles/Build-a-pipeline-module.html'
+# Reading 'vignettes/Create-a-new-pipeline-tutorial.Rmd'
+# Writing 'articles/Create-a-new-pipeline-tutorial.html'
+# Reading 'vignettes/Prostar2.Rmd'
+# Writing 'articles/Prostar2.html'
+# Reading 'vignettes/Prostar_dev_guideline.Rmd'
+# Writing 'articles/Prostar_dev_guideline.html'
+# Reading 'vignettes/Prostar_workflow_userguide.Rmd'
+# Writing 'articles/Prostar_workflow_userguide.html'
+# -- Previewing site -----------------------------------------------------
+#   Warning messages:
+# 1: The label(s) fig:fig1 not found 
+# 2: The label(s) fig:fig2 not found
 
-# need _pkgdown.yml. Next to build_tutorials(). build_articles_index() after build_site
-build_articles_index() # do nothing
+# also works
+build_article(name='Prostar2')
+build_article(name='Prostar_dev_guideline')
+build_article(name='Prostar_workflow_userguide')
+build_article(name='Build-a-pipeline-module')
+build_article(name='Create-a-new-pipeline-tutorial')
+
+build_articles_index()
+# [1] FALSE
 
 
 #############################################################################################
@@ -391,17 +416,10 @@ build_news()
 
 
 #################################       END       #################################
-build_site()
+# open index.html or avoid five previous functions by using build_site()
 
 
 #############################################################################################
-usethis::use_pkgdown()
-# √ Setting active project to 'C:/Users/EF249002/Documents/Github/AdaptedForFeatures/DAPAR2_pkgdown'
-# √ Adding '^_pkgdown\\.yml$', '^docs$' to '.Rbuildignore'
-# √ Adding '^pkgdown$' to '.Rbuildignore'
-# √ Adding 'docs' to '.gitignore'
-# * Modify '_pkgdown.yml'
-
 # A ajouter dans _pkgdown.yml:
 template_navbar()
 template_reference()

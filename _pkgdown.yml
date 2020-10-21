@@ -1,29 +1,43 @@
+articles:
+- title: All vignettes
+  desc: >
+    Prostar 2 Vignettes for pkgdown test
+  contents:
+  - '`Build-a-pipeline-module`'
+  - '`Create-a-new-pipeline-tutorial`'
+  - '`Prostar2`'
+  - '`Prostar_dev_guideline`'
+  - '`Prostar_workflow_userguide`'
 
-
-navbar:
-  structure:
-    left:
-    - home
-    - intro
-    - reference
-    - articles
-    - tutorials
-    - news
-    right: github
-  components:
-    home:
-      icon: fas fa-home fa-lg
-      href: index.html
-    reference:
-      text: Reference
-      href: reference/index.html
-    news:
-      text: Changelog
-      href: news/index.html
-
-
+  
+  
 reference:
-- title: All functions
+- title: Initialzation
+  contents:
+  - starts_with("add")
+  - starts_with("build")
+  - starts_with("check")
+  - starts_with("get")
+  - starts_with("make")
+- title: Filtration
+  contents:
+  - starts_with("filter")
+- title: Aggregation
+  contents:
+  - matches("agg")
+- title: Imputation
+  contents:
+  - starts_with("impute")
+- title: Differential Analysis
+  contents:
+  - starts_with("diff")
+- title: Plots
+  contents:
+  - starts_with("wrapper")
+  - matches("plot")
+  - matches("heatmap")
+  - matches("hc")
+- title: All other functions
   contents:
   - '`addConnexComp`'
   - '`addListAdjacencyMatrices`'
@@ -163,9 +177,27 @@ reference:
   - '`wrapperClassic1wayAnova`'
   - '`wrapperRunClustering`'
   - '`writeQFeaturesToExcel`'
-
-
-articles:
-- title: All vignettes
-  desc: ~
-  contents: '``'
+  
+  
+  
+navbar:
+  structure:
+    left:
+    - home
+    - reference
+    - news
+    - articles
+    right: github
+  components:
+    home:
+      icon: fas fa-home fa-lg
+      href: index.html
+    reference:
+      text: Reference
+      href: reference/index.html
+    news:
+      text: News
+      href: news/index.html
+    github:
+      icon: fa-github
+      href: https://github.com/samWieczorek/DAPAR2
