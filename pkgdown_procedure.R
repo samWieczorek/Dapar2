@@ -392,3 +392,17 @@ build_news()
 
 #################################       END       #################################
 build_site()
+
+
+#############################################################################################
+usethis::use_pkgdown()
+# √ Setting active project to 'C:/Users/EF249002/Documents/Github/AdaptedForFeatures/DAPAR2_pkgdown'
+# √ Adding '^_pkgdown\\.yml$', '^docs$' to '.Rbuildignore'
+# √ Adding '^pkgdown$' to '.Rbuildignore'
+# √ Adding 'docs' to '.gitignore'
+# * Modify '_pkgdown.yml'
+
+# A ajouter dans _pkgdown.yml:
+template_navbar()
+template_reference()
+template_articles()

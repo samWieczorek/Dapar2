@@ -1,46 +1,28 @@
+
+
 navbar:
-  title: "DAPAR2"
-  left:
-    - icon: fas fa-home fa-lg
+  structure:
+    left:
+    - home
+    - intro
+    - reference
+    - articles
+    - tutorials
+    - news
+    right: github
+  components:
+    home:
+      icon: fas fa-home fa-lg
       href: index.html
-    - text: Reference
+    reference:
+      text: Reference
       href: reference/index.html
-    # - articles
-    # - tutorials
-    - text: News
+    news:
+      text: Changelog
       href: news/index.html
-  right: 
-    - icon: fa-github
-      href: https://github.com/samWieczorek/DAPAR2/tree/clone_pkgdown
-   
-      
-      
+
+
 reference:
-- title: Dataset initialization
-  contents:
-  - starts_with("add")
-  - starts_with("build") # compte la case
-  - starts_with("check")
-  - starts_with("get")
-  - starts_with("make")
-- title: Filtration
-  contents:
-  - starts_with("filter")
-- title: Aggregation
-  contents:
-  - matches("agg")
-- title: Imputation
-  contents:
-  - starts_with("impute")
-- title: Differential Analysis
-  contents:
-  - starts_with("diff")
-- title: Plots
-  contents:
-  - starts_with("wrapper")
-  - matches("plot")
-  - matches("heatmap")
-  - matches("hc")
 - title: All functions
   contents:
   - '`addConnexComp`'
@@ -181,3 +163,9 @@ reference:
   - '`wrapperClassic1wayAnova`'
   - '`wrapperRunClustering`'
   - '`writeQFeaturesToExcel`'
+
+
+articles:
+- title: All vignettes
+  desc: ~
+  contents: '``'
