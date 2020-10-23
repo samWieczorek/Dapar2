@@ -420,7 +420,15 @@ build_news()
 
 
 #############################################################################################
-# A ajouter dans _pkgdown.yml:
+# Add to empty _pkgdown.yml:
 template_navbar()
 template_reference()
 template_articles()
+
+
+################################# Customise Home right column ############################################################
+# Adapt then add to README
+# [![Travis-CI Build Status](https://travis-ci.org/stan-dev/bayesplot.svg?branch=master)](https://travis-ci.org/stan-dev/bayesplot)
+# [![codecov](https://codecov.io/gh/stan-dev/bayesplot/branch/master/graph/badge.svg)](https://codecov.io/gh/stan-dev/bayesplot)
+# [![CRAN_Status_Badge](https://www.r-pkg.org/badges/version/bayesplot?color=blue)](https://cran.r-project.org/web/packages/bayesplot)
+# [![Downloads](https://cranlogs.r-pkg.org/badges/bayesplot?color=blue)](https://cran.rstudio.com/package=bayesplot)
