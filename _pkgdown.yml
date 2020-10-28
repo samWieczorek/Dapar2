@@ -64,23 +64,25 @@ home:
   
   
 reference:
-- title: Initialzation
+- title: Initialization
+  desc: Prepare the dataset format
   contents:
   - starts_with("add")
   - starts_with("build")
   - starts_with("check")
   - starts_with("get")
   - starts_with("make")
-- title: Filtration
+- title: Data processes
+- subtitle: Filtration
   contents:
   - starts_with("filter")
-- title: Aggregation
+- subtitle: Aggregation
   contents:
   - matches("agg")
-- title: Imputation
+- subtitle: Imputation
   contents:
   - starts_with("impute")
-- title: Differential Analysis
+- subtitle: Differential Analysis
   contents:
   - starts_with("diff")
 - title: Plots

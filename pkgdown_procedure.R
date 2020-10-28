@@ -1,6 +1,6 @@
 setwd("Github/AdaptedForFeatures/DAPAR2_pkgdown/")
 library(pkgdown)
-# copy logo.png in "."
+### copy logo.png in "."
 
 usethis::use_pkgdown()
 # ok Setting active project to 'C:/Users/EF249002/Documents/Github/AdaptedForFeatures/DAPAR2_pkgdown'
@@ -11,9 +11,9 @@ usethis::use_pkgdown()
 
 #############################################################################################
 init_site()
-# One time
-# create docs/
-# Minor, create pkgdown/favicon and 404.html
+### One time
+### create docs/
+### Minor, create pkgdown/favicon and 404.html
 
 # -- Initialising site -----------------------------------------------
 # Copying '../../../R/win-library/4.0/pkgdown/assets/bootstrap-toc.css' to 'bootstrap-toc.css'
@@ -40,8 +40,8 @@ init_site()
 
 #############################################################################################
 build_home()
-# create index.html from more or less README.md (doesn't work directly with .Rmd, have to be "knit" into .md)
-# change YAML for details
+### create index.html from more or less README.md (doesn't work directly with .Rmd, have to be "knit" into .md)
+### change YAML for details
 
 # -- Building home --------------------------------------------------------------------------------------------
 #   Writing 'authors.html'
@@ -377,7 +377,7 @@ build_reference()
 
 
 #############################################################################################
-# copy paste vignettes/ in Rmd from Prostar2 for test
+### copy paste vignettes/ in Rmd from Prostar2 for test
 build_articles()
 # -- Building articles ---------------------------------------------------
 # Writing 'articles/index.html'
@@ -396,7 +396,7 @@ build_articles()
 # 1: The label(s) fig:fig1 not found 
 # 2: The label(s) fig:fig2 not found
 
-# also works
+### also works
 build_article(name='Prostar2')
 build_article(name='Prostar_dev_guideline')
 build_article(name='Prostar_workflow_userguide')
@@ -416,19 +416,14 @@ build_news()
 
 
 #################################       END       #################################
-# open index.html or avoid five previous functions by using build_site()
+### open index.html or avoid five previous functions by using build_site()
 
 
 #############################################################################################
-# Add to empty _pkgdown.yml:
+### Add to empty _pkgdown.yml:
 template_navbar()
 template_reference()
 template_articles()
-
-
-################################# Customise Home right column ############################################################
-# Adapt then add to README
-# [![Travis-CI Build Status](https://travis-ci.org/stan-dev/bayesplot.svg?branch=master)](https://travis-ci.org/stan-dev/bayesplot)
-# [![codecov](https://codecov.io/gh/stan-dev/bayesplot/branch/master/graph/badge.svg)](https://codecov.io/gh/stan-dev/bayesplot)
-# [![CRAN_Status_Badge](https://www.r-pkg.org/badges/version/bayesplot?color=blue)](https://cran.r-project.org/web/packages/bayesplot)
-# [![Downloads](https://cranlogs.r-pkg.org/badges/bayesplot?color=blue)](https://cran.rstudio.com/package=bayesplot)
+                                                                                                                                                                  
+                                                                                                                                                                  
+                                                                                                                                                                  
