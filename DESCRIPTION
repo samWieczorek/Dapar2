@@ -1,7 +1,7 @@
 Package: DAPAR2
 Type: Package
 Title: Tools for the Differential Analysis of Proteins Abundance with R
-Version: 0.6
+Version: 0.6.1
 Date: 2020-09-13
 Authors@R: c(person(given = "Samuel", family = "Wieczorek",
             email = "samuel.wieczorek@cea.fr",
@@ -117,6 +117,7 @@ Collate:
     'pepa.R'
     'anova_analysis.R'
     'clustering.R'
+    'misc.R'
 RoxygenNote: 7.1.1
 Packaged: 2017-10-13 11:13:04 UTC; sw175264
 Encoding: UTF-8
