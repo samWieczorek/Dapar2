@@ -4,7 +4,9 @@
 #' @description This code is an adaptation of the standardise function in the package Mfuzz
 #' it works directly on a matrix or data.frame of intensities
 #' 
-#' @param data
+#' @param data xxx
+#' 
+#' @author Hélène Borges
 #' 
 standardise <- function (data) 
 {
@@ -114,6 +116,8 @@ standardiseMeanIntensities <- function(obj, sTab){
 #' @importFrom diptest dip.test
 #' 
 checkClusterability <- function(standards){
+  require(diptest)
+  require(cluster)
   # on vérifie la clusterabilité des données
   dip_res <- diptest::dip.test(x = standards)
   # d.power = 2 correspond au critère de Tibshirani. B = 500 permet d'avoir

@@ -2,7 +2,7 @@
 % Please edit documentation in R/Filtering_MV.R
 \name{MVrowsTagToOne_HB}
 \alias{MVrowsTagToOne_HB}
-\title{Filter missing values by proportion}
+\title{}
 \usage{
 MVrowsTagToOne_HB(obj, sTab, int.prop, mode = "None")
 }
@@ -32,6 +32,9 @@ proportion of NA equal or below the threshold will be kept.
 proportion equal to or less than the fixed proportion will be kept.
 * at least one condition: the lines for which at least one condition is
 equal to or less than the fixed proportion of NA will be kept.
+}
+\details{
+Filter missing values by proportion
 }
 \examples{
 library(QFeatures)

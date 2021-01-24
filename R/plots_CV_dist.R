@@ -36,17 +36,30 @@
 #' 
 #' @export
 #' 
-CVDistD_HC <- function(qData, conds, palette = NULL){
+CVDistD_HC <- function(qData, 
+                       conds, 
+                       palette = NULL){
   
   if (is.null(conds)) {return(NULL)}
   conditions <- unique(conds)
   n <- length(conditions)
   
-  palette <- BuildPalette(conds, palette)
+  myColors <- NULL
+  if (is.null(palette)){
+    warning("Color palette set to default.")
+    myColors <-   GetColorsForConditions(conds, ExtendPalette(length(unique(conds))))
+  } else {
+    if (length(palette) != length(unique(conds))){
+      warning("The color palette has not the same dimension as the number of samples")
+      myColors <- GetColorsForConditions(conds, ExtendPalette(length(unique(conds))))
+    } else 
+      myColors <- GetColorsForConditions(conds, palette)
+  }
+  
   
   h1 <-  highcharter::highchart() %>% 
     dapar_hc_chart(chartType = "spline", zoomType="x") %>%
-    highcharter::hc_colors(unique(palette)) %>%
+    highcharter::hc_colors(unique(myColors)) %>%
     highcharter::hc_legend(enabled = TRUE) %>%
     highcharter::hc_xAxis(title = list(text = "CV(log(Intensity))")) %>%
     highcharter::hc_yAxis(title = list(text = "Density")) %>%

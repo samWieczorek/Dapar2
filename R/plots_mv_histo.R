@@ -23,14 +23,31 @@
 #' conds <- colData(Exp1_R25_pept)
 #' mvHisto_HC(qData, conds, showValues=TRUE)
 #' 
+#' pal <- ExtendPalette(2, 'Dark2')
+#' mvHisto_HC(qData, conds, showValues=TRUE, palette = pal)
+#' 
+#' 
 #' @export
 #' 
 #' @import highcharter
 #' 
-mvHisto_HC <- function(qData, conds, showValues = FALSE, palette = NULL){
+mvHisto_HC <- function(qData, 
+                       conds, 
+                       showValues = FALSE, 
+                       palette = NULL){
   
-  palette <- BuildPalette(conds[['Condition']], palette)
- 
+  myColors <- NULL
+  if (is.null(palette)){
+    warning("Color palette set to default.")
+    myColors <-  GetColorsForConditions(conds, ExtendPalette(length(unique(conds))))
+  } else {
+    if (length(palette) != length(unique(conds))){
+      warning("The color palette has not the same dimension as the number of samples")
+      myColors <- GetColorsForConditions(conds, ExtendPalette(length(unique(conds))))
+    } else 
+      myColors <- palette
+    myColors <- GetColorsForConditions(conds, palette)
+  }
   NbNAPerCol <- colSums(is.na(qData))
   NbNAPerRow <- rowSums(is.na(qData))
   
@@ -42,7 +59,7 @@ mvHisto_HC <- function(qData, conds, showValues = FALSE, palette = NULL){
     dapar_hc_chart(chartType = "column") %>%
     hc_title(text = "#NA by replicate") %>%
     hc_add_series(df,type="column", colorByPoint = TRUE) %>%
-    hc_colors(palette) %>%
+    hc_colors(myColors) %>%
     hc_plotOptions( column = list(stacking = "normal"),
                     animation=list(duration = 100)) %>%
     hc_legend(enabled = FALSE) %>%

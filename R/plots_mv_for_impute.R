@@ -26,11 +26,17 @@
 #' utils::data(Exp1_R25_pept, package='DAPARdata2')
 #' hc_mvTypePlot2(Exp1_R25_pept, 2, title="POV distribution")
 #' 
+#' pal <- ExtendPalette(length(unique(conds)), 'Dark2')
+#' hc_mvTypePlot2(Exp1_R25_pept, 2, title="POV distribution", palette=pal)
+#' 
 #' @export
 #' 
 #' @import highcharter
 #' 
-hc_mvTypePlot2 <- function(obj, i, title=NULL, palette = NULL){
+hc_mvTypePlot2 <- function(obj, 
+                           i, 
+                           title=NULL, 
+                           palette = NULL){
   
   if(missing(obj))
     stop("'obj' is required.")
@@ -49,18 +55,22 @@ hc_mvTypePlot2 <- function(obj, i, title=NULL, palette = NULL){
   
   if (is.null(conds)){return(NULL)}
   
+  myColors <- NULL
   if (is.null(palette)){
-    palette <- RColorBrewer::brewer.pal(length(unique(conds)),"Dark2")[1:length(unique(conds))]
-  }else{
+    warning("Color palette set to default.")
+    palette <- ExtendPalette(length(unique(conds)))
+  } else {
     if (length(palette) != length(unique(conds))){
-      warning("The color palette has not the same dimension as the number of conditions")
-      return(NULL)
+      warning("The color palette has not the same dimension as the number of samples")
+      palette <- ExtendPalette(length(unique(conds)))
     }
   }
   
   conditions <- conds
-  mTemp <- nbNA <- nbValues <- matrix(rep(0,nrow(qData)*length(unique(conditions))), nrow=nrow(qData),
-                                      dimnames=list(NULL,unique(conditions)))
+  mTemp <- nbNA <- nbValues <- matrix(rep(0,nrow(qData)*length(unique(conditions))), 
+                                      nrow=nrow(qData),
+                                      dimnames=list(NULL,unique(conditions))
+                                      )
   dataCond <- data.frame()
   ymax <- 0
   series <- list()

@@ -27,6 +27,9 @@
 #' obj <- normalizeD(obj, 2, name='norm', method='SumByColumns', conds=conds, type='overall')
 #' compareNormalizationD_HC(assay(obj, 2), assay(obj, 3), conds=conds, n=100)
 #' 
+#' pal <- ExtendPalette(2, "Dark2")
+#' compareNormalizationD_HC(assay(obj, 2), assay(obj, 3), conds=conds, n=100, palette=pal)
+#' 
 #' @import highcharter
 #' 
 #' @importFrom utils str
@@ -41,14 +44,9 @@ compareNormalizationD_HC <- function(qDataBefore,
                                      n = NULL,
                                      type = 'scatter'){
   
-  if (is.null(conds)){
-    warning("'conds' is null.")
-    return(NULL)
-  }
-  
-  print(str(subset.view))
-  print(paste0('subset.view:',subset.view))
-  
+  if (missing(conds))
+    stop("'conds' is missing")
+ 
   if (!is.null(subset.view) && length(subset.view) > 0)
   {
     if (nrow(qDataBefore) > 1)
@@ -88,14 +86,23 @@ compareNormalizationD_HC <- function(qDataBefore,
       }
   }
   
-  palette <- BuildPalette(conds, palette)
-  
+  myColors <- NULL
+  if (is.null(palette)){
+    warning("Color palette set to default.")
+    myColors <-   GetColorsForConditions(conds, ExtendPalette(length(unique(conds))))
+  } else {
+    if (length(palette) != length(unique(conds))){
+      warning("The color palette has not the same dimension as the number of samples")
+      myColors <- GetColorsForConditions(conds, ExtendPalette(length(unique(conds))))
+    } else 
+      myColors <- GetColorsForConditions(conds, palette)
+  }
 
   x <- qDataBefore
   y <- qDataAfter/qDataBefore
   
   ##Colors definition
-  legendColor <- unique(palette)
+  legendColor <- unique(myColors)
   txtLegend <- unique(conds)
   
   
@@ -111,7 +118,7 @@ compareNormalizationD_HC <- function(qDataBefore,
   h1 <-  highchart() %>% 
     dapar_hc_chart( chartType = type) %>%
     hc_add_series_list(series) %>%
-    hc_colors(palette) %>%
+    hc_colors(myColors) %>%
     hc_tooltip(enabled= "false" ) %>%
     dapar_hc_ExportMenu(filename = "compareNormalization")
   h1

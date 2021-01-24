@@ -33,15 +33,6 @@ are `ttestAssay`.}
 This manual page describes the xxxx
 }
 \details{
-The filtering functions of DAPAR have not been all moved to DAPAR2 as we now use the QFeatures package
-which provides some filtering functions, especially on features that are present in the rowData
-of the datasets.
- The filtering functions on numerical values are deleted because the same functions exist in QFeatures.
- For the missing values filtering on conditions, we do not use DAPAR functions anymore. Instead, we use
- the numerical filtering functions in QFeatures. To do so, it is necessary to build some rowdata for the
- SummarizedExperiment (not necessary stored in the object) which count the number of missing values w.r.t.
- the type of filtering: whole matrix, at least one value per condition, etc...
-
 xxx
 }
 \examples{

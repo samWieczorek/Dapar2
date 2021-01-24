@@ -29,6 +29,10 @@ qData <- assay(Exp1_R25_pept[[2]])
 conds <- colData(Exp1_R25_pept)
 mvHisto_HC(qData, conds, showValues=TRUE)
 
+pal <- ExtendPalette(2, 'Dark2')
+mvHisto_HC(qData, conds, showValues=TRUE, palette = pal)
+
+
 }
 \author{
 Samuel Wieczorek
