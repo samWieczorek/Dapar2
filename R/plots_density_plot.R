@@ -19,15 +19,20 @@
 #' utils::data(Exp1_R25_pept, package='DAPARdata2')
 #' qData <- assay(Exp1_R25_pept[[2]])
 #' conds <- colData(Exp1_R25_pept)[["Condition"]]
+#' densityPlotD_HC(qData, conds
+#' 
 #' legend <- colData(Exp1_R25_pept)[["Sample.name"]]
-#' palette <- c("#fc03ec","#94fc03")
-#' densityPlotD_HC(qData, conds, legend, palette)
+#' pal <- ExtendPalette(2, 'Dark2')
+#' densityPlotD_HC(qData, conds, legend, palette=pal)
 #' 
 #' @import highcharter
 #' @importFrom stats density
 #' 
 #' @export
-densityPlotD_HC <- function(qData, conds, legend=NULL, palette = NULL){
+densityPlotD_HC <- function(qData, 
+                            conds, 
+                            legend=NULL, 
+                            palette = NULL){
   
   if(missing(qData))
     stop("'qData' is missing.")
@@ -35,7 +40,19 @@ densityPlotD_HC <- function(qData, conds, legend=NULL, palette = NULL){
   if(missing(conds))
    stop("'conds' is missing.")
   
-  palette <- BuildPalette(conds, palette)
+  myColors <- NULL
+  if (is.null(palette)){
+    warning("Color palette set to default.")
+    myColors <-   GetColorsForConditions(conds, ExtendPalette(length(unique(conds))))
+  } else {
+    if (length(palette) != length(unique(conds))){
+      warning("The color palette has not the same dimension as the number of samples")
+      myColors <- GetColorsForConditions(conds, ExtendPalette(length(unique(conds))))
+    } else 
+      myColors <- palette
+    myColors <- GetColorsForConditions(conds, palette)
+  }
+  
   
   h1 <-  highcharter::highchart() %>% 
     hc_title(text = "Density plot") %>% 
@@ -58,13 +75,7 @@ densityPlotD_HC <- function(qData, conds, legend=NULL, palette = NULL){
       )
     )
   
-  if (!is.null(palette)) {
-    if (length(palette) != ncol(qData)){
-      warning("The color palette has not the same dimension as the number of samples")
-      return(NULL)
-    }
-    h1 <- h1 %>% hc_colors(palette)
-  }
+    h1 <- h1 %>% hc_colors(myColors)
   
   if (is.null(legend)) {
     legend <- paste0("series", 1:ncol(qData))

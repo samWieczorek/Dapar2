@@ -43,6 +43,9 @@ conds <- colData(obj)[["Condition"]]
 obj <- normalizeD(obj, 2, name='norm', method='SumByColumns', conds=conds, type='overall')
 compareNormalizationD_HC(assay(obj, 2), assay(obj, 3), conds=conds, n=100)
 
+pal <- ExtendPalette(2, "Dark2")
+compareNormalizationD_HC(assay(obj, 2), assay(obj, 3), conds=conds, n=100, palette=pal)
+
 }
 \author{
 Samuel Wieczorek, Enora Fremy

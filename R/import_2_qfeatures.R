@@ -174,12 +174,12 @@ addOriginOfValues <- function(obj, i, namesOrigin = NULL){
 #' sample.file <- system.file("extdata", "samples_Exp1_R25.txt", package="DAPARdata2")
 #' sample <- read.table(sample.file, header=TRUE, sep="\t", as.is=TRUE, stringsAsFactors = FALSE)
 #' indExpData <- 56:61
-#' namesOrigin <- colnames(data)[43:48]
 #' parentId <- 'Protein_group_IDs'
-#' keyid <- 'Sequence'
+#' keyId <- 'Sequence'
 #' analysis <- 'test'
-#' ft <- createQFeatures(data, sample,indExpData,keyId = keyid, analysis=analysis, 
-#' namesOrigin = namesOrigin, typeOfData = "peptide", parentProtId = parentId, forceNA=TRUE)
+#' indexForMetacell <- c(43:48)
+#' ft <- createQFeatures(data, sample, indExpData, keyId = keyid, analysis=analysis, logTransform = TRUE,
+#' indexForMetacell = indexForMetacell, typeOfData = "peptide", parentProtId = parentId, forceNA=TRUE, software = 'maxquant')
 #' 
 #' @import QFeatures
 #' @importFrom utils installed.packages
@@ -191,14 +191,15 @@ createQFeatures <- function(data,
                             sample,
                             indExpData,
                             keyId=NULL,
-                            namesOrigin = NULL,
+                            indexForMetacell = NULL,
                             logTransform=FALSE, 
                             forceNA=FALSE,
                             typeOfData,
                             parentProtId = NULL,
                             analysis='foo',
                             processes = NULL,
-                            pipelineType = NULL){
+                            pipelineType = NULL,
+                            software = NULL){
   
   if(missing(data))
     stop("'data' is required")
@@ -210,9 +211,16 @@ createQFeatures <- function(data,
     stop("'typeOfData' is required")
   
   
+  colnames(data) <- gsub(".", "_", colnames(data), fixed=TRUE)
+  keyId <- gsub(".", "_", keyId, fixed=TRUE)
+  typeOfData <- gsub(".", "_", typeOfData, fixed=TRUE)
+  parentProtId <- gsub(".", "_", parentProtId, fixed=TRUE)
+  analysis <- gsub(".", "_", analysis, fixed=TRUE)
+  processes <- gsub(".", "_", processes, fixed=TRUE)
+  pipelineType <- gsub(".", "_", pipelineType, fixed=TRUE)
+  software <- gsub(".", "_", software, fixed=TRUE)
   
-  
-  if (is.null(keyId) || keyId=='' || nchar(keyId)==0) {
+  if (is.null(keyId) || keyId == '' || nchar(keyId)==0 || keyId == 'AutoID') {
     obj <- QFeatures::readQFeatures(data, 
                                     ecol=indExpData, 
                                     name='original')
@@ -225,21 +233,31 @@ createQFeatures <- function(data,
   
   
   ## Encoding the sample data
-  sample <- lapply(sample,function(x){ gsub(".", "_", x, fixed=TRUE)})
+  sample <- lapply(sample, function(x){ gsub(".", "_", x, fixed=TRUE)})
   SummarizedExperiment::colData(obj)@listData <- sample
   
   
-  # As the function addOribingOfValues is based on the presence of NA in quanti data,
-  # if forceNA is not set as TRUE, the previous function cannot ben run
-  origin <- MultiAssayExperiment::DataFrame()
-  #if (isTRUE(forceNA)) {
-  obj <- zeroIsNA(obj,seq_along(obj))
-  origin <- addOriginOfValues(obj, 1, namesOrigin)
-  metadata(obj)$OriginOfValues <- colnames(origin)
-  rowData(obj[['original']]) <- cbind(rowData(obj[['original']]), origin)
+  # Get the metacell info
+  tmp.metacell <- NULL
+  if (!is.null(indexForMetacell)){
+    tmp.metacell <- data[, indexForMetacell]
+    tmp.metacell <- apply(tmp.metacell,2,tolower)
+    tmp.metacell <- as.data.frame(apply(tmp.metacell, 2, function(x) gsub("\\s", "", x)),
+                              stringsAsFactors = FALSE)
+  }
   
-  #}
+  #browser()
+  metacell <- BuildMetaCell(from = software,
+                            level = typeOfData,
+                            qdata = assay(obj), 
+                            conds = colData(obj)$Condition,
+                            df = tmp.metacell)
+
   
+
+  rowData(obj[['original']]) <- cbind(rowData(obj[['original']]), metacell)
+  
+  obj <- zeroIsNA(obj, seq_along(obj))
   
   
   daparVersion <- if (is.na(utils::installed.packages()["DAPAR2"])) 'NA' else utils::installed.packages()["DAPAR2",'Version']
@@ -251,17 +269,13 @@ createQFeatures <- function(data,
                         keyId = keyId,
                         params = list(),
                         RawPValues = FALSE,
-                        OriginOfValues = colnames(origin),
+                        names_metacell = colnames(metacell),
                         analysis = analysis,
                         pipelineType = pipelineType,
                         processes=c('original',processes)
   )
   
   metadata(obj[['original']])$typeOfData <- typeOfData
-  
-  ## Replace all '.' by '_' in names
-  #colnames(fd) <- gsub(".", "_", colnames(data)[indFData], fixed=TRUE)
-  #colnames(Intensity) <- gsub(".", "_", colnames(data)[indExpData], fixed=TRUE)
   
   
   if (tolower(typeOfData) == 'peptide')

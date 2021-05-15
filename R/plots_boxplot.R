@@ -36,7 +36,12 @@
 #' 
 #' @export
 #' 
-boxPlotD_HC <- function(qData, conds, keyId=NULL, legend=NULL, palette = NULL, subset.view=NULL){
+boxPlotD_HC <- function(qData, 
+                        conds, 
+                        keyId=NULL, 
+                        legend=NULL, 
+                        palette = NULL, 
+                        subset.view=NULL){
   
   if (is.null(qData)){
     warning('The dataset in NULL and cannot be shown')
@@ -55,6 +60,19 @@ boxPlotD_HC <- function(qData, conds, keyId=NULL, legend=NULL, palette = NULL, s
   if (!is.null(subset.view)) {
     if (is.null(keyId)|| missing(keyId))
       stop("'keyId' is missing.")
+  }
+  
+  
+  myColors <- NULL
+  if (is.null(palette)){
+    warning("Color palette set to default.")
+    myColors <-   GetColorsForConditions(conds, ExtendPalette(length(unique(conds))))
+  } else {
+    if (length(palette) != length(unique(conds))){
+      warning("The color palette has not the same dimension as the number of samples")
+      myColors <- GetColorsForConditions(conds, ExtendPalette(length(unique(conds))))
+    } else 
+      myColors <- GetColorsForConditions(conds, palette)
   }
   
   
@@ -124,24 +142,9 @@ boxPlotD_HC <- function(qData, conds, keyId=NULL, legend=NULL, palette = NULL, s
     box_names_to_use <- levels(by)
     series <- gen_boxplot_series_from_df(value = value, by=by)
     
-    if(is.null(boxcolors)){
-      cols <- BuildPalette(conds, NULL)
-      #cols<- viridisLite::viridis(n= length(series), alpha = 0.5) # Keeping alpha in here! (COLORS FOR BOXES ARE SET HERE)
-    } else {
-      cols<- boxcolors
-    }
-    
-    if(is.null(box_line_colors)){
-      if(base::nchar(cols[[1]])==9){
-        cols2<- substr(cols, 0,7) # no alpha, pure hex truth, for box lines 
-      } else {
-        cols2<- cols
-      }
-      
-    } else {
-      cols2<- box_line_colors
-    }
-    
+    cols<- boxcolors
+    cols2<- box_line_colors
+
     # Injecting value 'fillColor' into series list
     kv<- gen_key_vector(variable = "fillColor", length(series)) 
     series2<- lapply(seq_along(series), function(x){ add_variable_to_series_list(x = x, series_list = series, key_vector = kv, value_vector = cols) })
@@ -184,8 +187,6 @@ boxPlotD_HC <- function(qData, conds, keyId=NULL, legend=NULL, palette = NULL, s
     hc
   }
   
-  palette <- BuildPalette(conds, palette)
-  
   
   df <- data.frame(cbind(categ =rep(colnames(qData),nrow(qData)),
                          value = as.vector(apply(qData, 1, function(x) as.vector(x)))))
@@ -195,7 +196,7 @@ boxPlotD_HC <- function(qData, conds, keyId=NULL, legend=NULL, palette = NULL, s
                                                     chart_title = "",
                                                     chart_x_axis_label = "Samples",
                                                     show_outliers = TRUE, 
-                                                    boxcolors = palette,
+                                                    boxcolors = myColors,
                                                     box_line_colors = "black")
   
   
@@ -253,10 +254,14 @@ boxPlotD_HC <- function(qData, conds, keyId=NULL, legend=NULL, palette = NULL, s
       n=n+1
       dfSubset <- data.frame(y = as.vector(qData[i,],mode='numeric'), x = as.numeric(factor(names(qData[i,])))-1, stringsAsFactors = FALSE)
       hc<-hc %>%
-        highcharter::hc_add_series(type= "line",data=dfSubset,color=pal[n], dashStyle = "shortdot",name=idVector[i],
-                                   tooltip=list(enabled=T,headerFormat ="",pointFormat="{point.series.name} : {point.y: .2f} ") )
-      
-    }
+        highcharter::hc_add_series(type= "line",
+                                   data=dfSubset,color=pal[n], 
+                                   dashStyle = "shortdot",
+                                   name=idVector[i],
+                                   tooltip=list(enabled=T,headerFormat ="",
+                                                pointFormat="{point.series.name} : {point.y: .2f} ")
+        )
+      }
   }  
   
   hc

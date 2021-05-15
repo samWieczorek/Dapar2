@@ -1,24 +1,16 @@
-#' The filtering functions of DAPAR have not been all moved to DAPAR2 as we now use the QFeatures package
-#' which provides some filtering functions, especially on features that are present in the rowData
-#' of the datasets.
-#'  The filtering functions on numerical values are deleted because the same functions exist in QFeatures.
-#'  For the missing values filtering on conditions, we do not use DAPAR functions anymore. Instead, we use
-#'  the numerical filtering functions in QFeatures. To do so, it is necessary to build some rowdata for the
-#'  SummarizedExperiment (not necessary stored in the object) which count the number of missing values w.r.t.
-#'  the type of filtering: whole matrix, at least one value per condition, etc...
-#'  
-#'  
-#'  
-
 
 #' @title Check the validity of the experimental design
 #'
 #' @description
 #'
-#' This manual page describes the xxxx
-#'
-#'
-#' @details xxx
+#' This manual page describes the The filtering functions of DAPAR have not been all moved to DAPAR2 as we now use the QFeatures package
+# which provides some filtering functions, especially on features that are present in the rowData
+# of the datasets.
+#  The filtering functions on numerical values are deleted because the same functions exist in QFeatures.
+#  For the missing values filtering on conditions, we do not use DAPAR functions anymore. Instead, we use
+#  the numerical filtering functions in QFeatures. To do so, it is necessary to build some rowdata for the
+#  SummarizedExperiment (not necessary stored in the object) which count the number of missing values w.r.t.
+#  the type of filtering: whole matrix, at least one value per condition, etc...
 #'
 #'
 #' @examples
@@ -229,6 +221,138 @@ MVrowsTagToOne <- function(object, type, th=0, percent=TRUE) {
 }
 
 
+
+# TODO get ideas in this function to update the previous one. This function is in DAPAR
+#' 
+#' #' Returns the indices of the lines of \code{exprs()} table to delete w.r.t. 
+#' #' the conditions on the number of missing values.
+#' #' The user chooses the minimum amount of intensities that is acceptable and
+#' #' the filter delete lines that do not respect this condition.
+#' #' The condition may be on the whole line or condition by condition.
+#' #' 
+#' #' The different methods are :
+#' #' "WholeMatrix": given a threshold \code{th}, only the lines that contain
+#' #' at least \code{th} values are kept.
+#' #' "AllCond": given a threshold \code{th}, only the lines which contain
+#' #' at least \code{th} values for each of the conditions are kept.
+#' #' "AtLeastOneCond": given a threshold \code{th}, only the lines that contain
+#' #' at least \code{th} values, and for at least one condition, are kept.
+#' #' 
+#' #' @title Filter lines in the matrix of intensities w.r.t. some criteria
+#' #' 
+#' #' @param obj An object of class \code{MSnSet} containing
+#' #' quantitative data.
+#' #' 
+#' #' @param percent TRUE or FALSE. Default is FALSE..
+#' #' 
+#' #' @param condition Method used to choose the lines to delete.
+#' #' Values are : "None", "EmptyLines", "WholeMatrix", "AllCond", "AtLeastOneCond"
+#' #' 
+#' #' @param threshold An integer value of the threshold if percent is FALSE. Otherwise, a floating
+#' #' number between 0 and 1.
+#' #' 
+#' #' @return An vector of indices that correspond to the lines to keep.
+#' #' 
+#' #' @author Enora Fremy, Samuel Wieczorek
+#' #' 
+#' #' @examples
+#' #' utils::data(Exp1_R25_pept, package='DAPARdata')
+#' #' mvFilterGetIndices(Exp1_R25_pept, condition = "WholeMatrix", threshold=2)
+#' #' mvFilterGetIndices(Exp1_R25_pept, condition = "EmptyLines")
+#' #' mvFilterGetIndices(Exp1_R25_pept, condition = "WholeMatrix", percent=TRUE, threshold=0.5)
+#' #' 
+#' #' @export
+#' #' 
+#' mvFilterGetIndices <- function(obj,
+#'                                percent = FALSE,
+#'                                condition = 'WholeMatrix', 
+#'                                threshold = NULL){
+#'   #Check parameters
+#'   paramtype<-c("None", "EmptyLines", "WholeMatrix", "AllCond", "AtLeastOneCond")
+#'   if (!(condition %in% paramtype)){
+#'     warning("Param `type` is not correct.")
+#'     return (NULL)
+#'   }
+#'   
+#'   if (condition != 'EmptyLines')
+#'     if (!(percent %in% c(T, F))){
+#'       warning("Param `type` is not correct.")
+#'       return (NULL)
+#'     } else {
+#'       if (!isTRUE(percent)){
+#'         paramth <- c(seq(0, nrow(Biobase::pData(obj)), 1))
+#'         if (!(threshold %in% paramth)){
+#'           warning(paste0("Param `threshold` is not correct. It must an integer greater than or equal to 0 and less or equal than ",
+#'                          nrow(Biobase::pData(obj))))
+#'           return (NULL)
+#'         }
+#'       } else {
+#'         if (threshold < 0 || threshold > 1){
+#'           warning("Param `threshold` is not correct. It must be greater than 0 and less than 1.")
+#'           return (NULL)
+#'         }
+#'       }
+#'     }
+#'   
+#'   keepThat <- NULL
+#'   if (is.null(obj@experimentData@other$OriginOfValues)){
+#'     data <- Biobase::exprs(obj)
+#'     warning('The dataset contains no slot OriginOfValues in which to search for indices. The search will
+#'             be proceeded in the intensities tab based on NA values')
+#'   } else {
+#'     data <- dplyr::select(Biobase::fData(obj),
+#'                           obj@experimentData@other$OriginOfValues)
+#'   }
+#'   
+#'   if (condition == "None") {
+#'     keepThat <- seq(1:nrow(data))
+#'   } else if (condition == "EmptyLines") {
+#'     keepThat <- which(apply(!DAPAR::is.MV(data), 1, sum) >= 1)
+#'   } else if (condition == "WholeMatrix") {
+#'     if (isTRUE(percent)) {
+#'       keepThat <- which(rowSums(!DAPAR::is.MV(data))/ncol(data) >= threshold) 
+#'     } else {
+#'       keepThat <- which(apply(!DAPAR::is.MV(data), 1, sum) >= threshold)
+#'     }
+#'   } else if (condition == "AtLeastOneCond" || condition == "AllCond") {
+#'     
+#'     conditions <- unique(Biobase::pData(obj)$Condition)
+#'     nbCond <- length(conditions)
+#'     keepThat <- NULL
+#'     s <- matrix(rep(0, nrow(data)*nbCond),
+#'                 nrow=nrow(data),
+#'                 ncol=nbCond)
+#'     
+#'     if (isTRUE(percent)) {
+#'       for (c in 1:nbCond) {
+#'         ind <- which(Biobase::pData(obj)$Condition == conditions[c])
+#'         s[,c] <- (rowSums(!DAPAR::is.MV(data[,ind]))/length(ind)) >= threshold
+#'       }
+#'     } else {
+#'       for (c in 1:nbCond) {
+#'         ind <- which(Biobase::pData(obj)$Condition == conditions[c])
+#'         if (length(ind) == 1){
+#'           s[,c] <- (!DAPAR::is.MV(data[,ind]) >= threshold) 
+#'         }
+#'         else {
+#'           s[,c] <- (apply(!DAPAR::is.MV(data[,ind]), 1, sum)) >= threshold
+#'         }
+#'       }
+#'     }
+#'     
+#'     switch(condition,
+#'            AllCond = keepThat <- which(rowSums(s) == nbCond),
+#'            AtLeastOneCond = keepThat <- which(rowSums(s) >= 1)
+#'     )
+#'   }
+#'   
+#'   return(keepThat)
+#' }
+#' 
+
+
+
+#' @title
 #' Filter missing values by proportion
 #'
 #' @description Remove lines in the data according to the proportion of missing

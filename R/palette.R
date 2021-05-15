@@ -28,7 +28,9 @@
 #' @importFrom grDevices colorRampPalette
 #' 
 ExtendPalette <- function(n = NULL, base = "Set1"){
-  pal <- NULL
+
+  palette <- NULL
+
   nMaxColors <- RColorBrewer::brewer.pal.info[base, 'maxcolors']
   if( is.null(n))
     n <- nMaxColors
@@ -39,17 +41,17 @@ ExtendPalette <- function(n = NULL, base = "Set1"){
   }
   
   if(n > nMaxColors){
-    pal <- RColorBrewer::brewer.pal(nMaxColors, base)
-    allComb <- combn(pal, 2)
+    palette <- RColorBrewer::brewer.pal(nMaxColors, base)
+    allComb <- combn(palette, 2)
     
     for (i in 1:(n-nMaxColors)){
-      pal <- c(pal, grDevices::colorRampPalette(allComb[,i])(3)[2])
+      palette <- c(palette, grDevices::colorRampPalette(allComb[,i])(3)[2])
     }
     
   } else {
-    pal <- RColorBrewer::brewer.pal(nMaxColors, base)[1:n]
+    palette <- RColorBrewer::brewer.pal(nMaxColors, base)[1:n]
   }
-  pal
+  palette
 }
 
 
@@ -63,8 +65,8 @@ ExtendPalette <- function(n = NULL, base = "Set1"){
 #' 
 #' @param conds The extended vector of samples conditions
 #' 
-#' @param pal A vector of HEX color code that form the basis palette from which 
-#' to build the complete color vector for the conditions.
+#' @param palette A vector of HEX color code that form the basis palette from which to build
+#' the complete color vector for the conditions.
 #' 
 #' @return A vector composed of HEX color code for the conditions
 #' 
@@ -80,22 +82,24 @@ ExtendPalette <- function(n = NULL, base = "Set1"){
 #' @importFrom RColorBrewer brewer.pal
 #' 
 #' 
-GetColorsForConditions <- function(conds, pal=NULL){
-  
+GetColorsForConditions <- function(conds, palette=NULL){
+
   if(missing(conds))
     stop("'conds' is required")
   
-  if (!is.null(pal) && length(unique(conds)) != length(pal)){
+
+  if (!is.null(palette) && length(unique(conds)) != length(palette)){
     stop('The length of `conds` must be equal to the length of `base_palette`.')
   }
   
-  if (is.null(pal)){
-    pal <- ExtendPalette(length(unique(conds)))
+  if (is.null(palette)){
+    palette <- ExtendPalette(length(unique(conds)))
+
   }
   
   myColors <- NULL
   for (i in 1:length(conds)){
-    myColors[i] <- pal[which(conds[i] == unique(conds))]
+    myColors[i] <- palette[which(conds[i] == unique(conds))]
   }
   return(myColors)
   

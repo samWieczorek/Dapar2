@@ -38,7 +38,11 @@
 #' 
 #' @export
 #' 
-heatmapD <- function(qData, conds, distance="euclidean", cluster="complete", dendro = FALSE){
+heatmapD <- function(qData, 
+                     conds, 
+                     distance="euclidean", 
+                     cluster="complete", 
+                     dendro = FALSE){
   ##Check parameters
   # paramdist <- c("euclidean", "manhattan")
   # if (!(distance %in% paramdist)){
@@ -75,13 +79,16 @@ heatmapD <- function(qData, conds, distance="euclidean", cluster="complete", den
   x[is.na(x)] <- -1e5
   dist= dist(x, method=distance)
   hcluster = hclust(dist, method=cluster)
-  cols_branches <- BuildPalette(conds, NULL)
+  cols_branches <- ExtendPalette(length(unique((conds))), NULL)
   dend1 <- as.dendrogram(hcluster)
   dend1 <- dendextend::color_branches(dend1, k = length(conds), col = cols_branches)
   col_labels <- dendextend::get_leaves_branches_col(dend1)
   
   
-  if (dendro){ .dendro = "row"} else {.dendro = "none"}
+  if (dendro)
+    .dendro = "row"
+  else
+    .dendro = "none"
   
   p <- gplots::heatmap.2(
     x=t(.data),
@@ -147,7 +154,7 @@ heatmapD <- function(qData, conds, distance="euclidean", cluster="complete", den
 #' library(QFeatures)
 #' utils::data(Exp1_R25_pept, package='DAPARdata2')
 #' qData <- assay(Exp1_R25_pept[[2]])[1:1000,]
-#' heatmap.DAPAR(qData)
+#' heatmapForMissingValues(qData)
 #' 
 #' @export
 #' 
@@ -155,7 +162,7 @@ heatmapD <- function(qData, conds, distance="euclidean", cluster="complete", den
 #' 
 #' @importFrom graphics image strwidth strheight axis mtext text title layout par plot.new
 #' 
-heatmap.DAPAR <- function (x, 
+heatmapForMissingValues <- function (x, 
                            col = grDevices::heat.colors(100),
                            srtCol=NULL,
                            labCol = NULL,

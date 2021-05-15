@@ -30,8 +30,17 @@
 #' 
 mvPerLinesHistoPerCondition_HC <- function(qData, samplesData, indLegend="auto", palette=NULL){
   
-  if (is.null(palette)) { palette <- BuildPalette(samplesData[["Condition"]], palette) } 
-  
+  myColors <- NULL
+  if (is.null(palette)){
+    warning("Color palette set to default.")
+    myColors <-   GetColorsForConditions(conds, ExtendPalette(length(unique(conds))))
+  } else {
+    if (length(palette) != length(unique(conds))){
+      warning("The color palette has not the same dimension as the number of samples")
+      myColors <- GetColorsForConditions(conds, ExtendPalette(length(unique(conds))))
+    } else 
+      myColors <- GetColorsForConditions(conds, palette)
+  }
   
   if (identical(indLegend,"auto")) { indLegend <- c(2:length(colnames(samplesData)))}
   
@@ -62,7 +71,7 @@ mvPerLinesHistoPerCondition_HC <- function(qData, samplesData, indLegend="auto",
     hc_plotOptions( column = list(stacking = ""),
                     dataLabels = list(enabled = FALSE),
                     animation=list(duration = 100)) %>%
-    hc_colors(unique(palette)) %>%
+    hc_colors(unique(myColors)) %>%
     hc_legend(enabled = FALSE) %>%
     hc_xAxis(categories = row.names(m), title = list(text = "#[NA values] per line (condition-wise)")) %>%
     dapar_hc_ExportMenu(filename = "missingValuesPlot_2") %>%

@@ -33,6 +33,9 @@ library(QFeatures)
 utils::data(Exp1_R25_pept, package='DAPARdata2')
 hc_mvTypePlot2(Exp1_R25_pept, 2, title="POV distribution")
 
+pal <- ExtendPalette(length(unique(conds)), 'Dark2')
+hc_mvTypePlot2(Exp1_R25_pept, 2, title="POV distribution", palette=pal)
+
 }
 \author{
 Samuel Wieczorek, Enora Fremy

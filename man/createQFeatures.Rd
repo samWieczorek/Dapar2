@@ -9,14 +9,15 @@ createQFeatures(
   sample,
   indExpData,
   keyId = NULL,
-  namesOrigin = NULL,
+  indexForMetacell = NULL,
   logTransform = FALSE,
   forceNA = FALSE,
   typeOfData,
   parentProtId = NULL,
   analysis = "foo",
   processes = NULL,
-  pipelineType = NULL
+  pipelineType = NULL,
+  software = NULL
 )
 }
 \arguments{
@@ -30,8 +31,6 @@ the \code{rowData()} table of the \code{QFeatures} object.}
 
 \item{keyId}{The indice of the column containing the ID of entities 
 (peptides or proteins)}
-
-\item{namesOrigin}{xxxxxxxxxxx}
 
 \item{logTransform}{A boolean value to indicate if the data have to be
 log-transformed (Default is FALSE)}
@@ -49,6 +48,8 @@ proteins and is used to generate adjacency matrix and process to aggregation.}
 \item{processes}{xxxx}
 
 \item{pipelineType}{xxxx}
+
+\item{namesOrigin}{xxxxxxxxxxx}
 }
 \value{
 An instance of class \code{QFeatures}.
@@ -64,12 +65,12 @@ data <- read.table(data.file, header=TRUE, sep="\t", as.is=TRUE, stringsAsFactor
 sample.file <- system.file("extdata", "samples_Exp1_R25.txt", package="DAPARdata2")
 sample <- read.table(sample.file, header=TRUE, sep="\t", as.is=TRUE, stringsAsFactors = FALSE)
 indExpData <- 56:61
-namesOrigin <- colnames(data)[43:48]
 parentId <- 'Protein_group_IDs'
-keyid <- 'Sequence'
+keyId <- 'Sequence'
 analysis <- 'test'
-ft <- createQFeatures(data, sample,indExpData,keyId = keyid, analysis=analysis, 
-namesOrigin = namesOrigin, typeOfData = "peptide", parentProtId = parentId, forceNA=TRUE)
+indexForMetacell <- c(43:48)
+ft <- createQFeatures(data, sample, indExpData, keyId = keyid, analysis=analysis, logTransform = TRUE,
+indexForMetacell = indexForMetacell, typeOfData = "peptide", parentProtId = parentId, forceNA=TRUE, software = 'maxquant')
 
 }
 \author{

@@ -7,9 +7,12 @@
 standardise(data)
 }
 \arguments{
-\item{data}{}
+\item{data}{xxx}
 }
 \description{
 This code is an adaptation of the standardise function in the package Mfuzz
 it works directly on a matrix or data.frame of intensities
+}
+\author{
+Hélène Borges
 }

@@ -4,7 +4,7 @@
 \alias{Base_Palette}
 \title{xxx}
 \usage{
-Base_Palette(palette.name, conditions)
+Base_Palette(palette.name = "Dark2", conditions)
 }
 \arguments{
 \item{palette.name}{The name of the palette from the package `RColorBrewer`}

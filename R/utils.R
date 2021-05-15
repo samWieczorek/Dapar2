@@ -1,45 +1,4 @@
 
-#' @title Builds a complete color palette for the conditions given in argument
-#' 
-#' @description xxxx
-#' 
-#' @param conds The extended vector of samples conditions
-#' 
-#' @param base_palette The basic color (HEX code) used to build the complete palette. This vector have the same length as unique(conds)
-#' 
-#' @return A vector composer of HEX color code for the conditions
-#' 
-#' @author Samuel Wieczorek
-#' 
-#' @examples
-#' library(QFeatures)
-#' utils::data(Exp1_R25_pept, package='DAPARdata2')
-#' conditions <- colData(Exp1_R25_pept)$Condition
-#' BuildPalette(conditions, c('AAAAAA', 'BBBBBB'))
-#' @export
-#' 
-#' @importFrom RColorBrewer brewer.pal
-#' 
-#' 
-BuildPalette <- function(conds, base_palette){
-  
-  palette <- NULL
-  if (is.null(base_palette)){
-    palette.init <- RColorBrewer::brewer.pal(8,"Dark2")[1:max(3,length(unique(conds)))]
-  } else {
-    palette.init <- base_palette
-  }
-  
-  for (i in 1:length(conds)){
-    palette[i] <- palette.init[which(conds[i] == unique(conds))]
-  }
-  return(palette)
-  
-}                                        
-
-
-
-
 #' @title Returns the number of empty lines in the data
 #' 
 #' @param qData A matrix corresponding to the quantitative data.

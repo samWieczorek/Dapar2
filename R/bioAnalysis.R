@@ -37,6 +37,7 @@
 #' @export
 #' 
 #' @importFrom clusterProfiler bitr groupGO
+#' @import AnnotationDbi
 #' 
 group_GO <- function(data, idFrom,  orgdb, ont, level, readable=FALSE){
   
@@ -82,6 +83,7 @@ group_GO <- function(data, idFrom,  orgdb, ont, level, readable=FALSE){
 #' @importFrom AnnotationDbi keys
 #' 
 univ_AnnotDbPkg <- function(orgdb){
+  require(AnnotationDbi)
   require(as.character(orgdb),character.only = TRUE)
   univ <- AnnotationDbi::keys(get(orgdb), keytype="ENTREZID")
   return(univ)

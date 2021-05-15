@@ -33,6 +33,9 @@ proportion equal to or less than the fixed proportion will be kept.
 * at least one condition: the lines for which at least one condition is
 equal to or less than the fixed proportion of NA will be kept.
 }
+\details{
+
+}
 \examples{
 library(QFeatures)
 utils::data(Exp1_R25_prot, package='DAPARdata2')
