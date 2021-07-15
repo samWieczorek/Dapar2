@@ -52,6 +52,9 @@
 #' @param level A string designing the type of entity/pipeline. 
 #' Available values are: `peptide`, `protein`
 #' 
+#' @return A data.frame containing the different tags and corresponding colors for the level
+#' given in parameter
+#' 
 #' @author Thomas Burger, Samuel Wieczorek
 #'
 #'@export
@@ -60,66 +63,220 @@ metacell.def <- function(level){
   if(missing(level))
     stop("'level' is required.")
   
-  switch(level,
-         peptide = {
-           node <- c('root', 
-                     'quanti', 
-                     'identified', 
-                     'recovered', 
-                     'missing',
-                     'missing POV', 
-                     'missing MEC', 
-                     'imputed',
-                     'imputed POV', 
-                     'imputed MEC')
-           parent <- c('', 
-                       'root', 
-                       'quanti', 
-                       'quanti', 
-                       'root', 
-                       'missing', 
-                       'missing',
-                       'root',
-                       'imputed',
-                       'imputed')
-           data.frame(node = node,
-                      parent = parent)
-         },
-         
-         
-         protein = {
-           node <- c('root',
-                     'quanti',
-                     'identified',
-                     'recovered',
-                     'missing',
-                     'missing POV',
-                     'missing MEC',
-                     'imputed',
-                     'imputed POV',
-                     'imputed MEC',
-                     'combined')
-           parent <- c('',
-                       'root',
-                       'quanti',
-                       'quanti',
-                       'root',
-                       'missing',
-                       'missing',
-                       'root',
-                       'imputed',
-                       'imputed',
-                       'root')
-           
-           data.frame(node = node,
-                      parent = parent)
-         }
-         
+  def <- switch(level,
+                peptide = {
+                  node <- c('all', 
+                            'quanti', 
+                            'identified', 
+                            'recovered', 
+                            'missing',
+                            'missing POV', 
+                            'missing MEC', 
+                            'imputed',
+                            'imputed POV', 
+                            'imputed MEC')
+                  parent <- c('', 
+                              'all', 
+                              'quanti', 
+                              'quanti', 
+                              'all', 
+                              'missing', 
+                              'missing',
+                              'all',
+                              'imputed',
+                              'imputed')
+                  data.frame(node = node,
+                             parent = parent)
+                },
+                
+                
+                protein = {
+                  node <- c('all',
+                            'quanti',
+                            'identified',
+                            'recovered',
+                            'missing',
+                            'missing POV',
+                            'missing MEC',
+                            'imputed',
+                            'imputed POV',
+                            'imputed MEC',
+                            'combined')
+                  parent <- c('',
+                              'all',
+                              'quanti',
+                              'quanti',
+                              'all',
+                              'missing',
+                              'missing',
+                              'all',
+                              'imputed',
+                              'imputed',
+                              'all')
+                  
+                  data.frame(node = node,
+                             parent = parent)
+                }
   )
   
   
+  colors <- list('all' = 'white',
+                 'missing' = 'white',
+                 'missing POV' = "lightblue",
+                 'missing MEC' = "orange",
+                 'quanti' = "white",
+                 'recovered' = "lightgrey",
+                 'identified' = "white",
+                 'combined' = "red",
+                 'imputed' = "white",
+                 'imputed POV' = "#0040FF",
+                 'imputed MEC' = "#DF7401")
+  
+  def <- cbind(def, color = rep('white', nrow(def)))
+  
+  for(n in 1:nrow(def))
+    def[n, 'color'] <- colors[[def[n, 'node']]]
+  
+  return(def)
+
 }
 
+
+#' @title Get the colnames of quantitative cell metadata
+#' 
+#' @description 
+#' These names are common to all assays contained in the object. This is why
+#' they are stored in the global metadata. This function is used whenever it is necessary
+#' to (re)detect MEC and POV (new dataset or when post processing protein metacell 
+#' after aggregation)
+
+"Get_qMetadata_names"
+
+#' 
+#' @param object  An object of class 'QFeatures' the MEC tag in the metacell
+#' 
+#' @author Samuel Wieczorek
+#' 
+#' @examples
+#' utils::data(Exp1_R25_pept, package='DAPARdata2')
+#' Get_qMetadata_names(Exp1_R25_pept)
+#' 
+#' @export
+#' 
+setMethod("Get_qMetadata_names", "SummarizedExperiment",
+          function(object, ...) {
+            value <- metadata(object)[['qMetadata_names']]
+            if(is.null(value)){
+              warning(" The metacell dataframe does not exist. Returns NULL.")
+              return(NULL)
+            } else 
+              return(value)
+          }
+)
+
+
+#' 
+#' @param object  An object of class 'QFeatures' the MEC tag in the metacell
+#' 
+#' @param i xxx
+#' 
+#' @export
+#' 
+setMethod("Get_qMetadata_names", "QFeatures",
+          function(object, i, ...) {
+            if (missing(i))
+              stop("Provide index or name of assay to be processed")
+            if (length(i) != 1)
+              stop("Only one assay to be processed at a time")
+            if (is.numeric(i)) i <- names(object)[[i]]
+            
+            Get_qMetadata_names(object, i)
+          }
+)
+
+
+
+
+#' @title Get the type of dataset
+#' 
+#' @param object  An object of class 'SummarizedExperiment'
+#' 
+#' @author Samuel Wieczorek
+#' 
+#' @examples
+#' utils::data(Exp1_R25_pept, package='DAPARdata2')
+#' GetTypeDataset(Exp1_R25_pept[[2]])
+#' 
+#' @export
+#' 
+"GetTypeDataset"
+#'
+setMethod("GetTypeDataset", "SummarizedExperiment",
+          function(object, ...) {
+            value <- metadata(object)[['typeDataset']]
+            if(is.null(value)){
+              warning(" The 'typeDataset' slot does not exist. Returns NULL.")
+              return(NULL)
+            } else 
+              return(value)
+          }
+)
+
+#' @param object xxx
+#' 
+#' @param i xxx
+#' 
+#' 
+setMethod("GetTypeDataset", "QFeatures",
+          function(object, i, ...) {
+            if (missing(i))
+              stop("Provide index or name of assay to be processed")
+            if (length(i) != 1)
+              stop("Only one assay to be processed at a time")
+            if (is.numeric(i)) i <- names(object)[[i]]
+            
+            GetTypeDataset(object[[i]])
+          }
+)
+
+
+#' @title Get the type of dataset
+#' 
+#' @param object  An object of class 'SummarizedExperiment'
+#' 
+#' @author Samuel Wieczorek
+#' 
+#' @examples
+#' utils::data(Exp1_R25_pept, package='DAPARdata2')
+#' SetTypeDataset(Exp1_R25_pept[[2]])
+#' 
+#' @export
+#' 
+"SetTypeDataset"
+#'
+setMethod("SetTypeDataset", "SummarizedExperiment",
+          function(object, type, ...) {
+            metadata(object)$typeDataset <- type
+            object
+          }
+)
+
+#' @param object xxx
+#' 
+#' @param i xxx
+#' 
+#' 
+setMethod("SetTypeDataset", "QFeatures",
+          function(object, i, type, ...) {
+            if (missing(i))
+              stop("Provide index or name of assay to be processed")
+            if (length(i) != 1)
+              stop("Only one assay to be processed at a time")
+            if (is.numeric(i)) i <- names(object)[[i]]
+            
+            GetTypeDataset(object[[i]], type)
+          }
+)
 
 
 #' @title Sets the MEC tag in the metacell
@@ -129,9 +286,9 @@ metacell.def <- function(level){
 #' values (used to update an initial dataset) or imputed values (used when
 #' post processing protein metacell after aggregation)
 #' 
-#' @param conds xxx
+#' @param conds A 1-col dataframe with the condition associated to each sample.
 #' 
-#' @param df An object of class \code{MSnSet}
+#' @param df An object of class \code{SummarizedExperiment}
 #' 
 #' @param level Type of entity/pipeline
 #' 
@@ -141,28 +298,30 @@ metacell.def <- function(level){
 #' 
 #' @examples 
 #' utils::data(Exp1_R25_pept, package='DAPARdata2')
-#' obj <- Exp1_R25_pept[[2]][1:10]
-#' cols.for.ident <- metadata(obj)[['names_metacell']]
-#' conds <- Biobase::pData(obj)$Condition
-#' df <- Biobase::fData(obj)[, cols.for.ident]
-#' df <- Set_POV_MEC_tags(conds, df, level = 'peptide')
+#' object <- Exp1_R25_pept
+#' conds <- colData(object)$Condition
+#' df <- assay(Exp1_R25_pept, 2)
+#' level <- GetTypeDataset(object, 2)
+#' df <- Set_POV_MEC_tags(object, 1)
 #' 
+#' @param  conds xxx.
+#'
+#' @param df xxx
+#'
+#' @param level xxx
+#'
 #' @export
+#'
 #' 
-#' @importFrom Biobase pData exprs fData
-#'  
 Set_POV_MEC_tags <- function(conds, df, level){
-  
   u_conds <- unique(conds)
-  
   for (i in 1:length(u_conds)){
     ind.samples <- which(conds == u_conds[i])
     
     ind.imputed <- match.metacell(df[, ind.samples], 'imputed', level)
-    ind.missing <- match.metacell(df[, ind.samples], 'missing', level)  
+    ind.missing <- match.metacell(df[, ind.samples], 'missing', level)
     ind.missing.pov <- ind.missing & rowSums(ind.missing) < length(ind.samples) & rowSums(ind.missing) > 0
     ind.missing.mec <- ind.missing &  rowSums(ind.missing) == length(ind.samples)
-    
     ind.imputed.pov <- ind.imputed & rowSums(ind.imputed) < length(ind.samples) & rowSums(ind.imputed) > 0
     ind.imputed.mec <- ind.imputed &  rowSums(ind.imputed) == length(ind.samples)
     
@@ -170,10 +329,10 @@ Set_POV_MEC_tags <- function(conds, df, level){
     df[,ind.samples][ind.missing.mec] <- 'missing MEC'
     df[,ind.samples][ind.imputed.pov] <- 'imputed POV'
     df[,ind.samples][ind.missing.pov]  <- 'missing POV'
-    
+    }
+  df
   }
-  return(df)
-}
+
 
 
 #' @title xxxx
@@ -214,7 +373,11 @@ Set_POV_MEC_tags <- function(conds, df, level){
 #' 
 #' @importFrom Biobase pData exprs fData
 #' 
-BuildMetaCell <- function(from=NULL, level, qdata = NULL, conds = NULL, df = NULL){
+BuildMetaCell <- function(from = NULL, 
+                          level,
+                          qdata = NULL, 
+                          conds = NULL, 
+                          df = NULL){
   if (missing(from))
     stop("'from' is required.")
   if (missing(level))
@@ -293,6 +456,7 @@ Metacell_generic <- function(qdata, conds, level){
   # Rule 1
   qdata[qdata == 0] <- NA
   df[is.na(qdata)] <-  'missing'
+  
   df <- Set_POV_MEC_tags(conds, df, level)
   
   colnames(df) <- paste0("metacell_", colnames(qdata))
@@ -362,8 +526,8 @@ Metacell_proline <- function(qdata, conds, df, level=NULL){
   
   if (is.null(df))
     df <- data.frame(matrix(rep('quanti', nrow(qdata)*ncol(qdata)), 
-                            nrow=nrow(qdata),
-                            ncol=ncol(qdata)),
+                            nrow = nrow(qdata),
+                            ncol = ncol(qdata)),
                      stringsAsFactors = FALSE) 
   
   # Rule 1
@@ -484,14 +648,14 @@ Metacell_maxquant <- function(qdata, conds, df, level=NULL){
 #' @examples
 #' utils::data(Exp1_R25_pept, package='DAPARdata2')
 #' obj <- Exp1_R25_pept[1:10,]
-#' metadata <- GetMetacell(obj)
+#' metadata <- Get_qMetadata(obj)
 #' m <- match.metacell(metadata, pattern="missing", level = 'peptide')
 #'
 #' @export
 #'
-match.metacell <- function(metadata, pattern, level){
-  if (missing(metadata))
-    stop("'metadata' is required")
+match.metacell <- function(df, pattern, level){
+  if (missing(df))
+    stop("'df' is required")
   if (missing(pattern))
     stop("'pattern' is required.")
   if (missing(level))
@@ -503,7 +667,7 @@ match.metacell <- function(metadata, pattern, level){
                 paste0(metacell.def(level)$node, collapse = ' ')))
   
   ll.res <- lapply(search.metacell.tags(pattern = pattern, level), 
-                   function(x){metadata==x})
+                   function(x){as.data.frame(df)==x})
   
   res <- NULL
   for (i in 1:length(ll.res))
@@ -529,10 +693,11 @@ match.metacell <- function(metadata, pattern, level){
 #' @examples
 #' utils::data(Exp1_R25_pept, package='DAPARdata2')
 #' obj <- Exp1_R25_pept[1:10,]
-#' mc <- GetMetacell(obj[[2]])
-setMethod("GetMetacell", "SummarizedExperiment",
+#' mc <- Get_qMetadata(obj[[2]])
+setMethod("Get_qMetadata", "SummarizedExperiment",
           function(object,
-                   names) {
+                   names,
+                   ...) {
             
             value <- rowData(object)[ ,names]
             if(is.null(value)){
@@ -547,15 +712,15 @@ setMethod("GetMetacell", "SummarizedExperiment",
 
 
 
-setMethod("GetMetacell", "QFeatures",
-          function(object, i) {
+setMethod("Get_qMetadata", "QFeatures",
+          function(object, i, ...) {
             if (missing(i))
               stop("Provide index or name of assay to be processed")
             if (length(i) != 1)
               stop("Only one assay to be processed at a time")
             if (is.numeric(i)) i <- names(object)[[i]]
             
-            GetMetacell(object = object[[i]], names = metadata(object)$names_metacell)
+            Get_qMetadata(object = object[[i]], names = metadata(object)$names_metacell)
           })
 
 
@@ -591,7 +756,7 @@ setMethod("UpdateMetacell", "SummarizedExperiment",
             
             if (missing(object))
               stop("'object' is required.")
-            level <- metadata(object)[['typeOfData']]
+            level <- GetTypeDataset(object)
             if (missing(na.type)){
               values <- unname(search.metacell.tags('missing', level))
               stop("'na.type' is required. Available values are: ", 
@@ -599,13 +764,13 @@ setMethod("UpdateMetacell", "SummarizedExperiment",
             }
             
             
-            ind <- match.metacell(metadata = GetMetacell(object), 
+            ind <- match.metacell(metadata = Get_qMetadata(object), 
                                   pattern = na.type, 
                                   level = level) & !is.na(assay(object))
             
-            rowData(object)[, metadata(object)[['names_metacell']]][ind] <- gsub("missing", 
+            rowData(object)[, metadata(object)[['qMetadata_names']]][ind] <- gsub("missing", 
                                                                            "imputed", 
-                                                                           rowData(object)[, metadata(object)[['names_metacell']]][ind],
+                                                                           rowData(object)[, Get_qMetadata_names(object)][ind],
                                                                            fixed = TRUE)
             object
           })

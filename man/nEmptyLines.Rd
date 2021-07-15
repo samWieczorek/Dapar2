@@ -10,7 +10,7 @@ nEmptyLines(qData)
 \item{qData}{A matrix corresponding to the quantitative data.}
 }
 \value{
-An integer
+A list
 }
 \description{
 Returns the number of empty lines in the data

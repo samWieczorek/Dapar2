@@ -24,5 +24,5 @@ impute_fixed_value(assay(Exp1_R25_pept[1:1000], 2), 0.001)
 
 }
 \author{
-Samuel Wieczoreklibrary(DAPAR2)
+Samuel Wieczorek
 }

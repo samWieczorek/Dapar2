@@ -5,17 +5,18 @@
 \title{Displays a correlation matrix of the quantitative data of a
 numeric matrix.}
 \usage{
-corrMatrixD_HC(obj, names = NULL, rate = 0.5, showValues = TRUE)
+corrMatrixD_HC(obj.se, names = NULL, rate = 0.5, showValues = TRUE)
 }
 \arguments{
-\item{obj}{xxx}
-
-\item{names}{xxxxx}
+\item{names}{A vector of strings which will be used as legend. The length
+of 'names' must be equal to the number of samples in the dataset.}
 
 \item{rate}{The rate parameter to control the exponential law for 
 the gradient of colors}
 
 \item{showValues}{xxx}
+
+\item{obj}{xxx}
 }
 \value{
 A colored correlation matrix
@@ -27,8 +28,7 @@ numeric matrix.
 \examples{
 library(QFeatures)
 utils::data(Exp1_R25_pept, package='DAPARdata2')
-obj <- Exp1_R25_pept[[2]]
-corrMatrixD_HC(obj)
+corrMatrixD_HC(Exp1_R25_pept[[2]])
 
 }
 \author{

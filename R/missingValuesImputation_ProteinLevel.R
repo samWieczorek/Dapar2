@@ -486,7 +486,7 @@ POV_impute_slsa <- function(x, sampleTab){
 #' 
 #' @return The object \code{obj} which has been imputed
 #' 
-#' @author Samuel Wieczoreklibrary(DAPAR2)
+#' @author Samuel Wieczorek
 #' 
 #' @examples
 #' utils::data(Exp1_R25_pept, package='DAPARdata')

@@ -28,15 +28,15 @@ and it is used with DAPAR aggregation functions
 User-defined functions must thus return a matrix of dimensions equal
 to `X`. Examples thereof are
 
-- [DAPAR2:aggSum()] to use the sum of each column (default);
+- [DaparToolshed:aggSum()] to use the sum of each column (default);
 
-- [DAPAR2:aggMean()] to use the sum of each column;
+- [DaparToolshed:aggMean()] to use the sum of each column;
 
-- [DAPAR2:aggIter()] to use the mean of each column;
+- [DaparToolshed:aggIter()] to use the mean of each column;
 
-- [DAPAR2:aggIterParallel()] same as previous function but use parallelism.
+- [DaparToolshed:aggIterParallel()] same as previous function but use parallelism.
 
-- [DAPAR::aggTopn] to use the sum of each column;
+- [DaparToolshed::aggTopn] to use the sum of each column;
 }
 \author{
 Samuel Wieczorek

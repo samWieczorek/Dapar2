@@ -1,8 +1,107 @@
 
+
+#' @title Record the adjacency matrices 
+#' 
+#' @author Samuel Wieczorek
+#' 
+#' @examples
+#' utils::data(Exp1_R25_pept, package='DAPARdata2')
+#' Exp1_R25_pept <- addAssay(Exp1_R25_pept, QFeatures::filterNA(Exp1_R25_pept[[2]],  pNA = 0), name='filtered')
+#' 
+#' Exp1_R25_pept <- HypothesisTest(object = Exp1_R25_pept, i = 3, test = 't_test', contrast='OnevsOne', type='Student')
+#' 
+#' Exp1_R25_pept <- HypothesisTest(object = Exp1_R25_pept, i=3, test = 'limma', comp.type = "OnevsOne")
+#' 
+#' Exp1_R25_pept <- HypothesisTest(object = Exp1_R25_pept, i=3, test = '1wayAnova', with_post_hoc = TRUE, post_hoc_test = 'Dunnett')
+#' 
+#' @export
+#' 
+"HypothesisTest"
+
+
+#' @param  obj.se An object (peptides) of class \code{SummarizedExperiment}.
+#' 
+#' @return The slot processing of obj@processingData
+#' 
+setMethod('HypothesisTest', "SummarizedExperiment",
+          function(object, test, sTab, ...) {
+            
+            res.ll <- switch(test,
+                             t_test = compute_t_tests(obj = object, 
+                                                      sTab = sTab,
+                                                      ...),
+                             limma = limmaCompleteTest(obj = object,
+                                                       sTab = sTab,
+                                                       ...),
+                             '1wayAnova' = wrapperClassic1wayAnova(obj = object,
+                                                                   sTab = sTab,
+                                                                   ...)
+            )
+            
+            rowData(object) <-  cbind(rowData(object), res.ll)
+            
+            metadata(object)$HypothesisTest_cols <- colnames(res.ll)
+            object
+          }
+)
+
+
+setMethod("HypothesisTest", "QFeatures",
+          function(object, 
+                   i, 
+                   name = "HypothesisTestAssay", 
+                   test = NULL,
+                   ...) {
+            if (missing(i))
+              stop("Provide index or name of assay to be processed")
+            if (length(i) != 1)
+              stop("Only one assay to be processed at a time")
+            if (is.numeric(i)) i <- names(object)[[i]]
+            
+            
+            object <- addAssay(object,
+                               HypothesisTest(object[[i]], 
+                                              test = test,
+                                              sTab = colData(object),
+                                              ...
+                                              ),
+                               name)
+            addAssayLink(object, 
+                         from = i, 
+                         to = name)
+            
+            
+          }
+)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 #' @title Density plots of logFC values
 #' 
 #' @description This function show the density plots of Fold Change (the same as calculated by limma) for a list 
-#' of the comparisons of conditions in a differnetial analysis.
+#' of the comparisons of conditions in a differential analysis.
 #' 
 #' @param df_logFC A dataframe that contains the logFC values for the set of comparisons to show. Each column corresponds to a comparison.
 #' 

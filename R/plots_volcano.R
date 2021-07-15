@@ -68,12 +68,12 @@
 #' @import highcharter
 #' 
 diffAnaVolcanoplot_rCharts <- function(df, 
-                                       threshold_pVal=1e-60, 
-                                       threshold_logFC=0, 
-                                       conditions=NULL, 
-                                       clickFunction=NULL,
-                                       palette=NULL,
-                                       swap=FALSE){
+                                       threshold_pVal = 1e-60, 
+                                       threshold_logFC = 0, 
+                                       conditions = NULL, 
+                                       clickFunction= NULL,
+                                       palette = NULL,
+                                       swap = FALSE){
   
   
   xtitle <- paste("log2 ( mean(",conditions[2],") / mean(",conditions[1],") )",sep="")
@@ -84,7 +84,8 @@ diffAnaVolcanoplot_rCharts <- function(df,
   }
   
   if(is.null(palette)){
-    palette <- list(In='orange', Out='gray')
+    palette <- list(In = 'orange', 
+                    Out = 'gray')
   } 
   
   df <- cbind(df, 

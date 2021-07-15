@@ -4,10 +4,10 @@
 \alias{CVDistD_HC}
 \title{Distribution of CV of entities}
 \usage{
-CVDistD_HC(qData, conds, palette = NULL)
+CVDistD_HC(qData, conds = NULL, palette = NULL)
 }
 \arguments{
-\item{qData}{A numeric matrix that contains quantitative data.}
+\item{qData}{A numeric matrix of quantitative data.}
 
 \item{conds}{A vector of the conditions (one condition per sample).}
 
@@ -17,11 +17,6 @@ CVDistD_HC(qData, conds, palette = NULL)
 A density plot
 }
 \description{
-Builds a densityplot of the CV of entities in numeric matrix.
-The CV is calculated for each condition present in the dataset
-(see the slot \code{'Condition'} in the \code{colData()} DataFrame)
-}
-\details{
 Builds a densityplot of the CV of entities in numeric matrix.
 The CV is calculated for each condition present in the dataset
 (see the slot \code{'Condition'} in the \code{colData()} DataFrame)

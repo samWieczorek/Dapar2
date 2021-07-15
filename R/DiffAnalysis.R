@@ -249,7 +249,7 @@ diffAnaComputeFDR <- function(logFC,
 
 
 
-#' @title Returns list that contains a list of the statistical tests performed with DAPAR2 and recorded
+#' @title Returns list that contains a list of the statistical tests performed with DaparToolshed and recorded
 #' in an object of class \code{QFeatures}. 
 #' 
 #' @description This method returns a list of the statistical tests performed with xxx and formatted as a 

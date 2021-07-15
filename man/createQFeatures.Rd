@@ -6,31 +6,36 @@
 \usage{
 createQFeatures(
   data,
+  file,
   sample,
-  indExpData,
-  keyId = NULL,
-  indexForMetacell = NULL,
+  indQData,
+  keyId = "AutoID",
+  indQMetadata = NULL,
   logTransform = FALSE,
-  forceNA = FALSE,
-  typeOfData,
+  forceNA = TRUE,
+  typeDataset,
   parentProtId = NULL,
   analysis = "foo",
   processes = NULL,
-  pipelineType = NULL,
+  typePipeline = NULL,
   software = NULL
 )
 }
 \arguments{
 \item{data}{The name of a tab-separated file that contains the data.}
 
+\item{file}{The name of a file xxx}
+
 \item{sample}{A dataframe describing the samples (in lines).}
 
-\item{indExpData}{A vector of string where each element is the name
+\item{indQData}{A vector of string where each element is the name
 of a column in designTable that have to be integrated in
 the \code{rowData()} table of the \code{QFeatures} object.}
 
 \item{keyId}{The indice of the column containing the ID of entities 
 (peptides or proteins)}
+
+\item{indQMetadata}{xxxxxxxxxxx}
 
 \item{logTransform}{A boolean value to indicate if the data have to be
 log-transformed (Default is FALSE)}
@@ -38,18 +43,17 @@ log-transformed (Default is FALSE)}
 \item{forceNA}{A boolean value to indicate if the 0 and NaN values of
 intensity have to be replaced by NA (Default is FALSE)}
 
-\item{typeOfData}{A string that indicates whether the dataset is about}
+\item{typeDataset}{A string that indicates whether the dataset is about}
 
 \item{parentProtId}{For peptide entities, a string which is the name of a column in rowData. It contains the id of parent
 proteins and is used to generate adjacency matrix and process to aggregation.}
 
-\item{analysis}{xxx}
+\item{analysis}{The name of the MS analysis}
 
 \item{processes}{xxxx}
 
-\item{pipelineType}{xxxx}
-
-\item{namesOrigin}{xxxxxxxxxxx}
+\item{typePipeline}{The type of pipeline used with this dataset. The list of predefined
+pipelines in DaparToolshed can be obtained with the function \code{pipelines()}. Default value is NULL}
 }
 \value{
 An instance of class \code{QFeatures}.
@@ -58,20 +62,6 @@ An instance of class \code{QFeatures}.
 Builds an object of class \code{QFeatures} from a 
 single tabulated-like file for quantitative and meta-data and a dataframe 
 for the samples description.
-}
-\examples{
-data.file <- system.file("extdata", "Exp1_R25_pept.txt", package="DAPARdata2")
-data <- read.table(data.file, header=TRUE, sep="\t", as.is=TRUE, stringsAsFactors = FALSE)
-sample.file <- system.file("extdata", "samples_Exp1_R25.txt", package="DAPARdata2")
-sample <- read.table(sample.file, header=TRUE, sep="\t", as.is=TRUE, stringsAsFactors = FALSE)
-indExpData <- 56:61
-parentId <- 'Protein_group_IDs'
-keyId <- 'Sequence'
-analysis <- 'test'
-indexForMetacell <- c(43:48)
-ft <- createQFeatures(data, sample, indExpData, keyId = keyid, analysis=analysis, logTransform = TRUE,
-indexForMetacell = indexForMetacell, typeOfData = "peptide", parentProtId = parentId, forceNA=TRUE, software = 'maxquant')
-
 }
 \author{
 Samuel Wieczorek

@@ -1,6 +1,6 @@
 #' @title Check the validity of the experimental design
 #' 
-#' @param sampleTab xxxx
+#' @param sTab xxxx
 #' 
 #' @return A boolean
 #' 
@@ -13,56 +13,57 @@
 #' 
 #' @export
 #' 
-CheckDesign <- function(sampleTab){
+CheckDesign <- function(sTab){
   
-  res <- list(valid=FALSE,warn=NULL)
+  res <- list(valid = FALSE,
+              warn = NULL)
   
-  names <- colnames(sampleTab)
+  names <- colnames(sTab)
   level.design <- sum(names %in% c('Bio.Rep', 'Tech.Rep', 'Analyt.Rep'))
   
   
-  res <- check.conditions(sampleTab$Condition)
+  res <- check.conditions(sTab$Condition)
   if (!res$valid){
     return(res)
   }
   # Check if all the column are fullfilled
   
   if (level.design == 1){
-    if (("" %in% sampleTab$Bio.Rep) || (NA %in% sampleTab$Bio.Rep)){
+    if (("" %in% sTab$Bio.Rep) || (NA %in% sTab$Bio.Rep)){
       res <- list(valid=FALSE, warn="The Bio.Rep colmumn are not full filled.")
       return(res)
     }
   }
   else if (level.design == 2){
-    if (("" %in% sampleTab$Bio.Rep) || (NA %in% sampleTab$Bio.Rep)){
+    if (("" %in% sTab$Bio.Rep) || (NA %in% sTab$Bio.Rep)){
       res <- list(valid=FALSE, warn="The Bio.Rep colmumn are not full filled.")
       return(res)
-    }else if (("" %in% sampleTab$Tech.Rep) || (NA %in% sampleTab$Tech.Rep)){
+    }else if (("" %in% sTab$Tech.Rep) || (NA %in% sTab$Tech.Rep)){
       res <- list(valid=FALSE, warn="The Tech.Rep colmumn are not full filled.")
       return(res)
     }
   }
   else if (level.design == 3){
-    if (("" %in% sampleTab$Bio.Rep) || (NA %in% sampleTab$Bio.Rep)){
+    if (("" %in% sTab$Bio.Rep) || (NA %in% sTab$Bio.Rep)){
       res <- list(valid=FALSE, warn="The Bio.Rep colmumn are not full filled.")
       return(res)
-    } else if (("" %in% sampleTab$Tech.Rep) || (NA %in% sampleTab$Tech.Rep)){
+    } else if (("" %in% sTab$Tech.Rep) || (NA %in% sTab$Tech.Rep)){
       res <- list(valid=FALSE, warn="The Tech.Rep colmumn are not full filled.")
       return(res)
-    } else if (("" %in% sampleTab$Analyt.Rep) || (NA %in% sampleTab$Analyt.Rep)){
+    } else if (("" %in% sTab$Analyt.Rep) || (NA %in% sTab$Analyt.Rep)){
       res <- list(valid=FALSE, warn="The Analyt.Rep colmumn are not full filled.")
       return(res)
     }
   }
   
   # Check if the hierarchy of the design is correct
-  if (level.design == 1){res <- test.design(sampleTab[,c("Condition", "Bio.Rep")])}
-  else if (level.design == 2){res <- test.design(sampleTab[,c("Condition", "Bio.Rep","Tech.Rep")])}
+  if (level.design == 1){res <- test.design(sTab[,c("Condition", "Bio.Rep")])}
+  else if (level.design == 2){res <- test.design(sTab[,c("Condition", "Bio.Rep","Tech.Rep")])}
   else if (level.design == 3){
-    res <- test.design(sampleTab[,c("Condition", "Bio.Rep","Tech.Rep")])
+    res <- test.design(sTab[,c("Condition", "Bio.Rep","Tech.Rep")])
     if (res$valid)
     {
-      res <- test.design(sampleTab[,c("Bio.Rep","Tech.Rep", "Analyt.Rep")])
+      res <- test.design(sTab[,c("Bio.Rep","Tech.Rep", "Analyt.Rep")])
       
     }
   }
@@ -139,7 +140,8 @@ test.design <- function(tab){
   } 
   
   #verification si niveau non informatif
-  return(list(valid=valid, warn=txt))
+  return(list(valid = valid, 
+              warn = txt))
 }
 
 
@@ -187,7 +189,7 @@ check.conditions <- function(conds){
 
 #' @title Builds the design matrix
 #' 
-#' @param sampleTab The data.frame which correspond to the pData function of MSnbase
+#' @param sTab The data.frame which correspond to the pData function of MSnbase
 #' 
 #' @return A design matrix
 #' 
@@ -200,20 +202,20 @@ check.conditions <- function(conds){
 #' 
 #' @export
 #' 
-make.design <- function(sampleTab){
+make.design <- function(sTab){
   
-  if (!CheckDesign(sampleTab)$valid){
+  if (!CheckDesign(sTab)$valid){
     warning("The design matrix is not correct.")
-    warning(CheckDesign(sampleTab)$warn)
+    warning(CheckDesign(sTab)$warn)
     return(NULL)
   }
   
-  n <- ncol(sampleTab)
+  n <- ncol(sTab)
   if (n <= 2){
     stop("Error in design matrix dimensions which must have at least 3 columns.")
   } 
   
-  res <- do.call(paste0("make.design.", (n-2)),list(sampleTab))
+  res <- do.call(paste0("make.design.", (n-2)),list(sTab))
   
   return(res)
 }
@@ -224,7 +226,7 @@ make.design <- function(sampleTab){
 
 #' @title Builds the design matrix for designs of level 1
 #' 
-#' @param sampleTab The data.frame which correspond to the definition of replicates
+#' @param sTab The data.frame which correspond to the definition of replicates
 #' 
 #' @return A design matrix
 #' 
@@ -237,71 +239,29 @@ make.design <- function(sampleTab){
 #' 
 #' @export
 #' 
-make.design.1 <- function(sampleTab){
+make.design.1 <- function(sTab){
   
-  Conditions <- factor(sampleTab$Condition, levels=unique(sampleTab$Condition))
-  nb_cond=length(unique(Conditions))
-  nb_samples <- nrow(sampleTab)
+  Conditions <- factor(sTab$Condition, 
+                       levels=unique(sTab$Condition)
+                       , ordered = TRUE)
+  nb_cond <- length(unique(Conditions))
+  nb_samples <- nrow(sTab)
   
   #CGet the number of replicates per condition
-  nb_Rep=rep(0,nb_cond)
+  nb_Rep <- rep(0, nb_cond)
   for (i in 1:nb_cond){
-    nb_Rep[i]=sum((Conditions==unique(Conditions)[i]))
+    nb_Rep[i] = sum((Conditions==unique(Conditions)[i]))
   }
   
-  design=matrix(0,nb_samples,nb_cond)
+  design <- matrix(0, nb_samples, nb_cond)
   n0=1
   coln=NULL
   for (j in 1:nb_cond){
-    coln=c(coln,paste("Condition",j,collapse=NULL,sep=""))
-    design[(n0:(n0+nb_Rep[j]-1)),j]=rep(1,length((n0:(n0+nb_Rep[j]-1))))
-    n0=n0+nb_Rep[j]
+    coln=c(coln, paste("Condition", j, collapse=NULL,sep=""))
+    design[(n0:(n0+nb_Rep[j]-1)),j] <- rep(1,length((n0:(n0+nb_Rep[j]-1))))
+    n0 <- n0 + nb_Rep[j]
   }
-  colnames(design)=coln
-  
-  return(design)
-}
-
-
-
-
-
-#' @title Builds the design matrix for designs of level 1
-#' 
-#' @param sampleTab The data.frame which correspond to the definition of replicates
-#' 
-#' @return A design matrix
-#' 
-#' @author Thomas Burger, Quentin Giai-Gianetto, Samuel Wieczorek
-#' 
-#' @examples
-#' library(QFeatures)
-#' utils::data(Exp1_R25_pept, package='DAPARdata2')
-#' make.design.1(colData(Exp1_R25_pept))
-#' 
-#' @export
-#' 
-make.design.1 <- function(sampleTab){
-  
-  Conditions <- factor(sampleTab$Condition, levels=unique(sampleTab$Condition))
-  nb_cond=length(unique(Conditions))
-  nb_samples <- nrow(sampleTab)
-  
-  #CGet the number of replicates per condition
-  nb_Rep=rep(0,nb_cond)
-  for (i in 1:nb_cond){
-    nb_Rep[i]=sum((Conditions==unique(Conditions)[i]))
-  }
-  
-  design=matrix(0,nb_samples,nb_cond)
-  n0=1
-  coln=NULL
-  for (j in 1:nb_cond){
-    coln=c(coln,paste("Condition",j,collapse=NULL,sep=""))
-    design[(n0:(n0+nb_Rep[j]-1)),j]=rep(1,length((n0:(n0+nb_Rep[j]-1))))
-    n0=n0+nb_Rep[j]
-  }
-  colnames(design)=coln
+  colnames(design) <- coln
   
   return(design)
 }
@@ -312,7 +272,7 @@ make.design.1 <- function(sampleTab){
 
 #' @title Builds the design matrix for designs of level 2
 #' 
-#' @param sampleTab The data.frame which correspond to the pData function of MSnbase
+#' @param sTab The data.frame which correspond to the pData function of MSnbase
 #' 
 #' @return A design matrix
 #' 
@@ -329,42 +289,44 @@ make.design.1 <- function(sampleTab){
 #' 
 #' @importFrom stats rnorm
 #' 
-make.design.2 <- function(sampleTab){
-  Condition <- factor(sampleTab$Condition,  levels=unique(sampleTab$Condition))
-  RepBio <- factor(sampleTab$Bio.Rep,  levels=unique(sampleTab$Bio.Rep))
+make.design.2 <- function(sTab){
+  Condition <- factor(sTab$Condition,
+                      levels=unique(sTab$Condition))
+  RepBio <- factor(sTab$Bio.Rep, 
+                   levels=unique(sTab$Bio.Rep))
   
   #Renome the levels of factor
-  levels(Condition)=c(1:length(levels(Condition)))
-  levels(RepBio)=c(1:length(levels(RepBio)))
+  levels(Condition) <- c(1:length(levels(Condition)))
+  levels(RepBio) <- c(1:length(levels(RepBio)))
   
   #Initial design matrix
-  df <- rep(0,nrow(sampleTab))
-  names(df) <- rownames(sampleTab)
-  design=stats::model.matrix(df~0+Condition:RepBio)
+  df <- rep(0,nrow(sTab))
+  names(df) <- rownames(sTab)
+  design <- stats::model.matrix(df~0+Condition:RepBio)
   
   #Remove empty columns in the design matrix
-  design=design[,(apply(design,2,sum)>0)]
+  design <- design[,(apply(design,2,sum)>0)]
   #Remove identical columns in the design matrix
-  coldel=-1
+  coldel <- -1
   for (i in 1:(length(design[1,])-1)){
-    d2=as.matrix(design[,(i+1):length(design[1,])]);
+    d2 <- as.matrix(design[,(i+1):length(design[1,])]);
     for (j in 1:length(d2[1,])){
       d2[,j]=d2[,j]-design[,i];
     }
-    e=as.matrix(stats::rnorm(length(design[,1]),10,1));
-    sd2=t(e)%*%d2
-    liste=which(sd2==0)
-    coldel=c(coldel,liste+i)
+    e <- as.matrix(stats::rnorm(length(design[,1]),10,1));
+    sd2 <- t(e)%*%d2
+    liste <- which(sd2==0)
+    coldel <- c(coldel,liste+i)
   }
-  design=design[,(1:length(design[1,]))!=coldel]
-  colnames(design)=make.names(colnames(design))
+  design <- design[,(1:length(design[1,]))!=coldel]
+  colnames(design) <- make.names(colnames(design))
   return(design)
 }
 
 
 #' @title Builds the design matrix for designs of level 3
 #' 
-#' @param sampleTab The data.frame which correspond to the definitino of the replicates
+#' @param sTab The data.frame which correspond to the definitino of the replicates
 #' 
 #' @return A design matrix
 #' 
@@ -380,29 +342,29 @@ make.design.2 <- function(sampleTab){
 #' 
 #' @importFrom stats model.matrix rnorm
 #' 
-make.design.3=function(sampleTab){
+make.design.3 <- function(sTab){
   
-  Condition <- factor(sampleTab$Condition,  levels=unique(sampleTab$Condition))
-  RepBio <- factor(sampleTab$Bio.Rep,  levels=unique(sampleTab$Bio.Rep))
-  RepTech <- factor(sampleTab$Tech.Rep,  levels=unique(sampleTab$Tech.Rep))
+  Condition <- factor(sTab$Condition,  levels=unique(sTab$Condition))
+  RepBio <- factor(sTab$Bio.Rep,  levels=unique(sTab$Bio.Rep))
+  RepTech <- factor(sTab$Tech.Rep,  levels=unique(sTab$Tech.Rep))
   
   
   #Rename the levels of factor
-  levels(Condition)=c(1:length(levels(Condition)))
-  levels(RepBio)=c(1:length(levels(RepBio)))
-  levels(RepTech)=c(1:length(levels(RepTech)))
+  levels(Condition) <- c(1:length(levels(Condition)))
+  levels(RepBio) <- c(1:length(levels(RepBio)))
+  levels(RepTech) <- c(1:length(levels(RepTech)))
   
   
   #Initial design matrix
-  df <- rep(0,nrow(sampleTab))
-  names(df) <- rownames(sampleTab)
-  design=stats::model.matrix(df~0+Condition:RepBio:RepTech)
+  df <- rep(0,nrow(sTab))
+  names(df) <- rownames(sTab)
+  design <- stats::model.matrix(df~0+Condition:RepBio:RepTech)
   
   #Remove empty columns in the design matrix
   design=design[,(apply(design,2,sum)>0)]
   
   #Remove identical columns in the design matrix
-  coldel=-1
+  coldel <- -1
   for (i in 1:(length(design[1,])-1)){
     d2=as.matrix(design[,(i+1):length(design[1,])]);
     for (j in 1:length(d2[1,])){
@@ -413,8 +375,8 @@ make.design.3=function(sampleTab){
     liste=which(sd2==0)
     coldel=c(coldel,liste+i)
   }
-  design=design[,(1:length(design[1,]))!=coldel]
-  colnames(design)=make.names(colnames(design))
+  design <- design[,(1:length(design[1,]))!=coldel]
+  colnames(design) <- make.names(colnames(design))
   return(design)
 }
 
@@ -448,32 +410,32 @@ make.design.3=function(sampleTab){
 #' 
 #' @export
 #' 
-make.contrast <- function(design, condition, contrast=1){
+make.contrast <- function(design, condition, contrast = 1){
   
   #######################################################
-  aggreg.column.design=function(design,Condition){
-    nb.cond=length(levels(Condition))
-    name.col=colnames(design)
-    name.cond=NULL
-    nb.col=NULL
+  aggreg.column.design <- function(design,Condition){
+    nb.cond <- length(levels(Condition))
+    name.col <- colnames(design)
+    name.cond <- NULL
+    nb.col <- NULL
     for (i in 1:nb.cond){
-      col.select=NULL
-      col.name.begin=paste("Condition",i, sep = "")
-      nc=nchar(col.name.begin)
+      col.select <- NULL
+      col.name.begin <- paste("Condition",i, sep = "")
+      nc <- nchar(col.name.begin)
       for (j in 1:length(design[1,])){
-        if (substr(name.col[j], 1, nc)==col.name.begin){
-          col.select=c(col.select,j)
+        if (substr(name.col[j], 1, nc) == col.name.begin){
+          col.select <- c(col.select,j)
         }
       }
-      name.aggreg=NULL
+      name.aggreg <- NULL
       for (j in 1:length(col.select)){
-        name.aggreg=paste(name.aggreg,name.col[col.select[j]],sep="+")
+        name.aggreg  <- paste(name.aggreg,name.col[col.select[j]], sep="+")
       }
-      name.aggreg=substr(name.aggreg, 2, nchar(name.aggreg))
-      name.cond=c(name.cond,name.aggreg)
-      nb.col=c(nb.col,length(col.select))
+      name.aggreg <- substr(name.aggreg, 2, nchar(name.aggreg))
+      name.cond <- c(name.cond,name.aggreg)
+      nb.col <- c(nb.col,length(col.select))
     }
-    return(list(name.cond,nb.col))
+    return(list(name.cond, nb.col))
   }
   
   
@@ -517,7 +479,7 @@ make.contrast <- function(design, condition, contrast=1){
 #' 
 #' @param obj A matrix of quantitative data, without any missing values.
 #' 
-#' @param sampleTab A DataFrame of experimental design. 
+#' @param sTab A DataFrame of experimental design. 
 #' 
 #' @param comp.type A string that corresponds to the type of comparison. 
 #' Values are: 'anova1way', 'OnevsOne' and 'OnevsAll'; default is 'OnevsOne'.
@@ -532,11 +494,10 @@ make.contrast <- function(design, condition, contrast=1){
 #' @examples
 #' library(QFeatures)
 #' utils::data(Exp1_R25_pept, package='DAPARdata2')
-#' object <- Exp1_R25_pept
-#' object <- addAssay(object, QFeatures::filterNA(object[[2]],  pNA = 0), name='filtered')
-#' sampleTab <- colData(object)
-#' obj <- object[['filtered']]
-#' limma <- limma.complete.test(qData, sTab, comp.type='anova1way')
+#' Exp1_R25_pept <- addAssay(Exp1_R25_pept, QFeatures::filterNA(Exp1_R25_pept[[2]],  pNA = 0), name='filtered')
+#' sTab <- colData(Exp1_R25_pept)
+#' se <- Exp1_R25_pept[['filtered']]
+#' limma <- limmaCompleteTest(se, sTab, comp.type='anova1way')
 #' 
 #' @importFrom limma contrasts.fit makeContrasts lmFit
 #' @importFrom tidyr crossing %>%
@@ -544,23 +505,32 @@ make.contrast <- function(design, condition, contrast=1){
 #' 
 #' @export
 #' 
-limma.complete.test <- function(obj, sampleTab, comp.type="OnevsOne"){
+limmaCompleteTest <- function(obj,
+                              sTab, 
+                              comp.type = "OnevsOne"){
+  
+  if(class(obj) != 'SummarizedExperiment')
+    stop("'obj' must be of class 'SummarizedExperiment'")
+  
+  if (!(comp.type %in% c('OnevsOne', 'OnevsAll', 'anova1way')))
+    stop("'comp.type' must be one of the following: 'OnevsOne', 'OnevsAll', 'anova1way.")
+  
   
   qData <- assay(obj)
   switch(comp.type,
          OnevsOne = contrast <- 1,
          OnevsAll = contrast <- 2)
   
-  sampleTab <- as.data.frame(sampleTab)
-  sampleTab.old <- sampleTab
-  conds <- factor(sampleTab$Condition, levels=unique(sampleTab$Condition))
-  sampleTab <- sampleTab[unlist(lapply(split(sampleTab, conds), function(x) {x['Sample.name']})),]
-  qData <- qData[,unlist(lapply(split(sampleTab.old, conds), function(x) {x['Sample.name']}))]
+  sTab <- as.data.frame(sTab)
+  sTab.old <- sTab
+  conds <- factor(sTab$Condition, levels=unique(sTab$Condition))
+  sTab <- sTab[unlist(lapply(split(sTab, conds), function(x) {x['Sample.name']})),]
+  qData <- qData[,unlist(lapply(split(sTab.old, conds), function(x) {x['Sample.name']}))]
   conds <- conds[order(conds)]
   
   
   res.l <- NULL
-  design.matrix <- make.design(sampleTab)
+  design.matrix <- make.design(sTab)
   if(!is.null(design.matrix)) {
     if(comp.type == 'OnevsOne' || comp.type == "OnevsAll"){
       contra <- make.contrast(design.matrix,condition=conds, contrast)
@@ -616,7 +586,7 @@ limma.complete.test <- function(obj, sampleTab, comp.type="OnevsOne"){
 #' object <- addAssay(object, QFeatures::filterNA(object[[2]],  pNA = 0), name='filtered')
 #' qData <- assay(object, 'filtered')
 #' sTab <- colData(object)
-#' limma <- limma.complete.test(qData, sTab)
+#' limma <- limmaCompleteTest(qData, sTab)
 #' }
 #' 
 #' @importFrom stringr str_match_all
@@ -646,10 +616,17 @@ formatLimmaResult <- function(fit, conds, contrast){
       
       #hier and non hier
       compa <- stringr::str_match_all(colnames(fit$p.value)[i], "[[:space:]]Condition([[:digit:]]+)")[[1]]
-      cn[i]<-paste(unique(conds)[as.numeric(compa[1,2])], "_vs_(all-",unique(conds)[as.numeric(compa[1,2])], ")", sep="")
+      cn[i] <- paste(unique(conds)[as.numeric(compa[1,2])], "_vs_(all-",unique(conds)[as.numeric(compa[1,2])], ")", sep="")
     }
   }
   
+  # res.l <- list(
+  #   logFC = as.data.frame(res[,1:Compa.Nb]),
+  #   P_Value = as.data.frame(res[,-(1:Compa.Nb)] )
+  # )
+  # 
+  # colnames(res.l$logFC) <- paste(cn, "logFC",sep="_")
+  # colnames(res.l$P_Value) <- paste(cn, "pval",sep="_")
   
   res.l <- DataFrame(data.frame(res[,1:Compa.Nb], res[,-(1:Compa.Nb)]))
   colnames(res.l) <- c(paste(cn, "logFC",sep="_"), paste(cn, "pval",sep="_"))

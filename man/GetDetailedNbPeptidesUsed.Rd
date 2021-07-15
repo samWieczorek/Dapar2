@@ -28,7 +28,7 @@ utils::data(Exp1_R25_pept, package='DAPARdata2')
 obj <- Exp1_R25_pept
 qPepData <- assay(obj,2)
 obj <- addListAdjacencyMatrices(obj, 2)
-X <- GetAdjMat(obj[[2]], 'all')
+X <- GetAdjMat(obj[[2]])$all
 n <- GetDetailedNbPeptidesUsed(X, qPepData)
  
 }

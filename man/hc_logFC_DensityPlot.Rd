@@ -18,7 +18,7 @@ A highcharts density plot
 }
 \description{
 This function show the density plots of Fold Change (the same as calculated by limma) for a list 
-of the comparisons of conditions in a differnetial analysis.
+of the comparisons of conditions in a differential analysis.
 }
 \examples{
 library(QFeatures)

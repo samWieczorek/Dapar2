@@ -5,7 +5,8 @@
 #' 
 #' @param obj xxx
 #' 
-#' @param names xxxxx
+#' @param names A vector of strings which will be used as legend. The length
+#' of 'names' must be equal to the number of samples in the dataset.
 #' 
 #' @param rate The rate parameter to control the exponential law for 
 #' the gradient of colors
@@ -19,8 +20,7 @@
 #' @examples
 #' library(QFeatures)
 #' utils::data(Exp1_R25_pept, package='DAPARdata2')
-#' obj <- Exp1_R25_pept[[2]]
-#' corrMatrixD_HC(obj)
+#' corrMatrixD_HC(Exp1_R25_pept[[2]])
 #' 
 #' @importFrom dplyr mutate left_join
 #' @importFrom tidyr gather
@@ -35,18 +35,31 @@
 #' 
 #' @export
 #' 
-corrMatrixD_HC <- function(obj, names = NULL, rate = 0.5, showValues=TRUE) {
+corrMatrixD_HC <- function(obj.se, 
+                           names = NULL, 
+                           rate = 0.5, 
+                           showValues=TRUE) {
   
 
-  res <- cor(SummarizedExperiment::assay(obj),use = 'pairwise.complete.obs')
+    if (class(obj.se) != 'SummarizedExperiment'){
+      warning("'obj.se' is not a SummarizedExperiment object.")
+      return(NULL)
+    }
+  res <- cor(SummarizedExperiment::assay(obj.se),
+             use = 'pairwise.complete.obs')
 
    #df <- as.data.frame(res)
    df <- tibble::as_tibble(res)
-  
 
   if (!is.null(names)){
-      colnames(df) <- names
-  } 
+    if (length(names) != ncol(df)){
+      warning("The length of 'names' must be equal to the number of samples
+      in the dataset")
+      return(NULL)
+    }
+    colnames(df) <- names
+  }
+      
   
   is.num <- sapply(df, is.numeric)
   df[is.num] <- lapply(df[is.num], round, 2)

@@ -1,5 +1,9 @@
 #' @title List normalization methods
 #' 
+#' @param withTracking A boolean to indicate methods with tracking feature
+#' 
+#' @value A list of methods
+#' 
 #' @name normalizeMethods.dapar
 #' 
 #' @export
@@ -189,12 +193,21 @@ GlobalQuantileAlignment <- function(qData) {
 #' 
 #' @importFrom stats median
 #' 
-SumByColumns <- function(qData, conds=NULL, type=NULL, subset.norm=NULL) {
+SumByColumns <- function(qData, 
+                         conds = NULL, 
+                         type = NULL, 
+                         subset.norm = NULL) {
 
-  if( missing(conds))
+  if (missing(qData))
+    stop("'qData' is missing.")
+
+if( missing(conds) || is.null(conds))
     stop("'conds' is required")
-  if( missing(type))
+  
+  if( missing(type) || is.null(type)){
     stop("'type' is required")
+    return()
+  }
   
   
   if (!(type %in% c('overall', 'within conditions')))
@@ -205,36 +218,33 @@ SumByColumns <- function(qData, conds=NULL, type=NULL, subset.norm=NULL) {
   
   e <- 2^qData
   
-  if(is.null(subset.norm) | length(subset.norm)<1){
-    subset.norm=1:nrow(qData)
+  if(is.null(subset.norm) || length(subset.norm) < 1){
+    subset.norm = 1:nrow(qData)
   }
   
   if (type == "overall"){
     
     
-      if(length(subset.norm)==1){
-        sum_cols=e[subset.norm,]
-      }else{
+      if(length(subset.norm) == 1)
+        sum_cols = e[subset.norm,]
+      else
         sum_cols <- colSums(e[subset.norm,], na.rm=TRUE)
-      }
+      
     
-    for ( i in 1:nrow(e)) {
+    for ( i in 1:nrow(e))
       e[i, ] <- (e[i, ] / sum_cols)*(stats::median(sum_cols))
-    }
   } else if (type == "within conditions"){
     
     for (l in unique(conds)) {
       indices <- which(conds== l)
       
-          if(length(subset.norm)==1){
+          if(length(subset.norm)==1)
             sum_cols=e[subset.norm,indices]
-          }else{
+          else
             sum_cols <- colSums(e[subset.norm,indices], na.rm=TRUE)
-          }
       
-      for (i in 1:nrow(e)){
+      for (i in 1:nrow(e))
         e[i,indices] <- (e[i,indices]/sum_cols) * stats::median(sum_cols)
-      }
     }
   }
   e <- log2(e)
@@ -270,7 +280,11 @@ SumByColumns <- function(qData, conds=NULL, type=NULL, subset.norm=NULL) {
 #' 
 #' @importFrom stats quantile
 #' 
-QuantileCentering <- function(qData, conds=NULL, type="overall", subset.norm=NULL, quantile=0.15){
+QuantileCentering <- function(qData, 
+                              conds=NULL,
+                              type="overall", 
+                              subset.norm=NULL, 
+                              quantile=0.15){
 
   if( missing(conds))
     stop("'conds' is required")
@@ -284,18 +298,18 @@ QuantileCentering <- function(qData, conds=NULL, type="overall", subset.norm=NUL
   
   qData <- as.matrix(qData)
   
-  if(is.null(subset.norm) | length(subset.norm)<1){
+  if(is.null(subset.norm) || length(subset.norm) < 1)
     subset.norm=1:nrow(qData)
-  }
+
   
-  q <- function(x) { stats::quantile(x, probs=quantile, na.rm=TRUE) }
+  q <- function(x) { 
+    stats::quantile(x, probs=quantile, na.rm=TRUE) 
+    }
   
-  
-      if(length(subset.norm)==1){
-        quantileOverSamples=qData[subset.norm,]
-      }else{
-        quantileOverSamples <- apply(qData[subset.norm,], 2, q)
-      }
+  if(length(subset.norm) == 1)
+    quantileOverSamples=qData[subset.norm,]
+  else
+    quantileOverSamples <- apply(qData[subset.norm,], 2, q)
 
   
   if (type == "overall"){
@@ -342,18 +356,22 @@ QuantileCentering <- function(qData, conds=NULL, type="overall", subset.norm=NUL
 #' 
 #' @export
 #' 
-MeanCentering <- function(qData, conds, type='overall', subset.norm=NULL, scaling=FALSE) {
+MeanCentering <- function(qData, 
+                          conds, 
+                          type='overall', 
+                          subset.norm=NULL, 
+                          scaling=FALSE) {
 
   if( missing(conds))
     stop("'conds' is required")
   
   qData <- as.matrix(qData)
   
-  if(length(subset.norm)==1){
-    meanOverSamples=qData[subset.norm,]
-  } else{
+  if(length(subset.norm) == 1)
+    meanOverSamples = qData[subset.norm,]
+  else
     meanOverSamples <- apply(qData[subset.norm,], 2, mean, na.rm = TRUE)
-  }
+
   
   if (type == "overall"){
     cOverall <- mean(meanOverSamples)
@@ -405,18 +423,20 @@ MeanCentering <- function(qData, conds, type='overall', subset.norm=NULL, scalin
 #' 
 #' @importFrom vsn vsnMatrix predict
 #' 
-vsn = function(qData, conds, type=NULL) {
+vsn = function(qData, 
+               conds, 
+               type=NULL) {
   if( missing(conds))
     stop("'conds' is required")
   
   if(type == "overall"){
-    vsn.fit <- vsn::vsnMatrix(2^(qData))
-    qData <- vsn::predict(vsn.fit, 2^(qData))
+    vsn.fit <- vsn::vsnMatrix(2^qData)
+    qData <- vsn::predict(vsn.fit, 2^qData)
   } else if(type == "within conditions"){
     for (l in unique(conds)) {
       indices <- which(conds == l)
       vsn.fit <- vsn::vsnMatrix(2^(qData[,indices]))
-      qData[,indices] <- vsn::predict(vsn.fit, 2^(qData[,indices]))
+      qData[,indices] <- vsn::predict(vsn.fit, 2^qData[,indices])
     }
   }
   return(qData)
@@ -449,17 +469,24 @@ vsn = function(qData, conds, type=NULL) {
 #' 
 #' @export
 #' 
-LOESS <- function(qData, conds, type='overall', span=0.7) {
+LOESS <- function(qData, 
+                  conds, 
+                  type='overall', 
+                  span=0.7) {
   if( missing(conds))
     stop("'conds' is required")
   
-  if(type == "overall"){
-    qData <- limma::normalizeCyclicLoess(x = qData, method = "fast", span = span)
-  }else if(type == "within conditions"){
+  if(type == "overall")
+    qData <- limma::normalizeCyclicLoess(x = qData, 
+                                         method = "fast", 
+                                         span = span)
+  else if(type == "within conditions")
     for (l in unique(conds)) {
       indices <- which(conds == l)
-      qData[,indices] <- limma::normalizeCyclicLoess(x = qData[,indices],method = "fast", span = span)
+      qData[,indices] <- limma::normalizeCyclicLoess(x = qData[,indices],
+                                                     method = "fast", 
+                                                     span = span)
     }
-  }
+
   return(qData)
 }

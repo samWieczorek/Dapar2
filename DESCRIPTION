@@ -1,8 +1,8 @@
-Package: DAPAR2
+Package: DaparToolshed
 Type: Package
 Title: Tools for the Differential Analysis of Proteins Abundance with R
 Version: 0.6.2
-Date: 2021-01-22
+Date: 2021-07-07
 Authors@R: c(person(given = "Samuel", family = "Wieczorek",
             email = "samuel.wieczorek@cea.fr",
             role = c("aut","cre")),
@@ -22,7 +22,7 @@ Description: This package contains a collection of functions for the
     visualisation and the statistical analysis of proteomic data.
 License: Artistic-2.0
 VignetteBuilder: knitr
-Depends: R (>= 4.0)
+Depends: R (>= 4.1.0)
 Suggests: 
     testthat, 
     BiocStyle, 
@@ -76,7 +76,15 @@ Imports:
     multcomp,
     purrr,
     ggplot2,
-    reshape2
+    reshape2,
+    colourpicker,
+    htmlwidgets,
+    shiny,
+    shinyBS,
+    shinyWidgets,
+    shinyalert,
+    shinyjs,
+    sos
 biocViews: 
     Proteomics,
     Normalization,
@@ -93,12 +101,13 @@ Collate:
     aggregation.R
     compute.t.tests.R
     DiffAnalysis.R
-    get_pep_prot_cc.R
     group_ttest.R
     export_qfeatures.R
     import_2_qfeatures.R
     limmaAnalysis.R
     plots_mv_for_impute.R
+    ConnectedComps.R
+    Filtering.R
     normalize.R
     plots_boxplot.R
     plots_compare_normalization_plots.R
@@ -113,8 +122,6 @@ Collate:
     plots_violin.R
     plots_volcano.R
     utils.R
-    Filtering_MV.R
-    bioAnalysis.R
     missingValuesImputation_PeptideLevel.R
     missingValuesImputation_ProteinLevel.R
     pepa.R
@@ -122,6 +129,30 @@ Collate:
     clustering.R
     misc.R
     hypothesis_test.R
+    global.R
+    mod_Protein.R
+    mod_Protein_Description.R
+    mod_Protein_Filtering.R
+    mod_Protein_Normalization.R
+    mod_all_plots.R
+    mod_convert.R
+    mod_format_DT.R
+    mod_graph_pept_prot.R
+    mod_plots_cc.R
+    mod_plots_corr_matrix.R
+    mod_plots_density.R
+    mod_plots_group_mv.R
+    mod_plots_heatmap.R
+    mod_plots_intensity.R
+    mod_plots_legend_colored_exprs.R
+    mod_plots_mv_for_imputation.R
+    mod_plots_pca.R
+    mod_plots_se_explorer.R
+    mod_plots_tracking.R
+    mod_plots_var_dist.R
+    mod_popover_for_help.R
+    mod_settings.R
+    zzz.R
 RoxygenNote: 7.1.1
 Packaged: 2017-10-13 11:13:04 UTC; sw175264
 Encoding: UTF-8

@@ -100,7 +100,7 @@ setMethod("t_test_sam", "QFeatures",
             if (is.numeric(i)) i <- names(object)[[i]]
             if (!(FUN %in% HypothesisTestMethods()))
               stop(paste0("'FUN' must be one of the following:", HypothesisTestMethods()))
-            if (is.null(GetAdjMat(object[[i]])) && metadata(object[[i]])$typeOfData == 'peptide')
+            if (is.null(GetAdjMat(object[[i]])) && GetTypeDataset(object[[i]]) == 'peptide')
               object <- addListAdjacencyMatrices(object, i)
             
             object <- addAssay(object,
@@ -133,7 +133,7 @@ setMethod("t_test_sam", "QFeatures",
 #' obj <- addAssay(obj, QFeatures::filterNA(obj[[2]],  pNA = 0), name='filtered')
 #' obj <- addListAdjacencyMatrices(obj, 3)
 #' qData <- assay(obj[['filtered']])
-#' X <- GetAdjMat(obj[[3]], 'onlySpec')
+#' X <- GetAdjMat(obj[[3]])$onlySpec
 #' gttest <- groupttest(X, qData[,1:3], qData[,4:6])
 #' 
 #' @export
@@ -207,8 +207,8 @@ compute.group.t.test <- function(obj, sampleTab, logFC = NULL, contrast="OnevsOn
    stop("'contrast' must be one of the following: 'OnevsOne' or 'OnevsAll")
   
   qData <- assay(obj)
-  X <- GetAdjMat(obj,'all')
-  X.spec <- GetAdjMat(obj, 'onlySpec')
+  X <- GetAdjMat(obj)$all
+  X.spec <- GetAdjMat$onlySpec
   
   
   .type <- type =='Student'

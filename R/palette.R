@@ -30,6 +30,8 @@
 ExtendPalette <- function(n = NULL, base = "Set1"){
 
   palette <- NULL
+  if(is.null(base))
+    base <- "Set1"
 
   nMaxColors <- RColorBrewer::brewer.pal.info[base, 'maxcolors']
   if( is.null(n))
@@ -44,9 +46,8 @@ ExtendPalette <- function(n = NULL, base = "Set1"){
     palette <- RColorBrewer::brewer.pal(nMaxColors, base)
     allComb <- combn(palette, 2)
     
-    for (i in 1:(n-nMaxColors)){
+    for (i in 1:(n-nMaxColors))
       palette <- c(palette, grDevices::colorRampPalette(allComb[,i])(3)[2])
-    }
     
   } else {
     palette <- RColorBrewer::brewer.pal(nMaxColors, base)[1:n]
@@ -73,8 +74,8 @@ ExtendPalette <- function(n = NULL, base = "Set1"){
 #' @author Samuel Wieczorek
 #' 
 #' @examples
-#' utils::data(Exp1_R25_pept, package='DAPARdata')
-#' conditions <- Biobase::pData(Exp1_R25_pept)$Condition
+#' utils::data(Exp1_R25_pept, package='DAPARdata2')
+#' conditions <- colData(Exp1_R25_pept)$Condition
 #' GetColorsForConditions(conditions, ExtendPalette(2))
 #' 
 #' @export
@@ -88,19 +89,18 @@ GetColorsForConditions <- function(conds, palette=NULL){
     stop("'conds' is required")
   
 
-  if (!is.null(palette) && length(unique(conds)) != length(palette)){
+  if (!is.null(palette) && length(unique(conds)) != length(palette))
     stop('The length of `conds` must be equal to the length of `base_palette`.')
-  }
   
-  if (is.null(palette)){
+  
+  if (is.null(palette))
     palette <- ExtendPalette(length(unique(conds)))
 
-  }
   
   myColors <- NULL
-  for (i in 1:length(conds)){
+  for (i in 1:length(conds))
     myColors[i] <- palette[which(conds[i] == unique(conds))]
-  }
+
   return(myColors)
   
 }      

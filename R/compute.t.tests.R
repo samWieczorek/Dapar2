@@ -4,7 +4,7 @@
 #' 
 #' @param obj xxxxx
 #' 
-#' @param sampleTab A data.frame which contains the samples data.  
+#' @param sTab A data.frame which contains the samples data.  
 #' 
 #' @param contrast Indicates if the test consists of the comparison of each 
 #' biological condition versus 
@@ -26,26 +26,32 @@
 #' @examples
 #' library(QFeatures)
 #' utils::data(Exp1_R25_pept, package='DAPARdata2')
-#' Exp1_R25_pept <- addAssay(Exp1_R25_pept, 
-#' QFeatures::filterNA(Exp1_R25_pept[[2]],  pNA = 0), name='filtered')
+#' Exp1_R25_pept <- addAssay(Exp1_R25_pept, QFeatures::filterNA(Exp1_R25_pept[[2]], pNA = 0), name='filtered')
 #' sTab <- as.data.frame(colData(Exp1_R25_pept))
-#' obj <- Exp1_R25_pept[['filtered']]
-#' ttest <- compute.t.test(obj, sTab ,"OnevsOne")
+#' ttest <- compute_t_tests(Exp1_R25_pept[['filtered']], sTab ,"OnevsOne")
 #' 
 #' @export
 #' 
 #' @importFrom stats t.test
 #' 
-compute.t.test <- function(obj, sampleTab, contrast="OnevsOne", type="Student"){
+compute_t_tests <- function(obj, 
+                            sTab, 
+                            contrast = "OnevsOne", 
+                            type = "Student"){
+
+    if(class(obj) != 'SummarizedExperiment')
+        stop("'obj' must be of class 'SummarizedExperiment'")
     
+    if (!(contrast %in% c('OnevsOne', 'OnevsAll')))
+        stop("'contrast' must be one of the following: 'OnevsOne', 'OnevsAll'.")
     
-    # if (class(sampleTab) != 'data.frame'){
-    #     stop("'sampleTab' is not of class data.frame.")
+    # if (class(sTab) != 'data.frame'){
+    #     stop("'sTab' is not of class data.frame.")
     # }
     
     qData <- assay(obj)
-    .type <- type=='Student'
-    sampleTab <- as.data.frame(sampleTab)
+    .type <- type == 'Student'
+    sTab <- as.data.frame(sTab)
     
     res<-list()
     logFC <- list()
@@ -53,16 +59,16 @@ compute.t.test <- function(obj, sampleTab, contrast="OnevsOne", type="Student"){
     
     nbComp <- NULL
     
-    sampleTab.old <- sampleTab
-    Conditions.f <- factor(sampleTab$Condition, levels=unique(sampleTab$Condition))
-    sampleTab <- sampleTab[unlist(lapply(split(sampleTab, Conditions.f), function(x) {x['Sample.name']})),]
-    qData <- qData[,unlist(lapply(split(sampleTab.old, Conditions.f), function(x) {x['Sample.name']}))]
-    Conditions <- sampleTab$Condition
+    sTab.old <- sTab
+    Conditions.f <- factor(sTab$Condition, levels = unique(sTab$Condition))
+    sTab <- sTab[unlist(lapply(split(sTab, Conditions.f), function(x) {x['Sample.name']})),]
+    qData <- qData[,unlist(lapply(split(sTab.old, Conditions.f), function(x) {x['Sample.name']}))]
+    Conditions <- sTab$Condition
     
-    Cond.Nb<-length(levels(Conditions.f))
+    Cond.Nb <- length(levels(Conditions.f))
     
     
-    if(contrast=="OnevsOne"){
+    if(contrast == "OnevsOne"){
         nbComp <- Cond.Nb*(Cond.Nb-1)/2
         
         for(i in 1:(Cond.Nb-1)){
@@ -71,9 +77,9 @@ compute.t.test <- function(obj, sampleTab, contrast="OnevsOne", type="Student"){
                 c1Indice <- which(Conditions==levels(Conditions.f)[i])
                 c2Indice <- which(Conditions==levels(Conditions.f)[j])
                 
-                res.tmp <- apply(qData[,c(c1Indice,c2Indice)], 1, 
+                res.tmp <- apply(qData[ ,c(c1Indice, c2Indice)], 1, 
                                  function(x) {
-                                     stats::t.test(x~Conditions[c(c1Indice,c2Indice)],  var.equal=.type)
+                                     stats::t.test(x~Conditions[c(c1Indice, c2Indice)],  var.equal=.type)
                                  })
                 p.tmp <- unlist(lapply(res.tmp,function(x)x$p.value))
                 m1.tmp <- unlist(lapply(res.tmp,function(x)as.numeric(x$estimate[1])))
@@ -91,7 +97,7 @@ compute.t.test <- function(obj, sampleTab, contrast="OnevsOne", type="Student"){
         }
     } ##end Contrast==1
     
-    if(contrast=="OnevsAll"){
+    if(contrast == "OnevsAll"){
         nbComp <- Cond.Nb
         
         for(i in 1:nbComp){

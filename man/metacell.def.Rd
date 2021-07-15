@@ -10,6 +10,10 @@ metacell.def(level)
 \item{level}{A string designing the type of entity/pipeline. 
 Available values are: `peptide`, `protein`}
 }
+\value{
+A data.frame containing the different tags and corresponding colors for the level
+given in parameter
+}
 \description{
 This function gives the vocabulary used for the metadata of each entity in
 each condition.

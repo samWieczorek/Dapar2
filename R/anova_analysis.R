@@ -1,27 +1,3 @@
-#' @title Function to perform a One-way Anova statistical test on a QFeatures dataset
-#' 
-#' @author Hélène Borges
-#' 
-#' @param current_line The line currently treated from the quantitative data to
-#'  perform the ANOVA
-#'  
-#' @param conditions The conditions represent the different classes of the
-#' studied factor
-#' 
-#' @return A named vector containing all the different values of the aov model
-#' 
-#' @importFrom stats aov
-#' 
-#' @export
-#' 
-classic1wayAnova <- function(current_line, conditions){
-  # vector containing the protein/peptide intensities
-  intensities <- unname(unlist(current_line))
-  # anova sur ces deux vecteurs
-  aov_test <- aov(formula = intensities ~ conditions, data = NULL)
-  return(aov_test)
-  
-}
 
 #' @title Wrapper for One-way Anova statistical test
 #' 
@@ -29,10 +5,9 @@ classic1wayAnova <- function(current_line, conditions){
 #' 
 #' @param obj An object of class \code{SummarizedExperiment}.
 #' 
-#' @param with_post_hoc a character string with 2 possible values: "Yes" and
-#' "No" (default) saying if function must perform a Post-Hoc test or not.
+#' @param with_post_hoc a boolean saying if function must perform a Post-Hoc test or not.
 #' 
-#' @param post_hoc_test character string, possible values are "No" (for no
+#' @param post_hoc_test character string, possible values are NULL (for no
 #' test; default value) or TukeyHSD" or "Dunnett". See details of
 #' \code{postHocTest()} function to choose the appropriate one.
 #' 
@@ -60,26 +35,50 @@ classic1wayAnova <- function(current_line, conditions){
 #' 
 #' @importFrom dplyr select
 #' 
-wrapperClassic1wayAnova <- function(obj, sampleTab, with_post_hoc = FALSE, post_hoc_test = NULL){
+wrapperClassic1wayAnova <- function(obj, 
+                                    sTab, 
+                                    with_post_hoc = FALSE, 
+                                    post_hoc_test = NULL){
  # browser()
+  
+  if(class(obj) != 'SummarizedExperiment')
+    stop("'obj' must be of class 'SummarizedExperiment'")
+  
+  if (!is.null(post_hoc_test) && !(post_hoc_test %in% c('TukeyHSD', 'Dunnett')))
+    stop("'post_hoc_test' must be one of the following: 'TukeyHSD', 'Dunnett'.")
+  
+  # if (there are NA)
+  #   stop("'obj' contains missing values. Abort.")
+  
+  classic1wayAnova <- function(current_line, conditions){
+    # vector containing the protein/peptide intensities
+    intensities <- unname(unlist(current_line))
+    # anova sur ces deux vecteurs
+    aov_test <- aov(formula = intensities ~ conditions, data = NULL)
+    return(aov_test)
+    
+  }
+  
+  
   qData <- as.data.frame(assay(obj))
   
   if (!(with_post_hoc %in% c(TRUE, FALSE)))
     stop("Wrong with_post_hoc parameter. Please choose between FALSE or TRUE")
   
   if (!isTRUE(with_post_hoc) && is.null(post_hoc_test))
-    stop("You want to perform a post-hoc test but did not specify which test. Please choose between Dunnett or TukeyHSD")
+    stop("You want to perform a post-hoc test but did not specify which test. Please choose between 'Dunnett' or 'TukeyHSD'.")
   
-  
-  if(!isTRUE(with_post_hoc)){
-    anova_tests <- as.data.frame(t(apply(qData, 1, function(x) unlist(summary(classic1wayAnova(x, conditions=as.factor(sampleTab$Condition)))))))
+   
+  if (!isTRUE(with_post_hoc)){
+    anova_tests <- as.data.frame(t(apply(qData, 1, function(x) unlist(summary(classic1wayAnova(x, conditions=as.factor(sTab$Condition)))))))
     results <- dplyr::select(anova_tests, `Pr(>F)1`)
     to_return <- DataFrame("logFC" = data.frame("anova_1way_logFC" = matrix(NA, nrow = nrow(results)), row.names = rownames(results)),
                       "P_Value" = data.frame("anova_1way_pval" = results$`Pr(>F)1`, row.names = rownames(results)))
   } else {
-      anova_tests <- t(apply(qData, 1, classic1wayAnova, conditions=as.factor(sampleTab$Condition)))
+      anova_tests <- t(apply(qData, 1, classic1wayAnova, conditions = as.factor(sTab$Condition)))
       names(anova_tests) <- rownames(qData)
-      to_return <- postHocTest(aov_fits = anova_tests, post_hoc_test = post_hoc_test)
+      to_return <- postHocTest(aov_fits = anova_tests,
+                               post_hoc_test = post_hoc_test)
   } 
   
   return(to_return)
@@ -180,7 +179,7 @@ postHocTest <- function(aov_fits, post_hoc_test = "TukeyHSD"){
   
   # use of adjusted("none") to obtain raw p-values (and not adjusted ones)
     models_summaries <- lapply(aov_fits,
-                                     function(x) summary(multcomp::glht(x, linfct = multcomp::mcp(conditions = post_hoc_test)),
+                               function(x) summary(multcomp::glht(x, linfct = multcomp::mcp(conditions = post_hoc_test)),
                                                        test = multcomp::adjusted("none")))
    
     res <- formatPHResults(models_summaries)

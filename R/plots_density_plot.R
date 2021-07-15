@@ -1,6 +1,4 @@
-#' Densityplot of quantitative proteomics data over samples. 
-#' 
-#' @title Builds a densityplot from a dataframe
+#' @title Builds a densityplot of the quantitative data
 #' 
 #' @param qData numeric matrix
 #' 
@@ -19,7 +17,7 @@
 #' utils::data(Exp1_R25_pept, package='DAPARdata2')
 #' qData <- assay(Exp1_R25_pept[[2]])
 #' conds <- colData(Exp1_R25_pept)[["Condition"]]
-#' densityPlotD_HC(qData, conds
+#' densityPlotD_HC(qData, conds)
 #' 
 #' legend <- colData(Exp1_R25_pept)[["Sample.name"]]
 #' pal <- ExtendPalette(2, 'Dark2')
@@ -29,6 +27,7 @@
 #' @importFrom stats density
 #' 
 #' @export
+#' 
 densityPlotD_HC <- function(qData, 
                             conds, 
                             legend=NULL, 
@@ -40,6 +39,9 @@ densityPlotD_HC <- function(qData,
   if(missing(conds))
    stop("'conds' is missing.")
   
+  if (is.null(legend))
+    legend <- conds
+
   myColors <- NULL
   if (is.null(palette)){
     warning("Color palette set to default.")
@@ -49,8 +51,7 @@ densityPlotD_HC <- function(qData,
       warning("The color palette has not the same dimension as the number of samples")
       myColors <- GetColorsForConditions(conds, ExtendPalette(length(unique(conds))))
     } else 
-      myColors <- palette
-    myColors <- GetColorsForConditions(conds, palette)
+      myColors <- GetColorsForConditions(conds, palette)
   }
   
   
@@ -73,13 +74,9 @@ densityPlotD_HC <- function(qData,
         marker=list(
           enabled = FALSE)
       )
-    )
+    ) %>% hc_colors(myColors)
   
-    h1 <- h1 %>% hc_colors(myColors)
-  
-  if (is.null(legend)) {
-    legend <- paste0("series", 1:ncol(qData))
-  }
+ 
   
   for (i in 1:ncol(qData)){
     
@@ -87,10 +84,7 @@ densityPlotD_HC <- function(qData,
                       y = stats::density(qData[,i], na.rm = TRUE)$y)
     
     h1 <- h1 %>% hc_add_series(data=list_parse(tmp), name=legend[i]) 
-    
   }
-  
-  
+
   return(h1)
-  
 }

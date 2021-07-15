@@ -37,7 +37,12 @@
 #' 
 #' @export
 #' 
-violinPlotD <- function(qData, conds, keyId, legend=NULL, palette = NULL, subset.view=NULL){
+violinPlotD <- function(qData, 
+                        conds, 
+                        keyId, 
+                        legend = NULL, 
+                        palette = NULL, 
+                        subset.view = NULL){
 
   
   graphics::plot.new()
@@ -75,35 +80,42 @@ violinPlotD <- function(qData, conds, keyId, legend=NULL, palette = NULL, subset
       myColors <- GetColorsForConditions(conds, palette)
   }
   
-  graphics::plot.window(xlim=c(0,ncol(qData)+1),
-                        ylim=c(min(na.omit(qData)),max(na.omit(qData)))
+  graphics::plot.window(xlim=c(0, ncol(qData)+1),
+                        ylim=c(min(na.omit(qData)),
+                               max(na.omit(qData)))
                         )
   title( ylab="Log (intensity)")
   
-  for (i in 1:ncol(qData)) {
-    vioplot::vioplot(na.omit(qData[,i]), col = myColors[i], add=TRUE, at=i)
-  }
-  
-  
-  graphics::axis(2, yaxp = c(floor(min(na.omit(qData))), 
-                   floor(max(na.omit(qData))), 5), las=1)
+  for (i in 1:ncol(qData)) 
+    vioplot::vioplot(na.omit(qData[,i]), 
+                     col = myColors[i], 
+                     add=TRUE, 
+                     at=i)
+
+  graphics::axis(2, 
+                 yaxp = c(floor(min(na.omit(qData))), 
+                          floor(max(na.omit(qData))), 5),
+                 las=1)
   
   if( !is.null(legend) ) {
-    if ( is.vector(legend) ) {
+    if ( is.vector(legend) )
       N <- 1
-    } else { 
-        N <- ncol(legend)
-        }
-    
+    else
+      N <- ncol(legend)
+
     for (i in 1:N) {
       graphics::axis(side=1,
-           at = 1:ncol(qData),
-           labels = if (is.vector(legend) ) {legend} else {legend[,i]},
-           line= 2*i-1
-      )
+                     at = 1:ncol(qData),
+                     labels = if (is.vector(legend) ) {legend} else {legend[,i]},
+                     line= 2*i-1
+                     )
     }
     
-    graphics::mtext("Samples",side=1,line=6+length(colnames(legend)), cex.lab=1, las=1)
+    graphics::mtext("Samples",
+                    side = 1,
+                    line = 6+length(colnames(legend)), 
+                    cex.lab = 1, 
+                    las = 1)
   }
   
   # Display of rows to highlight (index of row in subset.view) 

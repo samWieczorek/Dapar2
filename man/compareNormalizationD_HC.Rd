@@ -7,17 +7,18 @@
 compareNormalizationD_HC(
   qDataBefore,
   qDataAfter,
-  conds = NULL,
+  conds,
+  keyId = NULL,
   palette = NULL,
   subset.view = NULL,
-  n = NULL,
+  n = 100,
   type = "scatter"
 )
 }
 \arguments{
-\item{qDataBefore}{A numeric matrix that contains quantitative data before normalization.}
+\item{qDataBefore}{A numeric matrix containing quantitative data before normalization.}
 
-\item{qDataAfter}{A numeric matrix that contains quantitative data after normalization.}
+\item{qDataAfter}{A numeric matrix containing quantitative data after normalization.}
 
 \item{conds}{A vector of the conditions (one condition per sample).}
 
@@ -33,18 +34,21 @@ compareNormalizationD_HC(
 A plot
 }
 \description{
-Builds a plot from a numeric matrix.
+This plot compares the quantitative proteomics data before and after 
+normalization
 }
 \examples{
 library(QFeatures)
 utils::data(Exp1_R25_pept, package='DAPARdata2')
 obj <- Exp1_R25_pept[1:1000,]
-conds <- colData(obj)[["Condition"]]
+conds <- colData(obj)$Condition
+id <- metadata(obj)$keyId
 obj <- normalizeD(obj, 2, name='norm', method='SumByColumns', conds=conds, type='overall')
-compareNormalizationD_HC(assay(obj, 2), assay(obj, 3), conds=conds, n=100)
-
-pal <- ExtendPalette(2, "Dark2")
-compareNormalizationD_HC(assay(obj, 2), assay(obj, 3), conds=conds, n=100, palette=pal)
+palette <- ExtendPalette(2, "Dark2")
+qBefore <- assay(obj, 2)
+qAfter <- assay(obj, 3)
+compareNormalizationD_HC(qBefore, qAfter, conds=conds, n=100)
+compareNormalizationD_HC(qBefore, qAfter, conds=conds, keyId = id, n=100, palette=palette)
 
 }
 \author{

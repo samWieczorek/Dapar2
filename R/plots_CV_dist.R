@@ -1,7 +1,3 @@
-#' Builds a densityplot of the CV of entities in numeric matrix.
-#' The CV is calculated for each condition present in the dataset
-#' (see the slot \code{'Condition'} in the \code{colData()} DataFrame)
-#' 
 #' @title Distribution of CV of entities
 #' 
 #' @description 
@@ -9,7 +5,7 @@
 #' The CV is calculated for each condition present in the dataset
 #' (see the slot \code{'Condition'} in the \code{colData()} DataFrame)
 #' 
-#' @param qData A numeric matrix that contains quantitative data.
+#' @param qData A numeric matrix of quantitative data.
 #' 
 #' @param conds A vector of the conditions (one condition per sample).
 #' 
@@ -37,10 +33,15 @@
 #' @export
 #' 
 CVDistD_HC <- function(qData, 
-                       conds, 
+                       conds = NULL, 
                        palette = NULL){
   
-  if (is.null(conds)) {return(NULL)}
+  if (is.null(conds))
+    stop("'conds' is NULL")
+  else if (length(conds) != ncol(qData))
+    stop("'conds' must have the same length as the number of samples in 
+         the dataset.")
+
   conditions <- unique(conds)
   n <- length(conditions)
   
@@ -88,7 +89,6 @@ CVDistD_HC <- function(qData,
       xmaxY <- tmp$x[which(tmp$y==max(tmp$y))]
       minX <- min(minX, tmp$x)
       maxX <- max(maxX, 10*(xmaxY-minX))
-      
       
       h1 <- h1 %>% hc_add_series(data=tmp, name=conditions[i]) }
   }

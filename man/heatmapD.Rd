@@ -2,8 +2,7 @@
 % Please edit documentation in R/plots_heatmap.R
 \name{heatmapD}
 \alias{heatmapD}
-\title{This function is a wrapper to 'heatmap.2' that displays
-a numeric matrix}
+\title{Heatmap of the quantitative proteomics data}
 \usage{
 heatmapD(
   qData,
@@ -30,16 +29,15 @@ See \code{help(heatmap.2)}}
 A heatmap
 }
 \description{
-Heatmap of the quantitative proteomic data of a \code{data.frame} object
+This function is a wrapper to 'heatmap.2' that displays a numeric matrix
 }
 \examples{
 \dontrun{
 library(QFeatures)
 utils::data(Exp1_R25_prot, package='DAPARdata2')
-ft <- Exp1_R25_prot
 conds <- colData(Exp1_R25_prot)[['Condition']]
-qData <- assay(ft[[2]])[1:100,]
-heatmapD(qData, conds, dendro=T)
+qData <- assay(Exp1_R25_prot)[1:100,]
+heatmapD(qData, conds, dendro = TRUE)
 }
 
 }

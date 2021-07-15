@@ -7,11 +7,11 @@
 Set_POV_MEC_tags(conds, df, level)
 }
 \arguments{
-\item{conds}{xxx}
+\item{conds}{xxx.}
 
-\item{df}{An object of class \code{MSnSet}}
+\item{df}{xxx}
 
-\item{level}{Type of entity/pipeline}
+\item{level}{xxx}
 }
 \value{
 An instance of class \code{MSnSet}.
@@ -23,11 +23,11 @@ post processing protein metacell after aggregation)
 }
 \examples{
 utils::data(Exp1_R25_pept, package='DAPARdata2')
-obj <- Exp1_R25_pept[[2]][1:10]
-cols.for.ident <- metadata(obj)[['names_metacell']]
-conds <- Biobase::pData(obj)$Condition
-df <- Biobase::fData(obj)[, cols.for.ident]
-df <- Set_POV_MEC_tags(conds, df, level = 'peptide')
+object <- Exp1_R25_pept
+conds <- colData(object)$Condition
+df <- assay(Exp1_R25_pept, 2)
+level <- GetTypeDataset(object, 2)
+df <- Set_POV_MEC_tags(object, 1)
 
 }
 \author{

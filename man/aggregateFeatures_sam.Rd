@@ -50,15 +50,15 @@ Aggregation is performed by a function that takes a matrix as
 input and returns a xxxxx. Examples
 thereof are
 
-- [DAPAR2:aggSum()] to use the sum of each column (default);
+- [DaparToolshed:aggSum()] to use the sum of each column (default);
 
-- [DAPAR2:aggMean()] to use the sum of each column;
+- [DaparToolshed:aggMean()] to use the sum of each column;
 
-- [DAPAR2:aggIter()] to use the mean of each column;
+- [DaparToolshed:aggIter()] to use the mean of each column;
 
-- [DAPAR2:aggIterParallel()] same as previous function but use parallelism.
+- [DaparToolshed:aggIterParallel()] same as previous function but use parallelism.
 
-- [DAPAR2::aggTopn] to use the sum of each column;
+- [DaparToolshed::aggTopn] to use the sum of each column;
 }
 \examples{
 library(QFeatures)

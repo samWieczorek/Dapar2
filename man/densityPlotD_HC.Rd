@@ -2,7 +2,7 @@
 % Please edit documentation in R/plots_density_plot.R
 \name{densityPlotD_HC}
 \alias{densityPlotD_HC}
-\title{Builds a densityplot from a dataframe}
+\title{Builds a densityplot of the quantitative data}
 \usage{
 densityPlotD_HC(qData, conds, legend = NULL, palette = NULL)
 }
@@ -19,14 +19,14 @@ densityPlotD_HC(qData, conds, legend = NULL, palette = NULL)
 A density plot
 }
 \description{
-Densityplot of quantitative proteomics data over samples.
+Builds a densityplot of the quantitative data
 }
 \examples{
 library(QFeatures)
 utils::data(Exp1_R25_pept, package='DAPARdata2')
 qData <- assay(Exp1_R25_pept[[2]])
 conds <- colData(Exp1_R25_pept)[["Condition"]]
-densityPlotD_HC(qData, conds
+densityPlotD_HC(qData, conds)
 
 legend <- colData(Exp1_R25_pept)[["Sample.name"]]
 pal <- ExtendPalette(2, 'Dark2')

@@ -22,20 +22,37 @@
 #' condition <- colData(Exp1_R25_pept)[["Condition"]]
 #' res.pca <- wrapper.pca(qData, condition)
 #' 
+#' plotPCA_Var(res.pca)
+#' 
+#' plotPCA_Ind(res.pca)
+#' 
+#' plotPCA_Eigen_hc(res.pca)
+#' 
+#' 
+"wrapper.pca"
+
 #' @importFrom FactoMineR PCA
 #' @importFrom stats na.omit
 #' 
 #' @export
-wrapper.pca <- function(qData, condition, var.scaling=TRUE, ncp=NULL){
+#' 
+wrapper.pca <- function(qData, 
+                        condition, 
+                        var.scaling = TRUE, 
+                        ncp = NULL){
   
   if(missing(qData))
     stop("'qData' is missing.")
   if(missing(condition))
     stop("'condition' is missing.")
   
-  if (is.null(var.scaling)) {var.scaling <- TRUE}
+  if (is.null(var.scaling)){
+    warning("Setting 'var.scaling' to TRUE.")
+    var.scaling <- TRUE
+  }
   
-  if (length(which(is.na(qData))) > 0){ qData <- stats::na.omit(qData) }
+  if (length(which(is.na(qData))) > 0)
+    qData <- stats::na.omit(qData)
   
   
   if (is.null(ncp)){
@@ -51,88 +68,93 @@ wrapper.pca <- function(qData, condition, var.scaling=TRUE, ncp=NULL){
     ncp <- min(n, nmax)
   }
   
-  res.pca <- FactoMineR::PCA(qData, scale.unit = var.scaling, ncp=ncp, graph=FALSE)
-  # si warning pour les missing values, le reproduire dans l'interface graphique
+  res.pca <- FactoMineR::PCA(qData, 
+                             scale.unit = var.scaling, 
+                             ncp = ncp, 
+                             graph= FALSE)
   
   return(res.pca)
 }
 
 
 
-#' Plots the variables of PCA
-#' 
 #' @title Plots variables of PCA
+#' 
 #' @param res.pca Result of FactoMineR::PCA
+#' 
 #' @param chosen.axes The dimensions to plot
+#' 
 #' @return A plot
+#' 
 #' @author Samuel Wieczorek, Enora Fremy
-#' @examples
-#' library(QFeatures)
-#' utils::data(Exp1_R25_pept, package='DAPARdata2')
-#' qData <- assay(Exp1_R25_pept[['original']])
-#' condition <- colData(Exp1_R25_pept)[["Condition"]]
-#' res.pca <- wrapper.pca(qData, condition)
-#' plotPCA_Var(res.pca)
+#' 
+"plotPCA_Var"
+
 #' @importFrom factoextra fviz_pca_var
+#' 
 #' @export
-plotPCA_Var <- function(res.pca, chosen.axes=c(1,2)){
-  #plot.PCA(res.pca, choix="var", axes = chosen.axes, title="Sample factor map (PCA)")
-  #require(factoextra)
-  # Colorer en fonction du cos2: qualite de representation
-  if (is.null(res.pca)){
+#' 
+plotPCA_Var <- function(res.pca = NULL, 
+                        chosen.axes = c(1,2)){
+  if (is.null(res.pca))
     return(NULL)
-  }
   
-  factoextra::fviz_pca_var(res.pca, axes = chosen.axes, col.var = "cos2",
+  
+  factoextra::fviz_pca_var(res.pca, 
+                           axes = chosen.axes, 
+                           col.var = "cos2",
                            gradient.cols = c("#00AFBB", "#E7B800", "#FC4E07"),
-                           repel = TRUE # ?vite le chevauchement de texte
-  )
+                           repel = TRUE # Evite le chevauchement de texte
+                           )
   
 }
 
 
-#' Plots the individuals of PCA
-#' 
+
 #' @title Plots individuals of PCA
+#' 
 #' @param res.pca Result of FactoMineR::PCA
+#' 
 #' @param chosen.axes The dimensions to plot
+#' 
 #' @return A plot
+#' 
 #' @author Samuel Wieczorek, Enora Fremy
-#' @examples
-#' library(QFeatures)
-#' utils::data(Exp1_R25_pept, package='DAPARdata2')
-#' qData <- assay(Exp1_R25_pept[['original']])
-#' condition <- colData(Exp1_R25_pept)[["Condition"]]
-#' res.pca <- wrapper.pca(qData, condition)
-#' plotPCA_Ind(res.pca)
+#' 
+"plotPCA_Ind"
+
 #' @importFrom factoextra fviz_pca_ind
+#' 
 #' @export
+#' 
 plotPCA_Ind <- function(res.pca, chosen.axes=c(1,2)){
-  #plot.PCA(res.pca, choix="ind", axes = chosen.axes, select = 0:-1, title="Protein factor map (PCA)")
-  if (is.null(res.pca)){return(NULL)}
-  #require(factoextra)
-  factoextra::fviz_pca_ind(res.pca,  axes = chosen.axes, geom="point")
+  if (is.null(res.pca))
+    return(NULL)
+  
+  factoextra::fviz_pca_ind(res.pca,  
+                           axes = chosen.axes, 
+                           geom  ="point")
   
 }
 
 
 
 
-#' Plots the eigen values of PCA with the highcharts library
-#' 
+
 #' @title Plots the eigen values of PCA with the highcharts library
+#' 
 #' @param res.pca Result of FactoMineR::PCA
+#' 
 #' @return A histogram
+#' 
 #' @author Samuel Wieczorek, Enora Fremy
-#' @examples
-#' library(QFeatures)
-#' utils::data(Exp1_R25_pept, package='DAPARdata2')
-#' qData <- assay(Exp1_R25_pept[['original']])
-#' condition <- colData(Exp1_R25_pept)[["Condition"]]
-#' res.pca <- wrapper.pca(qData, condition)
-#' plotPCA_Eigen_hc(res.pca)
+#' 
+"plotPCA_Eigen_hc"
+
 #' @export
+#' 
 #' @import highcharter
+#' 
 plotPCA_Eigen_hc <- function(res.pca){
   if (is.null(res.pca)){return(NULL)}
   hc <- highcharter::highchart() %>%
@@ -146,6 +168,5 @@ plotPCA_Eigen_hc <- function(res.pca){
     #hc_tooltip(crosshairs = TRUE, headerFormat = "<b>{point.x}</b><br>") %>%
     hc_legend(enabled = TRUE)
   # hc_plotOptions(column = list(colorByPoint = TRUE, colors = SiteOTD$Colors))
-  
   
 }

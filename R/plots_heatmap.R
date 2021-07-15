@@ -1,9 +1,11 @@
 
 
-#' Heatmap of the quantitative proteomic data of a \code{data.frame} object
+#' 
 #'
-#' @title This function is a wrapper to 'heatmap.2' that displays
-#' a numeric matrix
+#' @title Heatmap of the quantitative proteomics data
+#' 
+#' @description 
+#' This function is a wrapper to 'heatmap.2' that displays a numeric matrix
 #' 
 #' @param qData A dataframe of numeric values
 #' 
@@ -25,10 +27,9 @@
 #' \dontrun{
 #' library(QFeatures)
 #' utils::data(Exp1_R25_prot, package='DAPARdata2')
-#' ft <- Exp1_R25_prot
 #' conds <- colData(Exp1_R25_prot)[['Condition']]
-#' qData <- assay(ft[[2]])[1:100,]
-#' heatmapD(qData, conds, dendro=T)
+#' qData <- assay(Exp1_R25_prot)[1:100,]
+#' heatmapD(qData, conds, dendro = TRUE)
 #' }
 #' 
 #' @importFrom grDevices colorRampPalette
@@ -40,22 +41,26 @@
 #' 
 heatmapD <- function(qData, 
                      conds, 
-                     distance="euclidean", 
+                     distance = "euclidean", 
                      cluster="complete", 
                      dendro = FALSE){
-  ##Check parameters
-  # paramdist <- c("euclidean", "manhattan")
-  # if (!(distance %in% paramdist)){
-  #     stop("Param distance is not correct.")
-  #     return (NULL)
-  # }
-  #
-  # paramcluster <- c("ward.D", "average")
-  # if (!(cluster %in%  paramcluster)){
-  #     stop("Param clustering is not correct.")
-  #     return (NULL)
-  # }
+  #Check parameters
+  if (!(distance %in% c("euclidean", "manhattan"))){
+      stop("'distance' is not correct.")
+      return (NULL)
+  }
+
+  if (!(cluster %in%  c("complete", "ward.D", "average"))){
+      stop("'cluster' is not correct.")
+      return (NULL)
+  }
   
+  if (length(conds) != ncol(qData))
+    stop("The length of 'conds' must be equal to the number of samples.")
+  
+  .dendro = "none"
+  if (dendro)
+    .dendro = "row"
   
   # if (isTRUE(dendro) && getNumberOfEmptyLines(qData) != 0)  {
   #     stop("Your dataset contains empty lines: the dendrogram cannot
@@ -67,31 +72,32 @@ heatmapD <- function(qData,
   .data <- matrix(qData,
                   ncol = ncol(qData),
                   byrow = FALSE,
-                  dimnames = list(rownames(qData), colnames(qData))
-  )
+                  dimnames = list(rownames(qData), 
+                                  colnames(qData)
+                                  )
+                  )
+  
   colors = c(seq(-3, -2, length=100),
              seq(-2, 0.5, length=100),
              seq(0.5, 6, length=100))
   heatmap.color <- grDevices::colorRampPalette(c("green", "red"))(n = 1000)
   
   # samples label color
-  x=t(.data)
+  x = t(.data)
   x[is.na(x)] <- -1e5
-  dist= dist(x, method=distance)
+  dist = dist(x, method=distance)
   hcluster = hclust(dist, method=cluster)
-  cols_branches <- ExtendPalette(length(unique((conds))), NULL)
+  cols_branches <- ExtendPalette(n = length(unique((conds))), base = NULL)
   dend1 <- as.dendrogram(hcluster)
-  dend1 <- dendextend::color_branches(dend1, k = length(conds), col = cols_branches)
+  dend1 <- dendextend::color_branches(dend1, 
+                                      k = length(conds), 
+                                      col = cols_branches)
   col_labels <- dendextend::get_leaves_branches_col(dend1)
   
   
-  if (dendro)
-    .dendro = "row"
-  else
-    .dendro = "none"
   
   p <- gplots::heatmap.2(
-    x=t(.data),
+    x = t(.data),
     distfun = function(x) {
       x[is.na(x)] <- -1e5
       dist(x, method=distance)
@@ -101,17 +107,17 @@ heatmapD <- function(qData,
       hclust(x, method=cluster)
     },
     dendrogram = .dendro,
-    Rowv=TRUE,
-    col=heatmap.color ,
-    density.info='none',
-    key=TRUE,
-    trace="none",
-    scale="none",
+    Rowv = TRUE,
+    col = heatmap.color ,
+    density.info = 'none',
+    key = TRUE,
+    trace = "none",
+    scale = "none",
     #srtCol=45,
-    labCol="",
+    labCol = "",
     margins=c(4,12),
     #cexRow=1.5,
-    cexRow= 1.5 + ncol(.data)*-0.011 ,
+    cexRow = 1.5 + ncol(.data)*-0.011 ,
     keysize = 1.5,
     lhei = c(1.5, 9),
     lwid = c(1.5, 4),
@@ -193,6 +199,7 @@ heatmapForMissingValues <- function (x,
   
   if (length(di <- dim(x)) != 2 || !is.numeric(x)) 
     stop("`x' must be a numeric matrix")
+  
   nr <- di[1]
   nc <- di[2]
   if (nr <= 1 || nc <= 1) 

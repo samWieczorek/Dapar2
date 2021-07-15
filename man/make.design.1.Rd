@@ -5,20 +5,14 @@
 \title{Builds the design matrix for designs of level 1}
 \usage{
 make.design.1(sampleTab)
-
-make.design.1(sampleTab)
 }
 \arguments{
 \item{sampleTab}{The data.frame which correspond to the definition of replicates}
 }
 \value{
 A design matrix
-
-A design matrix
 }
 \description{
-Builds the design matrix for designs of level 1
-
 Builds the design matrix for designs of level 1
 }
 \examples{
@@ -26,13 +20,7 @@ library(QFeatures)
 utils::data(Exp1_R25_pept, package='DAPARdata2')
 make.design.1(colData(Exp1_R25_pept))
 
-library(QFeatures)
-utils::data(Exp1_R25_pept, package='DAPARdata2')
-make.design.1(colData(Exp1_R25_pept))
-
 }
 \author{
-Thomas Burger, Quentin Giai-Gianetto, Samuel Wieczorek
-
 Thomas Burger, Quentin Giai-Gianetto, Samuel Wieczorek
 }
