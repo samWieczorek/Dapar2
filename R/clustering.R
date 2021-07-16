@@ -116,13 +116,16 @@ standardiseMeanIntensities <- function(obj, sTab){
 #' @importFrom diptest dip.test
 #' 
 checkClusterability <- function(standards){
-  require(diptest)
-  require(cluster)
   # on vérifie la clusterabilité des données
   dip_res <- diptest::dip.test(x = standards)
   # d.power = 2 correspond au critère de Tibshirani. B = 500 permet d'avoir
   # des résultats stables d'une simulation à l'autre.
-  gap_cluster <- cluster::clusGap(standards, FUNcluster = kmeans, nstart = 20, K.max = 10, d.power = 2, B = 500)
+  gap_cluster <- cluster::clusGap(standards, 
+                                  FUNcluster = kmeans, 
+                                  nstart = 20, 
+                                  K.max = 10, 
+                                  d.power = 2, 
+                                  B = 500)
   
   return(list(
     "dip_test" = dip_res,

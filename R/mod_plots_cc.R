@@ -219,15 +219,12 @@ mod_plots_cc_server <- function(input, output, session,
   output$CCMultiMulti <- renderDataTable({
     Get_CC_Multi2Any()
     
-    print(Get_CC_Multi2Any())
     
     df <- do.call(rbind,lapply(cc()[Get_CC_Multi2Any()],
                                function(x){
                                  data.frame(rbind(x),
                                             nPep = length(x$peptides),
                                             nProt = length(x$proteins))}))
-    print(head(df))
-    print(class(df))
     df <- cbind(df,id = 1:nrow(df))
     df <- df[c('id', 'nProt', 'nPep', 'proteins', 'peptides')]
     

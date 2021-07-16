@@ -23,7 +23,7 @@ server <- function(input, output, session) {
   mod_plots_var_dist_server('varDistPlot',
                             obj = reactive({obj}),
                             conds = reactive({conds}),
-                            base_palette = reactive({DaparToolshed::Example_Palette(conds, DAPAR2::Base_Palette(conditions = conds))}))
+                            base_palette = reactive({Dapar2::Example_Palette(conds, Dapar2::Base_Palette(conditions = conds))}))
 }
 
 

@@ -8,11 +8,11 @@ with the paramter 'type'.}
 match.metacell(df, pattern, level)
 }
 \arguments{
+\item{df}{A data.frame}
+
 \item{pattern}{The value to search in the dataframe}
 
 \item{level}{xxx}
-
-\item{metadata}{A data.frame}
 }
 \value{
 A boolean dataframe

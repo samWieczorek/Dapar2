@@ -123,7 +123,7 @@ mod_plots_corr_matrix_server <- function(id, obj, names=NULL, gradientRate=NULL)
 
 
       withProgress(message = 'Making plot', value = 100, {
-        tmp <- DaparToolshed::corrMatrixD_HC(obj = obj(),
+        tmp <- Dapar2::corrMatrixD_HC(obj = obj(),
                                       names = names(),
                                       rate = rv.corr$gradient,
                                       showValues = rv.corr$showValues)

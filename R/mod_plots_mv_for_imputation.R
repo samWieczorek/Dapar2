@@ -46,7 +46,7 @@ mod_plots_mv_for_imputation_server <- function(id,
       req(obj())
 
       withProgress(message = 'Making MV Intensity plot', value = 100, {
-        DaparToolshed::hc_mvTypePlot2(obj = obj(),
+        Dapar2::hc_mvTypePlot2(obj = obj(),
                        i = ind(),
                        title = title(),
                        palette = palette())
@@ -58,7 +58,7 @@ mod_plots_mv_for_imputation_server <- function(id,
       req(obj())
 
       withProgress(message = 'Making MV Heatmap plot', value = 100, {
-        DaparToolshed::mvImage(obj(), ind())
+        Dapar2::mvImage(obj(), ind())
       })
 
     })

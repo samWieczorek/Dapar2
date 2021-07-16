@@ -10,7 +10,11 @@ GetProstarVersions()
 A list
 }
 \description{
-Return the versions of Prostar, DaparToolshed and DaparData
+Return the versions of Prostar, Dapar2 and DaparData2
+}
+\examples{
+GetProstarVersions()
+
 }
 \author{
 Samuel Wieczorek

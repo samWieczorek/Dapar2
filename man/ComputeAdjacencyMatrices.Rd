@@ -7,12 +7,10 @@
 ComputeAdjacencyMatrices(obj.se)
 }
 \arguments{
-\item{obj}{An object of class 'QFeatures'}
-
-\item{i}{The indice of the dataset (class 'SumarizedExperiment') in the list of 'obj' on which to apply the aggregation.}
+\item{obj.se}{An object of class 'SummarizedExperiment'}
 }
 \value{
-AN object of class 'QFeatures'
+A list of three adjacency matrices
 }
 \description{
 All the matrices have the same dimensions. The first matrix correspond to all the peptides, the second one contains 

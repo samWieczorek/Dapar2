@@ -61,9 +61,9 @@ mod_plots_var_dist_server <- function(id,
       req(obj())
 
       isolate({
-        varDist <- DaparToolshed::CVDistD_HC(SummarizedExperiment::assay(obj()),
+        varDist <- Dapar2::CVDistD_HC(SummarizedExperiment::assay(obj()),
                                       conds(),
-                                      palette = DaparToolshed::Base_Palette(conditions = conds()))
+                                      palette = Dapar2::Base_Palette(conditions = conds()))
       })
       varDist
     })

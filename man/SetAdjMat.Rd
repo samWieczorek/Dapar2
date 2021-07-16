@@ -3,12 +3,25 @@
 \docType{data}
 \name{SetAdjMat}
 \alias{SetAdjMat}
+\alias{SetAdjMat,SummarizedExperiment-method}
+\alias{SetAdjMat,QFeatures-method}
 \title{Record the adjacency matrices}
 \format{
 An object of class \code{standardGeneric} of length 1.
 }
 \usage{
 SetAdjMat
+
+\S4method{SetAdjMat}{SummarizedExperiment}(object, ...)
+
+\S4method{SetAdjMat}{QFeatures}(object, i, ...)
+}
+\arguments{
+\item{object}{xxx}
+
+\item{...}{xxx}
+
+\item{i}{xxx}
 }
 \description{
 Record the adjacency matrices

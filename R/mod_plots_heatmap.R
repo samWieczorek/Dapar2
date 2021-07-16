@@ -105,7 +105,7 @@ mod_plots_heatmap_server <- function(id, obj, conds, width = 900){
 
       isolate({
         withProgress(message = 'Making plot', value = 100, {
-          DaparToolshed::heatmapD(qData = SummarizedExperiment::assay(obj()),
+          Dapar2::heatmapD(qData = SummarizedExperiment::assay(obj()),
                            conds = conds(),
                            distance= input$distance,
                            cluster = input$linkage,

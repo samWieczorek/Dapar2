@@ -83,7 +83,7 @@ mod_plots_pca_server <- function(id,
 
     observeEvent(input$varScale_PCA,{
       rv.pca$PCA_varScale <- input$varScale_PCA
-      rv.pca$res.pca <- DaparToolshed::wrapper.pca(SummarizedExperiment::assay(obj()),
+      rv.pca$res.pca <- Dapar2::wrapper.pca(SummarizedExperiment::assay(obj()),
                                             coldata()[["Condition"]],
                                             rv.pca$PCA_varScale,
                                             ncp=Compute_PCA_dim())
@@ -91,7 +91,7 @@ mod_plots_pca_server <- function(id,
 
     observeEvent(obj(), {
       if (length(which(is.na(SummarizedExperiment::assay(obj())))) == 0) {
-        rv.pca$res.pca <- DaparToolshed::wrapper.pca(SummarizedExperiment::assay(obj()),
+        rv.pca$res.pca <- Dapar2::wrapper.pca(SummarizedExperiment::assay(obj()),
                                               coldata()[["Condition"]],
                                               rv.pca$PCA_varScale,
                                               ncp=Compute_PCA_dim())
@@ -122,7 +122,7 @@ mod_plots_pca_server <- function(id,
       req(rv.pca$PCA_axes)
       req(rv.pca$res.pca)
       withProgress(message = 'Making plot', value = 100, {
-        DaparToolshed::plotPCA_Var(rv.pca$res.pca, rv.pca$PCA_axes)
+        Dapar2::plotPCA_Var(rv.pca$res.pca, rv.pca$PCA_axes)
       })
     })
 
@@ -130,7 +130,7 @@ mod_plots_pca_server <- function(id,
       req(rv.pca$PCA_axes)
       req(rv.pca$res.pca)
       withProgress(message = 'Making plot', value = 100, {
-        DaparToolshed::plotPCA_Ind(rv.pca$res.pca, rv.pca$PCA_axes)
+        Dapar2::plotPCA_Ind(rv.pca$res.pca, rv.pca$PCA_axes)
       })
     })
 
@@ -139,7 +139,7 @@ mod_plots_pca_server <- function(id,
       req(rv.pca$res.pca)
 
       withProgress(message = 'Making plot', value = 100, {
-        DaparToolshed::plotPCA_Eigen_hc(rv.pca$res.pca)
+        Dapar2::plotPCA_Eigen_hc(rv.pca$res.pca)
       })
     })
 

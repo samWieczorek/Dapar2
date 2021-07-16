@@ -4,14 +4,18 @@
 #' @description Filter an assay with a complex query
 #' 
 #' @author Samuel Wieczorek
+#' @name ComplexFilterFeatures
+#' @rdname ComplexFilterFeatures
 #' 
 "ComplexFilterFeatures"
 
 
-#' @param xxx
+#' @param object xxx
+#' @param cmd xxx
+#' @param .. xxx
 #' 
 #' @export
-#' 
+#' @rdname ComplexFilterFeatures
 setMethod("ComplexFilterFeatures", "SummarizedExperiment",
           function(object, cmd, ...) {
             x <- rowData(object)
@@ -62,11 +66,9 @@ setMethod("ComplexFilterFeatures", "SummarizedExperiment",
 #' @param name A `character(1)` naming the new assay name. Defaults
 #'     are `ttestAssay`.
 #' 
-#' @param filter xxx
-#' 
 #' @param ... Additional parameters passed to inner functions.
 #' 
-#' @rdname filterFeaturesSam
+#' @rdname ComplexFilterFeatures
 #' 
 #' @export
 #' 
@@ -108,7 +110,7 @@ setMethod("ComplexFilterFeatures", "QFeatures",
 #'
 #' @description
 #'
-#' This manual page describes the The filtering functions of DAPAR have not been all moved to DaparToolshed as we now use the QFeatures package
+#' This manual page describes the The filtering functions of DAPAR have not been all moved to Dapar2 as we now use the QFeatures package
 #' which provides some filtering functions, especially on features that are present in the rowData
 #' of the datasets.
 #'  The filtering functions on numerical values are deleted because the same functions exist in QFeatures.
@@ -126,7 +128,8 @@ setMethod("ComplexFilterFeatures", "QFeatures",
 #' object <- filterFeaturesSam(object, i=2, filter=reverse_600)
 #'
 #'
-#'
+#' @name filterFeaturesSam
+#' @rdname filterFeaturesSam
 #'
 "filterFeaturesSam"
 
@@ -225,10 +228,9 @@ SymFilteringOperators <- function()
 #' 
 #' @title Get the indices of the lines to delete, based on a prefix string
 #' 
-#' @param obj An object of class \code{MSnSet}.
+#' @param object An object of class \code{xxx}.
 #' 
-#' @param idLine2Delete The name of the column that correspond to the data 
-#' to filter
+#' @param col The name of the column that correspond to the data to filter
 #' 
 #' @param prefix A character string that is the prefix to find in the data
 #' 
@@ -284,9 +286,9 @@ GetIndicesForPrefix <- function(object, col = NULL, prefix = NULL)
 #' @author Samuel Wieczorek
 #' 
 #' @examples
-#' utils::data(Exp1_R25_pept, package='DAPARdata')
+#' utils::data(Exp1_R25_pept, package='DAPARdata2')
 #' obj <- Exp1_R25_pept[1:10,]
-#' level <- GetTypeDataset(obj)
+#' level <- GetTypeDataset(obj, 2)
 #' pattern <- 'missing'
 #' type <- 'AllCond'
 #' percent <- FALSE
@@ -316,13 +318,13 @@ GetIndices_ComplexQueryFiltering <- function(obj, level, pattern, type, percent,
   
   indices <- NULL
   
-  if (!(pattern %in% DAPAR::metacell.def(level)$node && type !='None' && !is.null(type))){
+  if (!(pattern %in% metacell.def(level)$node && type !='None' && !is.null(type))){
     warning("Either 'pattern' nor 'type' are equal to 'None'")
     return(NULL)
   }
   
-  mask <- match.metacell(metadata = Get_qMetadata(obj), 
-                         pattern  =pattern, 
+  mask <- match.metacell(df = Get_qMetadata(obj), 
+                         pattern = pattern, 
                          level = level)
   
   indices <- switch(type,

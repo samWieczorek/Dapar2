@@ -11,6 +11,8 @@
 #' 
 #' @param conds A vector of the conditions (one condition per sample).
 #' 
+#' @param keyId xxx
+#' 
 #' @param palette xxx
 #' 
 #' @param subset.view xxx

@@ -14,12 +14,14 @@ normalizeD
 
 \S4method{normalizeD}{SummarizedExperiment}(object, method, withTracking = FALSE, ...)
 
-\S4method{normalizeD}{QFeatures}(object, i, name = "normalizedAssay", method, ...)
+\S4method{normalizeD}{QFeatures}(object, i, name = "normalizedAssay", ...)
 }
 \arguments{
 \item{object}{An object of class `QFeatures`.}
 
 \item{method}{xxxxx. See xxx for methods available.}
+
+\item{withTracking}{xxx}
 
 \item{...}{Additional parameters passed to inner functions.}
 

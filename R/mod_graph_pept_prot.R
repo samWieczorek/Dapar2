@@ -168,7 +168,7 @@ mod_graph_pept_prot_server <- function(id, cc, matAdj, dataIn){
         clickFun <-
           JS(paste0("function(event) {Shiny.onInputChange('",ns("eventPointClicked"),"', [this.index]+'_'+ [this.series.name]);}"))
 
-        rv.core$tempplot$plotCC <-  DaparToolshed::plotJitter_rCharts(df, clickFunction=clickFun)
+        rv.core$tempplot$plotCC <-  plotJitter_rCharts(df, clickFunction=clickFun)
 
       })
       rv.core$tempplot$plotCC

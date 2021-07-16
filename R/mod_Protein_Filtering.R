@@ -8,14 +8,30 @@ AddItemToDataset <- function(dataset, name){
 }
 
 
+#' @title xxxx
+#'
+#' @description A shiny Module.
 #' @export
+#'
+#' @param id xxx
+#'
+#' @importFrom shiny NS tagList
 #'
 mod_Protein_Filtering_ui <- function(id){
   ns <- NS(id)
 }
 
 
+#' @title xxx
+#'
+#' @description A shiny Module.
 #' @export
+#'
+#' @param id xxx
+#' @param dataIn xxx
+#' @param steps.enabled xxx
+#' @param remoteReset xxx
+#'
 #'
 mod_Protein_Filtering_server <- function(id,
                                              dataIn = NULL,

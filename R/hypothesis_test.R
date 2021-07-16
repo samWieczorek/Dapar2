@@ -3,7 +3,8 @@
 #' @title Record the adjacency matrices 
 #' 
 #' @author Samuel Wieczorek
-#' 
+#' @name HypothesisTest
+#' @rdname HypothesisTest
 #' @examples
 #' utils::data(Exp1_R25_pept, package='DAPARdata2')
 #' Exp1_R25_pept <- addAssay(Exp1_R25_pept, QFeatures::filterNA(Exp1_R25_pept[[2]],  pNA = 0), name='filtered')
@@ -19,9 +20,11 @@
 "HypothesisTest"
 
 
-#' @param  obj.se An object (peptides) of class \code{SummarizedExperiment}.
-#' 
-#' @return The slot processing of obj@processingData
+#' @param  object An object (peptides) of class \code{SummarizedExperiment}.
+#' @param test xxx
+#' @param sTab xxx
+#' @param ... xxx
+#' @rdname HypothesisTest
 #' 
 setMethod('HypothesisTest', "SummarizedExperiment",
           function(object, test, sTab, ...) {
@@ -45,7 +48,11 @@ setMethod('HypothesisTest', "SummarizedExperiment",
           }
 )
 
-
+#' @param object xxx
+#' @param i xxx
+#' @param name xxx
+#' @param test xxx
+#' @rdname HypothesisTest
 setMethod("HypothesisTest", "QFeatures",
           function(object, 
                    i, 

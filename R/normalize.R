@@ -51,12 +51,6 @@ else
 #' Normalization can be based only on a subset of protein.
 #' Proteins with NA in this subset are ignored.
 #'
-#'
-#' @param i A numeric vector or a character vector giving the index or the 
-#'     name, respectively, of the assay(s) to be processed.
-#'
-#' @param name A `character(1)` naming the new assay name. Defaults are `normAssay`.
-#'
 #' 
 #' @return An instance of class 'SummerizedExperiment' where the quantitative
 #' data in the \code{array()} tab has been normalized.
@@ -77,6 +71,8 @@ else
 #' @param  object An object of class `SummarizedExperiment`.
 #' 
 #' @param method xxxxx. See xxx for methods available.
+#' 
+#' @param withTracking xxx
 #' 
 #' @param ... Additional parameters passed to inner functions.
 #' 
@@ -122,7 +118,7 @@ setMethod("normalizeD", "SummarizedExperiment",
 #' @rdname normalizeD
 #' 
 setMethod("normalizeD", "QFeatures",
-          function(object, i, name = "normalizedAssay", method, ...) {
+          function(object, i, name = "normalizedAssay", ...) {
             if (missing(i))
               stop("Provide index or name of assay to be processed")
             if (length(i) != 1)
@@ -131,7 +127,7 @@ setMethod("normalizeD", "QFeatures",
             
             argg <- c(as.list(environment()), list(...))
             
-            tmp <-  normalizeD(object[[i]], method, ...)
+            tmp <-  normalizeD(object[[i]], ...)
             metadata(tmp)$Params <- argg[-match(c('object', 'i', 'name'), names(argg))]
             
             object <- QFeatures::addAssay(object,

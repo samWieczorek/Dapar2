@@ -24,7 +24,7 @@ server <- function(input, output, session) {
                            obj = reactive({obj}),
                            conds = reactive({conds}),
                            legend = reactive({legend}),
-                           base_palette = reactive({DaparToolshed::Example_Palette()})
+                           base_palette = reactive({Dapar2::Example_Palette()})
   )
 }
 

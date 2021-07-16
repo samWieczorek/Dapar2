@@ -322,7 +322,7 @@ mod_settings_server <- function(id, obj){
       df <- data.frame(y= abs(10+rnorm(length(rv.settings$conditions))))
 
       highcharter::highchart() %>%
-        DaparToolshed::dapar_hc_chart(chartType = "column") %>%
+        Dapar2::dapar_hc_chart(chartType = "column") %>%
         highcharter::hc_add_series(data = df, type="column", colorByPoint = TRUE) %>%
         highcharter::hc_colors(rv.settings$examplePalette) %>%
         highcharter::hc_plotOptions( column = list(stacking = "normal"), animation=list(duration = 1)) %>%

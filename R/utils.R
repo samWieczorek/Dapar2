@@ -1,11 +1,16 @@
 
 
 
-#' @title Returns the contains of the slot processing  of an object of 
+#' @title
+#' Returns the contains of the slot processing  of an object of 
 #' class \code{MSnSet}
+#' 
+#' @description xxx
 #' 
 #' @author Samuel Wieczorek
 #' 
+#' @name GetAdjMat
+#' @rdname GetAdjMat
 #' @examples
 #' utils::data(Exp1_R25_pept, package='DAPARdata2')
 #' ll.X <- GetAdjMat(Exp1_R25_pept, 2)
@@ -15,9 +20,10 @@
 "GetAdjMat"
 
 
-#' @param  obj.se An object (peptides) of class \code{SummarizedExperiment}.
+#' @param  object An object (peptides) of class \code{SummarizedExperiment}.
+#' @param ... xxx
 #' 
-#' @return The slot processing of obj@processingData
+#' @rdname GetAdjMat
 #' 
 setMethod('GetAdjMat', "SummarizedExperiment",
           function(object, ...) {
@@ -28,7 +34,10 @@ setMethod('GetAdjMat', "SummarizedExperiment",
           }
 )
 
-
+#' @param object xxx
+#' @param i xxx
+#' @param ... xxx
+#' @rdname GetAdjMat
 setMethod("GetAdjMat", "QFeatures",
           function(object, i, ...) {
             if (missing(i))
@@ -51,15 +60,17 @@ setMethod("GetAdjMat", "QFeatures",
 #' utils::data(Exp1_R25_pept, package='DAPARdata2')
 #' Exp1_R25_pept <- SetAdjMat(Exp1_R25_pept, 2)
 #' 
-#' @export
-#' 
+#' @name SetAdjMat
+#' @rdname SetAdjMat
+#'  
 "SetAdjMat"
 
 
-#' @param  obj.se An object (peptides) of class \code{SummarizedExperiment}.
+#' @param  object An object (peptides) of class \code{SummarizedExperiment}.
+#' @param ... xxx
 #' 
-#' @return The slot processing of obj@processingData
-#' 
+#' @rdname SetAdjMat
+#' @export
 setMethod('SetAdjMat', "SummarizedExperiment",
           function(object, ...) {
             if (GetTypeDataset(object) != 'peptide')
@@ -70,7 +81,10 @@ setMethod('SetAdjMat', "SummarizedExperiment",
           }
 )
 
-
+#' @param object xxx
+#' @param i xxx
+#' @param ... xxx
+#' @rdname SetAdjMat
 setMethod("SetAdjMat", "QFeatures",
           function(object, i, ...) {
             if (missing(i))
@@ -92,15 +106,17 @@ setMethod("SetAdjMat", "QFeatures",
 #' utils::data(Exp1_R25_pept, package='DAPARdata2')
 #' ll.X <- SetConnectedComps(Exp1_R25_pept, 2)
 #' 
-#' @export
+#' @name GetConnectedComps
+#' @rdname GetConnectedComps
 #' 
 "GetConnectedComps"
 
 
-#' @param  obj.se An object (peptides) of class \code{SummarizedExperiment}.
+#' @param  object An object (peptides) of class \code{SummarizedExperiment}.
+#' @param ... xxx
 #' 
-#' @return The slot processing of obj@processingData
-#' 
+#' @rdname GetConnectedComps
+#' @export
 setMethod('GetConnectedComps', "SummarizedExperiment",
           function(object,  ...) {
             if (GetTypeDataset(object) != 'peptide')
@@ -110,7 +126,11 @@ setMethod('GetConnectedComps', "SummarizedExperiment",
           }
 )
 
-
+#' @param object xxx
+#' @param i xxx
+#' @param ... xxx
+#' @rdname GetConnectedComps
+#' @export
 setMethod("GetConnectedComps", "QFeatures",
           function(object, i, ...) {
             if (missing(i))
@@ -133,14 +153,16 @@ setMethod("GetConnectedComps", "QFeatures",
 #' utils::data(Exp1_R25_pept, package='DAPARdata2')
 #' ll.X <- SetConnectedComps(Exp1_R25_pept, 2)
 #' 
-#' @export
+#' @name SetConnectedComps
+#' @rdname SetConnectedComps
 #' 
 "SetConnectedComps"
 
 
-#' @param  obj.se An object (peptides) of class \code{SummarizedExperiment}.
+#' @param  object An object (peptides) of class \code{SummarizedExperiment}.
+#' @param ... xxx
 #' 
-#' @return The slot processing of obj@processingData
+#' @rdname SetConnectedComps
 #' 
 setMethod('SetConnectedComps', "SummarizedExperiment",
           function(object,  ...) {
@@ -152,7 +174,10 @@ setMethod('SetConnectedComps', "SummarizedExperiment",
           }
 )
 
-
+#' @param object xxx
+#' @param i xxx
+#' @param ... xxx
+#' @rdname SetConnectedComps
 setMethod("SetConnectedComps", "QFeatures",
           function(object, i, ...) {
             if (missing(i))
@@ -173,20 +198,20 @@ setMethod("SetConnectedComps", "QFeatures",
 
 #' @title Versions of installed packages of Prostar suite
 #' 
-#' @description Return the versions of Prostar, DaparToolshed and DaparData
+#' @description Return the versions of Prostar, Dapar2 and DaparData2
 #' 
 #' @return A list
 #' 
 #' @author Samuel Wieczorek
 #' 
-#' @example
+#' @examples
 #' GetProstarVersions()
 #' 
 #' @export
 #' 
 GetProstarVersions <- function(){
   
-  Prostar <- DaparToolshed <- DaparData <- NA
+  Prostar <- Dapar2 <- DaparData2 <- NA
   
   tryCatch({
     find.package("Prostar")
@@ -196,22 +221,22 @@ GetProstarVersions <- function(){
   )
   
   tryCatch({
-    find.package("DaparToolshed")
-    DaparToolshed <- Biobase::package.version('DaparToolshed')
+    find.package("Dapar2")
+    Dapar2 <- Biobase::package.version('Dapar2')
   },
-  error = function(e) DaparToolshed <- NA
+  error = function(e) Dapar2 <- NA
   )
   
   tryCatch({
-    find.package("DaparData")
-    DaparToolshed <- Biobase::package.version('DaparData')
+    find.package("DaparData2")
+    DaparData2 <- Biobase::package.version('DaparData2')
   },
   error = function(e) DaparData <- NA
   )
   
   list(Prostar = Prostar,
-       DaparToolshed = DaparToolshed,
-       DaparData = DaparData)
+       Dapar2 = Dapar2,
+       DaparData2 = DaparData2)
 }
 
 

@@ -3,13 +3,6 @@
 
 #' @title Compute the PCA
 #' 
-#' @param qData numeric matrix
-#' 
-#' @param condition xxx
-#' 
-#' @param var.scaling The dimensions to plot
-#' 
-#' @param ncp Number of dimensions kept in the results
 #' 
 #' @return A list including eigenvalues of obj
 #' 
@@ -29,8 +22,14 @@
 #' plotPCA_Eigen_hc(res.pca)
 #' 
 #' 
-"wrapper.pca"
-
+#' @param qData numeric matrix
+#' 
+#' @param condition xxx
+#' 
+#' @param var.scaling The dimensions to plot
+#' 
+#' @param ncp Number of dimensions kept in the results
+#' 
 #' @importFrom FactoMineR PCA
 #' @importFrom stats na.omit
 #' 
@@ -88,8 +87,6 @@ wrapper.pca <- function(qData,
 #' 
 #' @author Samuel Wieczorek, Enora Fremy
 #' 
-"plotPCA_Var"
-
 #' @importFrom factoextra fviz_pca_var
 #' 
 #' @export
@@ -121,13 +118,11 @@ plotPCA_Var <- function(res.pca = NULL,
 #' 
 #' @author Samuel Wieczorek, Enora Fremy
 #' 
-"plotPCA_Ind"
-
 #' @importFrom factoextra fviz_pca_ind
 #' 
 #' @export
 #' 
-plotPCA_Ind <- function(res.pca, chosen.axes=c(1,2)){
+plotPCA_Ind <- function(res.pca, chosen.axes = c(1,2)){
   if (is.null(res.pca))
     return(NULL)
   
@@ -149,8 +144,6 @@ plotPCA_Ind <- function(res.pca, chosen.axes=c(1,2)){
 #' 
 #' @author Samuel Wieczorek, Enora Fremy
 #' 
-"plotPCA_Eigen_hc"
-
 #' @export
 #' 
 #' @import highcharter

@@ -4,7 +4,7 @@
 #' 
 #' @description This function computes the connex components of a graph, represented by an adjacency matrix.
 #'  
-#' @param X.list A list of adjacency matrices as provided by the function BuildListAdjacencyMatrices.
+#' @param obj.se xxxx
 #' 
 #' @return A list of items containing the connex components derived from the matrices given in arguments
 #' 

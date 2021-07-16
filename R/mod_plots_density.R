@@ -52,10 +52,10 @@ mod_plots_density_server <- function(id, obj, conds, legend=NULL, base_palette=N
       isolate({
 
         withProgress(message = 'Making plot', value = 100, {
-          tmp <- DaparToolshed::densityPlotD_HC(qData = assay(obj()),
+          tmp <- Dapar2::densityPlotD_HC(qData = assay(obj()),
                                          conds = conds(),
                                          legend = legend(),
-                                         palette = DaparToolshed::Base_Palette(conditions = conds()))
+                                         palette = Dapar2::Base_Palette(conditions = conds()))
         })
       })
       tmp

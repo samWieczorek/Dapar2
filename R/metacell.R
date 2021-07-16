@@ -149,20 +149,23 @@ metacell.def <- function(level){
 #' they are stored in the global metadata. This function is used whenever it is necessary
 #' to (re)detect MEC and POV (new dataset or when post processing protein metacell 
 #' after aggregation)
-
-"Get_qMetadata_names"
-
 #' 
-#' @param object  An object of class 'QFeatures' the MEC tag in the metacell
+#' @name Get_qMetadata_names
 #' 
-#' @author Samuel Wieczorek
+#' @rdname Get_qMetadata_names
 #' 
 #' @examples
 #' utils::data(Exp1_R25_pept, package='DAPARdata2')
 #' Get_qMetadata_names(Exp1_R25_pept)
 #' 
-#' @export
+NULL
+
 #' 
+#' @param object  An object of class 'QFeatures' the MEC tag in the metacell
+#' @param ... xxx
+#' 
+#' @export
+#' @rdname Get_qMetadata_names
 setMethod("Get_qMetadata_names", "SummarizedExperiment",
           function(object, ...) {
             value <- metadata(object)[['qMetadata_names']]
@@ -179,9 +182,10 @@ setMethod("Get_qMetadata_names", "SummarizedExperiment",
 #' @param object  An object of class 'QFeatures' the MEC tag in the metacell
 #' 
 #' @param i xxx
+#' @param ... xxx
 #' 
 #' @export
-#' 
+#' @rdname Get_qMetadata_names
 setMethod("Get_qMetadata_names", "QFeatures",
           function(object, i, ...) {
             if (missing(i))
@@ -199,9 +203,11 @@ setMethod("Get_qMetadata_names", "QFeatures",
 
 #' @title Get the type of dataset
 #' 
-#' @param object  An object of class 'SummarizedExperiment'
-#' 
 #' @author Samuel Wieczorek
+#' 
+#' @name GetTypeDataset
+#' 
+#' @rdname GetTypeDataset
 #' 
 #' @examples
 #' utils::data(Exp1_R25_pept, package='DAPARdata2')
@@ -210,7 +216,12 @@ setMethod("Get_qMetadata_names", "QFeatures",
 #' @export
 #' 
 "GetTypeDataset"
-#'
+
+
+#' 
+#' @param object  An object of class 'SummarizedExperiment'
+#' @param ... xxx
+#' @rdname GetTypeDataset
 setMethod("GetTypeDataset", "SummarizedExperiment",
           function(object, ...) {
             value <- metadata(object)[['typeDataset']]
@@ -226,7 +237,10 @@ setMethod("GetTypeDataset", "SummarizedExperiment",
 #' 
 #' @param i xxx
 #' 
+#' @param ... xxx
 #' 
+#' @export
+#' @rdname GetTypeDataset
 setMethod("GetTypeDataset", "QFeatures",
           function(object, i, ...) {
             if (missing(i))
@@ -242,18 +256,25 @@ setMethod("GetTypeDataset", "QFeatures",
 
 #' @title Get the type of dataset
 #' 
-#' @param object  An object of class 'SummarizedExperiment'
-#' 
 #' @author Samuel Wieczorek
 #' 
+#' @name SetTypeDataset
+#' @rdname SetTypeDataset
 #' @examples
 #' utils::data(Exp1_R25_pept, package='DAPARdata2')
 #' SetTypeDataset(Exp1_R25_pept[[2]])
-#' 
 #' @export
 #' 
 "SetTypeDataset"
-#'
+
+#' 
+#' @param object  An object of class 'SummarizedExperiment'
+#' 
+#' @param type xxx
+#' @param ... xxx
+#' 
+#' @export
+#' @rdname SetTypeDataset
 setMethod("SetTypeDataset", "SummarizedExperiment",
           function(object, type, ...) {
             metadata(object)$typeDataset <- type
@@ -261,11 +282,14 @@ setMethod("SetTypeDataset", "SummarizedExperiment",
           }
 )
 
-#' @param object xxx
+#' @param object  An object of class 'QFeatures'
 #' 
 #' @param i xxx
 #' 
+#' @param type xxx
+#' @param ... xxx
 #' 
+#' @rdname SetTypeDataset
 setMethod("SetTypeDataset", "QFeatures",
           function(object, i, type, ...) {
             if (missing(i))
@@ -371,7 +395,7 @@ Set_POV_MEC_tags <- function(conds, df, level){
 #' 
 #' @export
 #' 
-#' @importFrom Biobase pData exprs fData
+#' @importFrom utils read.table
 #' 
 BuildMetaCell <- function(from = NULL, 
                           level,
@@ -437,7 +461,7 @@ BuildMetaCell <- function(from = NULL,
 #' 
 #' @export
 #' 
-#' @importFrom Biobase pData exprs fData
+#' @importFrom utils read.table
 #' 
 Metacell_generic <- function(qdata, conds, level){
   
@@ -513,7 +537,7 @@ Metacell_generic <- function(qdata, conds, level){
 #' 
 #' @export
 #' 
-#' @importFrom Biobase pData exprs fData
+#' @importFrom utils read.table
 #' 
 Metacell_proline <- function(qdata, conds, df, level=NULL){
   if (missing(qdata))
@@ -585,7 +609,7 @@ Metacell_proline <- function(qdata, conds, df, level=NULL){
 #' 
 #' @export
 #' 
-#' @importFrom Biobase pData exprs fData
+#' @importFrom utils read.table
 #' 
 Metacell_maxquant <- function(qdata, conds, df, level=NULL){
   
@@ -635,7 +659,7 @@ Metacell_maxquant <- function(qdata, conds, df, level=NULL){
 #' @title Similar to the function \code{is.na} but focused on the equality 
 #' with the paramter 'type'.
 #'
-#' @param metadata A data.frame
+#' @param df A data.frame
 #'
 #' @param pattern The value to search in the dataframe
 #' 
@@ -686,14 +710,23 @@ match.metacell <- function(df, pattern, level){
 #' @description
 #' xxxx
 #' 
-#' @param obj An object of class `SummarizedExperiment`
-#' 
-#' @export
-#'
+#' @name Get_qMetadata
+#' @rdname Get_qMetadata
 #' @examples
 #' utils::data(Exp1_R25_pept, package='DAPARdata2')
 #' obj <- Exp1_R25_pept[1:10,]
 #' mc <- Get_qMetadata(obj[[2]])
+#' 
+"Get_qMetadata"
+
+
+#' @param object An object of class `SummarizedExperiment`
+#' 
+#' @param names xxx
+#' @param ... xxx
+#' 
+#' @export
+#' @rdname Get_qMetadata
 setMethod("Get_qMetadata", "SummarizedExperiment",
           function(object,
                    names,
@@ -710,8 +743,12 @@ setMethod("Get_qMetadata", "SummarizedExperiment",
 
 
 
-
-
+#' @param object An object of class `QFeatures`
+#' 
+#' @param i xxx
+#' @param ... xxx
+#' 
+#' @rdname Get_qMetadata
 setMethod("Get_qMetadata", "QFeatures",
           function(object, i, ...) {
             if (missing(i))
@@ -720,7 +757,8 @@ setMethod("Get_qMetadata", "QFeatures",
               stop("Only one assay to be processed at a time")
             if (is.numeric(i)) i <- names(object)[[i]]
             
-            Get_qMetadata(object = object[[i]], names = metadata(object)$names_metacell)
+            Get_qMetadata(object = object[[i]], 
+                          names = metadata(object)$names_metacell)
           })
 
 
@@ -734,21 +772,25 @@ setMethod("Get_qMetadata", "QFeatures",
 #' @description
 #' Update the metacell information of missing values that were imputed
 #' 
-#' @param obj An object of class `SummarizedExperiment`
-#' 
-#' @param method xxx
-#' 
-#' @param na.type xxx
-#' 
-#' @author Samuel Wieczorek
-#' 
-#' @export
-#' 
+#' @name UpdateMetacell
+#' @rdname UpdateMetacell
 #' @examples
 #' utils::data(Exp1_R25_pept, package='DAPARdata2')
 #' obj <- Exp1_R25_pept[1:10,]
 #' obj[[2]] <- UpdateMetacell(obj[[2]], na.type = 'missing')
 #' 
+#' @author Samuel Wieczorek
+#' 
+"UpdateMetacell"
+
+#' 
+#' @param object An object of class `SummarizedExperiment`
+#' 
+#' @param na.type xxx
+#' @param ... xxx
+#' 
+#' @export
+#' @rdname UpdateMetacell
 setMethod("UpdateMetacell", "SummarizedExperiment",
           function(object,
                    na.type,

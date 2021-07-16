@@ -4,10 +4,10 @@
 \alias{CheckDesign}
 \title{Check the validity of the experimental design}
 \usage{
-CheckDesign(sampleTab)
+CheckDesign(sTab)
 }
 \arguments{
-\item{sampleTab}{xxxx}
+\item{sTab}{xxxx}
 }
 \value{
 A boolean

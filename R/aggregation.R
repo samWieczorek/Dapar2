@@ -40,15 +40,15 @@
 #' input and returns a xxxxx. Examples
 #' thereof are
 #'
-#' - [DaparToolshed:aggSum()] to use the sum of each column (default);
+#' - [Dapar2:aggSum()] to use the sum of each column (default);
 #'
-#' - [DaparToolshed:aggMean()] to use the sum of each column;
+#' - [Dapar2:aggMean()] to use the sum of each column;
 #'
-#' - [DaparToolshed:aggIter()] to use the mean of each column;
+#' - [Dapar2:aggIter()] to use the mean of each column;
 #'
-#' - [DaparToolshed:aggIterParallel()] same as previous function but use parallelism.
+#' - [Dapar2:aggIterParallel()] same as previous function but use parallelism.
 #'
-#' - [DaparToolshed::aggTopn] to use the sum of each column;
+#' - [Dapar2::aggTopn] to use the sum of each column;
 #'
 #' 
 #' @seealso The *QFeatures* vignette provides an extended example and
@@ -194,11 +194,9 @@ aggregateFeatures_sam <- function(object, i, aggType='all', name, meta.names = N
 #' is one aggregate with only a certain type of peptides or all of them. The list of matrices is stored in the slot 'xxx' of the metadata of the argument
 #' obj (class 'SummarizedExperiment')
 #' 
-#' @param obj An object of class 'QFeatures' 
+#' @param obj.se An object of class 'SummarizedExperiment' 
 #' 
-#' @param i The indice of the dataset (class 'SumarizedExperiment') in the list of 'obj' on which to apply the aggregation. 
-#' 
-#' @return AN object of class 'QFeatures'
+#' @return A list of three adjacency matrices
 #' 
 #' @author Samuel Wieczorek
 #' 
@@ -210,17 +208,17 @@ aggregateFeatures_sam <- function(object, i, aggType='all', name, meta.names = N
 #' @export
 #' 
 #' @importFrom Matrix Matrix
+#' @import QFeatures
 #' 
 ComputeAdjacencyMatrices <- function(obj.se){
-  
   if(class(obj.se) != 'SummarizedExperiment')
     stop("'obj.se' is not a 'SummarizedExperiment' object")
 
-  
-  if (is.null(metadata(obj.se)$parentProtId) || metadata(obj.se)$parentProtId == '' || nchar(metadata(obj.se)$parentProtId)==0){
+  md <- metadata(obj.se)
+  if (is.null(md$parentProtId) || md$parentProtId == '' || nchar(md$parentProtId) == 0){
     warning("'parentProtId' is missing.")
     return(obj.se)
-  } else if (!(metadata(obj.se)$parentProtId %in% colnames(rowData(obj.se)))){
+  } else if (!(md$parentProtId %in% colnames(rowData(obj.se)))){
     warning("'parentProtId' is not correctly set and does not seem to belongs to the dataset.")
     return(obj.se)
   }
@@ -228,7 +226,7 @@ ComputeAdjacencyMatrices <- function(obj.se){
   
   # A vector of proteins ids. The length of this vector is equal to the number of peptides one wants to aggregate, 
   # each line of it correspond to a peptide. Each element of this vector is either one element or a combination of elements seperated by a comma.
-  plist <- rowData(obj.se)[,metadata(obj.se)$parentProtId]
+  plist <- rowData(obj.se)[,md$parentProtId]
   
   # A vector of names of peptides (a unique Id). The size of this vector is equal to the size of the parameter 'plist'.
   names <- names(obj.se)
@@ -952,15 +950,15 @@ aggTopn <- function(qPepData, X,  method='Mean', n=10){
 #' User-defined functions must thus return a matrix of dimensions equal
 #' to `X`. Examples thereof are
 #'
-##' - [DaparToolshed:aggSum()] to use the sum of each column (default);
+##' - [Dapar2:aggSum()] to use the sum of each column (default);
 ##'
-##' - [DaparToolshed:aggMean()] to use the sum of each column;
+##' - [Dapar2:aggMean()] to use the sum of each column;
 ##'
-##' - [DaparToolshed:aggIter()] to use the mean of each column;
+##' - [Dapar2:aggIter()] to use the mean of each column;
 ##'
-##' - [DaparToolshed:aggIterParallel()] same as previous function but use parallelism.
+##' - [Dapar2:aggIterParallel()] same as previous function but use parallelism.
 ##'
-##' - [DaparToolshed::aggTopn] to use the sum of each column;
+##' - [Dapar2::aggTopn] to use the sum of each column;
 #'
 #' @param qPepData xxxx. 
 #' 

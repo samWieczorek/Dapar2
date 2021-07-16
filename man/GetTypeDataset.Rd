@@ -3,15 +3,25 @@
 \docType{data}
 \name{GetTypeDataset}
 \alias{GetTypeDataset}
+\alias{GetTypeDataset,SummarizedExperiment-method}
+\alias{GetTypeDataset,QFeatures-method}
 \title{Get the type of dataset}
 \format{
 An object of class \code{standardGeneric} of length 1.
 }
 \usage{
 GetTypeDataset
+
+\S4method{GetTypeDataset}{SummarizedExperiment}(object, ...)
+
+\S4method{GetTypeDataset}{QFeatures}(object, i, ...)
 }
 \arguments{
-\item{object}{An object of class 'SummarizedExperiment'}
+\item{object}{xxx}
+
+\item{...}{xxx}
+
+\item{i}{xxx}
 }
 \description{
 Get the type of dataset

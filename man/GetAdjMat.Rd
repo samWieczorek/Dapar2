@@ -3,6 +3,8 @@
 \docType{data}
 \name{GetAdjMat}
 \alias{GetAdjMat}
+\alias{GetAdjMat,SummarizedExperiment-method}
+\alias{GetAdjMat,QFeatures-method}
 \title{Returns the contains of the slot processing  of an object of 
 class \code{MSnSet}}
 \format{
@@ -10,10 +12,20 @@ An object of class \code{standardGeneric} of length 1.
 }
 \usage{
 GetAdjMat
+
+\S4method{GetAdjMat}{SummarizedExperiment}(object, ...)
+
+\S4method{GetAdjMat}{QFeatures}(object, i, ...)
+}
+\arguments{
+\item{object}{xxx}
+
+\item{...}{xxx}
+
+\item{i}{xxx}
 }
 \description{
-Returns the contains of the slot processing  of an object of 
-class \code{MSnSet}
+xxx
 }
 \examples{
 utils::data(Exp1_R25_pept, package='DAPARdata2')

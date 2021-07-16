@@ -48,7 +48,7 @@ server <- function(input, output, session) {
                              dataIn = reactive({obj}),
                              meta = reactive({metadata}),
                              conds = reactive({conds}),
-                             base_palette = reactive({DaparToolshed::Example_Palette(conds, DAPAR2::Base_Palette(conditions = conds))}),
+                             base_palette = reactive({Dapar2::Example_Palette(conds, Dapar2::Base_Palette(conditions = conds))}),
                              params = reactive({if(r$widgets$sync) r$master() else NULL }),
                              reset = reactive({FALSE}),
                              slave = reactive({r$widgets$sync})

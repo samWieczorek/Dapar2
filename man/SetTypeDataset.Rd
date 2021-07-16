@@ -3,15 +3,27 @@
 \docType{data}
 \name{SetTypeDataset}
 \alias{SetTypeDataset}
+\alias{SetTypeDataset,SummarizedExperiment-method}
+\alias{SetTypeDataset,QFeatures-method}
 \title{Get the type of dataset}
 \format{
 An object of class \code{standardGeneric} of length 1.
 }
 \usage{
 SetTypeDataset
+
+\S4method{SetTypeDataset}{SummarizedExperiment}(object, type, ...)
+
+\S4method{SetTypeDataset}{QFeatures}(object, i, type, ...)
 }
 \arguments{
-\item{object}{An object of class 'SummarizedExperiment'}
+\item{object}{An object of class 'QFeatures'}
+
+\item{type}{xxx}
+
+\item{...}{xxx}
+
+\item{i}{xxx}
 }
 \description{
 Get the type of dataset
@@ -19,7 +31,6 @@ Get the type of dataset
 \examples{
 utils::data(Exp1_R25_pept, package='DAPARdata2')
 SetTypeDataset(Exp1_R25_pept[[2]])
-
 }
 \author{
 Samuel Wieczorek

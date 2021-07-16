@@ -51,7 +51,7 @@ mod_plots_intensity_ui <- function(id){
 #' @keywords internal
 #'
 #' @importFrom SummarizedExperiment rowData
-#' @importFrom grDevices png
+#' @importFrom grDevices png dev.off
 #'
 mod_plots_intensity_server <- function(id,
                                        dataIn,
@@ -130,10 +130,10 @@ mod_plots_intensity_server <- function(id,
 
       pattern <- paste0('test',".boxplot")
       withProgress(message = 'Making plot', value = 100, {
-        tmp <- DaparToolshed::boxPlotD_HC(SummarizedExperiment::assay(dataIn()),
+        tmp <- Dapar2::boxPlotD_HC(SummarizedExperiment::assay(dataIn()),
                                    conds = conds(),
                                    keyId = SummarizedExperiment::rowData(dataIn())[[ meta()[['keyId']] ]],
-                                   palette = DaparToolshed::Base_Palette(conditions=conds()),
+                                   palette = Dapar2::Base_Palette(conditions=conds()),
                                    subset.view = rv.modboxplot$indices)
         #future(createPNGFromWidget(tmp,pattern))
       })
@@ -154,10 +154,10 @@ mod_plots_intensity_server <- function(id,
         # png(outfile, width = 640, height = 480, units = "px")
         png(outfile)
         pattern <- paste0('test',".violinplot")
-        tmp <- DaparToolshed::violinPlotD(SummarizedExperiment::assay(dataIn()),
+        tmp <- Dapar2::violinPlotD(SummarizedExperiment::assay(dataIn()),
                                    keyId = SummarizedExperiment::rowData(dataIn())[[ meta()[['keyId']] ]],
                                    conds = conds(),
-                                   palette = DaparToolshed::Base_Palette(conditions=conds()),
+                                   palette = Dapar2::Base_Palette(conditions=conds()),
                                    subset.view =  rv.modboxplot$indices)
         #future(createPNGFromWidget(tmp,pattern))
         dev.off()

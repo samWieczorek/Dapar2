@@ -55,9 +55,11 @@ ReplaceSpecialChars <- function(x){
 #' @param processes xxxx
 #' 
 #' @param typePipeline The type of pipeline used with this dataset. The list of predefined
-#' pipelines in DaparToolshed can be obtained with the function \code{pipelines()}. Default value is NULL
+#' pipelines in Dapar2 can be obtained with the function \code{pipelines()}. Default value is NULL
 #' 
 #' @param analysis The name of the MS analysis
+#' 
+#' @param software xxx
 #' 
 #' @return An instance of class \code{QFeatures}.
 #' 
@@ -80,7 +82,7 @@ ReplaceSpecialChars <- function(x){
 #' software = 'maxquant')
 #' 
 #' @import QFeatures
-#' @importFrom utils installed.packages
+#' @importFrom utils installed.packages read.table
 #' @import SummarizedExperiment
 #' 
 #' @export

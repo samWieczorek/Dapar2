@@ -5,6 +5,8 @@
 #' 
 #' @param obj An object of class \code{SummarizedExperiment}.
 #' 
+#' @param sTab xxx
+#' 
 #' @param with_post_hoc a boolean saying if function must perform a Post-Hoc test or not.
 #' 
 #' @param post_hoc_test character string, possible values are NULL (for no
@@ -34,6 +36,7 @@
 #' @export
 #' 
 #' @importFrom dplyr select
+#' @importFrom stats aov
 #' 
 wrapperClassic1wayAnova <- function(obj, 
                                     sTab, 

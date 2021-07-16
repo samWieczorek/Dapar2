@@ -3,7 +3,7 @@
 #' @title Displays a correlation matrix of the quantitative data of a
 #' numeric matrix.
 #' 
-#' @param obj xxx
+#' @param obj.se An object of class 'SummarizedExperiment'
 #' 
 #' @param names A vector of strings which will be used as legend. The length
 #' of 'names' must be equal to the number of samples in the dataset.
