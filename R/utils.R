@@ -1,3 +1,49 @@
+#' @title
+#' Returns the contains of the slot processing  of an object of 
+#' class \code{MSnSet}
+#' 
+#' @description xxx
+#' 
+#' @author Samuel Wieczorek
+#' 
+#' @name GetKeyId
+#' @rdname GetKeyId
+#' @examples
+#' utils::data(Exp1_R25_pept, package='DAPARdata2')
+#' GetKeyId(Exp1_R25_pept, 2)
+#' 
+#' @export
+#' 
+"GetKeyId"
+
+#' 
+#' @param  object An object (peptides) of class \code{SummarizedExperiment}.
+#' @param ... xxx
+#'  
+#' @rdname boxplot
+#' #' 
+setMethod('GetKeyId', "SummarizedExperiment",
+          function(object, ...) {
+            metadata(object)$keyId
+          }
+)
+
+#' @param object xxx
+#' @param i xxx
+#' @param ... xxx
+#' @rdname GetKeyId
+setMethod("GetKeyId", "QFeatures",
+          function(object, i, ...) {
+            if (missing(i))
+              stop("Provide index or name of assay to be processed")
+            if (length(i) != 1)
+              stop("Only one assay to be processed at a time")
+            if (is.numeric(i)) i <- names(object)[[i]]
+            
+            GetKeyId(object[[i]])
+          }
+)
+
 
 
 

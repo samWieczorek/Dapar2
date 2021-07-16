@@ -489,7 +489,7 @@ POV_impute_slsa <- function(x, sampleTab){
 #' @author Samuel Wieczorek
 #' 
 #' @examples
-#' utils::data(Exp1_R25_pept, package='DAPARdata')
+#' utils::data(Exp1_R25_pept, package='DAPARdata2')
 #' impute_fixed_value(assay(Exp1_R25_pept[1:1000], 2), 0.001)
 #' 
 #' @export

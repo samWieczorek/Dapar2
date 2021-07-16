@@ -14,154 +14,6 @@ HypothesisTestMethods <- function()
 
 
 
-#' @title Check the validity of the experimental design
-#'
-#' @description
-#'
-#' This manual page describes the computation of statistical test using [QFeatures] objects. In the following
-#' functions, if `object` is of class `QFeatures`, and optional assay
-#' index or name `i` can be specified to define the assay (by name of
-#' index) on which to operate.
-#'
-#' The following functions are currently available:
-#'
-#' - `compute.t.test(xxxxx)` xxxxx.
-#'
-#' - `compute.group.t.test(xxxxx)` xxxxx.
-#'   
-#' - `limma.complete.test(object, sampleTab)` uses the package Limma 
-#' 
-#'
-#' @details xxx
-#'
-#'
-#' @examples
-#' library(QFeatures)
-#' utils::data(Exp1_R25_pept, package='DAPARdata2')
-#' object <- Exp1_R25_pept[1:1000,]
-#' object <- addAssay(object, QFeatures::filterNA(object[[2]],  pNA = 0), name='filtered')
-#' object <- addListAdjacencyMatrices(object, 3)
-#' 
-#' object <- t_test_sam(object, i=3, name = "ttest", FUN = 'compute.t.test', contrast = 'OnevsAll')
-#' object <- t_test_sam(object, i=3, name = "ttest_group", FUN = 'compute.group.t.test', contrast = 'OnevsAll')
-#' object <- t_test_sam(object, i=3, name = "ttest_Limma", FUN = 'limma.complete.test', comp.type= 'OnevsAll')
-#' object <- t_test_sam(object, i=3, name = "ttest_Anova", FUN = 'wrapperClassic1wayAnova', with_post_hoc=TRUE, post_hoc_test='Dunnett')
-#' 
-"t_test_sam"
-
-#' @param  object An object of class `SummarizedExperiment`.
-#' 
-#' @param sampleTab xxxxxxx
-#'
-#' @param FUN xxx
-#' 
-#' @param ... Additional parameters passed to inner functions.
-#' 
-#' @export
-#' 
-#' @rdname t_test_sam
-#'
-setMethod("t_test_sam", "SummarizedExperiment",
-          function(object,
-                   sampleTab,
-                   FUN,
-                   ...) {
-            argg <- c(as.list(environment()), list(...))
-            df <- do.call(FUN, list(object, sampleTab, ...))
-            
-            metadata(object)$t_test <- df
-            metadata(object)$Params <- argg[-match(c('object', 'sampleTab'), names(argg))]
-            object
-          })
-
-
-#' @param  object An object of class `QFeatures`.
-#' 
-#' @param i A numeric vector or a character vector giving the index or the 
-#'     name, respectively, of the assay(s) to be processed.
-#'
-#' @param name A `character(1)` naming the new assay name. Defaults
-#'     are `ttestAssay`.
-#' 
-#' @param FUN xxx
-#' 
-#' @param ... Additional parameters passed to inner functions.
-#' 
-#' @export
-#' 
-#' @rdname t_test_sam
-#'
-setMethod("t_test_sam", "QFeatures",
-          function(object, i, name = "ttestAssay", FUN,  ...) {
-            if (missing(i))
-              stop("Provide index or name of assay to be processed")
-            if (length(i) != 1)
-              stop("Only one assay to be processed at a time")
-            if (is.numeric(i)) i <- names(object)[[i]]
-            if (!(FUN %in% HypothesisTestMethods()))
-              stop(paste0("'FUN' must be one of the following:", HypothesisTestMethods()))
-            if (is.null(GetAdjMat(object[[i]])) && GetTypeDataset(object[[i]]) == 'peptide')
-              object <- addListAdjacencyMatrices(object, i)
-            
-            object <- addAssay(object,
-                               t_test_sam(object[[i]], sampleTab = colData(object), FUN, ...),
-                               name)
-            addAssayLinkOneToOne(object, from = i, to = name)
-          })
-
-
-
-
-
-
-#' @title xxxxxx
-#' 
-#' @param X xxxxx.
-#' 
-#' @param qData1 xxxx.
-#' 
-#' @param qData2 xxxx.
-#'
-#' @return xxxxx
-#'
-#' @author Thomas Burger, Samuel Wieczorek
-#' 
-#' @examples
-#' library(QFeatures)
-#' utils::data(Exp1_R25_pept, package='DAPARdata2')
-#' obj <- Exp1_R25_pept[1:1000,]
-#' obj <- addAssay(obj, QFeatures::filterNA(obj[[2]],  pNA = 0), name='filtered')
-#' obj <- addListAdjacencyMatrices(obj, 3)
-#' qData <- assay(obj[['filtered']])
-#' X <- GetAdjMat(obj[[3]])$onlySpec
-#' gttest <- groupttest(X, qData[,1:3], qData[,4:6])
-#' 
-#' @export
-#' 
-groupttest <- function(X, qData1=NULL, qData2 = NULL){
-  res <- list()
-  if (is.null(qData1) || is.null(qData2)){
-    stop("At least, one condition is empty.")
-  }
-
-  for(i in 1:dim(X)[2]){
-    index <- names(which(X[,i]==1))
-    if(length(index)> 0){
-      res[[i]] <- t.test(x=qData1[index,], y=qData2[index,], var.equal=TRUE)
-    } else {
-      res[[i]] <- NA
-    }
-  }
-  #browser()
-  names(res) <- colnames(X)
-  return(res)
-}
-
-
-
-
-
-
 
 #' @title xxxxxx
 #' 
@@ -187,28 +39,32 @@ groupttest <- function(X, qData1=NULL, qData2 = NULL){
 #' @examples
 #' library(QFeatures)
 #' utils::data(Exp1_R25_pept, package='DAPARdata2')
-#' obj <- Exp1_R25_pept[1:1000,]
+#' obj <- Exp1_R25_pept[1:1000]
 #' obj <- addAssay(obj, QFeatures::filterNA(obj[[2]],  pNA = 0), name='filtered')
-#' obj <- addListAdjacencyMatrices(obj, 3)
+#' obj <- SetAdjMat(obj, 3)
 #' sTab <- colData(obj)
-#' gttest <- compute.group.t.test(obj[[3]], sTab, contrast="OnevsAll",)
+#' gttest <- compute.group.t.test(obj[[3]], sTab)
 #' 
 #' @export
 #' 
 #' @importFrom utils combn
 #' 
-compute.group.t.test <- function(obj, sampleTab, logFC = NULL, contrast="OnevsOne", type="Student"){
-
+compute.group.t.test <- function(obj, 
+                                 sampleTab, 
+                                 logFC = NULL, 
+                                 contrast = "OnevsOne", 
+                                 type = "Student"){
+  
   if(missing(obj))
     stop("'obj' is required.")
   if(missing(sampleTab))
     stop("'sampleTab' is required.")
- if (!(contrast %in% c('OnevsOne', 'OnevsAll')))
-   stop("'contrast' must be one of the following: 'OnevsOne' or 'OnevsAll")
+  if (!(contrast %in% c('OnevsOne', 'OnevsAll')))
+    stop("'contrast' must be one of the following: 'OnevsOne' or 'OnevsAll")
   
   qData <- assay(obj)
   X <- GetAdjMat(obj)$all
-  X.spec <- GetAdjMat$onlySpec
+  X.spec <- GetAdjMat(obj)$onlySpec
   
   
   .type <- type =='Student'
@@ -219,7 +75,7 @@ compute.group.t.test <- function(obj, sampleTab, logFC = NULL, contrast="OnevsOn
   P_Value <- list()
   
   sampleTab.old <- sampleTab
-  Conditions.f <- factor(sampleTab$Condition, levels=unique(sampleTab$Condition))
+  Conditions.f <- factor(sampleTab$Condition, levels = unique(sampleTab$Condition))
   sampleTab <- sampleTab[unlist(lapply(split(sampleTab, Conditions.f), function(x) {x['Sample.name']})),]
   qData <- qData[,unlist(lapply(split(sampleTab.old, Conditions.f), function(x) {x['Sample.name']}))]
   Conditions <- sampleTab$Condition
@@ -287,7 +143,7 @@ compute.group.t.test <- function(obj, sampleTab, logFC = NULL, contrast="OnevsOn
       
       
       
-      txt <- paste(levels(Conditions.f)[i],"_vs_(all-",levels(Conditions.f)[i],")", sep="")
+      txt <- paste(levels(Conditions.f)[i], "_vs_(all-", levels(Conditions.f)[i], ")", sep="")
       logFC[[paste(txt, "logFC", sep="_")]] <- peptide.spec.based.FC
       P_Value[[paste(txt, "pval", sep="_")]] <- peptide.spec.based.pv
     }
@@ -296,10 +152,160 @@ compute.group.t.test <- function(obj, sampleTab, logFC = NULL, contrast="OnevsOn
   
   res.l <- DataFrame(logFC, P_Value)
   colnames(res.l) <- c(names(logFC), names(P_Value))
-
+  
   return(res.l) 
   
 }
+
+
+
+
+
+
+
+
+#' @title Check the validity of the experimental design
+#'
+#' @description
+#'
+#' This manual page describes the computation of statistical test using [QFeatures] objects. In the following
+#' functions, if `object` is of class `QFeatures`, and optional assay
+#' index or name `i` can be specified to define the assay (by name of
+#' index) on which to operate.
+#'
+#' The following functions are currently available:
+#'
+#' - `compute.t.test(xxxxx)` xxxxx.
+#'
+#' - `compute.group.t.test(xxxxx)` xxxxx.
+#'   
+#' - `limma.complete.test(object, sampleTab)` uses the package Limma 
+#' 
+#'
+#' @details xxx
+#'
+#'
+#' @examples
+#' library(QFeatures)
+#' utils::data(Exp1_R25_pept, package='DAPARdata2')
+#' object <- Exp1_R25_pept[1:1000,]
+#' object <- addAssay(object, QFeatures::filterNA(object[[2]],  pNA = 0), name='filtered')
+#' 
+#' object <- t_test_sam(object, i=3, name = "ttest", FUN = 'compute.t.test', contrast = 'OnevsAll')
+#' object <- t_test_sam(object, i=3, name = "ttest_group", FUN = 'compute.group.t.test', contrast = 'OnevsAll')
+#' object <- t_test_sam(object, i=3, name = "ttest_Limma", FUN = 'limma.complete.test', comp.type= 'OnevsAll')
+#' object <- t_test_sam(object, i=3, name = "ttest_Anova", FUN = 'wrapperClassic1wayAnova', with_post_hoc=TRUE, post_hoc_test='Dunnett')
+#' 
+"t_test_sam"
+
+#' @param  object An object of class `SummarizedExperiment`.
+#' 
+#' @param sampleTab xxxxxxx
+#'
+#' @param FUN xxx
+#' 
+#' @param ... Additional parameters passed to inner functions.
+#' 
+#' @export
+#' 
+#' @rdname t_test_sam
+#'
+setMethod("t_test_sam", "SummarizedExperiment",
+          function(object,
+                   sampleTab,
+                   FUN,
+                   ...) {
+            argg <- c(as.list(environment()), list(...))
+            df <- do.call(FUN, list(object, sampleTab, ...))
+            
+            metadata(object)$t_test <- df
+            metadata(object)$Params <- argg[-match(c('object', 'sampleTab'), names(argg))]
+            object
+          })
+
+
+#' @param  object An object of class `QFeatures`.
+#' 
+#' @param i A numeric vector or a character vector giving the index or the 
+#'     name, respectively, of the assay(s) to be processed.
+#'
+#' @param name A `character(1)` naming the new assay name. Defaults
+#'     are `ttestAssay`.
+#' 
+#' @param FUN xxx
+#' 
+#' @param ... Additional parameters passed to inner functions.
+#' 
+#' @export
+#' 
+#' @rdname t_test_sam
+#'
+setMethod("t_test_sam", "QFeatures",
+          function(object, i, name = "ttestAssay", FUN,  ...) {
+            if (missing(i))
+              stop("Provide index or name of assay to be processed")
+            if (length(i) != 1)
+              stop("Only one assay to be processed at a time")
+            if (is.numeric(i)) i <- names(object)[[i]]
+            if (!(FUN %in% HypothesisTestMethods()))
+              stop(paste0("'FUN' must be one of the following:", HypothesisTestMethods()))
+            if (is.null(GetAdjMat(object[[i]])) && GetTypeDataset(object[[i]]) == 'peptide')
+              object <- SetAdjMat(object, i)
+            
+            object <- addAssay(object,
+                               t_test_sam(object[[i]], sampleTab = colData(object), FUN, ...),
+                               name)
+            addAssayLinkOneToOne(object, from = i, to = name)
+          })
+
+
+
+
+
+
+#' @title xxxxxx
+#' 
+#' @param X xxxxx.
+#' 
+#' @param qData1 xxxx.
+#' 
+#' @param qData2 xxxx.
+#'
+#' @return xxxxx
+#'
+#' @author Thomas Burger, Samuel Wieczorek
+#' 
+#' @examples
+#' library(QFeatures)
+#' utils::data(Exp1_R25_pept, package='DAPARdata2')
+#' obj <- Exp1_R25_pept[1:1000,]
+#' obj <- addAssay(obj, QFeatures::filterNA(obj[[2]],  pNA = 0), name='filtered')
+#' obj <- SetAdjMat(obj, 3)
+#' qData <- assay(obj[['filtered']])
+#' X <- GetAdjMat(obj[[3]])$onlySpec
+#' gttest <- groupttest(X, qData[,1:3], qData[,4:6])
+#' 
+#' @export
+#' 
+groupttest <- function(X, qData1=NULL, qData2 = NULL){
+  res <- list()
+  if (is.null(qData1) || is.null(qData2)){
+    stop("At least, one condition is empty.")
+  }
+
+  for(i in 1:dim(X)[2]){
+    index <- names(which(X[,i]==1))
+    if(length(index)> 0){
+      res[[i]] <- t.test(x=qData1[index,], y=qData2[index,], var.equal=TRUE)
+    } else {
+      res[[i]] <- NA
+    }
+  }
+  #browser()
+  names(res) <- colnames(X)
+  return(res)
+}
+
 
 
 

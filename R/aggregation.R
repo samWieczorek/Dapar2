@@ -63,7 +63,8 @@
 #' @examples
 #' library(QFeatures)
 #' utils::data(Exp1_R25_pept, package='DAPARdata2')
-#' obj <- Exp1_R25_pept
+#' obj <- Exp1_R25_pept[1:1000]
+#' obj <- SetAdjMat(obj, 2)
 #' aggregateFeatures_sam(obj,2, aggType= 'all', name='aggregated', 
 #' meta.names = 'Sequence', fun='aggTopn', n=3)
 #' 
@@ -76,15 +77,22 @@
 #             .aggregateFeatures_sam(object, i, fcol, name, fun, ...))
 
 
-aggregateFeatures_sam <- function(object, i, aggType='all', name, meta.names = NULL, fun, ...) {
+aggregateFeatures_sam <- function(object, 
+                                  i, 
+                                  aggType = 'all', 
+                                  name, 
+                                  meta.names = NULL, 
+                                  fun, 
+                                  ...) {
   if (isEmpty(object))
     return(object)
+  if (missing(i))
+    stop("'i' is required.")
   if (name %in% names(object))
     stop("There's already an assay named '", name, "'.")
   if (missing(aggType))
     stop("'aggType' is required.")    
-  if (missing(i))
-    stop("'i' is required.")  
+  
   
   
   argg <- c(as.list(environment()), list(...))
@@ -100,14 +108,13 @@ aggregateFeatures_sam <- function(object, i, aggType='all', name, meta.names = N
     stop("Available values for 'typeMatAdj' are 'all', 'onlyShared', 'onlySpec'.")
   }
   
-  if (is.null(metadata(object_i)$list.matAdj) || is.null(metadata(object_i)$list.matAdj[[aggType]])){
+  X <- metadata(object_i)$ll.AdjMat[[aggType]]
+  if (is.null(X)){
     ## by default, all three types of matrices are computed once for all and stored in the metadata slot of the SE. 
     ## This reduces the future computations
-    object <- addListAdjacencyMatrices(object, i)
+    object <- SetAdjMat(object, i)
+    X <- GetAdjMat(object_i)[[aggType]]
   }
-  
-  X <- metadata(object[[i]])$list.matAdj[[aggType]]
-  
   
   ## Message about NA values is quant/row data
   has_na <- character()
@@ -138,9 +145,11 @@ aggregateFeatures_sam <- function(object, i, aggType='all', name, meta.names = N
   
   ## This part make the aggregation of the metadata of peptides which have been given
   ## by the parameter meta.names. It is column-binded to the previous aggregated_rowdata
-  if (!is.null(meta.names)){
-    aggregated_rowdata <- cbind(aggregated_rowdata, aggMetadata_sam(rowdata_i, meta.names, X))
-  }
+  if (!is.null(meta.names))
+    aggregated_rowdata <- cbind(aggregated_rowdata, 
+                                aggMetadata_sam(rowdata_i, meta.names, X)
+                                )
+
   
   se <- SummarizedExperiment(aggregated_assay,
                              rowData = aggregated_rowdata[rownames(aggregated_assay), ])
@@ -172,7 +181,7 @@ aggregateFeatures_sam <- function(object, i, aggType='all', name, meta.names = N
   
   assayLinks <- AssayLink(name = name,
                           from = ifelse(is.character(i), i, names(object)[i]),
-                          fcol = metadata(object)$parentProtId,
+                          fcol = metadata(object_i)$parentProtId,
                           hits = hits)
   
   addAssay(object,
@@ -208,7 +217,7 @@ aggregateFeatures_sam <- function(object, i, aggType='all', name, meta.names = N
 #' @export
 #' 
 #' @importFrom Matrix Matrix
-#' @import QFeatures
+#' @import MultiAssayExperiment
 #' 
 ComputeAdjacencyMatrices <- function(obj.se){
   if(class(obj.se) != 'SummarizedExperiment')
@@ -297,9 +306,7 @@ ComputeAdjacencyMatrices <- function(obj.se){
 #' 
 #' @examples
 #' utils::data(Exp1_R25_pept, package='DAPARdata2')
-#' obj <- Exp1_R25_pept[1:1000,]
-#' obj <- addListAdjacencyMatrices(obj, 2)
-#' X <- GetAdjMat(obj[[2]])$all
+#' X <- GetAdjMat(Exp1_R25_pept, 2)$all
 #' matAdjStats(X)
 #' 
 #' @export
@@ -339,12 +346,12 @@ matAdjStats <- function(X){
 
 
 
-
-#' Method to plot the disrtibution (histogram) of peptides w.r.t the proteins with proteins and peptides 
-#' in an adjacency matrix
-#' 
 #' @title Function to create a histogram that shows the repartition of
 #' peptides w.r.t. the proteins
+#' 
+#' @description 
+#' Method to plot the disrtibution (histogram) of peptides w.r.t the proteins with proteins and peptides 
+#' in an adjacency matrix
 #' 
 #' @param X An adjacency matrix.
 #' 
@@ -356,9 +363,7 @@ matAdjStats <- function(X){
 #' 
 #' @examples
 #' utils::data(Exp1_R25_pept, package='DAPARdata2')
-#' obj <- Exp1_R25_pept[1:1000,]
-#' obj <- addListAdjacencyMatrices(obj, 2)
-#' X <- as.matrix(GetAdjMat(obj[[2]])$all)
+#' X <- GetAdjMat(Exp1_R25_pept, 2)$all
 #' GraphPepProt_hc(X)
 #' 
 #' @import highcharter
@@ -412,10 +417,9 @@ GraphPepProt_hc <- function(X, type = 'all'){
 #' @examples
 #' library(QFeatures)
 #' utils::data(Exp1_R25_pept, package='DAPARdata2')
-#' obj <- Exp1_R25_pept[1:1000,]
+#' obj <- Exp1_R25_pept
 #' qPepData <- assay(obj,2)
-#' obj <- addListAdjacencyMatrices(obj, 2)
-#' X <- as.matrix(GetAdjMat(obj[[2]])$all)
+#' X <- GetAdjMat(obj, 2)$all
 #' n <- GetNbPeptidesUsed(qPepData, X)
 #' 
 #' @export
@@ -432,9 +436,6 @@ GetNbPeptidesUsed <- function(qPepData, X){
 
 
 
-
-#' Method to compute the detailed number of quantified peptides used for aggregating each protein
-#' 
 #' @title Computes the detailed number of peptides used for aggregating each protein w.r.t NA values in 
 #' peptide quantitative dataset. Even if a peptide is part of a protein, if its value is NA, it do not be used
 #' for aggreation.
@@ -442,8 +443,6 @@ GetNbPeptidesUsed <- function(qPepData, X){
 #' @param X An adjacency matrix.
 #' 
 #' @param qPepData A data.frame of quantitative data
-#' 
-#' @seealso The function 'addListAdjacencyMatrices'.
 #' 
 #' @return A list of three items:
 #' * nAll: the number of pall eptides used for aggregation,
@@ -455,10 +454,8 @@ GetNbPeptidesUsed <- function(qPepData, X){
 #' @examples
 #' library(QFeatures)
 #' utils::data(Exp1_R25_pept, package='DAPARdata2')
-#' obj <- Exp1_R25_pept
-#' qPepData <- assay(obj,2)
-#' obj <- addListAdjacencyMatrices(obj, 2)
-#' X <- GetAdjMat(obj[[2]])$all
+#' qPepData <- assay(Exp1_R25_pept,2)
+#' X <- GetAdjMat(Exp1_R25_pept, 2)$all
 #' n <- GetDetailedNbPeptidesUsed(X, qPepData)
 #'  
 #' @export
@@ -494,9 +491,7 @@ GetDetailedNbPeptidesUsed <- function(X, qPepData){
 #' 
 #' @examples
 #' utils::data(Exp1_R25_pept, package='DAPARdata2')
-#' obj <- Exp1_R25_pept[1:1000,]
-#' obj <- addListAdjacencyMatrices(obj, 2)
-#' X <- GetAdjMat(obj[[2]])$all
+#' X <- GetAdjMat(Exp1_R25_pept, 2)$all
 #' n <- GetDetailedNbPeptides(X)
 #' 
 #' @export
@@ -528,15 +523,16 @@ GetDetailedNbPeptides <- function(X){
 #' @examples
 #' library(QFeatures)
 #' utils::data(Exp1_R25_pept, package='DAPARdata2')
-#' obj <- Exp1_R25_pept[1:1000,]
-#' obj <- addListAdjacencyMatrices(obj, 2)
-#' X <- GetAdjMat(obj[[2]])$all
-#' n <- inner.sum(assay(obj[[2]]), X)
+#' obj <- Exp1_R25_pept[1:1000]
+#' obj <- SetAdjMat(obj, 2)
+#' X <- GetAdjMat(obj, 2)$all
+#' n <- inner.sum(assay(obj, 2), X)
 #' 
 #' @export
 #' 
 
 inner.sum <- function(qPepData, X){
+  
   qPepData[is.na(qPepData)] <- 0
   
   Mp <- t(X) %*% qPepData
@@ -560,10 +556,10 @@ inner.sum <- function(qPepData, X){
 #' @examples
 #' library(QFeatures)
 #' utils::data(Exp1_R25_pept, package='DAPARdata2')
-#' obj <- Exp1_R25_pept[1:1000,]
-#' obj <- addListAdjacencyMatrices(obj, 2)
-#' X <- GetAdjMat(obj[[2]])$all
-#' inner.mean(assay(obj[[2]]), X)
+#' obj <- Exp1_R25_pept[1:1000]
+#' obj <- SetAdjMat(obj, 2)
+#' X <- GetAdjMat(obj, 2)$all
+#' inner.mean(assay(obj, 2), X)
 #' 
 #' @export
 #' 
@@ -598,18 +594,30 @@ inner.mean <- function(qPepData, X){
 #' @author Samuel Wieczorek
 #' 
 #' @examples
+#' \dontrun{
 #' library(QFeatures)
 #' utils::data(Exp1_R25_pept, package='DAPARdata2')
-#' obj <- Exp1_R25_pept[1:1000,]
-#' obj <- addListAdjacencyMatrices(obj, 2)
-#' X <- GetAdjMat(obj[[2]])$all
-#' inner.aggregate.topn(assay(obj[[2]]), X, n=3)
+#' obj <- Exp1_R25_pept[1:1000]
+#' obj <- SetAdjMat(obj, 2)
+#' X <- GetAdjMat(obj, 2)$all
+#' res <- inner.aggregate.topn(assay(obj, 2), X, n=3)
+#' }
 #' 
 #' @importFrom stats median
 #' 
 #' @export
 #' 
-inner.aggregate.topn <-function(qPepData, X, method='Mean', n=10){
+inner.aggregate.topn <-function(qPepData, 
+                                X, 
+                                method = 'Mean',
+                                n = 10){
+  
+  if(missing(qPepData))
+    stop("'qPepData' is missing.")
+  
+  if(missing(X))
+    stop("'X' is missing.")
+  
   
   X <- as.matrix(X)
   
@@ -660,15 +668,20 @@ inner.aggregate.topn <-function(qPepData, X, method='Mean', n=10){
 #' @examples
 #' library(QFeatures)
 #' utils::data(Exp1_R25_pept, package='DAPARdata2')
-#' obj <- Exp1_R25_pept[1:1000,]
-#' obj <- addListAdjacencyMatrices(obj, 2)
-#' X <- GetAdjMat(obj[[2]])$all
-#' qPepData <- assay(obj[[2]])
-#' inner.aggregate.iter(qPepData, X)
+#' obj <- Exp1_R25_pept[1:1000]
+#' obj <- SetAdjMat(obj, 2)
+#' X <- GetAdjMat(obj, 2)$all
+#' qPepData <- assay(obj, 2)
+#' res <- inner.aggregate.iter(qPepData, X)
+#' 
 #' 
 #' @export
 #' 
-inner.aggregate.iter <- function(qPepData, X, init.method='Sum', method='Mean', n=NULL){
+inner.aggregate.iter <- function(qPepData, 
+                                 X, 
+                                 init.method = 'Sum',
+                                 method = 'Mean', 
+                                 n = NULL){
   
   if (!(init.method %in% c("Sum", "Mean"))) {
     warning("Wrong parameter init.method")
@@ -685,6 +698,10 @@ inner.aggregate.iter <- function(qPepData, X, init.method='Sum', method='Mean', 
     warning("Parameter n is null")
     return(NULL)
   }
+  
+  
+  if (!is.matrix(X))
+    X <- as.matrix(X)
   
   yprot <- NULL
   switch(init.method,
@@ -737,13 +754,15 @@ inner.aggregate.iter <- function(qPepData, X, init.method='Sum', method='Mean', 
 #' library(QFeatures)
 #' utils::data(Exp1_R25_pept, package='DAPARdata2')
 #' obj <- Exp1_R25_pept[1:1000,]
-#' obj <- addListAdjacencyMatrices(obj, 2)
-#' X <- as.matrix(GetAdjMat(obj[[2]], 'all'))
-#' aggSum(assay(obj[[2]]), X)
+#' obj <- SetAdjMat(obj, 2)
+#' X <- GetAdjMat(obj, 2)$all
+#' aggSum(assay(obj, 2), X)
 #' 
 #' @export
 #' 
 aggSum <- function(qPepData, X){
+  if (!is.matrix(X))
+    X <- as.matrix(X)
   #qPepData <- 2^(qPepData)
   protData <- inner.sum(qPepData, X)
 
@@ -770,10 +789,10 @@ aggSum <- function(qPepData, X){
 #' @examples 
 #' library(QFeatures)
 #' utils::data(Exp1_R25_pept, package='DAPARdata2')
-#' obj <- Exp1_R25_pept[1:1000,]
-#' obj <- addListAdjacencyMatrices(obj, 2)
-#' X <- as.matrix(GetAdjMat(obj[[2]])$all)
-#' aggMean(assay(obj[[2]]), X)
+#' obj <- Exp1_R25_pept[1:1000]
+#' obj <- SetAdjMat(obj, 2)
+#' X <- GetAdjMat(obj, 2)$all
+#' aggMean(assay(obj, 2), X)
 #' 
 #' @export
 #' 
@@ -811,11 +830,11 @@ aggMean <- function(qPepData, X){
 #' library(doParallel)
 #' library(QFeatures)
 #' utils::data(Exp1_R25_pept, package='DAPARdata2')
-#' obj <- Exp1_R25_pept[1:1000,]
-#' obj <- addListAdjacencyMatrices(obj, 2)
-#' X <- as.matrix(GetAdjMat(obj[[2]])$all)
-#' conditions <- SummarizedExperiment::colData(obj)$Condition
-#' aggIterParallel(assay(obj,2), X, conditions)
+#' obj <- Exp1_R25_pept[1:1000]
+#' obj <- SetAdjMat(obj, 2)
+#' X <- GetAdjMat(obj, 2)$all
+#' conds <- SummarizedExperiment::colData(obj)$Condition
+#' aggIterParallel(assay(obj,2), X, conds)
 #' 
 #' @export
 #' 
@@ -833,16 +852,15 @@ aggIterParallel <- function(qPepData, X, conditions=NULL, init.method='Sum', met
   protData <- matrix(rep(0,ncol(X)*nrow(X)), nrow=ncol(X))
   cond <- NULL
   protData <- foreach(cond = 1:length(unique(conditions)),
-                      .combine=cbind,
-                      .export=c("inner.aggregate.iter", "inner.sum", "inner.mean","GetNbPeptidesUsed"),
+                      .combine = cbind,
+                      .export = c("inner.aggregate.iter", "inner.sum", "inner.mean","GetNbPeptidesUsed"),
                       .packages = "Matrix") %dopar% {
                         condsIndices <- which(conditions == unique(conditions)[cond])
                         qData <- qPepData[,condsIndices]
                         inner.aggregate.iter(qData, X, init.method, method, n) 
                       }
   
-  protData <- protData[,colnames(qPepData)]
-  return(protData)
+  return(protData[ ,colnames(qPepData)])
 }
 
 
@@ -871,11 +889,11 @@ aggIterParallel <- function(qPepData, X, conditions=NULL, init.method='Sum', met
 #' @examples
 #' library(QFeatures)
 #' utils::data(Exp1_R25_pept, package='DAPARdata2')
-#' obj <- Exp1_R25_pept[1:1000,]
-#' obj <- addListAdjacencyMatrices(obj, 2)
-#' X <- as.matrix(GetAdjMat(obj[[2]])$all)
-#' conditions <- colData(obj)$Condition
-#' aggIter(assay(obj,2), X, conditions)
+#' obj <- Exp1_R25_pept[1:1000]
+#' obj <- SetAdjMat(obj, 2)
+#' X <- GetAdjMat(obj, 2)$all
+#' conds <- colData(obj)$Condition
+#' aggIter(assay(obj,2), X, conds)
 #' 
 #' @export
 aggIter <- function(qPepData, X, conditions=NULL, init.method='Sum', method='Mean', n=NULL){
@@ -922,9 +940,9 @@ aggIter <- function(qPepData, X, conditions=NULL, init.method='Sum', method='Mea
 #' @examples
 #' library(QFeatures)
 #' utils::data(Exp1_R25_pept, package='DAPARdata2')
-#' obj <- Exp1_R25_pept[1:1000,]
-#' obj <- addListAdjacencyMatrices(obj, 2)
-#' X <- as.matrix(GetAdjMat(obj[[2]])$all)
+#' obj <- Exp1_R25_pept[1:1000]
+#' obj <- SetAdjMat(obj, 2)
+#' X <- GetAdjMat(obj, 2)$all
 #' aggTopn(assay(obj,2), X, n=3)
 #' 
 #' @export
@@ -1006,9 +1024,9 @@ aggregate_with_matAdj <- function(qPepData, X, FUN, ...){
 #' @examples
 #' library(QFeatures)
 #' utils::data(Exp1_R25_pept, package='DAPARdata2')
-#' obj <- Exp1_R25_pept[1:1000,]
-#' obj <- addListAdjacencyMatrices(obj, 2)
-#' X <- GetAdjMat(obj[[2]])$all
+#' obj <- Exp1_R25_pept[1:1000]
+#' obj <- SetAdjMat(obj, 2)
+#' X <- GetAdjMat(obj, 2)$all
 #' rowdata_stats_Aggregation_sam(assay(obj,2), X)
 #' 
 rowdata_stats_Aggregation_sam <- function(qPepData, X){
@@ -1059,10 +1077,10 @@ rowdata_stats_Aggregation_sam <- function(qPepData, X){
 #' @examples
 #' library(QFeatures)
 #' utils::data(Exp1_R25_pept, package='DAPARdata2')
-#' obj <- Exp1_R25_pept[1:1000,]
-#' obj <- addListAdjacencyMatrices(obj, 2)
-#' X <- as.matrix(GetAdjMat(obj[[2]], 'all'))
-#' ft <- aggMetadata_sam(rowData(obj[[2]]), c('Sequence'), X)
+#' obj <- Exp1_R25_pept[1:1000]
+#' obj <- SetAdjMat(obj, 2)
+#' X <- GetAdjMat(obj, 2)$all
+#' ft <- aggMetadata_sam(rowData(obj[[2]]), 'Sequence', X)
 #' 
 #' @importFrom stats setNames
 #' 
@@ -1142,9 +1160,9 @@ aggMetadata_sam <- function(pepMetadata, names, X, simplify=TRUE){
 #' @examples
 #' library(QFeatures)
 #' utils::data(Exp1_R25_pept, package='DAPARdata2')
-#' obj <- Exp1_R25_pept[1:1000,]
-#' obj <- addListAdjacencyMatrices(obj, 2)
-#' X <- as.matrix(GetAdjMat(obj[[2]])$all)
+#' obj <- Exp1_R25_pept[1:1000]
+#' obj <- SetAdjMat(obj, 2)
+#' X <- GetAdjMat(obj, 2)$all
 #' ft <- aggMetadata_parallel_sam(rowData(obj[[2]]), c('Sequence', 'Proteins'), X)
 #' 
 #' @export
@@ -1153,7 +1171,10 @@ aggMetadata_sam <- function(pepMetadata, names, X, simplify=TRUE){
 #' @importFrom doParallel registerDoParallel 
 #' @importFrom stats setNames
 #' 
-aggMetadata_parallel_sam <- function(pepMetadata, names, X, simplify=TRUE){
+aggMetadata_parallel_sam <- function(pepMetadata, 
+                                     names, 
+                                     X, 
+                                     simplify = TRUE){
   doParallel::registerDoParallel()
   
   if(length(simplify)==1){

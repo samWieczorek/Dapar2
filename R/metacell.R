@@ -806,7 +806,7 @@ setMethod("UpdateMetacell", "SummarizedExperiment",
             }
             
             
-            ind <- match.metacell(metadata = Get_qMetadata(object), 
+            ind <- match.metacell(df = Get_qMetadata(object), 
                                   pattern = na.type, 
                                   level = level) & !is.na(assay(object))
             

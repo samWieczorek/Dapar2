@@ -239,7 +239,7 @@ SymFilteringOperators <- function()
 #' @author Samuel Wieczorek
 #' 
 #' @examples
-#' utils::data(Exp1_R25_pept, package='DAPARdata')
+#' utils::data(Exp1_R25_pept, package='DAPARdata2')
 #' ind <- getIndicesOfLinesToRemove(Exp1_R25_pept[1:100], "Potential_contaminant", 
 #' prefix="+")
 #' 
@@ -371,9 +371,9 @@ GetIndices_ComplexQueryFiltering <- function(obj, level, pattern, type, percent,
 #' 
 #' 
 #' @examples
-#' utils::data(Exp1_R25_pept, package='DAPARdata')
+#' utils::data(Exp1_R25_pept, package='DAPARdata2')
 #' obj <- Exp1_R25_pept[1:10]
-#' level <- obj@experimentData@other$typeOfData
+#' level <- GetTypeDataset(obj, 2)
 #' pattern <- 'missing'
 #' metacell.mask <- match.metacell(metadata=Get_qMetadata(obj), pattern=pattern, level=level)
 #' percent <- FALSE
@@ -427,9 +427,9 @@ GetIndices_WholeMatrix <- function( metacell.mask, op='==', percent=FALSE, th=0)
 #' @param metacell.mask xxx
 #' 
 #' @examples
-#' utils::data(Exp1_R25_pept, package='DAPARdata')
+#' utils::data(Exp1_R25_pept, package='DAPARdata2')
 #' obj <- Exp1_R25_pept[20:30]
-#' level <- obj@experimentData@other$typeOfData
+#' level <- GetTypeDataset(obj, 2)
 #' pattern <- 'missing POV'
 #' metacell.mask <- match.metacell(metadata=GetMetacell(obj), pattern=pattern, level=level)
 #' ind <- GetIndices_WholeLine(metacell.mask)
@@ -468,9 +468,9 @@ GetIndices_WholeLine <- function(metacell.mask){
 #' @param th The theshold to apply
 #' 
 #' #' @examples
-#' utils::data(Exp1_R25_pept, package='DAPARdata')
+#' utils::data(Exp1_R25_pept, package='DAPARdata2')
 #' obj <- Exp1_R25_pept[1:10]
-#' level <- obj@experimentData@other$typeOfData
+#' level <- GetTypeDataset(obj, 2)
 #' pattern <- 'missing'
 #' metacell.mask <- match.metacell(metadata=Get_qMetadata(obj), pattern=pattern, level=level)
 #' type <- 'AllCond'
@@ -707,7 +707,7 @@ MVrowsTagToOne <- function(object, type, th=0, percent=TRUE) {
 #' #' @author Enora Fremy, Samuel Wieczorek
 #' #' 
 #' #' @examples
-#' #' utils::data(Exp1_R25_pept, package='DAPARdata')
+#' #' utils::data(Exp1_R25_pept, package='DAPARdata2')
 #' #' mvFilterGetIndices(Exp1_R25_pept, condition = "WholeMatrix", threshold=2)
 #' #' mvFilterGetIndices(Exp1_R25_pept, condition = "EmptyLines")
 #' #' mvFilterGetIndices(Exp1_R25_pept, condition = "WholeMatrix", percent=TRUE, threshold=0.5)

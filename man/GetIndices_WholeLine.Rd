@@ -13,9 +13,9 @@ GetIndices_WholeLine(metacell.mask)
 This function looks for the lines where each element respect the query.
 }
 \examples{
-utils::data(Exp1_R25_pept, package='DAPARdata')
+utils::data(Exp1_R25_pept, package='DAPARdata2')
 obj <- Exp1_R25_pept[20:30]
-level <- obj@experimentData@other$typeOfData
+level <- GetTypeDataset(obj, 2)
 pattern <- 'missing POV'
 metacell.mask <- match.metacell(metadata=GetMetacell(obj), pattern=pattern, level=level)
 ind <- GetIndices_WholeLine(metacell.mask)

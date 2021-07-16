@@ -29,3 +29,4 @@ setGeneric("SetConnectedComps", function(object, ...) standardGeneric("SetConnec
 setGeneric("GetHypoyhesisTest", function(object, ...) standardGeneric("GetHypoyhesisTest"))
 setGeneric("HypothesisTest", function(object, ...) standardGeneric("HypothesisTest"))
 
+setGeneric("GetKeyId", function(object, ...) standardGeneric("GetKeyId"))

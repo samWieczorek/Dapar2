@@ -32,11 +32,12 @@ Method to aggregate peptides into proteins with the iterative approach.
 \examples{
 library(QFeatures)
 utils::data(Exp1_R25_pept, package='DAPARdata2')
-obj <- Exp1_R25_pept[1:1000,]
-obj <- addListAdjacencyMatrices(obj, 2)
-X <- GetAdjMat(obj[[2]])$all
-qPepData <- assay(obj[[2]])
-inner.aggregate.iter(qPepData, X)
+obj <- Exp1_R25_pept[1:1000]
+obj <- SetAdjMat(obj, 2)
+X <- GetAdjMat(obj, 2)$all
+qPepData <- assay(obj, 2)
+res <- inner.aggregate.iter(qPepData, X)
+
 
 }
 \author{

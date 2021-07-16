@@ -8,6 +8,11 @@
 #' 
 #' @author Hélène Borges
 #' 
+#' @examples
+#' library(QFeatures)
+#' utils::data(Exp1_R25_pept, package='DAPARdata2')
+#' sd <- standardise(assay(Exp1_R25_pept, 2))
+#' 
 standardise <- function (data) 
 {
   
@@ -42,11 +47,13 @@ standardise <- function (data)
 #' @author Hélène Borges
 #' 
 #' @examples
+#' \dontrun{
 #' library(QFeatures)
 #' utils::data(Exp1_R25_prot, package='DAPARdata2')
 #' obj <- Exp1_R25_prot
 #' sTab <- colData(obj)
 #' standards <- standardiseMeanIntensities(obj[[2]], sTab)
+#' }
 #' 
 #' @export
 #' 
@@ -108,7 +115,14 @@ standardiseMeanIntensities <- function(obj, sTab){
 #' @author Hélène Borges
 #' 
 #' @examples
+#' \dontrun{
+#' library(QFeatures)
+#' utils::data(Exp1_R25_prot, package='DAPARdata2')
+#' obj <- Exp1_R25_prot
+#' sTab <- colData(obj)
+#' standards <- standardiseMeanIntensities(obj[[2]], sTab)
 #' checkClusterability(standardized_means)
+#' }
 #' 
 #' @export
 #' 
@@ -319,9 +333,11 @@ visualizeClusters <- function(dat, clust_model, adjusted_pValues, FDR_th = NULL,
 #' Frey, B. J. and Dueck, D. (2007) Clustering by passing messages between data points. *Science* 315, 972-976. DOI: \href{https://science.sciencemag.org/content/315/5814/972}{10.1126/science.1136800}
 #'
 #' @examples
-#' test_anova <- wrapperClassic1wayAnova(fibrose)
+#' \dontrun{
+#' test_anova <- wrapperClassic1wayAnova(iris)
 #' test_clust_pipeline <- wrapperRunClustering(obj = fibrose,
 #'                                  clustering_method = "affinityPropReduced", adjusted_pvals = test_anova$P_Value$anova1way)
+#'                                  }
 #' 
 #' @export
 #' 

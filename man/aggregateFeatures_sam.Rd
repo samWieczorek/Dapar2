@@ -63,7 +63,8 @@ thereof are
 \examples{
 library(QFeatures)
 utils::data(Exp1_R25_pept, package='DAPARdata2')
-obj <- Exp1_R25_pept
+obj <- Exp1_R25_pept[1:1000]
+obj <- SetAdjMat(obj, 2)
 aggregateFeatures_sam(obj,2, aggType= 'all', name='aggregated', 
 meta.names = 'Sequence', fun='aggTopn', n=3)
 

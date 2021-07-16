@@ -1,5 +1,13 @@
-#' Boxplot for quantitative proteomics data using the library \code{highcharter}
-#' 
+
+
+
+
+
+
+
+
+
+
 #' @title Builds a boxplot from a dataframe using the library \code{highcharter}
 #' 
 #' @param qData Numeric matrix 
@@ -23,8 +31,7 @@
 #' utils::data(Exp1_R25_pept, package='DAPARdata2')
 #' qData <- assay(Exp1_R25_pept[[2]])
 #' conds <- colData(Exp1_R25_pept)[["Condition"]]
-#' key <- rowData(Exp1_R25_pept[[2]])[[metadata(Exp1_R25_pept)$keyId]]
-#' boxPlotD_HC(qData, conds, keyId = key, conds, subset.view=1:10)
+#' boxPlotD_HC(qData, conds, keyId = GetKeyId(Exp1_R25_pept, 2), conds, subset.view=1:10)
 #' 
 #' @import highcharter
 #' 
@@ -38,8 +45,8 @@
 #' 
 boxPlotD_HC <- function(qData, 
                         conds, 
-                        keyId=NULL, 
-                        legend=NULL, 
+                        keyId = NULL, 
+                        legend = NULL, 
                         palette = NULL, 
                         subset.view=NULL){
   
@@ -60,9 +67,6 @@ boxPlotD_HC <- function(qData,
   if (!is.null(subset.view)) {
     if (is.null(keyId)|| missing(keyId))
       stop("'keyId' is missing.")
-    else
-      if (!grep(keyId, colnames(Biobase::fData(obj))))
-        stop("'keyId' does not belong to metadata")
   }
   
 
@@ -138,7 +142,8 @@ boxPlotD_HC <- function(qData,
   
   
   ## Boxplot function:
-  make_highchart_boxplot_with_colored_factors<- function(value, by, 
+  make_highchart_boxplot_with_colored_factors<- function(value, 
+                                                         by, 
                                                          chart_title = "Boxplots",
                                                          chart_x_axis_label = "Values", 
                                                          show_outliers = FALSE,
@@ -146,7 +151,7 @@ boxPlotD_HC <- function(qData,
                                                          box_line_colors = NULL){
     by <- as.factor(by)
     box_names_to_use <- levels(by)
-    series <- gen_boxplot_series_from_df(value = value, by=by)
+    series <- gen_boxplot_series_from_df(value = value, by = by)
     
     cols<- boxcolors
     cols2<- box_line_colors
@@ -175,10 +180,12 @@ boxPlotD_HC <- function(qData,
       
     } else{
       hc<- highcharter::highchart() %>%
-        highcharter::hc_chart(type="boxplot", inverted=FALSE) %>%
+        highcharter::hc_chart(type="boxplot", inverted = FALSE) %>%
         highcharter::hc_title(text=chart_title) %>%
-        highcharter::hc_legend(enabled=FALSE) %>%
-        highcharter::hc_xAxis(type="category", categories=box_names_to_use, title=list(text=chart_x_axis_label)) %>%
+        highcharter::hc_legend(enabled = FALSE) %>%
+        highcharter::hc_xAxis(type = "category", 
+                              categories=box_names_to_use, 
+                              title = list(text = chart_x_axis_label)) %>%
         highcharter::hc_yAxis(title = list(text = "Log (intensity)")) %>%
         highcharter::hc_add_series_list(series2) %>%
         hc_plotOptions(series = list(
@@ -198,7 +205,7 @@ boxPlotD_HC <- function(qData,
                          value = as.vector(apply(qData, 1, function(x) as.vector(x)))))
   df$value<- base::as.numeric(df$value)
  hc <- make_highchart_boxplot_with_colored_factors(value = df$value, 
-                                                    by=df$categ, 
+                                                    by = df$categ, 
                                                     chart_title = "",
                                                     chart_x_axis_label = "Samples",
                                                     show_outliers = TRUE, 
@@ -209,19 +216,23 @@ boxPlotD_HC <- function(qData,
   
   # Display of rows to highlight (index of row in subset.view) 
  if(!is.null(subset.view)){
-   idVector <- keyId
    pal = ExtendPalette(length(subset.view), "Dark2") 
-   n=0
+   n = 0
    for(i in subset.view){
-     n=n+1
-     dfSubset <- data.frame(y = as.vector(qData[i,],mode='numeric'), x = as.numeric(factor(names(qData[i,])))-1, stringsAsFactors = FALSE)
-     hc<-hc %>%
-       highcharter::hc_add_series(type= "line",
-                                  data=dfSubset,
-                                  color=pal[n], 
+     n = n+1
+     dfSubset <- data.frame(y = as.vector(qData[i,], mode='numeric'), 
+                            x = as.numeric(factor(names(qData[i,])))-1, 
+                            stringsAsFactors = FALSE)
+     hc <- hc %>%
+       highcharter::hc_add_series(type = "line",
+                                  data = dfSubset,
+                                  color = pal[n], 
                                   dashStyle = "shortdot",
-                                  name=Biobase::fData(obj)[i,keyId],
-                                  tooltip=list(enabled=T,headerFormat ="",pointFormat="{point.series.name} : {point.y: .2f} ") )
+                                  name = keyId,
+                                  tooltip = list(enabled = T,
+                                                 headerFormat = "",
+                                                 pointFormat = "{point.series.name} : {point.y: .2f} ")
+                                  )
      
    }
  }   

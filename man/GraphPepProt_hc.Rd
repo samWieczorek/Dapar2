@@ -21,9 +21,7 @@ in an adjacency matrix
 }
 \examples{
 utils::data(Exp1_R25_pept, package='DAPARdata2')
-obj <- Exp1_R25_pept[1:1000,]
-obj <- addListAdjacencyMatrices(obj, 2)
-X <- as.matrix(GetAdjMat(obj[[2]])$all)
+X <- GetAdjMat(Exp1_R25_pept, 2)$all
 GraphPepProt_hc(X)
 
 }

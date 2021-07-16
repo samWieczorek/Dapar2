@@ -20,13 +20,12 @@
 #' @examples
 #' library(QFeatures)
 #' utils::data(Exp1_R25_pept, package='DAPARdata2')
-#' object <- Exp1_R25_pept[1:1000,]
+#' object <- Exp1_R25_pept[1:1000]
 #' object <- addAssay(object, QFeatures::filterNA(object[[2]],  pNA = 0), name='filtered')
 #' sTab <- colData(object)
-#' gttest.se <- t_test_sam(object[[3]], sTab, FUN = compute.t.test)
-#' object <- addAssay(object, gttest.se, name='t-test')
+#' object <- HypothesisTest(object = object, i=3, test = 'limma', comp.type = "OnevsOne")
 #' comp <- '25fmol_vs_10fmol'
-#' da.se <- diff_analysis_sam(object[['t-test']], comp)
+#' da.se <- diff_analysis_sam(object[['HypothesisTestAssay']], comp)
 #' 
 #' object <- diff_analysis_sam(object, 't-test', name='diffAna', comp)
 #' 
@@ -104,10 +103,9 @@ setMethod("diff_analysis_sam", "QFeatures",
 #' utils::data(Exp1_R25_pept, package='DAPARdata2')
 #' object <- Exp1_R25_pept[1:1000,]
 #' object <- addAssay(object, QFeatures::filterNA(object[[2]],  pNA = 0), name='filtered')
-#' object <- addListAdjacencyMatrices(object, 3)
 #' sTab <- colData(object)
 #' se <- t_test_sam(object[[3]], sTab, FUN = compute.t.test)
-#' pval <- metadata(se)$t_test[['25fmol_vs_10fmol_pval']]
+#' pval <- metadata(se)$HypothesisTest_cols[['25fmol_vs_10fmol_pval']]
 #' histPValue_HC(pval)
 #' 
 #' @export

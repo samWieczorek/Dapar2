@@ -13,6 +13,12 @@ standardise(data)
 This code is an adaptation of the standardise function in the package Mfuzz
 it works directly on a matrix or data.frame of intensities
 }
+\examples{
+library(QFeatures)
+utils::data(Exp1_R25_pept, package='DAPARdata2')
+sd <- standardise(assay(Exp1_R25_pept, 2))
+
+}
 \author{
 Hélène Borges
 }

@@ -31,10 +31,10 @@ in the rowdata of the new protein dataset.
 \examples{
 library(QFeatures)
 utils::data(Exp1_R25_pept, package='DAPARdata2')
-obj <- Exp1_R25_pept[1:1000,]
-obj <- addListAdjacencyMatrices(obj, 2)
-X <- as.matrix(GetAdjMat(obj[[2]], 'all'))
-ft <- aggMetadata_sam(rowData(obj[[2]]), c('Sequence'), X)
+obj <- Exp1_R25_pept[1:1000]
+obj <- SetAdjMat(obj, 2)
+X <- GetAdjMat(obj, 2)$all
+ft <- aggMetadata_sam(rowData(obj[[2]]), 'Sequence', X)
 
 }
 \author{

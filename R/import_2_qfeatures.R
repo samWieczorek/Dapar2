@@ -203,10 +203,9 @@ createQFeatures <- function(data,
   
   # Fill the metadata for whole object
   metadata(obj)$versions <- GetProstarVersions()
-  metadata(obj)$keyId <- keyId
+  
   metadata(obj)$params <- list()
-  metadata(obj)$RawPValues <- FALSE
-  metadata(obj)$qMetadata_names <- colnames(data)[indQMetadata]
+  
   metadata(obj)$analysis <- analysis
   metadata(obj)$typePipeline <- typePipeline
   metadata(obj)$processes <- c('original', processes)
@@ -214,6 +213,8 @@ createQFeatures <- function(data,
   # Fill the metadata for the first assay
   metadata(obj[['original']])$typeDataset <- typeDataset
   metadata(obj[['original']])$parentProtId <- parentProtId
+  metadata(obj[['original']])$qMetadata_names <- colnames(data)[indQMetadata]
+  metadata(obj[['original']])$keyId <- keyId
   
   
   if (tolower(typeDataset) == 'peptide'){

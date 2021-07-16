@@ -22,7 +22,14 @@ package). Then the function checks that these data are clusterizable or not
  approach.
 }
 \examples{
+\dontrun{
+library(QFeatures)
+utils::data(Exp1_R25_prot, package='DAPARdata2')
+obj <- Exp1_R25_prot
+sTab <- colData(obj)
+standards <- standardiseMeanIntensities(obj[[2]], sTab)
 checkClusterability(standardized_means)
+}
 
 }
 \author{
