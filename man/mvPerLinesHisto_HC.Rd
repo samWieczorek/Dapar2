@@ -4,12 +4,12 @@
 \alias{mvPerLinesHisto_HC}
 \title{Bar plot of missing values per lines using highcharter}
 \usage{
-mvPerLinesHisto_HC(qData, samplesData, indLegend = "auto")
+mvPerLinesHisto_HC(qData)
 }
 \arguments{
 \item{qData}{A matrix that contains the data to plot.}
 
-\item{samplesData}{A dataframe which contains informations about 
+\item{conds}{A dataframe which contains informations about 
 the replicates.}
 
 \item{indLegend}{The indice of the column names in \code{colData()}}
@@ -25,8 +25,7 @@ number of missing values (NA) per lines (ie proteins).
 library(QFeatures)
 utils::data(Exp1_R25_pept, package='DAPARdata2')
 qData <- assay(Exp1_R25_pept[[2]])
-samplesData <- colData(Exp1_R25_pept)
-mvPerLinesHisto_HC(qData, samplesData)
+mvPerLinesHisto_HC(qData)
 
 }
 \author{

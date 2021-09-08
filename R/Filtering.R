@@ -225,10 +225,9 @@ SymFilteringOperators <- function()
 #' 
 #' @title Get the indices of the lines to delete, based on a prefix string
 #' 
-#' @param obj An object of class \code{MSnSet}.
+#' @param object An object of class \code{xxx}.
 #' 
-#' @param idLine2Delete The name of the column that correspond to the data 
-#' to filter
+#' @param col The name of the column that correspond to the data to filter
 #' 
 #' @param prefix A character string that is the prefix to find in the data
 #' 
@@ -316,7 +315,7 @@ GetIndices_ComplexQueryFiltering <- function(obj, level, pattern, type, percent,
   
   indices <- NULL
   
-  if (!(pattern %in% DAPAR::metacell.def(level)$node && type !='None' && !is.null(type))){
+  if (!(pattern %in% metacell.def(level)$node && type !='None' && !is.null(type))){
     warning("Either 'pattern' nor 'type' are equal to 'None'")
     return(NULL)
   }

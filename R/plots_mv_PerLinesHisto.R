@@ -6,7 +6,7 @@
 #' 
 #' @param qData A matrix that contains the data to plot.
 #' 
-#' @param samplesData A dataframe which contains informations about 
+#' @param conds A dataframe which contains informations about 
 #' the replicates.
 #' 
 #' @param indLegend The indice of the column names in \code{colData()}
@@ -19,27 +19,14 @@
 #' library(QFeatures)
 #' utils::data(Exp1_R25_pept, package='DAPARdata2')
 #' qData <- assay(Exp1_R25_pept[[2]])
-#' samplesData <- colData(Exp1_R25_pept)
-#' mvPerLinesHisto_HC(qData, samplesData)
+#' mvPerLinesHisto_HC(qData)
 #' 
 #' @export 
 #' 
 #' @import highcharter
 #' 
-mvPerLinesHisto_HC <- function(qData, samplesData, indLegend="auto"){
-  
-  samplesData <- as.matrix(samplesData)
-  
-  if (identical(indLegend,"auto")) { indLegend <- c(2:length(colnames(samplesData)))}
-  
-  for (j in 1:length(colnames(qData))){
-    noms <- NULL
-    for (i in 1:length(indLegend)){
-      noms <- paste(noms, samplesData[j,indLegend[i]], sep=" ")
-    }
-    colnames(qData)[j] <- noms
-  }
-  
+mvPerLinesHisto_HC <- function(qData){
+   
   coeffMax <- .1
   
   NbNAPerCol <- colSums(is.na(qData))
@@ -51,7 +38,7 @@ mvPerLinesHisto_HC <- function(qData, samplesData, indLegend="auto"){
   nb.na2barplot <- c(temp, rep(0,1+ncol(qData)-length(temp)))
   
   if (sum(NbNAPerRow) == 0){
-    nb.na2barplot <- rep(0,1+ncol(qData))
+    nb.na2barplot <- rep(0, 1 + ncol(qData))
   }
   
   df <- data.frame(y=nb.na2barplot[-1])
@@ -65,7 +52,7 @@ mvPerLinesHisto_HC <- function(qData, samplesData, indLegend="auto"){
     hc_add_series(data = df, type="column", colorByPoint = TRUE) %>%
     hc_colors(myColors) %>%
     hc_plotOptions( column = list(stacking = "normal"),
-                    animation=list(duration = 100)) %>%
+                    animation = list(duration = 100)) %>%
     hc_legend(enabled = FALSE) %>%
     hc_xAxis(categories = row.names(df), title = list(text = "#[NA values] per line")) %>%
     dapar_hc_ExportMenu(filename = "missingValuesPlot1") %>%

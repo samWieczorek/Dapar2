@@ -1,6 +1,7 @@
 
 btn_style <- "display:inline-block; vertical-align: middle; padding: 7px"
 
+#' @export
 mod_Protein_Description_ui <- function(id){
   ns <- NS(id)
 }
@@ -17,12 +18,12 @@ mod_Protein_Description_ui <- function(id){
 #'
 #' @param dataIn The dataset
 #'
-#' @param steps.enabled A vector of boolen which has the same length of the steps
+#' @param steps.enabled A vector of boolean which has the same length of the steps
 #' of the pipeline. This information is used to enable/disable the widgets. It is not
 #' a communication variable between the caller and this module, thus there is no
 #' corresponding output variable
 #'
-#' @param remoteReset It is a remote command to reset the module. A boolen that
+#' @param remoteReset It is a remote command to reset the module. A boolean that
 #' indicates is the pipeline has been reseted by a program of higher level
 #' Basically, it is the program which has called this module
 #'
@@ -30,7 +31,7 @@ mod_Protein_Description_ui <- function(id){
 #'
 #' @export
 mod_Protein_Description_server <- function(id,
-                                           dataIn = NULL,
+                                           dataIn = reactive({NULL}),
                                            steps.enabled = reactive({NULL}),
                                            remoteReset = reactive({FALSE})
                                            ){
@@ -114,19 +115,25 @@ mod_Protein_Description_server <- function(id,
     })
 
 
-    Timestamp = function(){
-      if(verbose) cat(paste0('::Timestamp() from - ', id, '\n\n'))
-      as.numeric(Sys.time())
-    }
+    # Timestamp = function(){
+    #   if(verbose) cat(paste0('::Timestamp() from - ', id, '\n\n'))
+    #   as.numeric(Sys.time())
+    # }
 
     observeEvent(input$btn_validate_Description, ignoreInit = T, ignoreNULL = T, {
       rv$dataIn <- dataIn()
      # browser()
-      dataOut$trigger <- Send_Result_to_Caller(rv$dataIn)$trigger
-      dataOut$value <- Send_Result_to_Caller(rv$dataIn)$value
+      # dataOut$trigger <- Send_Result_to_Caller(rv$dataIn)$trigger
+      # dataOut$value <- Send_Result_to_Caller(rv$dataIn)$value
+      # 
+      dataOut$trigger <- Magellan::Timestamp()
+      dataOut$value <- rv$dataIn
       #rv$status['Description'] <- global$VALIDATED
     })
 
+    
+    
+    # Return of the process. It is always a list
     list(config = reactive({
                   config$ll.UI <- setNames(lapply(config$steps,
                                       function(x){

@@ -6,7 +6,7 @@
 \usage{
 mvPerLinesHistoPerCondition_HC(
   qData,
-  samplesData,
+  conds,
   indLegend = "auto",
   palette = NULL
 )
@@ -14,13 +14,11 @@ mvPerLinesHistoPerCondition_HC(
 \arguments{
 \item{qData}{A dataframe that contains quantitative data.}
 
-\item{samplesData}{A dataframe where lines correspond to samples and 
-columns to the meta-data for those samples.}
+\item{conds}{A vector of conditions names.}
 
 \item{indLegend}{The indice of the column names of \code{colData()}}
 
-\item{palette}{A vector of HEX Code colors (one color 
-per condition).}
+\item{palette}{A vector of HEX Code colors (one color per unique condition).}
 }
 \value{
 A bar plot
@@ -33,8 +31,9 @@ number of missing values (NA) per lines (ie proteins) and per conditions.
 library(highcharter)
 utils::data(Exp1_R25_pept, package='DAPARdata2')
 qData <- SummarizedExperiment::assay(Exp1_R25_pept[[2]])
-samplesData <- SummarizedExperiment::colData(Exp1_R25_pept)
-mvPerLinesHistoPerCondition_HC(qData, samplesData)
+conds <- SummarizedExperiment::colData(Exp1_R25_pept)$Condition
+mvPerLinesHistoPerCondition_HC(qData, conds)
+mvPerLinesHistoPerCondition_HC(qData, conds, palette = c('yellow', 'green'))
 
 }
 \author{

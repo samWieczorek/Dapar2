@@ -11,17 +11,14 @@ list.plots.module <- c(
   )
 
 
-#' all_plots UI Function
+#' @title all_plots UI Function
 #'
 #' @description A shiny Module.
+#' @export
 #'
 #' @param id,input,output,session Internal parameters for {shiny}.
 #'
-#' @noRd
-#'
 #' @importFrom shiny NS tagList
-#'
-#' @export
 #'
 mod_all_plots_ui <- function(id){
   ns <- NS(id)
@@ -43,15 +40,18 @@ mod_all_plots_ui <- function(id){
 
 }
 
-#' @description
-#' all_plots Server Function
+#' @title all_plots UI Function
 #'
-#' @param id xxxx
-#' @param dataIn xxxx
-#'
+#' @description A shiny Module.
+#' 
 #' @export
 #'
-#' @noRd
+#' @param id xxxx
+#' 
+#' @param dataIn xxxx
+#' 
+#' @importFrom base64enc dataURI
+#'
 mod_all_plots_server <- function(id, dataIn){
 
   moduleServer(id, function(input, output, session) {

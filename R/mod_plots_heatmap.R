@@ -48,7 +48,6 @@ mod_plots_heatmap_ui <- function(id){
                     selected='complete',
                     width="150px")
       ),
-
       tags$hr(),
       uiOutput(ns("DS_PlotHeatmap"))
     )
@@ -69,10 +68,6 @@ mod_plots_heatmap_server <- function(id, obj, conds, width = 900){
   moduleServer(id, function(input, output, session){
     ns <- session$ns
 
-    observe({
-      req(obj())
-      if (class(obj()) != "SummarizedExperiment") { return(NULL) }
-    })
 
     limitHeatmap <- 20000
     height <- paste0(2*width/3,"px")
@@ -80,11 +75,12 @@ mod_plots_heatmap_server <- function(id, obj, conds, width = 900){
 
     output$DS_PlotHeatmap <- renderUI({
       req(obj())
+      #req(class(obj()) != "SummarizedExperiment")
       if (nrow(SummarizedExperiment::assay(obj())) > limitHeatmap){
         tags$p("The dataset is too big to compute the heatmap in a reasonable time.")
       }else {
         tagList(
-          plotOutput(ns("heatmap_ui"), width = width, height = height)
+          plotOutput(ns('heatmap_ui'), width = width, height = height)
         )
       }
     })
@@ -99,17 +95,17 @@ mod_plots_heatmap_server <- function(id, obj, conds, width = 900){
 
     heatmap <- reactive({
 
-      req(obj())
+     # req(obj())
+      #req(class(obj()) != "SummarizedExperiment")
       req(input$linkage)
       req(input$distance)
 
       isolate({
         withProgress(message = 'Making plot', value = 100, {
           DaparToolshed::heatmapD(qData = SummarizedExperiment::assay(obj()),
-                           conds = conds(),
-                           distance= input$distance,
-                           cluster = input$linkage,
-                           dendro = TRUE)
+                                  conds = conds(),
+                                  distance= input$distance,
+                                  cluster = input$linkage)
         })
       })
     })

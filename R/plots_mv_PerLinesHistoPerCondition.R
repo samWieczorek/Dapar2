@@ -5,13 +5,11 @@
 #' 
 #' @param qData A dataframe that contains quantitative data.
 #' 
-#' @param samplesData A dataframe where lines correspond to samples and 
-#' columns to the meta-data for those samples.
+#' @param conds A vector of conditions names.
 #' 
 #' @param indLegend The indice of the column names of \code{colData()}
 #' 
-#' @param palette A vector of HEX Code colors (one color 
-#' per condition).
+#' @param palette A vector of HEX Code colors (one color per unique condition).
 #' 
 #' @return A bar plot
 #' 
@@ -21,14 +19,16 @@
 #' library(highcharter)
 #' utils::data(Exp1_R25_pept, package='DAPARdata2')
 #' qData <- SummarizedExperiment::assay(Exp1_R25_pept[[2]])
-#' samplesData <- SummarizedExperiment::colData(Exp1_R25_pept)
-#' mvPerLinesHistoPerCondition_HC(qData, samplesData)
+#' conds <- SummarizedExperiment::colData(Exp1_R25_pept)$Condition
+#' mvPerLinesHistoPerCondition_HC(qData, conds)
+#' mvPerLinesHistoPerCondition_HC(qData, conds, palette = c('yellow', 'green'))
 #' 
 #' @export
 #' 
 #' @import highcharter
 #' 
-mvPerLinesHistoPerCondition_HC <- function(qData, samplesData, indLegend="auto", palette=NULL){
+mvPerLinesHistoPerCondition_HC <- function(qData, conds, indLegend = "auto", palette = NULL){
+  
   
   myColors <- NULL
   if (is.null(palette)){
@@ -36,27 +36,28 @@ mvPerLinesHistoPerCondition_HC <- function(qData, samplesData, indLegend="auto",
     myColors <-   GetColorsForConditions(conds, ExtendPalette(length(unique(conds))))
   } else {
     if (length(palette) != length(unique(conds))){
-      warning("The color palette has not the same dimension as the number of samples")
+      warning("The color palette has not the same dimension as the number of conditions")
       myColors <- GetColorsForConditions(conds, ExtendPalette(length(unique(conds))))
     } else 
       myColors <- GetColorsForConditions(conds, palette)
   }
   
-  if (identical(indLegend,"auto")) { indLegend <- c(2:length(colnames(samplesData)))}
+  if (identical(indLegend,"auto"))
+    indLegend <- 2:length(conds)
   
-  nbConditions <- length(unique(samplesData[["Condition"]]))
+  nbConditions <- length(unique(conds))
   
-  ncolMatrix <- max(unlist(lapply(unique(samplesData[["Condition"]]), function(x){length(which(samplesData[["Condition"]]==x))})))
+  ncolMatrix <- max(unlist(lapply(unique(conds), function(x){length(which(conds==x))})))
   m <- matrix(rep(0, nbConditions*(1+ncolMatrix)), 
               ncol = nbConditions, 
-              dimnames=list(seq(0:(ncolMatrix)),unique(samplesData[["Condition"]])))
+              dimnames=list(seq(0:(ncolMatrix)), unique(conds)))
   
-  for (i in unique(samplesData[["Condition"]])) {
-    nSample <- length(which(samplesData[["Condition"]] == i))
+  for (i in unique(conds)) {
+    nSample <- length(which(conds == i))
     t <- NULL
     if (nSample == 1) {
-      t <- table(as.integer(is.na(qData[,which(samplesData[["Condition"]] == i)])))
-    } else {t <- table(rowSums(is.na(qData[,which(samplesData[["Condition"]] == i)])))}
+      t <- table(as.integer(is.na(qData[,which(conds == i)])))
+    } else {t <- table(rowSums(is.na(qData[ ,which(conds == i)])))}
     
     m[as.integer(names(t))+1,i] <- t
   }
@@ -70,7 +71,7 @@ mvPerLinesHistoPerCondition_HC <- function(qData, samplesData, indLegend="auto",
     dapar_hc_chart(chartType = "column") %>%
     hc_plotOptions( column = list(stacking = ""),
                     dataLabels = list(enabled = FALSE),
-                    animation=list(duration = 100)) %>%
+                    animation = list(duration = 100)) %>%
     hc_colors(unique(myColors)) %>%
     hc_legend(enabled = FALSE) %>%
     hc_xAxis(categories = row.names(m), title = list(text = "#[NA values] per line (condition-wise)")) %>%
@@ -79,7 +80,7 @@ mvPerLinesHistoPerCondition_HC <- function(qData, samplesData, indLegend="auto",
                pointFormat = "{point.y} ")
   
   for (i in 1:nbConditions){
-    h1 <- h1 %>% hc_add_series(data=m[,unique(samplesData[["Condition"]])[i]]) }
+    h1 <- h1 %>% hc_add_series(data=m[ ,unique(conds)[i]]) }
   
   
   return(h1)

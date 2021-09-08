@@ -50,6 +50,7 @@ Imports:
     lme4,
     vsn, 
     stringr,
+    base64enc,
     RColorBrewer,
     graph,
     FactoMineR, 
@@ -127,7 +128,6 @@ Collate:
     pepa.R
     anova_analysis.R
     clustering.R
-    misc.R
     hypothesis_test.R
     global.R
     mod_Protein.R

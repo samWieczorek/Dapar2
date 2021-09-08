@@ -4,12 +4,12 @@
 \alias{limmaCompleteTest}
 \title{Computes a hierarchical differential analysis}
 \usage{
-limmaCompleteTest(obj, sampleTab, comp.type = "OnevsOne")
+limmaCompleteTest(obj, sTab, comp.type = "OnevsOne")
 }
 \arguments{
 \item{obj}{A matrix of quantitative data, without any missing values.}
 
-\item{sampleTab}{A DataFrame of experimental design.}
+\item{sTab}{A DataFrame of experimental design.}
 
 \item{comp.type}{A string that corresponds to the type of comparison. 
 Values are: 'anova1way', 'OnevsOne' and 'OnevsAll'; default is 'OnevsOne'.}
@@ -27,7 +27,7 @@ Computes a hierarchical differential analysis
 library(QFeatures)
 utils::data(Exp1_R25_pept, package='DAPARdata2')
 Exp1_R25_pept <- addAssay(Exp1_R25_pept, QFeatures::filterNA(Exp1_R25_pept[[2]],  pNA = 0), name='filtered')
-sampleTab <- colData(Exp1_R25_pept)
+sTab <- colData(Exp1_R25_pept)
 se <- Exp1_R25_pept[['filtered']]
 limma <- limmaCompleteTest(se, sTab, comp.type='anova1way')
 

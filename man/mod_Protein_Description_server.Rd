@@ -6,7 +6,7 @@
 \usage{
 mod_Protein_Description_server(
   id,
-  dataIn = NULL,
+  dataIn = reactive({     NULL }),
   steps.enabled = reactive({     NULL }),
   remoteReset = reactive({     FALSE })
 )
@@ -16,12 +16,12 @@ mod_Protein_Description_server(
 
 \item{dataIn}{The dataset}
 
-\item{steps.enabled}{A vector of boolen which has the same length of the steps
+\item{steps.enabled}{A vector of boolean which has the same length of the steps
 of the pipeline. This information is used to enable/disable the widgets. It is not
 a communication variable between the caller and this module, thus there is no
 corresponding output variable}
 
-\item{remoteReset}{It is a remote command to reset the module. A boolen that
+\item{remoteReset}{It is a remote command to reset the module. A boolean that
 indicates is the pipeline has been reseted by a program of higher level
 Basically, it is the program which has called this module}
 }

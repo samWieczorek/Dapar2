@@ -18,10 +18,10 @@ mod_Protein_Filtering_ui <- function(id){
 #' @export
 #'
 mod_Protein_Filtering_server <- function(id,
-                                             dataIn = NULL,
-                                             steps.enabled = reactive({NULL}),
-                                             remoteReset = reactive({FALSE})
-){
+                                         dataIn = NULL,
+                                         steps.enabled = reactive({NULL}),
+                                         remoteReset = reactive({FALSE})
+                                         ){
 
   #' @field global xxxx
   global <- list(
@@ -131,8 +131,8 @@ mod_Protein_Filtering_server <- function(id,
 
     observeEvent(input$btn_validate_Description, ignoreInit = T, ignoreNULL=T, {
       rv$dataIn <- dataIn()
-      dataOut$trigger <- Send_Result_to_Caller(rv$dataIn)$trigger
-      dataOut$value <- Send_Result_to_Caller(rv$dataIn)$value
+      dataOut$trigger <- Timestamp()
+      dataOut$value <- rv$dataIn
       #rv$status['Description'] <- global$VALIDATED
 
     })

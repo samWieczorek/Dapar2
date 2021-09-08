@@ -17,8 +17,6 @@
 #' @param cluster the clustering algorithm used to build the dendrogram.
 #' See \code{help(heatmap.2)}
 #' 
-#' @param dendro A boolean to indicate if the dendrogram has to be displayed
-#' 
 #' @return A heatmap
 #' 
 #' @author Samuel Wieczorek
@@ -28,22 +26,19 @@
 #' library(QFeatures)
 #' utils::data(Exp1_R25_prot, package='DAPARdata2')
 #' conds <- colData(Exp1_R25_prot)[['Condition']]
-#' qData <- assay(Exp1_R25_prot)[1:100,]
-#' heatmapD(qData, conds, dendro = TRUE)
+#' qData <- assay(Exp1_R25_prot)
+#' heatmapD(qData, conds)
 #' }
 #' 
 #' @importFrom grDevices colorRampPalette
 #' @importFrom gplots heatmap.2
-#' @importFrom stats dist hclust as.dendrogram
-#' @importFrom dendextend get_leaves_branches_col
 #' 
 #' @export
 #' 
 heatmapD <- function(qData, 
                      conds, 
                      distance = "euclidean", 
-                     cluster="complete", 
-                     dendro = FALSE){
+                     cluster="complete"){
   #Check parameters
   if (!(distance %in% c("euclidean", "manhattan"))){
       stop("'distance' is not correct.")
@@ -58,9 +53,9 @@ heatmapD <- function(qData,
   if (length(conds) != ncol(qData))
     stop("The length of 'conds' must be equal to the number of samples.")
   
-  .dendro = "none"
-  if (dendro)
-    .dendro = "row"
+  # .dendro = "none"
+  # if (dendro)
+  #   .dendro = "row"
   
   # if (isTRUE(dendro) && getNumberOfEmptyLines(qData) != 0)  {
   #     stop("Your dataset contains empty lines: the dendrogram cannot
@@ -77,53 +72,54 @@ heatmapD <- function(qData,
                                   )
                   )
   
-  colors = c(seq(-3, -2, length=100),
-             seq(-2, 0.5, length=100),
-             seq(0.5, 6, length=100))
-  heatmap.color <- grDevices::colorRampPalette(c("green", "red"))(n = 1000)
+  #
+  #heatmap.color <- grDevices::colorRampPalette(c("green", "red"))(n = 1000)
   
   # samples label color
   x = t(.data)
   x[is.na(x)] <- -1e5
-  dist = dist(x, method=distance)
-  hcluster = hclust(dist, method=cluster)
-  cols_branches <- ExtendPalette(n = length(unique((conds))), base = NULL)
-  dend1 <- as.dendrogram(hcluster)
-  dend1 <- dendextend::color_branches(dend1, 
-                                      k = length(conds), 
-                                      col = cols_branches)
-  col_labels <- dendextend::get_leaves_branches_col(dend1)
+  # dist = dist(x, method=distance)
+  # dend1 = hclust(dist, method=cluster) %>% as.dendrogram()
+  # 
+  # cols_branches <- ExtendPalette(n = length(unique((conds))), base = NULL)
+  # 
+  # dend1 <- dend1 %>% dendextend::color_branches(
+  #   k = length(unique(conds)),
+  #   col = cols_branches)
+  # 
+  # dendextend::labels_colors(dend1) <- dendextend::get_leaves_branches_col(dend1)
+  # col_labels <- dendextend::get_leaves_branches_col(dend1)
+  heatmap(x, Rowv = FALSE, Colv = NULL, na.rm=FALSE)
   
-  
-  
-  p <- gplots::heatmap.2(
-    x = t(.data),
-    distfun = function(x) {
-      x[is.na(x)] <- -1e5
-      dist(x, method=distance)
-    },
-    hclustfun = function(x) {
-      x[is.na(x)] <- -1e5
-      hclust(x, method=cluster)
-    },
-    dendrogram = .dendro,
-    Rowv = TRUE,
-    col = heatmap.color ,
-    density.info = 'none',
-    key = TRUE,
-    trace = "none",
-    scale = "none",
-    #srtCol=45,
-    labCol = "",
-    margins=c(4,12),
-    #cexRow=1.5,
-    cexRow = 1.5 + ncol(.data)*-0.011 ,
-    keysize = 1.5,
-    lhei = c(1.5, 9),
-    lwid = c(1.5, 4),
-    lmat = rbind(4:3, 2:1),
-    colRow = col_labels
-  )
+  #   p <- gplots::heatmap.2(
+  #   x = t(.data),
+  #   distfun = function(x) {
+  #     x[is.na(x)] <- -1e5
+  #     dist(x, method=distance)
+  #   },
+  #   hclustfun = function(x) {
+  #     x[is.na(x)] <- -1e5
+  #     hclust(x, method=cluster)
+  #   },
+  #   dendrogram = 'none',
+  #   Rowv = FALSE,
+  #   Colv = FALSE,
+  #   col = grDevices::colorRampPalette(c("green", "red"))(n = 1000) ,
+  #   density.info = 'none',
+  #   key = TRUE,
+  #   trace = "none",
+  #   scale = "none",
+  #   #srtCol=45,
+  #   labCol = "",
+  #   margins=c(4,12),
+  #   #cexRow=1.5,
+  #   cexRow = 1.5 + ncol(.data)*-0.011 ,
+  #   keysize = 1.5,
+  #   lhei = c(1.5, 9),
+  #   lwid = c(1.5, 4),
+  #   lmat = rbind(4:3, 2:1),
+  #   colRow = labels_colors(dend1)
+  # )
   
 }
 

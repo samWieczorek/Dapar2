@@ -26,7 +26,7 @@ This method plots a histogram of missing values.
 library(QFeatures)
 utils::data(Exp1_R25_pept, package='DAPARdata2')
 qData <- assay(Exp1_R25_pept[[2]])
-conds <- colData(Exp1_R25_pept)
+conds <- colData(Exp1_R25_pept)$Condition
 mvHisto_HC(qData, conds, showValues=TRUE)
 
 pal <- ExtendPalette(2, 'Dark2')

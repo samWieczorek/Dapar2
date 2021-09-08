@@ -4,10 +4,10 @@
 \alias{make.design.3}
 \title{Builds the design matrix for designs of level 3}
 \usage{
-make.design.3(sampleTab)
+make.design.3(sTab)
 }
 \arguments{
-\item{sampleTab}{The data.frame which correspond to the definitino of the replicates}
+\item{sTab}{The data.frame which correspond to the definitino of the replicates}
 }
 \value{
 A design matrix

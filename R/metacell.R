@@ -199,8 +199,6 @@ setMethod("Get_qMetadata_names", "QFeatures",
 
 #' @title Get the type of dataset
 #' 
-#' @param object  An object of class 'SummarizedExperiment'
-#' 
 #' @author Samuel Wieczorek
 #' 
 #' @examples
@@ -210,7 +208,11 @@ setMethod("Get_qMetadata_names", "QFeatures",
 #' @export
 #' 
 "GetTypeDataset"
-#'
+
+
+#' 
+#' @param object  An object of class 'SummarizedExperiment'
+#' 
 setMethod("GetTypeDataset", "SummarizedExperiment",
           function(object, ...) {
             value <- metadata(object)[['typeDataset']]
@@ -226,6 +228,7 @@ setMethod("GetTypeDataset", "SummarizedExperiment",
 #' 
 #' @param i xxx
 #' 
+#' @export
 #' 
 setMethod("GetTypeDataset", "QFeatures",
           function(object, i, ...) {
@@ -242,17 +245,21 @@ setMethod("GetTypeDataset", "QFeatures",
 
 #' @title Get the type of dataset
 #' 
-#' @param object  An object of class 'SummarizedExperiment'
-#' 
 #' @author Samuel Wieczorek
 #' 
 #' @examples
 #' utils::data(Exp1_R25_pept, package='DAPARdata2')
 #' SetTypeDataset(Exp1_R25_pept[[2]])
-#' 
 #' @export
 #' 
 "SetTypeDataset"
+
+#' 
+#' @param object  An object of class 'SummarizedExperiment'
+#' 
+#' @param type xxx
+#' 
+#' @export
 #'
 setMethod("SetTypeDataset", "SummarizedExperiment",
           function(object, type, ...) {
@@ -261,9 +268,11 @@ setMethod("SetTypeDataset", "SummarizedExperiment",
           }
 )
 
-#' @param object xxx
+#' @param object  An object of class 'QFeatures'
 #' 
 #' @param i xxx
+#' 
+#' @param type xxx
 #' 
 #' 
 setMethod("SetTypeDataset", "QFeatures",
@@ -635,7 +644,7 @@ Metacell_maxquant <- function(qdata, conds, df, level=NULL){
 #' @title Similar to the function \code{is.na} but focused on the equality 
 #' with the paramter 'type'.
 #'
-#' @param metadata A data.frame
+#' @param df A data.frame
 #'
 #' @param pattern The value to search in the dataframe
 #' 
@@ -686,14 +695,20 @@ match.metacell <- function(df, pattern, level){
 #' @description
 #' xxxx
 #' 
-#' @param obj An object of class `SummarizedExperiment`
-#' 
-#' @export
-#'
 #' @examples
 #' utils::data(Exp1_R25_pept, package='DAPARdata2')
 #' obj <- Exp1_R25_pept[1:10,]
 #' mc <- Get_qMetadata(obj[[2]])
+#' 
+"Get_qMetadata"
+
+
+#' @param object An object of class `SummarizedExperiment`
+#' 
+#' @param names xxx
+#' 
+#' @export
+#'
 setMethod("Get_qMetadata", "SummarizedExperiment",
           function(object,
                    names,
@@ -710,8 +725,10 @@ setMethod("Get_qMetadata", "SummarizedExperiment",
 
 
 
-
-
+#' @param object An object of class `QFeatures`
+#' 
+#' @param i xxx
+#' 
 setMethod("Get_qMetadata", "QFeatures",
           function(object, i, ...) {
             if (missing(i))
@@ -720,7 +737,8 @@ setMethod("Get_qMetadata", "QFeatures",
               stop("Only one assay to be processed at a time")
             if (is.numeric(i)) i <- names(object)[[i]]
             
-            Get_qMetadata(object = object[[i]], names = metadata(object)$names_metacell)
+            Get_qMetadata(object = object[[i]], 
+                          names = metadata(object)$names_metacell)
           })
 
 
@@ -734,20 +752,21 @@ setMethod("Get_qMetadata", "QFeatures",
 #' @description
 #' Update the metacell information of missing values that were imputed
 #' 
-#' @param obj An object of class `SummarizedExperiment`
-#' 
-#' @param method xxx
-#' 
-#' @param na.type xxx
-#' 
-#' @author Samuel Wieczorek
-#' 
-#' @export
-#' 
 #' @examples
 #' utils::data(Exp1_R25_pept, package='DAPARdata2')
 #' obj <- Exp1_R25_pept[1:10,]
 #' obj[[2]] <- UpdateMetacell(obj[[2]], na.type = 'missing')
+#' 
+#' @author Samuel Wieczorek
+#' 
+"UpdateMetacell"
+
+#' 
+#' @param object An object of class `SummarizedExperiment`
+#' 
+#' @param na.type xxx
+#' 
+#' @export
 #' 
 setMethod("UpdateMetacell", "SummarizedExperiment",
           function(object,

@@ -68,8 +68,8 @@ mod_plots_group_mv_server <- function(id, obj, conds, base_palette){
 
       withProgress(message = 'Making plot', value = 100, {
         tmp <- DaparToolshed::mvHisto_HC(SummarizedExperiment::assay(obj()),
-                                  conds=conds(),
-                                  palette=DaparToolshed::Base_Palette(conditions = conds()))
+                                         conds = conds(),
+                                         palette = DaparToolshed::Base_Palette(conditions = conds()))
       })
       tmp
     })
@@ -82,8 +82,7 @@ mod_plots_group_mv_server <- function(id, obj, conds, base_palette){
 
       isolate({
         withProgress(message = 'Making plot', value = 100, {
-          tmp <- DaparToolshed::mvPerLinesHisto_HC(SummarizedExperiment::assay(obj()),
-                                            conds())
+          tmp <- DaparToolshed::mvPerLinesHisto_HC(qData = SummarizedExperiment::assay(obj()))
         })
       })
       tmp
@@ -98,8 +97,8 @@ mod_plots_group_mv_server <- function(id, obj, conds, base_palette){
       base_palette()
 
       withProgress(message = 'Making plot', value = 100, {
-        tmp <- DaparToolshed::mvPerLinesHistoPerCondition_HC(SummarizedExperiment::assay(obj()),
-                                                      samplesData = conds(),
+        tmp <- DaparToolshed::mvPerLinesHistoPerCondition_HC(qData = SummarizedExperiment::assay(obj()),
+                                                      conds = conds(),
                                                       palette = DaparToolshed::Base_Palette(conditions = conds()))
       })
       tmp

@@ -179,7 +179,7 @@ setMethod("SetConnectedComps", "QFeatures",
 #' 
 #' @author Samuel Wieczorek
 #' 
-#' @example
+#' @examples
 #' GetProstarVersions()
 #' 
 #' @export

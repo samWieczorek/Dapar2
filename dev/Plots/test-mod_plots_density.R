@@ -3,8 +3,8 @@ library(shiny)
 library(SummarizedExperiment)
 
 
-source(file.path("../../../R","mod_plots_density.R"), local=TRUE)$value
-source(file.path("../../../R","mod_popover_for_help.R"), local=TRUE)$value
+source(file.path("../../R","mod_plots_density.R"), local=TRUE)$value
+source(file.path("../../R","mod_popover_for_help.R"), local=TRUE)$value
 
 ui <- fluidPage(
   mod_plots_density_ui('plots_density')

@@ -54,6 +54,8 @@ proteins and is used to generate adjacency matrix and process to aggregation.}
 
 \item{typePipeline}{The type of pipeline used with this dataset. The list of predefined
 pipelines in DaparToolshed can be obtained with the function \code{pipelines()}. Default value is NULL}
+
+\item{software}{xxx}
 }
 \value{
 An instance of class \code{QFeatures}.

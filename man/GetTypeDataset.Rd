@@ -10,9 +10,6 @@ An object of class \code{standardGeneric} of length 1.
 \usage{
 GetTypeDataset
 }
-\arguments{
-\item{object}{An object of class 'SummarizedExperiment'}
-}
 \description{
 Get the type of dataset
 }

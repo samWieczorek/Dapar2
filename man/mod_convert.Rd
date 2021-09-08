@@ -2,12 +2,26 @@
 % Please edit documentation in R/mod_convert.R
 \name{mod_Convert_ui}
 \alias{mod_Convert_ui}
+\alias{mod_Convert_server}
 \title{mod_choose_pipeline_ui and mod_choose_pipeline_server}
 \usage{
 mod_Convert_ui(id)
+
+mod_Convert_server(
+  id,
+  dataIn = NULL,
+  steps.enabled = reactive({     NULL }),
+  remoteReset = reactive({     FALSE })
+)
 }
 \arguments{
-\item{id}{shiny id}
+\item{id}{xxx}
+
+\item{dataIn}{xxx}
+
+\item{steps.enabled}{xxx}
+
+\item{remoteReset}{xxx}
 }
 \description{
 A shiny Module.

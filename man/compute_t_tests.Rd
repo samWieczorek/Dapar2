@@ -4,12 +4,12 @@
 \alias{compute_t_tests}
 \title{xxxxxx}
 \usage{
-compute_t_tests(obj, sampleTab, contrast = "OnevsOne", type = "Student")
+compute_t_tests(obj, sTab, contrast = "OnevsOne", type = "Student")
 }
 \arguments{
 \item{obj}{xxxxx}
 
-\item{sampleTab}{A data.frame which contains the samples data.}
+\item{sTab}{A data.frame which contains the samples data.}
 
 \item{contrast}{Indicates if the test consists of the comparison of each 
 biological condition versus 
@@ -33,8 +33,7 @@ xxx
 \examples{
 library(QFeatures)
 utils::data(Exp1_R25_pept, package='DAPARdata2')
-Exp1_R25_pept <- addAssay(Exp1_R25_pept, 
-QFeatures::filterNA(Exp1_R25_pept[[2]], pNA = 0), name='filtered')
+Exp1_R25_pept <- addAssay(Exp1_R25_pept, QFeatures::filterNA(Exp1_R25_pept[[2]], pNA = 0), name='filtered')
 sTab <- as.data.frame(colData(Exp1_R25_pept))
 ttest <- compute_t_tests(Exp1_R25_pept[['filtered']], sTab ,"OnevsOne")
 

@@ -2,9 +2,9 @@ library(shiny)
 library(highcharter)
 library(SummarizedExperiment)
 
-source(file.path("../../../R","mod_plots_corr_matrix.R"), local=TRUE)$value
-source(file.path("../../../R","mod_popover_for_help.R"), local=TRUE)$value
-source(file.path("../../../R","global.R"), local=TRUE)$value
+source(file.path("../../R","mod_plots_corr_matrix.R"), local=TRUE)$value
+source(file.path("../../R","mod_popover_for_help.R"), local=TRUE)$value
+source(file.path("../../R","global.R"), local=TRUE)$value
 
 
 

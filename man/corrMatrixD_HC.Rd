@@ -8,6 +8,8 @@ numeric matrix.}
 corrMatrixD_HC(obj.se, names = NULL, rate = 0.5, showValues = TRUE)
 }
 \arguments{
+\item{obj.se}{An object of class 'SummarizedExperiment'}
+
 \item{names}{A vector of strings which will be used as legend. The length
 of 'names' must be equal to the number of samples in the dataset.}
 
@@ -15,8 +17,6 @@ of 'names' must be equal to the number of samples in the dataset.}
 the gradient of colors}
 
 \item{showValues}{xxx}
-
-\item{obj}{xxx}
 }
 \value{
 A colored correlation matrix

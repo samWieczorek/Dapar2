@@ -10,16 +10,12 @@ An object of class \code{standardGeneric} of length 1.
 \usage{
 SetTypeDataset
 }
-\arguments{
-\item{object}{An object of class 'SummarizedExperiment'}
-}
 \description{
 Get the type of dataset
 }
 \examples{
 utils::data(Exp1_R25_pept, package='DAPARdata2')
 SetTypeDataset(Exp1_R25_pept[[2]])
-
 }
 \author{
 Samuel Wieczorek

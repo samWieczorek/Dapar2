@@ -4,20 +4,16 @@
 \alias{wrapperClassic1wayAnova}
 \title{Wrapper for One-way Anova statistical test}
 \usage{
-wrapperClassic1wayAnova(
-  obj,
-  sampleTab,
-  with_post_hoc = FALSE,
-  post_hoc_test = NULL
-)
+wrapperClassic1wayAnova(obj, sTab, with_post_hoc = FALSE, post_hoc_test = NULL)
 }
 \arguments{
 \item{obj}{An object of class \code{SummarizedExperiment}.}
 
-\item{with_post_hoc}{a character string with 2 possible values: "Yes" and
-"No" (default) saying if function must perform a Post-Hoc test or not.}
+\item{sTab}{xxx}
 
-\item{post_hoc_test}{character string, possible values are "No" (for no
+\item{with_post_hoc}{a boolean saying if function must perform a Post-Hoc test or not.}
+
+\item{post_hoc_test}{character string, possible values are NULL (for no
 test; default value) or TukeyHSD" or "Dunnett". See details of
 \code{postHocTest()} function to choose the appropriate one.}
 }

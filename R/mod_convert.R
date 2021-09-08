@@ -35,13 +35,13 @@ mod_Convert_ui <- function(id){
 #' @param steps.enabled xxx
 #' @param remoteReset xxx
 #'
-#' @noRd
-#'
 #' @import QFeatures
 #' @importFrom shinyalert shinyalert
 #'
 #' @export
 #'
+#' @rdname mod_convert
+#' 
 mod_Convert_server <- function(id,
                                dataIn = NULL,
                                steps.enabled = reactive({NULL}),
@@ -137,11 +137,12 @@ mod_Convert_server <- function(id,
         )
       )
 
-      # observeEvent(input$btn_validate_Description, ignoreInit = T, ignoreNULL=T, {
-      #   rv$dataIn <- dataIn()
-      #   dataOut$trigger <- Send_Result_to_Caller(rv$dataIn)$trigger
-      #   dataOut$value <- Send_Result_to_Caller(rv$dataIn)$value
-      # })
+      observeEvent(input$btn_validate_Description, ignoreInit = T, ignoreNULL=T, {
+        rv$dataIn <- dataIn()
+        #browser()
+        dataOut$trigger <- Send_Result_to_Caller(rv$dataIn)$trigger
+        dataOut$value <- Send_Result_to_Caller(rv$dataIn)$value
+      })
 
 
     })

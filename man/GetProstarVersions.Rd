@@ -12,6 +12,10 @@ A list
 \description{
 Return the versions of Prostar, DaparToolshed and DaparData
 }
+\examples{
+GetProstarVersions()
+
+}
 \author{
 Samuel Wieczorek
 }

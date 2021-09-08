@@ -59,6 +59,8 @@ ReplaceSpecialChars <- function(x){
 #' 
 #' @param analysis The name of the MS analysis
 #' 
+#' @param software xxx
+#' 
 #' @return An instance of class \code{QFeatures}.
 #' 
 #' @author Samuel Wieczorek
@@ -312,7 +314,7 @@ createQFeatures <- function(data,
 #'     origin <- obj@experimentData@other$OriginOfValues
 #'   }
 #'   
-#'   daparVersion <- if (is.na(utils::installed.packages()["DAPAR2"])) 'NA' else utils::installed.packages()["DAPAR2",'Version']
+#'   daparVersion <- if (is.na(utils::installed.packages()["DaparToolshed"])) 'NA' else utils::installed.packages()["DaparToolshed",'Version']
 #'   ProstarVersion <-if (is.na(utils::installed.packages()["Prostar2"])) 'NA' else utils::installed.packages()["Prostar2",'Version']
 #'   
 #'   

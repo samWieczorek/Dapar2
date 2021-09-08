@@ -4,13 +4,7 @@
 \alias{heatmapD}
 \title{Heatmap of the quantitative proteomics data}
 \usage{
-heatmapD(
-  qData,
-  conds,
-  distance = "euclidean",
-  cluster = "complete",
-  dendro = FALSE
-)
+heatmapD(qData, conds, distance = "euclidean", cluster = "complete")
 }
 \arguments{
 \item{qData}{A dataframe of numeric values}
@@ -22,8 +16,6 @@ the dendrogram. See \code{help(heatmap.2)}}
 
 \item{cluster}{the clustering algorithm used to build the dendrogram.
 See \code{help(heatmap.2)}}
-
-\item{dendro}{A boolean to indicate if the dendrogram has to be displayed}
 }
 \value{
 A heatmap
@@ -36,8 +28,8 @@ This function is a wrapper to 'heatmap.2' that displays a numeric matrix
 library(QFeatures)
 utils::data(Exp1_R25_prot, package='DAPARdata2')
 conds <- colData(Exp1_R25_prot)[['Condition']]
-qData <- assay(Exp1_R25_prot)[1:100,]
-heatmapD(qData, conds, dendro = TRUE)
+qData <- assay(Exp1_R25_prot)
+heatmapD(qData, conds)
 }
 
 }

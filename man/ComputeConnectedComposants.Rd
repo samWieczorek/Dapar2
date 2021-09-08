@@ -7,7 +7,7 @@
 ComputeConnectedComposants(obj.se)
 }
 \arguments{
-\item{X.list}{A list of adjacency matrices as provided by the function BuildListAdjacencyMatrices.}
+\item{obj.se}{xxxx}
 }
 \value{
 A list of items containing the connex components derived from the matrices given in arguments

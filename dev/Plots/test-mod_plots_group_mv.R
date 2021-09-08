@@ -3,9 +3,9 @@ library(highcharter)
 library(SummarizedExperiment)
 
 
-source(file.path("../../../R", "mod_plots_group_mv.R"), local=TRUE)$value
-source(file.path('../../../R', 'mod_popover_for_help.R'), local=TRUE)$value
-source(file.path('../../../R', 'global.R'), local=TRUE)$value
+source(file.path("../../R", "mod_plots_group_mv.R"), local=TRUE)$value
+source(file.path('../../R', 'mod_popover_for_help.R'), local=TRUE)$value
+source(file.path('../../R', 'global.R'), local=TRUE)$value
 
 
 ui <- fluidPage(
@@ -20,13 +20,17 @@ server <- function(input, output, session) {
 
   obj <- Exp1_R25_prot[[2]]
 
-  conds <- SummarizedExperiment::colData(Exp1_R25_prot)
+  samplesData <- SummarizedExperiment::colData(Exp1_R25_prot)
+  conds <- samplesData$Condition
 
   mod_plots_group_mv_server('plots_group_mv',
                             obj = reactive({obj}),
                             conds = reactive({conds}),
-                            base_palette=reactive({DaparToolshed::Example_Palette(conds, DAPAR2::Base_Palette(conditions = conds))})
-  )
+                            base_palette = reactive({DaparToolshed::Example_Palette(conds, 
+                                                                                    DaparToolshed::Base_Palette(conditions = conds)
+                                                                                    )
+                              })
+                            )
 
 }
 

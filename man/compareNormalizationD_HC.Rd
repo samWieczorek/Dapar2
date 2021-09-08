@@ -22,6 +22,8 @@ compareNormalizationD_HC(
 
 \item{conds}{A vector of the conditions (one condition per sample).}
 
+\item{keyId}{xxx}
+
 \item{palette}{xxx}
 
 \item{subset.view}{xxx}

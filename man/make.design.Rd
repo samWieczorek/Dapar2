@@ -4,10 +4,10 @@
 \alias{make.design}
 \title{Builds the design matrix}
 \usage{
-make.design(sampleTab)
+make.design(sTab)
 }
 \arguments{
-\item{sampleTab}{The data.frame which correspond to the pData function of MSnbase}
+\item{sTab}{The data.frame which correspond to the pData function of MSnbase}
 }
 \value{
 A design matrix
