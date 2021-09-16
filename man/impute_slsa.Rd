@@ -13,6 +13,8 @@ impute_slsa(x, sampleTab)
 }
 \value{
 A DataFrame
+
+NA
 }
 \description{
 Imputation of peptides having no values in a biological condition.

@@ -18,6 +18,11 @@ mod_plots_legend_colored_exprs_server(id)
 
 \item{session}{internal}
 }
+\value{
+NA
+
+NA
+}
 \description{
 A shiny Module.
 }

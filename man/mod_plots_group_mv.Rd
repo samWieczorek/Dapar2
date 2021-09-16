@@ -24,6 +24,9 @@ mod_plots_group_mv_server(id, obj, conds, base_palette)
 
 \item{session}{internal}
 }
+\value{
+NA
+}
 \description{
 A shiny Module.
 }

@@ -19,6 +19,8 @@ optionsBtnClass <- "info"
 #'
 #' @importFrom shiny NS tagList
 #' @import sos
+#' 
+#' @return NA
 #'
 mod_Convert_ui <- function(id){
   # ns <- NS(id)
@@ -41,6 +43,8 @@ mod_Convert_ui <- function(id){
 #' @export
 #'
 #' @rdname mod_convert
+#' 
+#' @return NA
 #' 
 mod_Convert_server <- function(id,
                                dataIn = NULL,
@@ -137,7 +141,7 @@ mod_Convert_server <- function(id,
         )
       )
 
-      observeEvent(input$btn_validate_Description, ignoreInit = T, ignoreNULL=T, {
+      observeEvent(input$btn_validate_Description, ignoreInit = TRUE, ignoreNULL=TRUE, {
         rv$dataIn <- dataIn()
         #browser()
         dataOut$trigger <- Send_Result_to_Caller(rv$dataIn)$trigger
@@ -299,7 +303,7 @@ mod_Convert_server <- function(id,
 
     observeEvent(input$selectFile_software,{rv.widgets$selectFile_software <- input$selectFile_software})
 
-    observeEvent(input$btn_validate_SelectFile, ignoreInit = T, {
+    observeEvent(input$btn_validate_SelectFile, ignoreInit = TRUE, {
       # Add your stuff code here
       dataOut$trigger <- Send_Result_to_Caller(rv$dataIn)$trigger
       dataOut$value <- Send_Result_to_Caller(rv$dataIn)$value
@@ -326,7 +330,7 @@ mod_Convert_server <- function(id,
         )
       )
 
-      observeEvent(input$btn_validate_DataID, ignoreInit = T, {
+      observeEvent(input$btn_validate_DataID, ignoreInit = TRUE, {
         # Add your stuff code here
         dataOut$trigger <- Send_Result_to_Caller(rv$dataIn)$trigger
         dataOut$value <- Send_Result_to_Caller(rv$dataIn)$value
@@ -356,7 +360,7 @@ mod_Convert_server <- function(id,
         )
       )
 
-      observeEvent(input$btn_validate_ExpFeatData, ignoreInit = T, {
+      observeEvent(input$btn_validate_ExpFeatData, ignoreInit = TRUE, {
         # Add your stuff code here
         dataOut$trigger <- Send_Result_to_Caller(rv$dataIn)$trigger
         dataOut$value <- Send_Result_to_Caller(rv$dataIn)$value
@@ -386,7 +390,7 @@ mod_Convert_server <- function(id,
         )
       )
 
-      observeEvent(input$btn_validate_SamplesMetadata, ignoreInit = T, {
+      observeEvent(input$btn_validate_SamplesMetadata, ignoreInit = TRUE, {
         # Add your stuff code here
         dataOut$trigger <- Send_Result_to_Caller(rv$dataIn)$trigger
         dataOut$value <- Send_Result_to_Caller(rv$dataIn)$value
@@ -415,7 +419,7 @@ mod_Convert_server <- function(id,
         )
       )
 
-      observeEvent(input$btn_validate_Save, ignoreInit = T, {
+      observeEvent(input$btn_validate_Save, ignoreInit = TRUE, {
         # Add your stuff code here
         rv$dataIn <- AddItemToDataset(rv$dataIn, config$name)
         dataOut$trigger <- Send_Result_to_Caller(rv$dataIn)$trigger

@@ -6,6 +6,9 @@
 \usage{
 MetacellFilteringScope()
 }
+\value{
+NA
+}
 \description{
 Quantitative cell metadata scopes for filtering
 }

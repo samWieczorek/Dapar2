@@ -10,13 +10,20 @@ mod_settings_ui(id)
 mod_settings_server(id, obj)
 }
 \arguments{
-\item{id}{shiny id}
+\item{id}{xxx}
+
+\item{obj}{xxx}
 
 \item{input}{internal}
 
 \item{output}{internal}
 
 \item{session}{internal}
+}
+\value{
+NA
+
+NA
 }
 \description{
 A shiny Module.

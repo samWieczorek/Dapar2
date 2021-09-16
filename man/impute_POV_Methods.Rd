@@ -6,6 +6,9 @@
 \usage{
 impute_POV_Methods()
 }
+\value{
+NA
+}
 \description{
 List the methods available in DAPAR to impute Partially Observed Values (POV)
 }

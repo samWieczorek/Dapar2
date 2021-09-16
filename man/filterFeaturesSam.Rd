@@ -32,6 +32,13 @@ are `ttestAssay`.}
 
 \item{filter}{xxx}
 }
+\value{
+NA
+
+NA
+
+NA
+}
 \description{
 This manual page describes the The filtering functions of DAPAR have not been all moved to DaparToolshed as we now use the QFeatures package
 which provides some filtering functions, especially on features that are present in the rowData

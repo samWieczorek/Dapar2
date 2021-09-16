@@ -17,6 +17,8 @@
 #' @export
 #'
 #' @importFrom shiny NS tagList
+#' 
+#' @return NA
 #'
 mod_plots_heatmap_ui <- function(id){
   ns <- NS(id)
@@ -62,6 +64,8 @@ mod_plots_heatmap_ui <- function(id){
 #' @keywords internal
 #'
 #' @importFrom SummarizedExperiment assay
+#' 
+#' @return NA
 #'
 mod_plots_heatmap_server <- function(id, obj, conds, width = 900){
 

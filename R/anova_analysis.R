@@ -37,6 +37,8 @@
 #' 
 #' @importFrom dplyr select
 #' 
+#' @return NA
+#' 
 wrapperClassic1wayAnova <- function(obj, 
                                     sTab, 
                                     with_post_hoc = FALSE, 
@@ -100,6 +102,8 @@ wrapperClassic1wayAnova <- function(obj,
 #' @examples
 #' 
 #' @importFrom purrr map_dfr
+#' 
+#' @return NA
 #' 
 formatPHResults <- function(post_hoc_models_summaries){
   

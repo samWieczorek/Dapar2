@@ -129,13 +129,13 @@ readExcel <- function(file, extension, sheet){
   # else if (extension=="xlsx") {
   #     data <- readxl::read_xlsx(file, sheet)
   # }
-  # return(as.data.frame(data,asIs=T))
+  # return(as.data.frame(data,asIs=TRUE))
   
   #options(digits=10)
   data <- NULL
   data <- readxl::read_excel(file, sheet)
   
-  return(as.data.frame(data,asIs=T, stringsAsFactors=F))
+  return(as.data.frame(data,asIs=TRUE, stringsAsFactors=FALSE))
   
 }
 
@@ -152,6 +152,8 @@ readExcel <- function(file, extension, sheet){
 #' @export
 #' 
 #' @importFrom openxlsx getSheetNames
+#' 
+#' @return A list of sheets name
 #' 
 listSheets <- function(file){
   ll <- openxlsx::getSheetNames(file)

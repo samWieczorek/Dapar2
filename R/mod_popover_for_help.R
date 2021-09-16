@@ -11,6 +11,8 @@
 #' * title: xxxx
 #' * content: xxxx
 #'
+#' @return NA
+#' 
 #' @rdname mod_popover_for_help
 #'
 #' @keywords internal
@@ -41,6 +43,7 @@ mod_popover_for_help_ui <- function(id){
 #' @rdname mod_popover_for_help
 #' 
 #' @export
+#' @return NA
 #' 
 #' @keywords internal
 #' 

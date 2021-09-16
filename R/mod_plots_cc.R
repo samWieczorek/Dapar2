@@ -17,6 +17,7 @@
 #' @keywords internal
 #' 
 #' @export 
+#' @return NA
 #' 
 #' @importFrom shiny NS tagList
 #' 
@@ -89,6 +90,8 @@ mod_plots_cc_ui <- function(id) {
 #' @param matAdj xxx
 #' 
 #' @param obj xxx
+#' 
+#' @return NA
 #' 
 #' @rdname  plots_cc
 #' 
@@ -245,7 +248,7 @@ mod_plots_cc_server <- function(input, output, session,
                                       scroller = TRUE,
                                       orderClasses = TRUE,
                                       autoWidth=TRUE,
-                                      columns.searchable=F,
+                                      columns.searchable=FALSE,
                                       columnDefs = list(list(columns.width=c("60px"),
                                                              columnDefs.targets=c(list(0),list(1),list(2))))))
     
@@ -483,7 +486,7 @@ mod_plots_cc_server <- function(input, output, session,
   #                                     scroller = TRUE,
   #                                     orderClasses = TRUE,
   #                                     autoWidth=FALSE,
-  #                                     columns.searchable=F,
+  #                                     columns.searchable=FALSE,
   #                                     columnDefs = list(list(columns.width=c("60px"),
   #                                                            columnDefs.targets=c(list(0),list(1),list(2))))))
   #   
@@ -579,7 +582,7 @@ mod_plots_cc_server <- function(input, output, session,
   #                                     scroller = TRUE,
   #                                     orderClasses = TRUE,
   #                                     autoWidth=FALSE,
-  #                                     columns.searchable=F,
+  #                                     columns.searchable=FALSE,
   #                                     columnDefs = list(list(columns.width=c("60px"),
   #                                                            columnDefs.targets=c(list(0),list(1),list(2))))))
   #   

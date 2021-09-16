@@ -19,7 +19,10 @@ GetIndices_BasedOnConditions(metacell.mask, type, conds, percent, op, th)
 
 \item{op}{String for operator to use. List of operators is available with SymFilteringOperators().}
 
-\item{th}{The theshold to apply
+\item{th}{The theshold to apply}
+}
+\value{
+NA
 
 #' @examples
 utils::data(Exp1_R25_pept, package='DAPARdata')
@@ -31,8 +34,8 @@ type <- 'AllCond'
 conds <- Biobase::pData(obj)$Condition
 op <- '>='
 th <- 2
-percent <- F
-ind <- GetIndices_BasedOnConditions(metacell.mask, type, conds, percent, op, th)}
+percent <- FALSE
+ind <- GetIndices_BasedOnConditions(metacell.mask, type, conds, percent, op, th)
 }
 \description{
 This function looks for the lines that respect the request in either all conditions

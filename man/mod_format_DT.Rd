@@ -31,6 +31,11 @@ mod_format_DT_server(
 
 \item{session}{internal}
 }
+\value{
+NA
+
+NA
+}
 \description{
 A shiny Module.
 }

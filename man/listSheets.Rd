@@ -11,6 +11,8 @@ listSheets(file)
 }
 \value{
 A vector
+
+A list of sheets name
 }
 \description{
 This function returns the list of the sheets names in a Excel file.

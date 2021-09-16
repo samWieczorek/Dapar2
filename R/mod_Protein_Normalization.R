@@ -1,6 +1,9 @@
 btn_style <- "display:inline-block; vertical-align: middle; padding: 7px"
 
-
+#' @export
+#' 
+#' @return NA
+#'
 AddItemToDataset <- function(dataset, name){
   addAssay(dataset,
            dataset[[length(dataset)]],
@@ -9,6 +12,8 @@ AddItemToDataset <- function(dataset, name){
 
 
 #' @export
+#' 
+#' @return NA
 #'
 mod_Protein_Normalization_ui <- function(id){
   ns <- NS(id)
@@ -16,6 +21,8 @@ mod_Protein_Normalization_ui <- function(id){
 
 
 #' @export
+#'
+#' @return NA
 #'
 mod_Protein_Normalization_server <- function(id,
                                              dataIn = NULL,
@@ -70,7 +77,7 @@ mod_Protein_Normalization_server <- function(id,
     config <- reactiveValues(
       name = 'Protein_Normalization',
       steps = c('Description', 'Step1', 'Step2', 'Step3'),
-      mandatory = c(T, F, T, T)
+      mandatory = c(TRUE, FALSE, TRUE, TRUE)
     )
 
     rv.widgets <- reactiveValues(
@@ -131,12 +138,11 @@ output$Description <- renderUI({
 })
 
 
-    observeEvent(input$btn_validate_Description, ignoreInit = T, ignoreNULL=T, {
+    observeEvent(input$btn_validate_Description, ignoreInit = TRUE, ignoreNULL = TRUE, {
       rv$dataIn <- dataIn()
-      dataOut$trigger <- Send_Result_to_Caller(rv$dataIn)$trigger
-      dataOut$value <- Send_Result_to_Caller(rv$dataIn)$value
       #rv$status['Description'] <- global$VALIDATED
-
+      dataOut$trigger <- Magellan::Timestamp()
+      dataOut$value <- rv$dataIn
     })
 
 
@@ -246,10 +252,12 @@ output$Step1 <- renderUI({
 })
 
 
-observeEvent(input$btn_validate_Step1, ignoreInit = T, {
+observeEvent(input$btn_validate_Step1, ignoreInit = TRUE, {
   # Add your stuff code here
-  dataOut$trigger <- Send_Result_to_Caller(rv$dataIn)$trigger
-  dataOut$value <- Send_Result_to_Caller(rv$dataIn)$value
+  # dataOut$trigger <- Send_Result_to_Caller(rv$dataIn)$trigger
+  # dataOut$value <- Send_Result_to_Caller(rv$dataIn)$value
+  dataOut$trigger <- Magellan::Timestamp()
+  dataOut$value <- rv$dataIn
   #rv$status['Step1'] <- global$VALIDATED
 })
 
@@ -319,10 +327,14 @@ output$Step2 <- renderUI({
 
 })
 
-observeEvent(input$btn_validate_Step2, ignoreInit = T, {
+observeEvent(input$btn_validate_Step2, ignoreInit = TRUE, {
   # Add your stuff code here
-  dataOut$trigger <- Send_Result_to_Caller(rv$dataIn)$trigger
-  dataOut$value <- Send_Result_to_Caller(rv$dataIn)$value
+  #dataOut$trigger <- Send_Result_to_Caller(rv$dataIn)$trigger
+  #dataOut$value <- Send_Result_to_Caller(rv$dataIn)$value
+  
+  dataOut$trigger <- Magellan::Timestamp()
+  dataOut$value <- rv$dataIn
+  
   #rv$status['Step2'] <- global$VALIDATED
 })
 
@@ -348,11 +360,16 @@ output$Step3 <- renderUI({
 
 })
 
-observeEvent(input$btn_validate_Step3, ignoreInit = T, {
+observeEvent(input$btn_validate_Step3, ignoreInit = TRUE, {
   # Add your stuff code here
   rv$dataIn <- AddItemToDataset(rv$dataIn, config$name)
-  dataOut$trigger <- Send_Result_to_Caller(rv$dataIn)$trigger
-  dataOut$value <- Send_Result_to_Caller(rv$dataIn)$value
+  # dataOut$trigger <- Send_Result_to_Caller(rv$dataIn)$trigger
+  # dataOut$value <- Send_Result_to_Caller(rv$dataIn)$value
+  # 
+  dataOut$trigger <- Magellan::Timestamp()
+  dataOut$value <- rv$dataIn
+  
+  
   #print(names(dataOut))
   # rv$status['Step3'] <- global$VALIDATED
 })

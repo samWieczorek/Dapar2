@@ -27,7 +27,7 @@ server <- function(input, output, session) {
 
     ll <- c('mod_plots_var_dist', 'mod_plots_var_dist', 'mod_plots_var_dist')
     radioButtons("rb", "",
-                 inline = T,
+                 inline = TRUE,
                  choiceNames = lapply(ll, function(x){
                    img(src = dataURI(file=system.file('images', paste0(x, '.png'), package="MSPipelines"), mime="image/png"),
                        width='30px')
@@ -52,7 +52,7 @@ shinyApp(ui = ui, server = server)
 #
 # ui <- fluidPage(
 #    radioButtons("rb", "",
-#                 inline = T,
+#                 inline = TRUE,
 #                choiceNames = list(
 #                  img(src = base64enc::dataURI(file=system.file('images', 'mod_plots_var_dist.png', package="MSPipelines"), mime="image/png"),
 #                      width='30px'),
@@ -106,7 +106,7 @@ shinyApp(ui = ui, server = server)
 #        prettyRadioButtons(
 #          inputId = "radio1",
 #          label = "Click me!",
-#          inline = T,
+#          inline = TRUE,
 #          choiceNames = list(
 #            img(src = base64enc::dataURI(file=system.file('images', 'mod_plots_var_dist.png', package="MSPipelines"), mime="image/png"),
 #                width='30px'),

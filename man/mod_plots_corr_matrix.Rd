@@ -24,6 +24,11 @@ mod_plots_corr_matrix_server(id, obj, names = NULL, gradientRate = NULL)
 
 \item{session}{internal}
 }
+\value{
+NA
+
+NA
+}
 \description{
 A shiny Module.
 }

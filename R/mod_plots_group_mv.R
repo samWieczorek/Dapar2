@@ -20,6 +20,8 @@
 #'
 #' @importFrom shiny NS tagList
 #' @importFrom highcharter highchartOutput
+#' 
+#' @return NA
 #'
 mod_plots_group_mv_ui <- function(id){
   ns <- NS(id)

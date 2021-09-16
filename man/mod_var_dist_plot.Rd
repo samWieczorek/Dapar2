@@ -18,6 +18,11 @@ mod_plots_var_dist_server(id, obj, conds, base_palette = NULL)
 
 \item{session}{internal}
 }
+\value{
+NA
+
+NA
+}
 \description{
 A shiny Module.
 }

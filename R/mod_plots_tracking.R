@@ -17,6 +17,8 @@
 #' @export
 #'
 #' @importFrom shiny NS tagList
+#' 
+#' @return NA
 #'
 mod_plots_tracking_ui <- function(id){
   ns <- NS(id)
@@ -65,6 +67,8 @@ mod_plots_tracking_ui <- function(id){
 #' @keywords internal
 #'
 #' @import shinyjs
+#' 
+#' @return NA
 #'
 mod_plots_tracking_server <- function(id,
                                       obj,

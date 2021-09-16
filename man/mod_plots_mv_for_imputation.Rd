@@ -18,6 +18,11 @@ mod_plots_mv_for_imputation_server(id, obj, ind, title = NULL, palette = NULL)
 
 \item{session}{internal}
 }
+\value{
+NA
+
+NA
+}
 \description{
 A shiny Module.
 }

@@ -10,6 +10,9 @@ An object of class \code{standardGeneric} of length 1.
 \usage{
 UpdateMetacell
 }
+\value{
+NA
+}
 \description{
 Update the metacell information of missing values that were imputed
 }

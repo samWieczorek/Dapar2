@@ -9,6 +9,9 @@ standardise(data)
 \arguments{
 \item{data}{xxx}
 }
+\value{
+NA
+}
 \description{
 This code is an adaptation of the standardise function in the package Mfuzz
 it works directly on a matrix or data.frame of intensities

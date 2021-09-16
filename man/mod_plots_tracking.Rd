@@ -29,6 +29,11 @@ mod_plots_tracking_server(
 
 \item{metadata}{Metadata of Features containing the SummarizedExperiment}
 }
+\value{
+NA
+
+NA
+}
 \description{
 A shiny Module.
 }

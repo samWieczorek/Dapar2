@@ -13,6 +13,8 @@
 #' @keywords internal
 #' @export 
 #' @importFrom shiny NS tagList 
+#' @return NA
+#' 
 mod_plots_legend_colored_exprs_ui <- function(id){
   ns <- NS(id)
   tagList(
@@ -38,6 +40,7 @@ mod_plots_legend_colored_exprs_ui <- function(id){
 #' @rdname mod_legend_colored_exprs
 #' @export
 #' @keywords internal
+#' @return NA
     
 mod_plots_legend_colored_exprs_server <- function(id){
   

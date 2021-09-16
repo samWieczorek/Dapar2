@@ -70,7 +70,7 @@ mod_Protein_Normalization_server <- function(id,
     config <- reactiveValues(
       name = 'Protein_Normalization',
       steps = c('Description', 'Step1', 'Step2', 'Step3'),
-      mandatory = c(T, F, T, T)
+      mandatory = c(TRUE, FALSE, TRUE, TRUE)
     )
 
     rv.widgets <- reactiveValues(
@@ -126,7 +126,7 @@ output$Description <- renderUI({
     )
   )
 
-  observeEvent(input$btn_validate_Description, ignoreInit = T, ignoreNULL=T, {
+  observeEvent(input$btn_validate_Description, ignoreInit = TRUE, ignoreNULL = TRUE, {
     rv$dataIn <- dataIn()
     dataOut$trigger <- Send_Result_to_Caller(rv$dataIn)$trigger
     dataOut$value <- Send_Result_to_Caller(rv$dataIn)$value
@@ -240,7 +240,7 @@ output$Step1 <- renderUI({
   # ObserveEvent of the widgets
   observeEvent(input$select3,{rv.widgets$select3 <- input$select3})
 
-  observeEvent(input$btn_validate_Step1, ignoreInit = T, {
+  observeEvent(input$btn_validate_Step1, ignoreInit = TRUE, {
     # Add your stuff code here
     dataOut$trigger <- Send_Result_to_Caller(rv$dataIn)$trigger
     dataOut$value <- Send_Result_to_Caller(rv$dataIn)$value
@@ -315,7 +315,7 @@ output$Step2 <- renderUI({
 
   observeEvent(input$select2_2,{rv.widgets$select2_2 <- input$select2_2})
 
-  observeEvent(input$btn_validate_Step2, ignoreInit = T, {
+  observeEvent(input$btn_validate_Step2, ignoreInit = TRUE, {
     # Add your stuff code here
     dataOut$trigger <- Send_Result_to_Caller(rv$dataIn)$trigger
     dataOut$value <- Send_Result_to_Caller(rv$dataIn)$value
@@ -345,7 +345,7 @@ output$Step3 <- renderUI({
         )
   )
 
-  observeEvent(input$btn_validate_Step3, ignoreInit = T, {
+  observeEvent(input$btn_validate_Step3, ignoreInit = TRUE, {
     # Add your stuff code here
     rv$dataIn <- AddItemToDataset(rv$dataIn, config$name)
     dataOut$trigger <- Send_Result_to_Caller(rv$dataIn)$trigger

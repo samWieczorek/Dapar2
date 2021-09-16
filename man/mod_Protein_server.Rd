@@ -26,6 +26,9 @@ Basically, it is the program which has called this module}
 
 \item{status}{xxx}
 }
+\value{
+NA
+}
 \description{
 This module contains the configuration informations for the corresponding pipeline.
 It is called by the nav_pipeline module of the package Magellan

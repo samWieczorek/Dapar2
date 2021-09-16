@@ -11,6 +11,9 @@ Example_Palette(conditions, base_palette)
 
 \item{base_palette}{xxx}
 }
+\value{
+NA
+}
 \description{
 Builds a vector of `#conditions` colors.
 }

@@ -6,6 +6,9 @@
 \usage{
 impute_MEC_Methods()
 }
+\value{
+NA
+}
 \description{
 List the methods in DAPAR to impute Missing Entire Condition (MEC)
 }

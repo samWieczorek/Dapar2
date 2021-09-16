@@ -9,6 +9,9 @@ mod_all_plots_ui(id)
 \arguments{
 \item{id, input, output, session}{Internal parameters for {shiny}.}
 }
+\value{
+NA
+}
 \description{
 A shiny Module.
 }

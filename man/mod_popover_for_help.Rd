@@ -22,6 +22,11 @@ mod_popover_for_help_server(id, data)
 
 \item{session}{internal}
 }
+\value{
+NA
+
+NA
+}
 \description{
 A shiny Module.
 }

@@ -18,6 +18,11 @@ mod_plots_density_server(id, obj, conds, legend = NULL, base_palette = NULL)
 
 \item{session}{internal}
 }
+\value{
+NA
+
+NA
+}
 \description{
 A shiny Module.
 }

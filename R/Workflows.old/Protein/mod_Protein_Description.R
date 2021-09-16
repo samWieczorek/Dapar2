@@ -45,7 +45,7 @@ mod_Protein_Description_server <- function(id,
   config <- list(
     name = 'Protein_Description',
     steps = c('Description'),
-    mandatory = c(T)
+    mandatory = c(TRUE)
   )
 
   # Define default selected values for widgets

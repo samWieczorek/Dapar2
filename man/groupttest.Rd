@@ -14,7 +14,7 @@ groupttest(X, qData1 = NULL, qData2 = NULL)
 \item{qData2}{xxxx.}
 }
 \value{
-xxxxx
+NA
 }
 \description{
 xxxxxx

@@ -162,7 +162,7 @@ metacell.def <- function(level){
 #' Get_qMetadata_names(Exp1_R25_pept)
 #' 
 #' @export
-#' 
+#' @return NA
 setMethod("Get_qMetadata_names", "SummarizedExperiment",
           function(object, ...) {
             value <- metadata(object)[['qMetadata_names']]
@@ -181,7 +181,7 @@ setMethod("Get_qMetadata_names", "SummarizedExperiment",
 #' @param i xxx
 #' 
 #' @export
-#' 
+#'@return NA
 setMethod("Get_qMetadata_names", "QFeatures",
           function(object, i, ...) {
             if (missing(i))
@@ -206,13 +206,14 @@ setMethod("Get_qMetadata_names", "QFeatures",
 #' GetTypeDataset(Exp1_R25_pept[[2]])
 #' 
 #' @export
+#' @return NA
 #' 
 "GetTypeDataset"
 
 
 #' 
 #' @param object  An object of class 'SummarizedExperiment'
-#' 
+#' @return NA
 setMethod("GetTypeDataset", "SummarizedExperiment",
           function(object, ...) {
             value <- metadata(object)[['typeDataset']]
@@ -229,7 +230,7 @@ setMethod("GetTypeDataset", "SummarizedExperiment",
 #' @param i xxx
 #' 
 #' @export
-#' 
+#' @return NA
 setMethod("GetTypeDataset", "QFeatures",
           function(object, i, ...) {
             if (missing(i))
@@ -251,7 +252,7 @@ setMethod("GetTypeDataset", "QFeatures",
 #' utils::data(Exp1_R25_pept, package='DAPARdata2')
 #' SetTypeDataset(Exp1_R25_pept[[2]])
 #' @export
-#' 
+#' @return NA
 "SetTypeDataset"
 
 #' 
@@ -274,7 +275,7 @@ setMethod("SetTypeDataset", "SummarizedExperiment",
 #' 
 #' @param type xxx
 #' 
-#' 
+#' @return NA
 setMethod("SetTypeDataset", "QFeatures",
           function(object, i, type, ...) {
             if (missing(i))
@@ -708,6 +709,7 @@ match.metacell <- function(df, pattern, level){
 #' @param names xxx
 #' 
 #' @export
+#' @return NA
 #'
 setMethod("Get_qMetadata", "SummarizedExperiment",
           function(object,
@@ -728,6 +730,7 @@ setMethod("Get_qMetadata", "SummarizedExperiment",
 #' @param object An object of class `QFeatures`
 #' 
 #' @param i xxx
+#' @return NA
 #' 
 setMethod("Get_qMetadata", "QFeatures",
           function(object, i, ...) {
@@ -758,6 +761,7 @@ setMethod("Get_qMetadata", "QFeatures",
 #' obj[[2]] <- UpdateMetacell(obj[[2]], na.type = 'missing')
 #' 
 #' @author Samuel Wieczorek
+#' @return NA
 #' 
 "UpdateMetacell"
 
@@ -767,7 +771,7 @@ setMethod("Get_qMetadata", "QFeatures",
 #' @param na.type xxx
 #' 
 #' @export
-#' 
+#'@return NA
 setMethod("UpdateMetacell", "SummarizedExperiment",
           function(object,
                    na.type,
@@ -815,6 +819,7 @@ setMethod("UpdateMetacell", "SummarizedExperiment",
 #' search.metacell.tags('quanti', 'peptide')
 #' 
 #' @export
+#' @return NA
 #' 
 
 search.metacell.tags <- function(pattern, level, depth = '1'){

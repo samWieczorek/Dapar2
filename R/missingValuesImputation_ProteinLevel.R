@@ -30,6 +30,8 @@
 #' 
 #' @rdname impute_dapar
 #' 
+#' @return  NA
+#' 
 setMethod("impute_dapar", "SummarizedExperiment",
           function(object, method, ...) {
               res <- impute_matrix_dapar(assay(object), method, ...)
@@ -48,6 +50,8 @@ setMethod("impute_dapar", "SummarizedExperiment",
 #' @importFrom SummarizedExperiment assay
 #' 
 #' @rdname impute_dapar
+#' 
+#' @return NA
 #' 
 setMethod("impute_dapar", "QFeatures",
           function(object, i, name, method, ...) {
@@ -96,6 +100,8 @@ setMethod("impute_dapar", "QFeatures",
 #' 
 #' @rdname impute_matrix_dapar
 #' 
+#' @return NA
+#' 
 impute_matrix_dapar <- function(x,
                           method,
                           ...) {
@@ -142,12 +148,16 @@ impute_matrix_dapar <- function(x,
 #' 
 #' @export
 #' 
+#' @return NA
+#' 
 imputeMethodsDapar <- function()
     c('POV_knn_by_conds', "knn_by_conds", "pa", "det_quant", "slsa", "mle_dapar", 'fixed_val', 'mi', 'POV_slsa', 'POV_det_quant', "none")
 
 #' @title List the methods available in DAPAR to impute Partially Observed Values (POV)
 #' 
 #' @export
+#' 
+#' @return NA
 #' 
 impute_POV_Methods <- function()
   c(imputeMethodsDapar()[grep('POV', imputeMethodsDapar())],"none")
@@ -156,6 +166,8 @@ impute_POV_Methods <- function()
 #' @title List the methods in DAPAR to impute Missing Entire Condition (MEC)
 #' 
 #' @export
+#' 
+#' @return NA
 #' 
 impute_MEC_Methods <- function()
   c("knn_by_conds", "pa", "det_quant", "slsa", "mle_dapar", "none")
@@ -184,6 +196,8 @@ impute_MEC_Methods <- function()
 #' @export
 #' 
 #' @importFrom impute impute.knn
+#' 
+#' @return NA
 #' 
 POV_impute_knn_by_conditions <- function(x, conds=NULL, k=3){
   
@@ -282,6 +296,8 @@ impute_knn_by_conditions <- function(x, conds=NULL, k=3){
 #' 
 #' @importFrom imp4p impute.pa
 #' 
+#' @return NA
+#' 
 impute_pa <- function(x, conds, q.min = 0.025){
     res <- x
     res <- imp4p::impute.pa(x, 
@@ -346,6 +362,9 @@ impute_det_quant <- function(x, ...){
 #' POV_impute_det_quant(assay(Exp1_R25_pept[[2]]), colData(Exp1_R25_pept)$Condition)
 #' 
 #' @export
+#' 
+#' @return NA
+#' 
 POV_impute_det_quant <- function(x, conds, ...){
   if (is.null(x)){return(NULL)}
   
@@ -388,6 +407,8 @@ POV_impute_det_quant <- function(x, conds, ...){
 #' 
 #' @importFrom stats quantile
 #' 
+#' @return NA
+#' 
 getQuantile4Imp <- function(x, qval=0.025, factor=1){
     r1 <- apply(x, 2, quantile, qval, na.rm=TRUE)
     r2 <- r1*factor
@@ -416,6 +437,8 @@ getQuantile4Imp <- function(x, qval=0.025, factor=1){
 #' @export
 #' 
 #' @importFrom imp4p impute.slsa
+#' 
+#' @return NA
 #' 
 impute_slsa <- function(x, sampleTab){
     # sort conditions to be compliant with impute.slsa (from imp4p version 0.9) which only manage ordered samples 

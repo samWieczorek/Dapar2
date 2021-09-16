@@ -13,6 +13,9 @@ impute_matrix_dapar(x, method, ...)
 
 \item{...}{xxxxx}
 }
+\value{
+NA
+}
 \description{
 xxx
 }

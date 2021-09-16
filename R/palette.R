@@ -10,6 +10,8 @@
 #' 
 #' @export
 #' 
+#' @return NA
+#' 
 Example_Palette <- function(conditions, base_palette){
   
   examplePalette <- NULL
@@ -51,6 +53,8 @@ Example_Palette <- function(conditions, base_palette){
 #' 
 #' @importFrom RColorBrewer brewer.pal
 #' @importFrom grDevices colorRampPalette
+#' 
+#' @return NA
 #' 
 ExtendPalette <- function(n = NULL, base = "Set1"){
 
@@ -107,6 +111,7 @@ ExtendPalette <- function(n = NULL, base = "Set1"){
 #' 
 #' @importFrom RColorBrewer brewer.pal
 #' 
+#' @return NA
 #' 
 GetColorsForConditions <- function(conds, palette=NULL){
 
@@ -151,6 +156,8 @@ GetColorsForConditions <- function(conds, palette=NULL){
 #' conditions <- colData(Exp1_R25_pept)$Condition
 #' Base_Palette(palette.name = 'Dark2', conditions)
 #'
+#' @return NA
+#' 
 Base_Palette <- function(palette.name = 'Dark2', conditions){
   
   nbConds <- length(unique(conditions))

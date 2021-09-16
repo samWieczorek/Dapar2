@@ -16,6 +16,8 @@
 #' @export
 #'
 #' @importFrom shiny NS tagList
+#' 
+#' @return NA
 #'
 mod_plots_var_dist_ui <- function(id){
   ns <- NS(id)
@@ -39,6 +41,8 @@ mod_plots_var_dist_ui <- function(id){
 #' @keywords internal
 #'
 #' @importFrom SummarizedExperiment assay
+#' 
+#' @return NA
 #'
 mod_plots_var_dist_server <- function(id,
                                       obj,

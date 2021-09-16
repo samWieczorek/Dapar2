@@ -32,6 +32,11 @@ impute. If missing, all assays will be imputed.}
 
 \item{name}{xxx}
 }
+\value{
+NA
+
+NA
+}
 \description{
 xxxxxx
 }

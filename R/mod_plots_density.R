@@ -18,6 +18,8 @@
 #'
 #' @importFrom shiny NS tagList
 #'
+#'@return NA
+#'
 mod_plots_density_ui <- function(id){
   ns <- NS(id)
   tagList(
@@ -33,7 +35,9 @@ mod_plots_density_ui <- function(id){
 #'
 #' @importFrom SummarizedExperiment assay
 #'
-mod_plots_density_server <- function(id, obj, conds, legend=NULL, base_palette=NULL){
+#'@return NA
+#'
+mod_plots_density_server <- function(id, obj, conds, legend = NULL, base_palette = NULL){
 
   moduleServer(id, function(input, output, session){
     ns <- session$ns

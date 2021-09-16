@@ -6,6 +6,8 @@
 #' 
 #' @param data xxx
 #' 
+#' @return NA
+#' 
 #' @author Hélène Borges
 #' 
 standardise <- function (data) 
@@ -116,8 +118,8 @@ standardiseMeanIntensities <- function(obj, sTab){
 #' @importFrom diptest dip.test
 #' 
 checkClusterability <- function(standards){
-  require(diptest)
-  require(cluster)
+  #require(diptest)
+  #require(cluster)
   # on vérifie la clusterabilité des données
   dip_res <- diptest::dip.test(x = standards)
   # d.power = 2 correspond au critère de Tibshirani. B = 500 permet d'avoir
@@ -164,6 +166,8 @@ checkClusterability <- function(standards){
 #'                           ttl = "Clustering of protein profiles")
 #'                           
 #' @export
+#' 
+#' @return NA
 #' 
 #' @importFrom stringr str_glue
 #' @importFrom reshape2 melt

@@ -15,6 +15,8 @@ POV_impute_knn_by_conditions(x, conds = NULL, k = 3)
 }
 \value{
 The object \code{obj} which has been imputed
+
+NA
 }
 \description{
 This function imputes the missing values condition by condition.

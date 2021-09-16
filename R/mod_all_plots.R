@@ -19,6 +19,8 @@ list.plots.module <- c(
 #' @param id,input,output,session Internal parameters for {shiny}.
 #'
 #' @importFrom shiny NS tagList
+#' 
+#' @return NA
 #'
 mod_all_plots_ui <- function(id){
   ns <- NS(id)
@@ -51,6 +53,8 @@ mod_all_plots_ui <- function(id){
 #' @param dataIn xxxx
 #' 
 #' @importFrom base64enc dataURI
+#' 
+#' @return NA
 #'
 mod_all_plots_server <- function(id, dataIn){
 
@@ -107,7 +111,7 @@ mod_all_plots_server <- function(id, dataIn){
             }
         ")),
         radioButtons(ns("rb"), "",
-                     inline = T,
+                     inline = TRUE,
                      choiceNames = lapply(list.plots.module, function(x){
                        img(src = base64enc::dataURI(file=system.file('images', paste0(x, '.png'), package="MSPipelines"), mime="image/png"),
                            width='30px')

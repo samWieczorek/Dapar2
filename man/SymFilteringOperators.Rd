@@ -6,6 +6,9 @@
 \usage{
 SymFilteringOperators()
 }
+\value{
+NA
+}
 \description{
 Operators for complex queries
 }

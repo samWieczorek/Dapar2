@@ -29,6 +29,8 @@ observed values distribution minus eps. Default is 0.}
 }
 \value{
 The object \code{obj} which has been imputed
+
+NA
 }
 \description{
 This method is a variation to the function \code{impute.pa} from the package 

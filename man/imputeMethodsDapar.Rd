@@ -6,6 +6,9 @@
 \usage{
 imputeMethodsDapar()
 }
+\value{
+NA
+}
 \description{
 xxxx
 }

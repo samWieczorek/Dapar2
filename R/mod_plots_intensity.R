@@ -22,6 +22,8 @@
 #'
 #' @import shinyjs
 #'
+#'@return NA
+#'
 mod_plots_intensity_ui <- function(id){
   ns <- NS(id)
   tagList(
@@ -53,13 +55,15 @@ mod_plots_intensity_ui <- function(id){
 #' @importFrom SummarizedExperiment rowData
 #' @importFrom grDevices png
 #'
+#'@return NA
+#'
 mod_plots_intensity_server <- function(id,
                                        dataIn,
                                        meta,
                                        conds,
-                                       base_palette=NULL,
-                                       params=NULL,
-                                       reset=NULL,
+                                       base_palette = NULL,
+                                       params = NULL,
+                                       reset = NULL,
                                        slave = FALSE){
 
   moduleServer(id, function(input, output, session){
@@ -92,7 +96,7 @@ mod_plots_intensity_server <- function(id,
 
 
 
-    observeEvent(c(slave(), rv.modboxplot$varTrack()), ignoreInit = TRUE, ignoreNULL=FALSE, {
+    observeEvent(c(slave(), rv.modboxplot$varTrack()), ignoreInit = TRUE, ignoreNULL = FALSE, {
       if (slave()){
         switch(params()$typeSelect,
                ProteinList = rv.modboxplot$indices <- params()$list.indices,

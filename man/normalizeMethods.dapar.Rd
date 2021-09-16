@@ -9,6 +9,9 @@ normalizeMethods.dapar(withTracking = FALSE)
 \arguments{
 \item{withTracking}{A boolean to indicate methods with tracking feature}
 }
+\value{
+NA
+}
 \description{
 List normalization methods
 }

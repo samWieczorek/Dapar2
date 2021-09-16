@@ -7,6 +7,10 @@
 #' @noRd
 #'
 #' @importFrom shiny NS tagList
+#' @import visNetwork
+#' 
+#' @return NA
+#' 
 mod_graph_pept_prot_ui <- function(id){
   ns <- NS(id)
   tagList(
@@ -62,6 +66,11 @@ mod_graph_pept_prot_ui <- function(id){
 #' graph_pept_prot Server Function
 #'
 #' @noRd
+#' 
+#' @return NA
+#' 
+#' @import visNetwork
+#' 
 mod_graph_pept_prot_server <- function(id, cc, matAdj, dataIn){
 
   moduleServer(id, function(input, output, session){

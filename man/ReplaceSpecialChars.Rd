@@ -9,6 +9,9 @@ ReplaceSpecialChars(x)
 \arguments{
 \item{x}{A vector of strings to be processed}
 }
+\value{
+NA
+}
 \description{
 Replace some characters in names by 'underscore'
 }

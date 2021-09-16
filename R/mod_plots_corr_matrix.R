@@ -21,6 +21,8 @@
 #'
 #' @importFrom shiny NS tagList
 #' @importFrom shinyWidgets dropdownButton
+#' 
+#' @return NA
 #'
 mod_plots_corr_matrix_ui <- function(id){
   ns <- NS(id)
@@ -73,6 +75,10 @@ mod_plots_corr_matrix_ui <- function(id){
 #' @keywords internal
 #'
 #' @importFrom SummarizedExperiment assay
+#' 
+#' @return NA
+#' 
+#' 
 #'
 mod_plots_corr_matrix_server <- function(id, obj, names=NULL, gradientRate=NULL){
 

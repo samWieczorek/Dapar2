@@ -32,6 +32,8 @@ normalizeD
 \value{
 An instance of class 'SummerizedExperiment' where the quantitative
 data in the \code{array()} tab has been normalized.
+
+NA
 }
 \description{
 This manual page describes the computation of statistical test using [QFeatures] objects. In the following

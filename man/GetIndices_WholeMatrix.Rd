@@ -16,6 +16,9 @@ a percentage (percent=TRUE).}
 
 \item{th}{A floating number which is in the interval [0, 1]}
 }
+\value{
+NA
+}
 \description{
 This function looks for the lines that respect the request in either all conditions
 or at least one condition.

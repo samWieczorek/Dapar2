@@ -31,6 +31,11 @@ name, respectively, of the assay(s) to be processed.}
 \item{name}{A `character(1)` naming the new assay name. Defaults
 are `ttestAssay`.}
 }
+\value{
+NA
+
+NA
+}
 \description{
 This manual page describes the computation of statistical test using [QFeatures] objects. In the following
 functions, if `object` is of class `QFeatures`, and optional assay

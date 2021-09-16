@@ -6,6 +6,9 @@
 \usage{
 HypothesisTestMethods()
 }
+\value{
+NA
+}
 \description{
 List of hypothesis tests methods
 }

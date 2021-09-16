@@ -18,6 +18,8 @@
 #' @importFrom shiny NS tagList 
 #' @importFrom DT dataTableOutput
 #' 
+#' @return NA
+#' 
 mod_format_DT_ui <- function(id){
   ns <- NS(id)
   tagList(
@@ -46,6 +48,8 @@ mod_format_DT_ui <- function(id){
 #' 
 #' @import DT
 #' @importFrom htmlwidgets JS    
+#' 
+#' @return NA
 #' 
 mod_format_DT_server <- function(id,
                                  table2show,

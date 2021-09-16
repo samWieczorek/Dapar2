@@ -12,6 +12,8 @@
 #' 
 #' @export
 #' 
+#' @return NA
+#' 
 setMethod("ComplexFilterFeatures", "SummarizedExperiment",
           function(object, cmd, ...) {
             x <- rowData(object)
@@ -65,6 +67,8 @@ setMethod("ComplexFilterFeatures", "SummarizedExperiment",
 #' @param filter xxx
 #' 
 #' @param ... Additional parameters passed to inner functions.
+#' 
+#' @return NA
 #' 
 #' @rdname filterFeaturesSam
 #' 
@@ -135,6 +139,8 @@ setMethod("ComplexFilterFeatures", "QFeatures",
 #' @param filter xxx
 #'
 #' @param ... Additional parameters passed to inner functions.
+#' 
+#' @return NA
 #'
 #' @export
 #'
@@ -168,6 +174,8 @@ setMethod("filterFeaturesSam", "SummarizedExperiment",
 #' @param filter xxx
 #' 
 #' @param ... Additional parameters passed to inner functions.
+#' 
+#' @return NA
 #' 
 #' @rdname filterFeaturesSam
 #' 
@@ -205,6 +213,8 @@ setMethod("filterFeaturesSam", "QFeatures",
 #' 
 #' @export
 #' 
+#' @return NA
+#' 
 MetacellFilteringScope <- function()
   c("None", "WholeLine", "WholeMatrix", "AllCond", "AtLeastOneCond")
 
@@ -213,6 +223,8 @@ MetacellFilteringScope <- function()
 #' @title Operators for complex queries
 #' 
 #' @export
+#' 
+#' @return NA
 #' 
 SymFilteringOperators <- function()
   c('<=','<', '>=', '>', '==', '!=')
@@ -366,6 +378,7 @@ GetIndices_ComplexQueryFiltering <- function(obj, level, pattern, type, percent,
 #' 
 #' @param th A floating number which is in the interval [0, 1]
 #' 
+#' @return NA
 #' 
 #' @examples
 #' utils::data(Exp1_R25_pept, package='DAPARdata')
@@ -423,6 +436,8 @@ GetIndices_WholeMatrix <- function( metacell.mask, op='==', percent=FALSE, th=0)
 #' 
 #' @param metacell.mask xxx
 #' 
+#' @return NA
+#' 
 #' @examples
 #' utils::data(Exp1_R25_pept, package='DAPARdata')
 #' obj <- Exp1_R25_pept[20:30]
@@ -464,6 +479,8 @@ GetIndices_WholeLine <- function(metacell.mask){
 #' 
 #' @param th The theshold to apply
 #' 
+#' @return NA
+#' 
 #' #' @examples
 #' utils::data(Exp1_R25_pept, package='DAPARdata')
 #' obj <- Exp1_R25_pept[1:10]
@@ -474,7 +491,7 @@ GetIndices_WholeLine <- function(metacell.mask){
 #' conds <- Biobase::pData(obj)$Condition
 #' op <- '>='
 #' th <- 2
-#' percent <- F
+#' percent <- FALSE
 #' ind <- GetIndices_BasedOnConditions(metacell.mask, type, conds, percent, op, th)
 #'
 #'@export
@@ -723,7 +740,7 @@ MVrowsTagToOne <- function(object, type, th=0, percent=TRUE) {
 #'   }
 #'   
 #'   if (condition != 'EmptyLines')
-#'     if (!(percent %in% c(T, F))){
+#'     if (!(percent %in% c(TRUE, FALSE))){
 #'       warning("Param `type` is not correct.")
 #'       return (NULL)
 #'     } else {

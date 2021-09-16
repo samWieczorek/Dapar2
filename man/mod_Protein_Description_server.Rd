@@ -25,6 +25,9 @@ corresponding output variable}
 indicates is the pipeline has been reseted by a program of higher level
 Basically, it is the program which has called this module}
 }
+\value{
+NA
+}
 \description{
 This module contains the configuration informations for the corresponding pipeline.
 It is called by the nav_pipeline module of the package Magellan

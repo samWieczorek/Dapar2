@@ -15,6 +15,8 @@ POV_impute_det_quant(x, conds, ...)
 }
 \value{
 An imputed instance of class \code{DataFrame}
+
+NA
 }
 \description{
 Imputation of the POV with the method of deterministic Quantile

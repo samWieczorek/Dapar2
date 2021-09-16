@@ -9,6 +9,9 @@ GetIndices_WholeLine(metacell.mask)
 \arguments{
 \item{metacell.mask}{xxx}
 }
+\value{
+NA
+}
 \description{
 This function looks for the lines where each element respect the query.
 }

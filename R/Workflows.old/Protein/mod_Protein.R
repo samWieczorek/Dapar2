@@ -52,7 +52,7 @@ mod_Protein_server <- function(id,
   config <- reactiveValues(
     name = 'Protein',
     steps = c('Description', 'Normalization', 'Filtering'),
-    mandatory = c(T, F, F)
+    mandatory = c(TRUE, FALSE, FALSE)
 
   )
 

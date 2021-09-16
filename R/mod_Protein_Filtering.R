@@ -9,7 +9,7 @@ AddItemToDataset <- function(dataset, name){
 
 
 #' @export
-#'
+#' @return NA
 mod_Protein_Filtering_ui <- function(id){
   ns <- NS(id)
 }
@@ -17,6 +17,7 @@ mod_Protein_Filtering_ui <- function(id){
 
 #' @export
 #'
+#' @return NA
 mod_Protein_Filtering_server <- function(id,
                                          dataIn = NULL,
                                          steps.enabled = reactive({NULL}),
@@ -70,7 +71,7 @@ mod_Protein_Filtering_server <- function(id,
     config <- reactiveValues(
       name = 'Protein_Filtering',
       steps = c('Description', 'Step1', 'Step2', 'Step3'),
-      mandatory = c(T, F, T, T)
+      mandatory = c(TRUE, FALSE, TRUE, TRUE)
     )
 
     rv.widgets <- reactiveValues(
@@ -129,7 +130,7 @@ mod_Protein_Filtering_server <- function(id,
 
 
 
-    observeEvent(input$btn_validate_Description, ignoreInit = T, ignoreNULL=T, {
+    observeEvent(input$btn_validate_Description, ignoreInit = TRUE, ignoreNULL=TRUE, {
       rv$dataIn <- dataIn()
       dataOut$trigger <- Timestamp()
       dataOut$value <- rv$dataIn
@@ -235,7 +236,7 @@ mod_Protein_Filtering_server <- function(id,
     })
 
 
-    observeEvent(input$btn_validate_Step1, ignoreInit = T, {
+    observeEvent(input$btn_validate_Step1, ignoreInit = TRUE, {
       # Add your stuff code here
       dataOut$trigger <- Send_Result_to_Caller(rv$dataIn)$trigger
       dataOut$value <- Send_Result_to_Caller(rv$dataIn)$value
@@ -303,7 +304,7 @@ mod_Protein_Filtering_server <- function(id,
       )
     })
 
-    observeEvent(input$btn_validate_Step2, ignoreInit = T, {
+    observeEvent(input$btn_validate_Step2, ignoreInit = TRUE, {
       # Add your stuff code here
       dataOut$trigger <- Send_Result_to_Caller(rv$dataIn)$trigger
       dataOut$value <- Send_Result_to_Caller(rv$dataIn)$value
@@ -331,7 +332,7 @@ mod_Protein_Filtering_server <- function(id,
     })
 
 
-    observeEvent(input$btn_validate_Step3, ignoreInit = T, {
+    observeEvent(input$btn_validate_Step3, ignoreInit = TRUE, {
       # Add your stuff code here
       rv$dataIn <- AddItemToDataset(rv$dataIn, config$name)
       dataOut$trigger <- Send_Result_to_Caller(rv$dataIn)$trigger

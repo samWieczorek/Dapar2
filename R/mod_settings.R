@@ -11,6 +11,8 @@
 #' @param output internal
 #'
 #' @param session internal
+#' 
+#' @return NA
 #'
 #' @rdname mod_settings
 #'
@@ -60,6 +62,11 @@ mod_settings_ui <- function(id){
 # Module Server
 
 #' @rdname mod_settings
+#' 
+#' @param id xxx
+#' @param obj xxx
+#' 
+#' @return NA
 #'
 #' @export
 #'

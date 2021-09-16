@@ -23,6 +23,11 @@ mod_Convert_server(
 
 \item{remoteReset}{xxx}
 }
+\value{
+NA
+
+NA
+}
 \description{
 A shiny Module.
 }

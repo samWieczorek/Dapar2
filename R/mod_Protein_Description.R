@@ -2,6 +2,8 @@
 btn_style <- "display:inline-block; vertical-align: middle; padding: 7px"
 
 #' @export
+#' @return NA
+#' 
 mod_Protein_Description_ui <- function(id){
   ns <- NS(id)
 }
@@ -30,6 +32,8 @@ mod_Protein_Description_ui <- function(id){
 #' @author Samuel Wieczorek
 #'
 #' @export
+#' @return NA
+#' 
 mod_Protein_Description_server <- function(id,
                                            dataIn = reactive({NULL}),
                                            steps.enabled = reactive({NULL}),
@@ -46,7 +50,7 @@ mod_Protein_Description_server <- function(id,
   config <- list(
     name = 'Protein_Description',
     steps = c('Description'),
-    mandatory = c(T)
+    mandatory = c(TRUE)
   )
 
   # Define default selected values for widgets

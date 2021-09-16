@@ -86,7 +86,7 @@ output$Description <- renderUI({
 
 
 
-observeEvent(input$btn_validate_Description, ignoreInit = T, ignoreNULL=T, {
+observeEvent(input$btn_validate_Description, ignoreInit = TRUE, ignoreNULL = TRUE, {
   rv$dataIn <- dataIn()
   dataOut$trigger <- Send_Result_to_Caller(rv$dataIn)$trigger
   dataOut$value <- Send_Result_to_Caller(rv$dataIn)$value
@@ -155,7 +155,7 @@ if (rv$steps.enabled['Step1'])
   )
 })
 
-observeEvent(input$btn_validate_Step1, ignoreInit = T, {
+observeEvent(input$btn_validate_Step1, ignoreInit = TRUE, {
   # Add your stuff code here
   dataOut$trigger <- Send_Result_to_Caller(rv$dataIn)$trigger
   dataOut$value <- Send_Result_to_Caller(rv$dataIn)$value
@@ -188,7 +188,7 @@ if (rv$steps.enabled['Save'])
 
 #------------- Code for validation step ---------------
 
-observeEvent(input$btn_validate_Save, ignoreInit = T, {
+observeEvent(input$btn_validate_Save, ignoreInit = TRUE, {
   # Add your stuff code here
   rv$dataIn <- AddItemToDataset(rv$dataIn, config$name)
   dataOut$trigger <- Send_Result_to_Caller(rv$dataIn)$trigger

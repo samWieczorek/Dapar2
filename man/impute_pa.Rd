@@ -15,6 +15,8 @@ impute_pa(x, conds, q.min = 0.025)
 }
 \value{
 The xxxx.
+
+NA
 }
 \description{
 Imputation of peptides having no values in a biological condition.

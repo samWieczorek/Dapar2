@@ -2,6 +2,8 @@
 #' 
 #' @name HypothesisTestMethods
 #' 
+#' @return NA
+#' 
 #' @export
 #'
 HypothesisTestMethods <- function()
@@ -57,6 +59,8 @@ HypothesisTestMethods <- function()
 #' 
 #' @param ... Additional parameters passed to inner functions.
 #' 
+#' @return NA
+#' 
 #' @export
 #' 
 #' @rdname t_test_sam
@@ -90,6 +94,8 @@ setMethod("t_test_sam", "SummarizedExperiment",
 #' @export
 #' 
 #' @rdname t_test_sam
+#' 
+#' @return NA
 #'
 setMethod("t_test_sam", "QFeatures",
           function(object, i, name = "ttestAssay", FUN,  ...) {
@@ -122,7 +128,7 @@ setMethod("t_test_sam", "QFeatures",
 #' 
 #' @param qData2 xxxx.
 #'
-#' @return xxxxx
+#' @return NA
 #'
 #' @author Thomas Burger, Samuel Wieczorek
 #' 

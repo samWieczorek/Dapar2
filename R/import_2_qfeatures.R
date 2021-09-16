@@ -5,6 +5,8 @@
 #' 
 #' @param x A vector of strings to be processed
 #' 
+#' @return NA
+#' 
 #' @author Samuel Wieczorek
 #' 
 #' @export

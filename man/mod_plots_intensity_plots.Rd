@@ -27,6 +27,11 @@ mod_plots_intensity_server(
 
 \item{session}{internal}
 }
+\value{
+NA
+
+NA
+}
 \description{
 A shiny Module.
 }

@@ -7,6 +7,8 @@
 #' @param output internal
 #' @param session internal
 #' 
+#' @return NA
+#' 
 #' @author Samuel Wieczorek
 #' @rdname mod_se_explorer
 #'
@@ -26,6 +28,8 @@ mod_plots_se_explorer_ui <- function(id){
 #' @rdname mod_se_explorer
 #' 
 #' @export
+#' 
+#' @return NA
 #' 
 #' @keywords internal
 #' 

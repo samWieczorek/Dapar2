@@ -238,6 +238,8 @@ translatedRandomBeta <- function(n, min, max, param1=3, param2=1){
 #' 
 #' @importFrom stats median quantile runif sd
 #' 
+#' @return NA
+#' 
 impute_pa2 <- function (x, sampleTab, q.min = 0, q.norm = 3, eps = 0, distribution = "unif"){
   
   if (missing(sampleTab))

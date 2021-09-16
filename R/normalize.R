@@ -4,6 +4,8 @@
 #' 
 #' @value A list of methods
 #' 
+#' @return NA
+#' 
 #' @name normalizeMethods.dapar
 #' 
 #' @export
@@ -110,6 +112,8 @@ setMethod("normalizeD", "SummarizedExperiment",
 #' @param name xxxx
 #' 
 #' @param ... Additional parameters passed to inner functions.
+#' 
+#' @return NA
 #' 
 #' @export
 #' 

@@ -24,6 +24,11 @@ mod_plots_cc_server(input, output, session, cc, matAdj, obj)
 
 \item{obj}{xxx}
 }
+\value{
+NA
+
+NA
+}
 \description{
 A shiny Module.
 }

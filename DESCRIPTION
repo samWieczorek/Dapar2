@@ -13,23 +13,13 @@ Authors@R: c(person(given = "Samuel", family = "Wieczorek",
             email = "enora.fremy@cea.fr",
             role = c("ctb"))
             )
-Author: Samuel Wieczorek [cre,aut],
-    Thomas Burger [aut],
-    Anais Courtier [ctb],
-    Enora Fremy [ctb]
-Maintainer: Samuel Wieczorek <samuel.wieczorek@cea.fr>
 Description: This package contains a collection of functions for the
     visualisation and the statistical analysis of proteomic data.
+    fsdfsd
+    fsd
+    sd sfsfs .
 License: Artistic-2.0
-VignetteBuilder: knitr
 Depends: R (>= 4.1.0)
-Suggests: 
-    testthat, 
-    BiocStyle, 
-    knitr,
-    MSnbase,
-    DAPARdata2,
-    DAPARdata
 Imports:
     Biobase,
     S4Vectors,
@@ -85,7 +75,11 @@ Imports:
     shinyWidgets,
     shinyalert,
     shinyjs,
-    sos
+    sos,
+    grDevices,
+    graphics,
+    stats,
+    utils
 biocViews: 
     Proteomics,
     Normalization,
@@ -156,3 +150,13 @@ Collate:
 RoxygenNote: 7.1.1
 Packaged: 2017-10-13 11:13:04 UTC; sw175264
 Encoding: UTF-8
+LazyData: false
+URL: https://github.com/samWieczorek/DaparToolshed
+BugReports: https://github.com/samWieczorek/DaparToolshed/issues
+Suggests: 
+    knitr,
+    rmarkdown,
+    BiocStyle,
+    testthat, 
+    DAPARdata2
+VignetteBuilder: knitr

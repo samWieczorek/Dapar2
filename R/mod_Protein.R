@@ -4,7 +4,10 @@ btn_style <- "display:inline-block; vertical-align: middle; padding: 7px"
 #source(file.path('.', 'mod_Protein_Normalization.R'), local=TRUE)$value
 
 
-
+#' @export
+#' 
+#' @return NA
+#' 
 mod_Protein_ui <- function(id){
   ns <- NS(id)
 }
@@ -28,6 +31,8 @@ mod_Protein_ui <- function(id){
 #' Basically, it is the program which has called this module
 #'
 #' @param status xxx
+#' 
+#' @return NA
 #'
 #' @author Samuel Wieczorek
 #'
@@ -52,7 +57,7 @@ mod_Protein_server <- function(id,
   config <- reactiveValues(
     name = 'Protein',
     steps = c('Description', 'Normalization', 'Filtering'),
-    mandatory = c(T, F, F)
+    mandatory = c(TRUE, FALSE, FALSE)
 
   )
 

@@ -13,6 +13,9 @@ search.metacell.tags(pattern, level, depth = "1")
 
 \item{depth}{xxx}
 }
+\value{
+NA
+}
 \description{
 Gives all the tags of the metadata vocabulary containing the pattern 
 (parent and all its children).

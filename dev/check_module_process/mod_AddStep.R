@@ -55,7 +55,7 @@ mod_AddStep_server <- function(id, n, nTotal){
           wellPanel(style="background-color: lightblue",
           fluidRow(
             column(3, shinyjs::disabled(textInput(ns('name'),'Step name', value = 'Save'))),
-            column(3, shinyjs::disabled(selectInput(ns('isMandatory'),'Mandatory', choices = c(T), width = '100px'))),
+            column(3, shinyjs::disabled(selectInput(ns('isMandatory'),'Mandatory', choices = c(TRUE), width = '100px'))),
             column(3, selectInput(ns('members'), "Nb widgets", choices = 0:5, width = '100px'))
           ),
           uiOutput(ns('ll_widgets_ui')))
@@ -63,7 +63,7 @@ mod_AddStep_server <- function(id, n, nTotal){
         wellPanel(style="background-color: lightblue",
                   fluidRow(
           column(3, shinyjs::disabled(textInput(ns('name'),'Step name', value = 'Description'))),
-          column(3, shinyjs::disabled(selectInput(ns('isMandatory'),'Mandatory', choices = c(T), width = '100px'))),
+          column(3, shinyjs::disabled(selectInput(ns('isMandatory'),'Mandatory', choices = c(TRUE), width = '100px'))),
           column(3, shinyjs::disabled(selectInput(ns('members'), "Nb widgets", choices = 0, width = '100px')))
         ),
         uiOutput(ns('ll_widgets_ui')))
@@ -71,7 +71,7 @@ mod_AddStep_server <- function(id, n, nTotal){
         wellPanel(style="background-color: lightgrey",
                   fluidRow(
           column(3, textInput(ns('name'),'Step name')),
-          column(3, selectInput(ns('isMandatory'),'Mandatory', choices = c(T, F), width = '100px')),
+          column(3, selectInput(ns('isMandatory'),'Mandatory', choices = c(TRUE, FALSE), width = '100px')),
           column(3, selectInput(ns('members'), "Nb widgets", choices = 0:5, width = '100px'))
         ),
         uiOutput(ns('ll_widgets_ui')))

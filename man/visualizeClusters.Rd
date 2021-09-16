@@ -31,6 +31,8 @@ For the sake of readability, a maximum of 4 values can be specified.}
 }
 \value{
 a ggplot object
+
+NA
 }
 \description{
 Visualize the clusters according to pvalue thresholds

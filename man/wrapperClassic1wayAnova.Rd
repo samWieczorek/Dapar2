@@ -23,6 +23,8 @@ all pairwise comparisons logFC values (one column for one comparison) for
 each analysed feature (Except in the case without post-hoc testing, for
 which NAs are returned.); The second one named "P_Value" contains the
 corresponding p-values.
+
+NA
 }
 \description{
 Wrapper for One-way Anova statistical test

@@ -6,6 +6,9 @@
 \usage{
 Pipelines()
 }
+\value{
+NA
+}
 \description{
 Get the list of pipelines available in the package
 }

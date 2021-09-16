@@ -18,6 +18,11 @@ mod_plots_heatmap_server(id, obj, conds, width = 900)
 
 \item{session}{internal}
 }
+\value{
+NA
+
+NA
+}
 \description{
 A shiny Module.
 }

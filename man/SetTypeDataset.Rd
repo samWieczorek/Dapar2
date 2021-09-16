@@ -10,6 +10,9 @@ An object of class \code{standardGeneric} of length 1.
 \usage{
 SetTypeDataset
 }
+\value{
+NA
+}
 \description{
 Get the type of dataset
 }

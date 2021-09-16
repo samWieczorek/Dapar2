@@ -12,6 +12,8 @@ formatPHResults(post_hoc_models_summaries)
 \value{
 a list of 2 dataframes containing the logFC values and pvalues for
 each comparison.
+
+NA
 }
 \description{
 Extract logFC and raw pvalues from multiple post-hoc models summaries

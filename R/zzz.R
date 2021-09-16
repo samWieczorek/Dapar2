@@ -4,6 +4,8 @@
 #' Get the list of pipelines available in the package
 #'
 #' @export
+#' 
+#' @return NA
 #'
 Pipelines <- function(){
   list(Protein = c('protein'),
@@ -27,8 +29,7 @@ Pipelines <- function(){
 #'
 #' @importFrom QFeatures addAssay
 #'
-#' @return
-#' The dataset minus some items
+#' @return The dataset minus some items
 #'
 #' @export
 #'
@@ -48,8 +49,7 @@ Add_Item_to_Dataset <- function(dataset, name){
 #'
 #' @param range xxx
 #'
-#' @return
-#' The dataset minus some items
+#' @return The dataset minus some items
 #'
 #' @export
 #'

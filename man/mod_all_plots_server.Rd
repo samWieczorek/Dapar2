@@ -11,6 +11,9 @@ mod_all_plots_server(id, dataIn)
 
 \item{dataIn}{xxxx}
 }
+\value{
+NA
+}
 \description{
 A shiny Module.
 }

@@ -11,6 +11,9 @@ Base_Palette(palette.name = "Dark2", conditions)
 
 \item{conditions}{xxxx}
 }
+\value{
+NA
+}
 \description{
 Builds a vector of colors (one per condition) to be used as a basis palette
 }

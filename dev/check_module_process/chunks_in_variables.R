@@ -136,7 +136,7 @@ output$Description <- renderUI({
 
 
 
-observeEvent(input$btn_validate_Description, ignoreInit = T, ignoreNULL=T, {
+observeEvent(input$btn_validate_Description, ignoreInit = TRUE, ignoreNULL=TRUE, {
   rv$dataIn <- dataIn()
   dataOut$trigger <- Send_Result_to_Caller(rv$dataIn)$trigger
   dataOut$value <- Send_Result_to_Caller(rv$dataIn)$value
@@ -242,7 +242,7 @@ code_for_global_step_renderUI_end <- "
 "
 
 chunk_for_observe_validation_btn_generic_step <- "
-observeEvent(input$btn_validate_#step.name#, ignoreInit = T, {
+observeEvent(input$btn_validate_#step.name#, ignoreInit = TRUE, {
   # Add your stuff code here
 
   # Do not modify this part
@@ -254,7 +254,7 @@ observeEvent(input$btn_validate_#step.name#, ignoreInit = T, {
 chunk_for_observe_validation_btn_last_step <- "
 #------------- Code for validation step ---------------
 
-observeEvent(input$btn_validate_#step.name#, ignoreInit = T, {
+observeEvent(input$btn_validate_#step.name#, ignoreInit = TRUE, {
   # Add your stuff code here
   rv$dataIn <- AddItemToDataset(rv$dataIn, config$name)
   dataOut$trigger <- Send_Result_to_Caller(rv$dataIn)$trigger

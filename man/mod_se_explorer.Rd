@@ -18,6 +18,11 @@ mod_plots_se_explorer_server(id, obj, originOfValues = NULL, colData = NULL)
 
 \item{session}{internal}
 }
+\value{
+NA
+
+NA
+}
 \description{
 A shiny Module.
 }

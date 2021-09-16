@@ -15,6 +15,8 @@ getQuantile4Imp(x, qval = 0.025, factor = 1)
 }
 \value{
 A list of two vectors, respectively containing the imputation values and the rescaled imputation values
+
+NA
 }
 \description{
 This method returns the q-th quantile of each column of an expression set, up to a scaling factor

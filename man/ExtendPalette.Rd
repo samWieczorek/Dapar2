@@ -14,6 +14,8 @@ the extended palette is built. Default value is 'Set1'.}
 }
 \value{
 A vector composed of n color code.
+
+NA
 }
 \description{
 The colors in the returned palette are always in the same order

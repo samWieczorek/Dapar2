@@ -13,6 +13,9 @@
 #' @keywords internal
 #' @export
 #' @importFrom shiny NS tagList
+#' 
+#' @return NA
+#' 
 mod_plots_mv_for_imputation_ui <- function(id){
   ns <- NS(id)
   tagList(
@@ -30,12 +33,14 @@ mod_plots_mv_for_imputation_ui <- function(id){
 #' @rdname mod_plots_mv_for_imputation
 #' @export
 #' @keywords internal
-
+#' 
+#' @return NA
+#' 
 mod_plots_mv_for_imputation_server <- function(id,
                                                obj,
                                                ind,
-                                               title=NULL,
-                                               palette=NULL){
+                                               title = NULL,
+                                               palette = NULL){
 
   moduleServer(id, function(input, output, session){
     ns <- session$ns
