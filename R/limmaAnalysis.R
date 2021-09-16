@@ -90,7 +90,7 @@ CheckDesign <- function(sTab){
 #' @examples
 #' library(QFeatures)
 #' utils::data(Exp1_R25_pept, package='DAPARdata2')
-#' test.design(colData(Exp1_R25_pept)[,1:3])
+#' test.design(colData(Exp1_R25_pept)[,seq_len(3)])
 #' 
 #' @export
 #' 
@@ -114,8 +114,8 @@ test.design <- function(tab){
   uniqueA <- unique(level.a)
   ll <- lapply(uniqueA, function(x){as.character(level.b)[which(level.a==x)]})
   n <- NULL
-  for (i in 1:(length(uniqueA)-1)){
-    for (j in (i+1):length(uniqueA)){
+  for (i in seq_len((length(uniqueA)-1))){
+    for (j in seq((i+1),length(uniqueA))){
       n <- c(n,intersect(ll[[i]], ll[[j]]))
     }
   }
@@ -249,14 +249,14 @@ make.design.1 <- function(sTab){
   
   #CGet the number of replicates per condition
   nb_Rep <- rep(0, nb_cond)
-  for (i in 1:nb_cond){
+  for (i in seq_len(nb_cond)){
     nb_Rep[i] = sum((Conditions==unique(Conditions)[i]))
   }
   
   design <- matrix(0, nb_samples, nb_cond)
   n0=1
   coln=NULL
-  for (j in 1:nb_cond){
+  for (j in seq_len(nb_cond)){
     coln=c(coln, paste("Condition", j, collapse=NULL,sep=""))
     design[(n0:(n0+nb_Rep[j]-1)),j] <- rep(1,length((n0:(n0+nb_Rep[j]-1))))
     n0 <- n0 + nb_Rep[j]
@@ -296,8 +296,8 @@ make.design.2 <- function(sTab){
                    levels=unique(sTab$Bio.Rep))
   
   #Renome the levels of factor
-  levels(Condition) <- c(1:length(levels(Condition)))
-  levels(RepBio) <- c(1:length(levels(RepBio)))
+  levels(Condition) <- seq_len(length(levels(Condition)))
+  levels(RepBio) <- seq_len(length(levels(RepBio)))
   
   #Initial design matrix
   df <- rep(0,nrow(sTab))
@@ -308,9 +308,9 @@ make.design.2 <- function(sTab){
   design <- design[,(apply(design,2,sum)>0)]
   #Remove identical columns in the design matrix
   coldel <- -1
-  for (i in 1:(length(design[1,])-1)){
-    d2 <- as.matrix(design[,(i+1):length(design[1,])]);
-    for (j in 1:length(d2[1,])){
+  for (i in seq_len((length(design[1,])-1))){
+    d2 <- as.matrix(design[,seq((i+1), length(design[1,]))]);
+    for (j in seq_len(length(d2[1,]))){
       d2[,j]=d2[,j]-design[,i];
     }
     e <- as.matrix(stats::rnorm(length(design[,1]),10,1));
@@ -318,7 +318,7 @@ make.design.2 <- function(sTab){
     liste <- which(sd2==0)
     coldel <- c(coldel,liste+i)
   }
-  design <- design[,(1:length(design[1,]))!=coldel]
+  design <- design[,(seq_len(length(design[1,]))) != coldel]
   colnames(design) <- make.names(colnames(design))
   return(design)
 }
@@ -335,7 +335,7 @@ make.design.2 <- function(sTab){
 #' @examples
 #' library(QFeatures)
 #' utils::data(Exp1_R25_pept, package='DAPARdata2')
-#' sTab <-cbind(colData(Exp1_R25_pept), Tech.Rep=1:6)
+#' sTab <-cbind(colData(Exp1_R25_pept), Tech.Rep=seq_len(6))
 #' make.design.3(sTab)
 #' 
 #' @export
@@ -350,9 +350,9 @@ make.design.3 <- function(sTab){
   
   
   #Rename the levels of factor
-  levels(Condition) <- c(1:length(levels(Condition)))
-  levels(RepBio) <- c(1:length(levels(RepBio)))
-  levels(RepTech) <- c(1:length(levels(RepTech)))
+  levels(Condition) <- seq_len(length(levels(Condition)))
+  levels(RepBio) <- seq_len(length(levels(RepBio)))
+  levels(RepTech) <- seq_len(length(levels(RepTech)))
   
   
   #Initial design matrix
@@ -365,17 +365,17 @@ make.design.3 <- function(sTab){
   
   #Remove identical columns in the design matrix
   coldel <- -1
-  for (i in 1:(length(design[1,])-1)){
-    d2=as.matrix(design[,(i+1):length(design[1,])]);
-    for (j in 1:length(d2[1,])){
-      d2[,j]=d2[,j]-design[,i];
+  for (i in seq_len((length(design[1,])-1))){
+    d2=as.matrix(design[,seq((i+1), length(design[1,]))]);
+    for (j in seq_len(length(d2[1,]))){
+      d2[,j] = d2[,j]-design[,i];
     }
     e=as.matrix(stats::rnorm(length(design[,1]),10,1));
-    sd2=t(e)%*%d2
-    liste=which(sd2==0)
-    coldel=c(coldel,liste+i)
+    sd2 = t(e)%*%d2
+    liste  =which(sd2==0)
+    coldel = c(coldel,liste+i)
   }
-  design <- design[,(1:length(design[1,]))!=coldel]
+  design <- design[,(seq_len(length(design[1,]))) != coldel]
   colnames(design) <- make.names(colnames(design))
   return(design)
 }
@@ -418,17 +418,17 @@ make.contrast <- function(design, condition, contrast = 1){
     name.col <- colnames(design)
     name.cond <- NULL
     nb.col <- NULL
-    for (i in 1:nb.cond){
+    for (i in seq_len(nb.cond)){
       col.select <- NULL
       col.name.begin <- paste("Condition",i, sep = "")
       nc <- nchar(col.name.begin)
-      for (j in 1:length(design[1,])){
+      for (j in seq_len(length(design[1,]))){
         if (substr(name.col[j], 1, nc) == col.name.begin){
           col.select <- c(col.select,j)
         }
       }
       name.aggreg <- NULL
-      for (j in 1:length(col.select)){
+      for (j in seq_len(length(col.select))){
         name.aggreg  <- paste(name.aggreg,name.col[col.select[j]], sep="+")
       }
       name.aggreg <- substr(name.aggreg, 2, nchar(name.aggreg))
@@ -449,22 +449,22 @@ make.contrast <- function(design, condition, contrast = 1){
   if (contrast == 1){
     ## Contrast for One vs One
     contra=rep(0,sum(1:(nb.cond-1)))
-    for (i in 1:(nb.cond-1)){
-      for (j in (i+1):nb.cond){
-        contra[k]=c(paste("(",label.agg[i],")/",
+    for (i in seq_len(nb.cond-1)){
+      for (j in seq(i+1, nb.cond)){
+        contra[k] = c(paste("(",label.agg[i],")/",
                           nb.agg[i],"-(",label.agg[j],")/",
                           nb.agg[j]))
         k=k+1
       }
     }
-  } else if (contrast==2){
+  } else if (contrast == 2){
     ## Contrast for One vs All
     contra=rep(0,nb.cond)
-    for (i in 1:(nb.cond)){
+    for (i in seq_len(nb.cond)){
       contra[k]=c(paste("(",label.agg[i],")/",nb.agg[i]))
-      nb=sum(nb.agg[(1:nb.cond)[(1:nb.cond)!=i]])
-      for (j in (1:nb.cond)[(1:nb.cond)!=i]){
-        contra[k]=c(paste(contra[k],"-(",label.agg[j],")/",nb))
+      nb = sum(nb.agg[(seq_len(nb.cond))[(seq_len(nb.cond)) != i]])
+      for (j in (seq_len(nb.cond))[seq_len(nb.cond) != i]){
+        contra[k] = c(paste(contra[k],"-(",label.agg[j],")/",nb))
       }
       k=k+1
     }
@@ -579,7 +579,7 @@ limmaCompleteTest <- function(obj,
 #' @author Samuel Wieczorek
 #' 
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' library(QFeatures)
 #' utils::data(Exp1_R25_pept, package='DAPARdata2')
 #' object <- Exp1_R25_pept
@@ -590,11 +590,12 @@ limmaCompleteTest <- function(obj,
 #' }
 #' 
 #' @importFrom stringr str_match_all
+#' @importFrom MultiAssayExperiment DataFrame
 #' 
 formatLimmaResult <- function(fit, conds, contrast){
   
   #res.tmp <- topTable(fit,number=Inf, sort.by="none")
-  #res <- cbind(res.tmp[,1:Compa.Nb], fit$p.value)
+  #res <- cbind(res.tmp[,seq_len(Compa.Nb)], fit$p.value)
   #names(res) <- gsub(".", "_", names(res), fixed=TRUE)
   res <- cbind(fit$coefficients, fit$p.value)
   
@@ -602,7 +603,7 @@ formatLimmaResult <- function(fit, conds, contrast){
   Compa.Nb <- dim(fit$p.value)[2]
   #empty colnames vector
   cn <- c()
-  for (i in 1:Compa.Nb){
+  for (i in seq_len(Compa.Nb)){
     
     #not the same syntax to pars if Contast=1 or Contrast=2
     if(contrast==1){
@@ -621,15 +622,15 @@ formatLimmaResult <- function(fit, conds, contrast){
   }
   
   # res.l <- list(
-  #   logFC = as.data.frame(res[,1:Compa.Nb]),
-  #   P_Value = as.data.frame(res[,-(1:Compa.Nb)] )
+  #   logFC = as.data.frame(res[,seq_len(Compa.Nb)]),
+  #   P_Value = as.data.frame(res[,-(seq_len(Compa.Nb))] )
   # )
   # 
   # colnames(res.l$logFC) <- paste(cn, "logFC",sep="_")
   # colnames(res.l$P_Value) <- paste(cn, "pval",sep="_")
   
-  res.l <- DataFrame(data.frame(res[,1:Compa.Nb], res[,-(1:Compa.Nb)]))
-  colnames(res.l) <- c(paste(cn, "logFC",sep="_"), paste(cn, "pval",sep="_"))
+  res.l <- DataFrame(data.frame(res[,seq_len(Compa.Nb)], res[,-(seq_len(Compa.Nb))]))
+  colnames(res.l) <- c(paste(cn, "logFC", sep="_"), paste(cn, "pval", sep="_"))
   
   ## end colnames
   

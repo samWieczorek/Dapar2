@@ -38,7 +38,7 @@ utils::data(Exp1_R25_prot, package='DAPARdata2')
 qData <- assay(Exp1_R25_prot[[2]])
 key <- rowData(Exp1_R25_prot[[2]])[[ metadata(Exp1_R25_prot)[['keyId']] ]]
 conds <- colData(Exp1_R25_prot)[["Condition"]]
-violinPlotD(qData, conds, key, subset.view = 1:5)
+violinPlotD(qData, conds, key, subset.view = seq_len(5))
 
 }
 \author{

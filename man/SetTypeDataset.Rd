@@ -3,32 +3,15 @@
 \docType{data}
 \name{SetTypeDataset}
 \alias{SetTypeDataset}
-\alias{SetTypeDataset,SummarizedExperiment-method}
-\alias{SetTypeDataset,QFeatures-method}
 \title{Get the type of dataset}
 \format{
 An object of class \code{standardGeneric} of length 1.
 }
 \usage{
 SetTypeDataset
-
-\S4method{SetTypeDataset}{SummarizedExperiment}(object, type, ...)
-
-\S4method{SetTypeDataset}{QFeatures}(object, i, type, ...)
 }
-<<<<<<< HEAD
 \value{
 NA
-=======
-\arguments{
-\item{object}{An object of class 'QFeatures'}
-
-\item{type}{xxx}
-
-\item{...}{xxx}
-
-\item{i}{xxx}
->>>>>>> bd1ab6a739c5a9402b382daddfe0b803a076915c
 }
 \description{
 Get the type of dataset

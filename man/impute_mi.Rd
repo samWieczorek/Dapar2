@@ -26,7 +26,7 @@ Missing values imputation using the LSimpute algorithm.
 \examples{
 library(QFeatures)
 utils::data(Exp1_R25_pept, package='DAPARdata2')
-obj <- Exp1_R25_pept[1:1000,]
+obj <- Exp1_R25_pept[seq_len(1000),]
 x <- assay(obj[[2]])
 sampleTab <- colData(obj)
 dat <- impute_mi(x, sampleTab)

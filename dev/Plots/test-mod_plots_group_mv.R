@@ -26,17 +26,11 @@ server <- function(input, output, session) {
   mod_plots_group_mv_server('plots_group_mv',
                             obj = reactive({obj}),
                             conds = reactive({conds}),
-<<<<<<< HEAD
                             base_palette = reactive({DaparToolshed::Example_Palette(conds, 
                                                                                     DaparToolshed::Base_Palette(conditions = conds)
                                                                                     )
                               })
                             )
-=======
-                            base_palette = reactive({Dapar2::Example_Palette(conds, 
-                                                                             Dapar2::Base_Palette(conditions = conds))})
-  )
->>>>>>> bd1ab6a739c5a9402b382daddfe0b803a076915c
 
 }
 

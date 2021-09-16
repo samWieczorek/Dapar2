@@ -26,7 +26,7 @@ options(shiny.fullstacktrace = FALSE)
 
 ui <- fluidPage(
   tagList(
-    selectInput('n_assay', 'Assay', choices = 1:2),
+    selectInput('n_assay', 'Assay', choices = seq_len(2),
     mod_pipe_protein_Filtering_ui('pipe_filter'),
     mod_infos_dataset_ui('infos')
   )

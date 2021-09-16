@@ -1,8 +1,8 @@
-Package: Dapar2
+Package: DaparToolshed
 Type: Package
 Title: Tools for the Differential Analysis of Proteins Abundance with R
 Version: 0.99.0
-Date: 2021-07-15
+Date: 2021-09-16
 Authors@R: c(person(given = "Samuel", family = "Wieczorek",
             email = "samuel.wieczorek@cea.fr",
             role = c("aut","cre")),
@@ -20,15 +20,6 @@ Description: This package contains a collection of functions for the
     sd sfsfs .
 License: Artistic-2.0
 Depends: R (>= 4.1.0)
-<<<<<<< HEAD
-=======
-Suggests: 
-    testthat, 
-    BiocStyle, 
-    knitr,
-    MSnbase,
-    DAPARdata2
->>>>>>> bd1ab6a739c5a9402b382daddfe0b803a076915c
 Imports:
     Biobase,
     S4Vectors,
@@ -68,7 +59,6 @@ Imports:
     vioplot,
     imp4p (>= 0.9),
     impute,
-    dendextend,
     readxl,
     forcats,
     multcomp,
@@ -153,6 +143,7 @@ Collate:
     mod_plots_var_dist.R
     mod_popover_for_help.R
     mod_settings.R
+    misc.R
     zzz.R
 RoxygenNote: 7.1.1
 Packaged: 2017-10-13 11:13:04 UTC; sw175264
@@ -166,4 +157,3 @@ Suggests:
     BiocStyle,
     testthat, 
     DAPARdata2
-VignetteBuilder: knitr

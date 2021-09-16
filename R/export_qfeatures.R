@@ -20,7 +20,7 @@
 #' \donttest{
 #' Sys.setenv("R_ZIPCMD"= Sys.which("zip"))
 #' utils::data(Exp1_R25_pept, package='DAPARdata2')
-#' obj <- Exp1_R25_pept[1:1000]
+#' obj <- Exp1_R25_pept[seq_len(1000)]
 #' writeQFeaturesToExcel(obj, "foo")
 #' }
 #' 
@@ -40,7 +40,7 @@ writeQFeaturesToExcel <- function(obj, filename) {
   #
   # Add quantitative tabs for each assay
   #
-  for (i in 1:length(obj)){
+  for (i in seq_len(length(obj))){
     openxlsx::addWorksheet(wb, paste0("Quanti Data for ", names(obj)[i]))
     openxlsx::writeData(wb, 
                         sheet=i,
@@ -72,7 +72,7 @@ writeQFeaturesToExcel <- function(obj, filename) {
   #
   # Add quantitative tabs for each assay
   #
-  for (i in 1:length(obj)){
+  for (i in seq_len(length(obj))){
     offset <- 1 + length(obj) + i
     openxlsx::addWorksheet(wb, paste0("Meta Data for ", names(obj)[i]))
     
@@ -83,7 +83,7 @@ writeQFeaturesToExcel <- function(obj, filename) {
   # if (!is.null(obj@experimentData@other$GGO_analysis))
   # {
   #   l <- length(obj@experimentData@other$GGO_analysis$ggo_res)
-  #   for (i in 1:l){
+  #   for (i in seq_len(l)){
   #     n <- n +1
   #     level <- as.numeric(obj@experimentData@other$GGO_analysis$levels[i])
   #     openxlsx::addWorksheet(wb, paste("Group GO - level ", level, sep=""))
@@ -176,7 +176,7 @@ listSheets <- function(file){
 #' #' @examples
 #' #' \donttest{
 #' #' utils::data(Exp1_R25_pept, package='DAPARdata2')
-#' #' obj <- Exp1_R25_pept[1:1000]
+#' #' obj <- Exp1_R25_pept[seq_len(1000)]
 #' #' writeMSnsetToCSV(obj, "foo")
 #' #' }
 #' #' 

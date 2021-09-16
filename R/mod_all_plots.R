@@ -53,6 +53,8 @@ mod_all_plots_ui <- function(id){
 #' @param dataIn xxxx
 #' 
 #' @importFrom base64enc dataURI
+#' @importFrom SummarizedExperiment colData
+#' @importFrom MultiAssayExperiment metadata
 #' 
 #' @return NA
 #'

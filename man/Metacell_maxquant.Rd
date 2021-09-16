@@ -37,8 +37,8 @@ package="DAPARdata2")
 metadata <- read.table(metadataFile, header=TRUE, sep="\t", as.is=TRUE, 
 stringsAsFactors = FALSE)
 conds <- metadata$Condition
-qdata <- data[1:10,56:61]
-df <- data[1:10 , 43:48]
+qdata <- data[seq_len(10),seq(56, 61)]
+df <- data[seq_len(10) , seq(43, 48)]
 df2 <- Metacell_maxquant(qdata, conds, df, level='peptide')
 
 }

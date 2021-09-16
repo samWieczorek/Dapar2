@@ -20,9 +20,10 @@ Method to compute the number of quantified peptides used for aggregating each pr
 \examples{
 library(QFeatures)
 utils::data(Exp1_R25_pept, package='DAPARdata2')
-obj <- Exp1_R25_pept
+obj <- Exp1_R25_pept[seq_len(1000),]
 qPepData <- assay(obj,2)
-X <- GetAdjMat(obj, 2)$all
+obj <- addListAdjacencyMatrices(obj, 2)
+X <- as.matrix(GetAdjMat(obj[[2]])$all)
 n <- GetNbPeptidesUsed(qPepData, X)
 
 }

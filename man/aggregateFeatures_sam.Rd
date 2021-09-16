@@ -50,21 +50,20 @@ Aggregation is performed by a function that takes a matrix as
 input and returns a xxxxx. Examples
 thereof are
 
-- [Dapar2:aggSum()] to use the sum of each column (default);
+- [DaparToolshed:aggSum()] to use the sum of each column (default);
 
-- [Dapar2:aggMean()] to use the sum of each column;
+- [DaparToolshed:aggMean()] to use the sum of each column;
 
-- [Dapar2:aggIter()] to use the mean of each column;
+- [DaparToolshed:aggIter()] to use the mean of each column;
 
-- [Dapar2:aggIterParallel()] same as previous function but use parallelism.
+- [DaparToolshed:aggIterParallel()] same as previous function but use parallelism.
 
-- [Dapar2::aggTopn] to use the sum of each column;
+- [DaparToolshed::aggTopn] to use the sum of each column;
 }
 \examples{
 library(QFeatures)
 utils::data(Exp1_R25_pept, package='DAPARdata2')
-obj <- Exp1_R25_pept[1:1000]
-obj <- SetAdjMat(obj, 2)
+obj <- Exp1_R25_pept
 aggregateFeatures_sam(obj,2, aggType= 'all', name='aggregated', 
 meta.names = 'Sequence', fun='aggTopn', n=3)
 

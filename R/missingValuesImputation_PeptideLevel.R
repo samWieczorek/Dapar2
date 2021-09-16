@@ -14,7 +14,7 @@
 #' @examples
 #' library(QFeatures)
 #' utils::data(Exp1_R25_pept, package='DAPARdata2')
-#' obj <- Exp1_R25_pept[1:1000,]
+#' obj <- Exp1_R25_pept[seq_len(1000),]
 #' sampleTab <- colData(obj)
 #' dat <- impute_mle_dapar(assay(obj[[2]]), colData(obj))
 #' 
@@ -63,7 +63,7 @@ impute_mle_dapar <- function(x, sampleTab){
 #' @examples
 #' library(QFeatures)
 #' utils::data(Exp1_R25_pept, package='DAPARdata2')
-#' obj <- Exp1_R25_pept[1:1000,]
+#' obj <- Exp1_R25_pept[seq_len(1000),]
 #' x <- assay(obj[[2]])
 #' sampleTab <- colData(obj)
 #' dat <- impute_mi(x, sampleTab)
@@ -229,7 +229,7 @@ translatedRandomBeta <- function(n, min, max, param1=3, param2=1){
 #' @examples
 #' library(QFeatures)
 #' utils::data(Exp1_R25_pept, package='DAPARdata2')
-#' obj <- Exp1_R25_pept[1:1000]
+#' obj <- Exp1_R25_pept[seq_len(1000)]
 #' x <- assay(obj[[2]])
 #' sampleTab <- colData(obj)
 #' dat <- impute_pa2(x, sampleTab,distribution="beta")
@@ -262,7 +262,7 @@ impute_pa2 <- function (x, sampleTab, q.min = 0, q.norm = 3, eps = 0, distributi
   nb_rep = rep(0, nb_cond)
   k = 1
   j = 1
-  for (i in 1:nb_cond) {
+  for (i in seq_len(nb_cond)) {
     nb_rep[i] = sum((conditions == levels(conditions)[i]))
     sde = apply(tab_imp[, (k:(k + nb_rep[i] - 1))], 1, sd, 
                 na.rm = TRUE)

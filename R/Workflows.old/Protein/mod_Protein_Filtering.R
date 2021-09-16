@@ -155,13 +155,13 @@ mod_Protein_Filtering_server <- function(id,
       rv.widgets$select1
       if (rv$steps.enabled['Step1'])
         selectInput(ns('select1'), 'Select 1 in renderUI',
-                    choices = 1:4,
+                    choices = seq_len(4),
                     selected = rv.widgets$select1,
                     width = '150px')
       else
         shinyjs::disabled(
           selectInput(ns('select1'), 'Select 1 in renderUI',
-                      choices = 1:4,
+                      choices = seq_len(4),
                       selected = rv.widgets$select1,
                       width = '150px')
         )
@@ -174,13 +174,13 @@ mod_Protein_Filtering_server <- function(id,
       rv$steps.enabled
       if (rv$steps.enabled['Step1'])
         selectInput(ns('select2'), 'Select 2 in renderUI',
-                    choices = 1:3,
+                    choices = seq_len(3),
                     selected = rv.widgets$select2,
                     width = '150px')
       else
         shinyjs::disabled(
           selectInput(ns('select2'), 'Select 2 in renderUI',
-                      choices = 1:4,
+                      choices = seq_len(4),
                       selected = rv.widgets$select2,
                       width = '150px')
         )
@@ -206,13 +206,13 @@ mod_Protein_Filtering_server <- function(id,
                       div(style="display:inline-block; vertical-align: middle; padding-right: 40px;",
                           if (rv$steps.enabled['Step1'])
                             selectInput(ns('select3'), 'Select step 3',
-                                        choices = 1:3,
+                                        choices = seq_len(3),
                                         selected = rv.widgets$select3,
                                         width = '150px')
                           else
                             shinyjs::disabled(
                               selectInput(ns('select3'), 'Select step 3',
-                                          choices = 1:5,
+                                          choices = seq_len(5),
                                           selected = rv.widgets$select3,
                                           width = '150px')
                             )
@@ -250,13 +250,13 @@ mod_Protein_Filtering_server <- function(id,
       rv$steps.enabled
       if (rv$steps.enabled['Step2'])
         selectInput(ns('select2_1'), 'Select 2_1 in renderUI',
-                    choices = 1:3,
+                    choices = seq_len(3),
                     selected = rv.widgets$select2_1,
                     width = '150px')
       else
         shinyjs::disabled(
           selectInput(ns('select2_1'), 'Select 2_1 in renderUI',
-                      choices = 1:3,
+                      choices = seq_len(3),
                       selected = rv.widgets$select2_1,
                       width = '150px')
         )
@@ -274,14 +274,14 @@ mod_Protein_Filtering_server <- function(id,
               div(style="display:inline-block; vertical-align: middle; padding-right: 40px;",
                   if (rv$steps.enabled['Step2'])
                     selectInput(ns('select2_2'), 'Select 2_2',
-                                choices = 1:5,
+                                choices = seq_len(5),
                                 selected = rv.widgets$select2_2,
                                 width = '150px')
                   else
                     shinyjs::disabled(
                       selectInput(ns('select2_2'),
                                   'Select 2_2',
-                                  choices = 1:5,
+                                  choices = seq_len(5),
                                   selected = rv.widgets$select2_2,
                                   width = '150px')
                     )

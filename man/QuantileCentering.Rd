@@ -35,7 +35,7 @@ library(QFeatures)
 utils::data(Exp1_R25_pept, package='DAPARdata2')
 obj <- Exp1_R25_pept[['original_log']]
 conds <- colData(Exp1_R25_pept)[['Condition']]
-normalized <- QuantileCentering(assay(obj), conds, type="within conditions", subset.norm=1:10)
+normalized <- QuantileCentering(assay(obj), conds, type="within conditions", subset.norm= seq_len(10))
 
 }
 \author{

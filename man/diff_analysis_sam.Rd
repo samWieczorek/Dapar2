@@ -43,7 +43,7 @@ The following functions are currently available:
 \examples{
 library(QFeatures)
 utils::data(Exp1_R25_pept, package='DAPARdata2')
-object <- Exp1_R25_pept[1:1000,]
+object <- Exp1_R25_pept[seq_len(1000),]
 object <- addAssay(object, QFeatures::filterNA(object[[2]],  pNA = 0), name='filtered')
 sTab <- colData(object)
 gttest.se <- t_test_sam(object[[3]], sTab, FUN = compute.t.test)

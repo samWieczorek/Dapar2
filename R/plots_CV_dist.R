@@ -18,7 +18,7 @@
 #' @examples
 #' library(QFeatures)
 #' utils::data(Exp1_R25_pept, package='DAPARdata2')
-#' qData <- assay(Exp1_R25_pept[[2]])[1:10,]
+#' qData <- assay(Exp1_R25_pept[[2]])[seq_len(10),]
 #' conds <- colData(Exp1_R25_pept)[["Condition"]]
 #' CVDistD_HC(qData, conds)
 #' 
@@ -78,7 +78,7 @@ CVDistD_HC <- function(qData,
   
   minX <- maxX <- 0
   maxY <- 0
-  for (i in 1:n){
+  for (i in seq_len(n)){
     if (length(which(conds == conditions[i])) > 1){
       t <- apply(qData[,which(conds == conditions[i])], 1, 
                  function(x) 100*stats::var(x, na.rm=TRUE)/mean(x, na.rm=TRUE))

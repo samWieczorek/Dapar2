@@ -210,7 +210,7 @@ mod_graph_pept_prot_server <- function(id, cc, matAdj, dataIn){
                                         scroller = TRUE,
                                         orderClasses = TRUE,
                                         autoWidth=TRUE,
-                                        columns.searchable=F,
+                                        columns.searchable = FALSE,
                                         columnDefs = list(list(columns.width=c("60px"),
                                                                columnDefs.targets=c(list(0),list(1),list(2))))))
 
@@ -446,8 +446,8 @@ mod_graph_pept_prot_server <- function(id, cc, matAdj, dataIn){
                                         scrollY = 400,
                                         scroller = TRUE,
                                         orderClasses = TRUE,
-                                        autoWidth=FALSE,
-                                        columns.searchable=F,
+                                        autoWidth = FALSE,
+                                        columns.searchable = FALSE,
                                         columnDefs = list(list(columns.width=c("60px"),
                                                                columnDefs.targets=c(list(0),list(1),list(2))))))
 
@@ -517,8 +517,8 @@ mod_graph_pept_prot_server <- function(id, cc, matAdj, dataIn){
                                         scrollY = 200,
                                         scroller = TRUE,
                                         orderClasses = TRUE,
-                                        autoWidth=FALSE,
-                                        columns.searchable=F,
+                                        autoWidth = FALSE,
+                                        columns.searchable = FALSE,
                                         columnDefs = list(list(columns.width=c("60px"),
                                                                columnDefs.targets=c(list(0),list(1),list(2))))))
 

@@ -44,7 +44,7 @@ server <- function(input, output, session) {
   # output$test <- renderHighchart({
   #   
   #   utils::data(Exp1_R25_pept, package='DAPARdata2')
-  #   obj <- Exp1_R25_pept[1:1000,]
+  #   obj <- Exp1_R25_pept[seq_len(1000),]
   #   conds <- colData(obj)[["Condition"]]
   #   obj <- normalizeD(obj, 2, name='norm', method='SumByColumns', conds=conds, type='overall')
   #   compareNormalizationD_HC(assay(obj, 2), assay(obj, 3), conds=conds, palette=NULL)

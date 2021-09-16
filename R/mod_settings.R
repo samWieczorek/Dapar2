@@ -171,10 +171,10 @@ mod_settings_server <- function(id, obj){
 
       switch(rv.settings$typeOfPalette,
              predefined={
-               rv.settings$basePalette <- RColorBrewer::brewer.pal(nbColors, rv.settings$choosePalette)[1:nbConds]
+               rv.settings$basePalette <- RColorBrewer::brewer.pal(nbColors, rv.settings$choosePalette)[seq_len(nbConds)]
              },
              custom = {
-               for (i in 1:nbConds){
+               for (i in seq_len(nbConds)){
                  rv.settings$basePalette <- c(rv.settings$basePalette,
                                               input[[ns(paste0("customColorCondition_",i))]])
                  if (is.null(rv.settings$basePalette)){return(NULL)}
@@ -296,7 +296,7 @@ mod_settings_server <- function(id, obj){
     SetExamplePalette <- reactive({
 
       nbConds <- length(unique(rv.settings$conditions))
-      for (i in 1:nbConds){
+      for (i in seq_len(nbConds)){
         rv.settings$examplePalette[ which(rv.settings$conditions == unique(rv.settings$conditions)[i])] <- rv.settings$basePalette[i]
       }
     })
@@ -335,7 +335,7 @@ mod_settings_server <- function(id, obj){
         highcharter::hc_plotOptions( column = list(stacking = "normal"), animation=list(duration = 1)) %>%
         highcharter::hc_legend(enabled = FALSE) %>%
         highcharter::hc_yAxis(labels=FALSE,title = list(text = "")) %>%
-        highcharter::hc_xAxis(categories = 1:nbConds, title = list(text = "")
+        highcharter::hc_xAxis(categories = seq_len(nbConds), title = list(text = "")
         )
     })
 

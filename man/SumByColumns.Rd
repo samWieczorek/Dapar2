@@ -28,7 +28,7 @@ utils::data(Exp1_R25_pept, package='DAPARdata2')
 library(QFeatures)
 qData <- assay(Exp1_R25_pept[['original_log']])
 conds <- colData(Exp1_R25_pept)[["Condition"]]
-normalized <- SumByColumns(qData, conds, type="within conditions", subset.norm=1:10)
+normalized <- SumByColumns(qData, conds, type="within conditions", subset.norm= seq_len(10))
 
 }
 \author{

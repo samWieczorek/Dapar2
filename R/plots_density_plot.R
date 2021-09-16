@@ -78,7 +78,7 @@ densityPlotD_HC <- function(qData,
   
  
   
-  for (i in 1:ncol(qData)){
+  for (i in seq_len(ncol(qData))){
     
     tmp <- data.frame(x = stats::density(qData[,i], na.rm = TRUE)$x, 
                       y = stats::density(qData[,i], na.rm = TRUE)$y)

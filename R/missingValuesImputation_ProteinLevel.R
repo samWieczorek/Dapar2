@@ -5,7 +5,7 @@
 #' @examples
 #' library(QFeatures)
 #' utils::data(Exp1_R25_pept, package='DAPARdata2')
-#' obj <- Exp1_R25_pept[1:1000,]
+#' obj <- Exp1_R25_pept[seq_len(1000),]
 #' obj <- impute_dapar(obj, 2,'foo1',  'POV_det_quant', conds=colData(obj)$Condition)
 #' 
 "impute_dapar"
@@ -87,7 +87,7 @@ setMethod("impute_dapar", "QFeatures",
 #' @examples
 #' library(QFeatures)
 #' utils::data(Exp1_R25_pept, package='DAPARdata2')
-#' obj <- Exp1_R25_pept[1:1000,]
+#' obj <- Exp1_R25_pept[seq_len(1000),]
 #' imp <- impute_matrix_dapar(assay(obj[[2]]), method='knn_by_conds', colData(obj)$Condition, 3)
 #' 
 #' imp <- impute_matrix_dapar(assay(obj[[2]]), method='pa', colData(obj)$Condition, q.min=0.03)
@@ -190,7 +190,7 @@ impute_MEC_Methods <- function()
 #' @examples
 #' library(QFeatures)
 #' utils::data(Exp1_R25_pept, package='DAPARdata2')
-#' obj <- Exp1_R25_pept[1:1000,]
+#' obj <- Exp1_R25_pept[seq_len(1000),]
 #' imp <- POV_impute_knn_by_conditions(assay(obj[[2]]), colData(obj)$Condition, 3)
 #' 
 #' @export
@@ -213,9 +213,15 @@ POV_impute_knn_by_conditions <- function(x, conds=NULL, k=3){
   u_conds <- unique(conds)
   
   
-  for (i in 1:length(u_conds)){
+  for (i in seq_len(length(u_conds))){
     ind <- which(conds == u_conds[i])
-    resKNN <- impute::impute.knn(res[,ind] ,k = k, rowmax = 0.99, colmax = 0.99, maxp = 1500, rng.seed = sample(1:1000,1))
+    resKNN <- impute::impute.knn(res[,ind] ,
+                                 k = k, 
+                                 rowmax = 0.99, 
+                                 colmax = 0.99, 
+                                 maxp = 1500, 
+                                 rng.seed = sample(seq_len(1000),1)
+                                 )
     res[,ind] <- resKNN[[1]]
   }
   
@@ -243,7 +249,7 @@ POV_impute_knn_by_conditions <- function(x, conds=NULL, k=3){
 #' @examples
 #' library(QFeatures)
 #' utils::data(Exp1_R25_pept, package='DAPARdata2')
-#' obj <- Exp1_R25_pept[1:1000,]
+#' obj <- Exp1_R25_pept[seq_len(1000),]
 #' imp <- impute_knn_by_conditions(assay(obj[[2]]), colData(obj)$Condition, 3)
 #' 
 #' @export
@@ -262,9 +268,9 @@ impute_knn_by_conditions <- function(x, conds=NULL, k=3){
     u_conds <- unique(conds)
     
     
-    for (i in 1:length(u_conds)){
+    for (i in seq_len(length(u_conds))){
         ind <- which(conds == u_conds[i])
-        resKNN <- impute::impute.knn(res[,ind] ,k = k, rowmax = 0.99, colmax = 0.99, maxp = 1500, rng.seed = sample(1:1000,1))
+        resKNN <- impute::impute.knn(res[,ind] ,k = k, rowmax = 0.99, colmax = 0.99, maxp = 1500, rng.seed = sample(seq_len(1000),1))
         res[,ind] <- resKNN[[1]]
     }
 
@@ -288,7 +294,7 @@ impute_knn_by_conditions <- function(x, conds=NULL, k=3){
 #' @examples
 #' library(QFeatures)
 #' utils::data(Exp1_R25_pept, package='DAPARdata2')
-#' object <- Exp1_R25_pept[1:1000,]
+#' object <- Exp1_R25_pept[seq_len(1000),]
 #' object <- addAssay(object, QFeatures::filterNA(object[[2]],  pNA = 0.2), name='filtered')
 #' imp <- impute_pa(assay(object[['filtered']]), colData(object)$Condition)
 #' 
@@ -335,7 +341,7 @@ impute_det_quant <- function(x, ...){
     
     values <- getQuantile4Imp(x, ...)
     res <- x
-   for(i in 1:dim(x)[2]){
+   for(i in seq_len(dim(x)[2])){
         col <- x[,i]
         col[which(is.na(col))] <- values$shiftedImpVal[i]
         x[,i] <- col
@@ -372,7 +378,7 @@ POV_impute_det_quant <- function(x, conds, ...){
   
   values <- getQuantile4Imp(x, ...)
   res <- x
-  for(i in 1:dim(x)[2]){
+  for(i in seq_len(dim(x)[2])){
     col <- x[,i]
     col[which(is.na(col))] <- values$shiftedImpVal[i]
     x[,i] <- col
@@ -431,7 +437,7 @@ getQuantile4Imp <- function(x, qval=0.025, factor=1){
 #' @examples
 #' library(QFeatures)
 #' utils::data(Exp1_R25_pept, package='DAPARdata2')
-#' obj <- Exp1_R25_pept[1:1000]
+#' obj <- Exp1_R25_pept[seq_len(1000)]
 #' imp <- impute_slsa(assay(obj[[2]]), colData(obj))
 #' 
 #' @export
@@ -470,7 +476,7 @@ impute_slsa <- function(x, sampleTab){
 #' @examples
 #' library(QFeatures)
 #' utils::data(Exp1_R25_pept, package='DAPARdata2')
-#' obj <- Exp1_R25_pept[1:1000]
+#' obj <- Exp1_R25_pept[seq_len(1000)]
 #' imp <- POV_impute_slsa(assay(obj[[2]]), colData(obj))
 #' 
 #' @export
@@ -513,7 +519,7 @@ POV_impute_slsa <- function(x, sampleTab){
 #' 
 #' @examples
 #' utils::data(Exp1_R25_pept, package='DAPARdata')
-#' impute_fixed_value(assay(Exp1_R25_pept[1:1000], 2), 0.001)
+#' impute_fixed_value(assay(Exp1_R25_pept[seq_len(1000)], 2), 0.001)
 #' 
 #' @export
 #' 
@@ -544,7 +550,7 @@ impute_fixed_value <- function(x, value){
 #' @examples
 #' library(QFeatures)
 #' utils::data(Exp1_R25_pept, package='DAPARdata2')
-#' obj <- Exp1_R25_pept[1:1000]
+#' obj <- Exp1_R25_pept[seq_len(1000)]
 #' lapala <- find_MEC_matrix(assay(obj[[2]]), colData(obj)$Condition)
 #' assay(obj[[2]]) <- impute_det_quant(assay(obj[[2]]))
 #' assay(obj[[2]]) <- restore_MEC_matrix(assay(obj[[2]]), colData(obj)$Condition, lapala)
@@ -553,7 +559,7 @@ impute_fixed_value <- function(x, value){
 #' 
 restore_MEC_matrix <- function(x, conds, MECIndex){
     u_conds <- unique(conds)
-    for (i in 1:nrow(MECIndex))
+    for (i in seq_len(nrow(MECIndex)))
     {
        replicates <- which(conds == u_conds[MECIndex[i,"Condition"]])
         x[MECIndex[i,"Line"], as.vector(replicates)] <- NA
@@ -576,7 +582,7 @@ restore_MEC_matrix <- function(x, conds, MECIndex){
 #' @examples
 #' library(QFeatures)
 #' utils::data(Exp1_R25_pept, package='DAPARdata2')
-#' obj <- Exp1_R25_pept[1:1000]
+#' obj <- Exp1_R25_pept[seq_len(1000)]
 #' lapala <- find_MEC_matrix(assay(obj[[2]]), colData(obj)$Condition)
 #' 
 #' @export
@@ -592,7 +598,7 @@ find_MEC_matrix <- function(x, conds){
     
     s <- data.frame()
     
-    for (i in 1:length(u_conds)){
+    for (i in seq_len(length(u_conds))){
         ind <- which(conds == u_conds[i])
         lNA <- which(apply(is.na(x[,ind]), 1, sum)==length(ind))
         if (length(lNA) > 0)

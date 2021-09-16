@@ -7,14 +7,10 @@
 mod_all_plots_ui(id)
 }
 \arguments{
-<<<<<<< HEAD
 \item{id, input, output, session}{Internal parameters for {shiny}.}
 }
 \value{
 NA
-=======
-\item{id}{xxx}
->>>>>>> bd1ab6a739c5a9402b382daddfe0b803a076915c
 }
 \description{
 A shiny Module.

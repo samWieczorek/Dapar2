@@ -22,7 +22,7 @@ xxx
 \examples{
 library(QFeatures)
 utils::data(Exp1_R25_pept, package='DAPARdata2')
-obj <- Exp1_R25_pept[1:1000,]
+obj <- Exp1_R25_pept[seq_len(1000),]
 imp <- impute_matrix_dapar(assay(obj[[2]]), method='knn_by_conds', colData(obj)$Condition, 3)
 
 imp <- impute_matrix_dapar(assay(obj[[2]]), method='pa', colData(obj)$Condition, q.min=0.03)

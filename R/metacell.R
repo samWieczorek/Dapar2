@@ -134,7 +134,7 @@ metacell.def <- function(level){
   
   def <- cbind(def, color = rep('white', nrow(def)))
   
-  for(n in 1:nrow(def))
+  for(n in seq_len(nrow(def)))
     def[n, 'color'] <- colors[[def[n, 'node']]]
   
   return(def)
@@ -325,7 +325,7 @@ setMethod("SetTypeDataset", "QFeatures",
 #' 
 Set_POV_MEC_tags <- function(conds, df, level){
   u_conds <- unique(conds)
-  for (i in 1:length(u_conds)){
+  for (i in seq_len(length(u_conds))){
     ind.samples <- which(conds == u_conds[i])
     
     ind.imputed <- match.metacell(df[, ind.samples], 'imputed', level)
@@ -441,8 +441,8 @@ BuildMetaCell <- function(from = NULL,
 #' metadata <- read.table(metadataFile, header=TRUE, sep="\t", as.is=TRUE, 
 #' stringsAsFactors = FALSE)
 #' conds <- metadata$Condition
-#' qdata <- data[1:100,56:61]
-#' df <- data[1:100 , 43:48]
+#' qdata <- data[seq_len(100), seq(56, 61)]
+#' df <- data[seq_len(100) , seq(43,48)]
 #' df <- Metacell_generic(qdata, conds, level='peptide')
 #' 
 #' @export
@@ -508,7 +508,7 @@ Metacell_generic <- function(qdata, conds, level){
 #' @author Samuel Wieczorek
 #' 
 #' @examples
-#' \dontrun{ 
+#' \donttest{ 
 #' file <- system.file("extdata", "Exp1_R25_pept.txt", package="DAPARdata2")
 #' data <- read.table(file, header=TRUE, sep="\t",stringsAsFactors = FALSE)
 #' metadataFile <- system.file("extdata", "samples_Exp1_R25.txt", 
@@ -516,8 +516,8 @@ Metacell_generic <- function(qdata, conds, level){
 #' metadata <- read.table(metadataFile, header=TRUE, sep="\t", as.is=TRUE, 
 #' stringsAsFactors = FALSE)
 #' conds <- metadata$Condition
-#' qdata <- data[1:100,56:61]
-#' df <- data[1:100 , 43:48]
+#' qdata <- data[seq_len(100), seq(56, 61)]
+#' df <- data[seq_len(100) , seq(43, 48)]
 #' df <- Metacell_proline(qdata, conds, df, level = 'peptide')
 #' }
 #' 
@@ -589,8 +589,8 @@ Metacell_proline <- function(qdata, conds, df, level=NULL){
 #' metadata <- read.table(metadataFile, header=TRUE, sep="\t", as.is=TRUE, 
 #' stringsAsFactors = FALSE)
 #' conds <- metadata$Condition
-#' qdata <- data[1:10,56:61]
-#' df <- data[1:10 , 43:48]
+#' qdata <- data[seq_len(10),seq(56, 61)]
+#' df <- data[seq_len(10) , seq(43, 48)]
 #' df2 <- Metacell_maxquant(qdata, conds, df, level='peptide')
 #' 
 #' @export
@@ -657,7 +657,7 @@ Metacell_maxquant <- function(qdata, conds, df, level=NULL){
 #'
 #' @examples
 #' utils::data(Exp1_R25_pept, package='DAPARdata2')
-#' obj <- Exp1_R25_pept[1:10,]
+#' obj <- Exp1_R25_pept[seq_len(10),]
 #' metadata <- Get_qMetadata(obj)
 #' m <- match.metacell(metadata, pattern="missing", level = 'peptide')
 #'
@@ -680,7 +680,7 @@ match.metacell <- function(df, pattern, level){
                    function(x){as.data.frame(df)==x})
   
   res <- NULL
-  for (i in 1:length(ll.res))
+  for (i in seq_len(length(ll.res)))
     if (i==1){
       res <- ll.res[[1]]
     } else {
@@ -698,7 +698,7 @@ match.metacell <- function(df, pattern, level){
 #' 
 #' @examples
 #' utils::data(Exp1_R25_pept, package='DAPARdata2')
-#' obj <- Exp1_R25_pept[1:10,]
+#' obj <- Exp1_R25_pept[seq_len(10),]
 #' mc <- Get_qMetadata(obj[[2]])
 #' 
 "Get_qMetadata"
@@ -757,7 +757,7 @@ setMethod("Get_qMetadata", "QFeatures",
 #' 
 #' @examples
 #' utils::data(Exp1_R25_pept, package='DAPARdata2')
-#' obj <- Exp1_R25_pept[1:10,]
+#' obj <- Exp1_R25_pept[seq_len(10),]
 #' obj[[2]] <- UpdateMetacell(obj[[2]], na.type = 'missing')
 #' 
 #' @author Samuel Wieczorek
@@ -833,15 +833,6 @@ search.metacell.tags <- function(pattern, level, depth = '1'){
   if(!(depth %in% c('0', '1', '*')))
     stop("'depth' must be one of the following: 0, 1 or *")
   
-  # 
-  # is.neighbor <- function(tag, query){
-  #   prefix.tag <- unlist(strsplit(tag, split='_'))[1:(length(unlist(strsplit(tag, split='_')))-1)]
-  #   prefix.query <- unlist(strsplit(query, split='_'))[1:(length(unlist(strsplit(query, split='_')))-1)]
-  #   split.tag <- unlist(strsplit(tag, split='_'))
-  #   split.query <- unlist(strsplit(query, split='_'))
-  #   value <- length(split.query) == length(split.tag) + 1 && all(split.tag == split.query[1:length(split.tag)])
-  #   return(value)
-  # }
   tags <- NULL
   tags <- switch(depth,
                  '0' = pattern,

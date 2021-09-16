@@ -23,7 +23,7 @@ of the comparisons of conditions in a differential analysis.
 \examples{
 library(QFeatures)
 utils::data(Exp1_R25_pept, package='DAPARdata2')
-obj <- Exp1_R25_pept[1:1000]
+obj <- Exp1_R25_pept[seq_len(1000)]
 obj <- addAssay(obj, QFeatures::filterNA(obj[[2]],  pNA = 0), name='filtered')
 se <- t_test_sam(obj[[3]], colData(obj), FUN = compute.t.test)
 ind <- grep('_logFC', colnames(metadata(se)$t_test))

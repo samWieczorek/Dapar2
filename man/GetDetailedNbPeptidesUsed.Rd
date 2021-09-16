@@ -20,17 +20,20 @@ A list of three items:
 * nSpec: the total number of pspecific eptides used for aggregation.
 }
 \description{
-Computes the detailed number of peptides used for aggregating each protein w.r.t NA values in 
-peptide quantitative dataset. Even if a peptide is part of a protein, if its value is NA, it do not be used
-for aggreation.
+Method to compute the detailed number of quantified peptides used for aggregating each protein
 }
 \examples{
 library(QFeatures)
 utils::data(Exp1_R25_pept, package='DAPARdata2')
-qPepData <- assay(Exp1_R25_pept,2)
-X <- GetAdjMat(Exp1_R25_pept, 2)$all
+obj <- Exp1_R25_pept
+qPepData <- assay(obj,2)
+obj <- addListAdjacencyMatrices(obj, 2)
+X <- GetAdjMat(obj[[2]])$all
 n <- GetDetailedNbPeptidesUsed(X, qPepData)
  
+}
+\seealso{
+The function 'addListAdjacencyMatrices'.
 }
 \author{
 Samuel Wieczorek

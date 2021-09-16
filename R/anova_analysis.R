@@ -36,6 +36,7 @@
 #' @export
 #' 
 #' @importFrom dplyr select
+#' @importFrom MultiAssayExperiment DataFrame
 #' 
 #' @return NA
 #' 
@@ -102,6 +103,7 @@ wrapperClassic1wayAnova <- function(obj,
 #' @examples
 #' 
 #' @importFrom purrr map_dfr
+#' @importFrom MultiAssayExperiment DataFrame
 #' 
 #' @return NA
 #' 

@@ -79,7 +79,7 @@ mvPerLinesHistoPerCondition_HC <- function(qData, conds, indLegend = "auto", pal
     hc_tooltip(headerFormat= '',
                pointFormat = "{point.y} ")
   
-  for (i in 1:nbConditions){
+  for (i in seq_len(nbConditions)){
     h1 <- h1 %>% hc_add_series(data=m[ ,unique(conds)[i]]) }
   
   

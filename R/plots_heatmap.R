@@ -22,7 +22,7 @@
 #' @author Samuel Wieczorek
 #' 
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' library(QFeatures)
 #' utils::data(Exp1_R25_prot, package='DAPARdata2')
 #' conds <- colData(Exp1_R25_prot)[['Condition']]

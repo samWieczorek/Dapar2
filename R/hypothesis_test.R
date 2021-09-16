@@ -116,7 +116,7 @@ setMethod("HypothesisTest", "QFeatures",
 #' @examples
 #' library(QFeatures)
 #' utils::data(Exp1_R25_pept, package='DAPARdata2')
-#' obj <- Exp1_R25_pept[1:1000]
+#' obj <- Exp1_R25_pept[seq_len(1000)]
 #' obj <- addAssay(obj, QFeatures::filterNA(obj[[2]],  pNA = 0), name='filtered')
 #' se <- t_test_sam(obj[[3]], colData(obj), FUN = compute.t.test)
 #' ind <- grep('_logFC', colnames(metadata(se)$t_test))
@@ -183,7 +183,7 @@ hc_logFC_DensityPlot <-function(df_logFC,
   maxX<- NULL
   
   
-  for (i in 1:ncol(df_logFC)){
+  for (i in seq_len(ncol(df_logFC))){
     tmp <- density(df_logFC[,i],na.rm = TRUE)
     ind <- tmp$y[which(tmp$x <= -threshold_LogFC)]
     maxY.inf <- max(maxY.inf, ifelse(length(ind)==0,0,ind))

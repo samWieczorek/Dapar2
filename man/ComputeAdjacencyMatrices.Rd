@@ -23,7 +23,7 @@ Method to create a list of three binary matrices with proteins in columns and pe
 }
 \examples{
 utils::data(Exp1_R25_pept, package='DAPARdata2')
-obj <- Exp1_R25_pept[1:1000,]
+obj <- Exp1_R25_pept[seq_len(1000),]
 ll.x <- ComputeAdjacencyMatrices(obj[[2]])
 
 }

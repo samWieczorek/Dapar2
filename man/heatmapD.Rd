@@ -24,7 +24,7 @@ A heatmap
 This function is a wrapper to 'heatmap.2' that displays a numeric matrix
 }
 \examples{
-\dontrun{
+\donttest{
 library(QFeatures)
 utils::data(Exp1_R25_prot, package='DAPARdata2')
 conds <- colData(Exp1_R25_prot)[['Condition']]

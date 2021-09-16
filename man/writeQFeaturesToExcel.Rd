@@ -25,7 +25,7 @@ original missing values which have been imputed.
 \donttest{
 Sys.setenv("R_ZIPCMD"= Sys.which("zip"))
 utils::data(Exp1_R25_pept, package='DAPARdata2')
-obj <- Exp1_R25_pept[1:1000]
+obj <- Exp1_R25_pept[seq_len(1000)]
 writeQFeaturesToExcel(obj, "foo")
 }
 

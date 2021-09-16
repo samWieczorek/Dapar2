@@ -40,7 +40,7 @@ HypothesisTestMethods <- function()
 #' @examples
 #' library(QFeatures)
 #' utils::data(Exp1_R25_pept, package='DAPARdata2')
-#' object <- Exp1_R25_pept[1:1000,]
+#' object <- Exp1_R25_pept[seq_len(1000),]
 #' object <- addAssay(object, QFeatures::filterNA(object[[2]],  pNA = 0), name='filtered')
 #' object <- addListAdjacencyMatrices(object, 3)
 #' 
@@ -135,12 +135,12 @@ setMethod("t_test_sam", "QFeatures",
 #' @examples
 #' library(QFeatures)
 #' utils::data(Exp1_R25_pept, package='DAPARdata2')
-#' obj <- Exp1_R25_pept[1:1000,]
+#' obj <- Exp1_R25_pept[seq_len(1000),]
 #' obj <- addAssay(obj, QFeatures::filterNA(obj[[2]],  pNA = 0), name='filtered')
 #' obj <- addListAdjacencyMatrices(obj, 3)
 #' qData <- assay(obj[['filtered']])
 #' X <- GetAdjMat(obj[[3]])$onlySpec
-#' gttest <- groupttest(X, qData[,1:3], qData[,4:6])
+#' gttest <- groupttest(X, qData[,seq_len(3)], qData[,seq(4,6)])
 #' 
 #' @export
 #' 
@@ -150,7 +150,7 @@ groupttest <- function(X, qData1=NULL, qData2 = NULL){
     stop("At least, one condition is empty.")
   }
 
-  for(i in 1:dim(X)[2]){
+  for(i in seq_len(dim(X)[2])){
     index <- names(which(X[,i]==1))
     if(length(index)> 0){
       res[[i]] <- t.test(x=qData1[index,], y=qData2[index,], var.equal=TRUE)
@@ -193,7 +193,7 @@ groupttest <- function(X, qData1=NULL, qData2 = NULL){
 #' @examples
 #' library(QFeatures)
 #' utils::data(Exp1_R25_pept, package='DAPARdata2')
-#' obj <- Exp1_R25_pept[1:1000,]
+#' obj <- Exp1_R25_pept[seq_len(1000),]
 #' obj <- addAssay(obj, QFeatures::filterNA(obj[[2]],  pNA = 0), name='filtered')
 #' obj <- addListAdjacencyMatrices(obj, 3)
 #' sTab <- colData(obj)
@@ -202,6 +202,7 @@ groupttest <- function(X, qData1=NULL, qData2 = NULL){
 #' @export
 #' 
 #' @importFrom utils combn
+#' @importFrom MultiAssayExperiment DataFrame
 #' 
 compute.group.t.test <- function(obj, sampleTab, logFC = NULL, contrast="OnevsOne", type="Student"){
 
@@ -238,7 +239,7 @@ compute.group.t.test <- function(obj, sampleTab, logFC = NULL, contrast="OnevsOn
   
   if(contrast=="OnevsOne"){
     comb <- utils::combn(levels(Conditions.f), 2)
-    for(i in 1:ncol(comb)){
+    for(i in seq_len(ncol(comb))){
       c1Indice <- which(Conditions==comb[1,i])
       c2Indice <- which(Conditions==comb[2,i])
       res.tmp <- groupttest(X.spec, qData[,c1Indice], qData[,c2Indice] )
@@ -268,10 +269,10 @@ compute.group.t.test <- function(obj, sampleTab, logFC = NULL, contrast="OnevsOn
   if(contrast=="OnevsAll"){
     nbComp <- length(levels(Conditions.f))
     
-    for(i in 1:nbComp){
+    for(i in seq_len(nbComp)){
       
       c1Indice <- which(Conditions==levels(Conditions.f)[i])
-      # Cond.t.all <- c(1:length(Conditions))
+      # Cond.t.all <- seq_len(length(Conditions))
       # Cond.t.all[c1Indice] <- levels(Conditions.f)[i]
       # Cond.t.all[-c1Indice] <- "all"
       #c1Indice <- which(Conditions==levels(Conditions.f)[i])
@@ -333,7 +334,7 @@ compute.group.t.test <- function(obj, sampleTab, logFC = NULL, contrast="OnevsOn
 # 
 # 
 # # Two ways to compute it (function groupttest below)
-# peptide.spec.based.tmp <- apply(X.spec, 2, FUN=function(mask) t.test(x=as.vector(y[mask == 1, 1:n1]), y=as.vector(y[mask == 1, -(1:n1)]), var.equal=TRUE)$p.value)
+# peptide.spec.based.tmp <- apply(X.spec, 2, FUN=function(mask) t.test(x=as.vector(y[mask == 1, seq_len(n1)]), y=as.vector(y[mask == 1, -(seq_len(n1))]), var.equal=TRUE)$p.value)
 # peptide.spec.based.tmp <- groupttest(X.spec,y)
 # 
 # # then:
@@ -349,7 +350,7 @@ compute.group.t.test <- function(obj, sampleTab, logFC = NULL, contrast="OnevsOn
 #   nProt <- dim(MatAdj)[2]
 #   res <- rep(0,nProt)
 #   
-#   for(i in 1:nProt){
+#   for(i in seq_len(nProt)){
 #     #print(i)
 #     index <- names(which(MatAdj[,i]==1))
 #     if(length(index)== 0){
@@ -357,9 +358,9 @@ compute.group.t.test <- function(obj, sampleTab, logFC = NULL, contrast="OnevsOn
 #     } else{
 #       peptidestotest <- expr[index,]
 #       if(length(index)== 1){
-#         res[i] <- t.test(x=peptidestotest[1:3], y=peptidestotest[-(1:3)], var.equal=TRUE)$p.value
+#         res[i] <- t.test(x=peptidestotest[seq_len(3)], y=peptidestotest[-(seq_len(3))], var.equal=TRUE)$p.value
 #       } else{
-#         res[i] <- t.test(x=peptidestotest[,1:3], y=peptidestotest[,-(1:3)], var.equal=TRUE)$p.value
+#         res[i] <- t.test(x=peptidestotest[,seq_len(3)], y=peptidestotest[,-(1:3)], var.equal=TRUE)$p.value
 #       }
 #     }
 #   }

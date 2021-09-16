@@ -31,8 +31,8 @@ package="DAPARdata2")
 metadata <- read.table(metadataFile, header=TRUE, sep="\t", as.is=TRUE, 
 stringsAsFactors = FALSE)
 conds <- metadata$Condition
-qdata <- data[1:100,56:61]
-df <- data[1:100 , 43:48]
+qdata <- data[seq_len(100), seq(56, 61)]
+df <- data[seq_len(100) , seq(43,48)]
 df <- Metacell_generic(qdata, conds, level='peptide')
 
 }

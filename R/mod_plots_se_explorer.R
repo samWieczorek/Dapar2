@@ -147,9 +147,9 @@ mod_plots_se_explorer_server <- function(id,
                                          columnDefs = list(list(width='60px',targets= "_all"))
                             )) %>%
         DT::formatStyle(
-          columns = colnames(data)[1:2],
+          columns = colnames(data)[seq_len(2)],
           valueColumns = colnames(data)[2],
-          backgroundColor = DT::styleEqual(unique(data$Condition), pal[1:length(unique(data$Condition))])
+          backgroundColor = DT::styleEqual(unique(data$Condition), pal[seq_len(length(unique(data$Condition)))])
         )
       
     })
@@ -173,7 +173,7 @@ mod_plots_se_explorer_server <- function(id,
                                           scrollX = 200,
                                           scrollY = 200,
                                           scroller = TRUE,
-                                          columns.searchable=F,
+                                          columns.searchable = FALSE,
                                           fixedColumns = list(leftColumns = 1),
                                           columnDefs = list(list(columns.width=c("60px"),
                                                                  columnDefs.targets=c(list(0),list(1),list(2)))))) %>%
@@ -193,8 +193,8 @@ mod_plots_se_explorer_server <- function(id,
                                           scrollY = 600,
                                           scroller = TRUE,
                                           orderClasses = TRUE,
-                                          autoWidth=FALSE,
-                                          columns.searchable=F,
+                                          autoWidth = FALSE,
+                                          columns.searchable = FALSE,
                                           fixedColumns = list(leftColumns = 1),
                                           columnDefs = list(list(columns.width=c("60px"),
                                                                  columnDefs.targets=c(list(0),list(1),list(2))))))
@@ -227,8 +227,8 @@ mod_plots_se_explorer_server <- function(id,
                              fixedColumns = list(leftColumns = 1),
                              columnDefs = list(list(targets = c(((ncol(df)/2)+1):ncol(df)), visible = FALSE)))) %>%
         DT::formatStyle(
-          colnames(df)[1:(ncol(df)/2)],
-          colnames(df)[((ncol(df)/2)+1):ncol(df)],
+          colnames(df)[seq_len(ncol(df)/2)],
+          colnames(df)[seq((ncol(df)/2)+1, ncol(df))],
           #backgroundColor = DT::styleEqual(c("POV", "MEC"), c(rv.core$settings()$colorsTypeMV$POV, rv.core$settings()$colorsTypeMV$MEC)),
           backgroundColor = DT::styleEqual(c("POV", "MEC"), c("lightblue", "#E97D5E")), #orangeProstar)),
           backgroundSize = '98% 48%',

@@ -13,7 +13,7 @@
 standardise <- function (data) 
 {
   
-  for (i in 1:dim(data)[[1]]) {
+  for (i in seq_len(dim(data)[[1]])) {
     data[i, ] <- (data[i, ] - mean(data[i, ], na.rm = TRUE))/sd(data[i, ], na.rm = TRUE)
   }
   data

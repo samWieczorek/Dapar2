@@ -102,18 +102,19 @@ mod_Protein_Description_server <- function(id,
     ###### ------------------- Code for Description (step 0) -------------------------    #####
     output$Description <- renderUI({
       rv$steps.enabled
+
       tagList(
-          includeMarkdown( system.file("app/md", paste0(config$name, ".md"), package="Magellan")),
+          includeMarkdown( system.file("md", paste0(config$name, ".md"), package="DaparToolshed")),
           uiOutput(ns('datasetDescription')),
           if (isTRUE(rv$steps.enabled['Description']))
             actionButton(ns('btn_validate_Description'),
                          paste0('Start ', config$name),
-                         class = btn_success_color)
+                         class = Magellan::btn_success_color)
           else
             shinyjs::disabled(
               actionButton(ns('btn_validate_Description'),
                            paste0('Start ', config$name),
-                           class = btn_success_color)
+                           class = Magellan::btn_success_color)
             )
         )
     })
@@ -124,7 +125,7 @@ mod_Protein_Description_server <- function(id,
     #   as.numeric(Sys.time())
     # }
 
-    observeEvent(input$btn_validate_Description, ignoreInit = T, ignoreNULL = T, {
+    observeEvent(input$btn_validate_Description, ignoreInit = TRUE, ignoreNULL = TRUE, {
       rv$dataIn <- dataIn()
      # browser()
       # dataOut$trigger <- Send_Result_to_Caller(rv$dataIn)$trigger

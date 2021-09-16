@@ -95,7 +95,7 @@ get.pep.prot.cc <- function(X){
     ### Peptides from single prot CCs
     singprot.cc <- as.list(names(SingleProt.CC.id))
     singprot.cc.pep <- list()
-    for(i in 1:length(singprot.cc)){
+    for(i in seq_len(length(singprot.cc))){
       peplist <- which(X[,singprot.cc[[i]]]!=0)
       singprot.cc.pep[[i]] <- names(peplist)
     }
@@ -112,7 +112,7 @@ get.pep.prot.cc <- function(X){
     
     ### Peptides from multiple prot CCs
     multprot.cc.pep <- list()
-    for(i in 1:length(multprot.cc)){
+    for(i in seq_len(length(multprot.cc))){
       protlist <- multprot.cc[[i]]
       subX <- as.matrix(X[,protlist])
       peplist <- which(rowSums(subX)!=0)
@@ -125,7 +125,7 @@ get.pep.prot.cc <- function(X){
   prot.cc <- c(multprot.cc, singprot.cc)
   pep.cc <- c(multprot.cc.pep, singprot.cc.pep)
   global.cc <- list()
-  for(i in 1:length(prot.cc)){
+  for(i in seq_len(length(prot.cc))){
     prot <- prot.cc[[i]]
     pep <- pep.cc[[i]]
     tmp <- list(prot,pep)
@@ -179,10 +179,10 @@ buildGraph <- function(The.CC, X){
   def.grp[which(rowSums(subX)==1)] <- 'spec.peptide'
   
   
-  nodes <- data.frame(id = 1:nb.total,
+  nodes <- data.frame(id = seq_len(nb.total),
                       group = def.grp,
                       label = c(rownames(subX), colnames(subX)),
-                      title =  paste0("<p>", 1:nb.total,"<br>Tooltip !</p>"),
+                      title =  paste0("<p>", seq_len(nb.total),"<br>Tooltip !</p>"),
                       size = c(rep(10, nb.pep),rep(20, nb.prot)),
                       stringsAsFactors = FALSE
   )
@@ -275,7 +275,7 @@ plotJitterCC <- function(list.of.cc){
   cc.summary <- sapply(list.of.cc, function(x){c(length(x[[1]]),length(x[[2]]))})
   rownames(cc.summary) <- c("Nb_proteins","Nb_peptides")
   colSums(cc.summary) # total amount of pep and prot in each CC
-  colnames(cc.summary) <- 1:length(list.of.cc)
+  colnames(cc.summary) <- seq_len(length(list.of.cc))
   cc.summary
   rowSums(cc.summary) # c(number of prot, number of pep)
   
@@ -302,7 +302,7 @@ plotJitterCC <- function(list.of.cc){
 #' @author Thomas Burger, Samuel Wieczorek
 #' 
 #' @examples
-#' df <- data.frame(x=1:10, y=1:10)
+#' df <- data.frame(x=seq_len(10), y=seq_len(10))
 #' plotJitter_hc(df)
 #' 
 #' @export

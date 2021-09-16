@@ -2,9 +2,7 @@
 #' 
 #' @param withTracking A boolean to indicate methods with tracking feature
 #' 
-#' @value A list of methods
-#' 
-#' @return NA
+#' @return A list of methods
 #' 
 #' @name normalizeMethods.dapar
 #' 
@@ -187,7 +185,7 @@ GlobalQuantileAlignment <- function(qData) {
 #' library(QFeatures)
 #' qData <- assay(Exp1_R25_pept[['original_log']])
 #' conds <- colData(Exp1_R25_pept)[["Condition"]]
-#' normalized <- SumByColumns(qData, conds, type="within conditions", subset.norm=1:10)
+#' normalized <- SumByColumns(qData, conds, type="within conditions", subset.norm= seq_len(10))
 #' 
 #' @export
 #' 
@@ -219,7 +217,7 @@ if( missing(conds) || is.null(conds))
   e <- 2^qData
   
   if(is.null(subset.norm) || length(subset.norm) < 1){
-    subset.norm = 1:nrow(qData)
+    subset.norm = seq_len(nrow(qData))
   }
   
   if (type == "overall"){
@@ -231,7 +229,7 @@ if( missing(conds) || is.null(conds))
         sum_cols <- colSums(e[subset.norm,], na.rm=TRUE)
       
     
-    for ( i in 1:nrow(e))
+    for ( i in seq_len(nrow(e)))
       e[i, ] <- (e[i, ] / sum_cols)*(stats::median(sum_cols))
   } else if (type == "within conditions"){
     
@@ -243,7 +241,7 @@ if( missing(conds) || is.null(conds))
           else
             sum_cols <- colSums(e[subset.norm,indices], na.rm=TRUE)
       
-      for (i in 1:nrow(e))
+      for (i in seq_len(nrow(e)))
         e[i,indices] <- (e[i,indices]/sum_cols) * stats::median(sum_cols)
     }
   }
@@ -274,7 +272,7 @@ if( missing(conds) || is.null(conds))
 #' utils::data(Exp1_R25_pept, package='DAPARdata2')
 #' obj <- Exp1_R25_pept[['original_log']]
 #' conds <- colData(Exp1_R25_pept)[['Condition']]
-#' normalized <- QuantileCentering(assay(obj), conds, type="within conditions", subset.norm=1:10)
+#' normalized <- QuantileCentering(assay(obj), conds, type="within conditions", subset.norm= seq_len(10))
 #' 
 #' @export
 #' 
@@ -299,7 +297,7 @@ QuantileCentering <- function(qData,
   qData <- as.matrix(qData)
   
   if(is.null(subset.norm) || length(subset.norm) < 1)
-    subset.norm=1:nrow(qData)
+    subset.norm = seq_len(nrow(qData))
 
   
   q <- function(x) { 

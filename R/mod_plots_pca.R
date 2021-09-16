@@ -150,12 +150,12 @@ mod_plots_pca_server <- function(id,
                          style = reactive({ list(cols = colnames(rv.pca$res.pca$var$coord),
                                                  vals = colnames(rv.pca$res.pca$var$coord),
                                                  unique = unique(coldata()[['Condition']]),
-                                                 pal = RColorBrewer::brewer.pal(3,'Dark2')[1:2])})
+                                                 pal = RColorBrewer::brewer.pal(3,'Dark2')[seq_len(2)])})
     )
     # style = reactive({ list(cols = colnames(colData(obj)),
     #                         vals = colnames(colData(obj))[2],
     #                         unique = unique(colData(obj)$Condition),
-    #                         pal = RColorBrewer::brewer.pal(3,'Dark2')[1:2])}))
+    #                         pal = RColorBrewer::brewer.pal(3,'Dark2')[seq_len(2)])}))
 
 
 

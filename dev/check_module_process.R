@@ -143,7 +143,7 @@ check_module <- function(name, pipeline, typeOfData, process) {
   C <- B[33:43]
   nav_rv <- c('name','stepsNames','ll.UI','isDone','mandatory','reset')
   nav_rv <- paste0('[[:space:]]',nav_rv,'\\>')
-  if(length(grep(paste(nav_rv, collapse = '|'), C, value=T))==6) {print('r.nav variables ok')}
+  if(length(grep(paste(nav_rv, collapse = '|'), C, value = TRUE))==6) {print('r.nav variables ok')}
   
   
   

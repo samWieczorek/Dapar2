@@ -168,13 +168,13 @@ output$#name#_UI <- renderUI({
   div(style='display:inline-block; vertical-align: middle; padding-right: 40px;',
        if (rv$steps.enabled['#step#'])
     selectInput(ns('#name#'), '#name# in renderUI',
-                choices = 1:4,
+                choices = seq_len(4),
                 selected = rv.widgets$#name#,
                 width = '150px')
   else
     shinyjs::disabled(
       selectInput(ns('#name#'), '#name# in renderUI',
-                  choices = 1:4,
+                  choices = seq_len(4),
                   selected = rv.widgets$#name#,
                   width = '150px')
       )
@@ -207,13 +207,13 @@ code_for_global_step_renderUI_call_widget <- "
 div(
 if (rv$steps.enabled['#step.name#'])
                 selectInput(ns('#widget.name#'), 'Select #widget.name#',
-                          choices = 1:3,
+                          choices = seq_len(3),
                           selected = rv.widgets$#widget.name#,
                           width = '150px')
               else
                 shinyjs::disabled(
                   selectInput(ns('#widget.name#'), 'Select #widget.name#',
-                              choices = 1:5,
+                              choices = seq_len(5),
                               selected = rv.widgets$#widget.name#,
                               width = '150px')
                 )

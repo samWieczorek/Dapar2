@@ -25,7 +25,7 @@
 #' qData <- assay(Exp1_R25_prot[[2]])
 #' key <- rowData(Exp1_R25_prot[[2]])[[ metadata(Exp1_R25_prot)[['keyId']] ]]
 #' conds <- colData(Exp1_R25_prot)[["Condition"]]
-#' violinPlotD(qData, conds, key, subset.view = 1:5)
+#' violinPlotD(qData, conds, key, subset.view = seq_len(5))
 #' 
 #' @importFrom vioplot vioplot
 #' 
@@ -59,7 +59,7 @@ violinPlotD <- function(qData,
   if (is.null(legend)) {
     legend <- conds
     for (i in unique(conds))
-      legend[which(conds==i)] <- paste0(i,'_', 1:length(which(conds==i)))
+      legend[which(conds==i)] <- paste0(i,'_',seq_len(length(which(conds==i))))
   }
   
   if (!is.null(subset.view)) {
@@ -86,7 +86,7 @@ violinPlotD <- function(qData,
                         )
   title( ylab="Log (intensity)")
   
-  for (i in 1:ncol(qData)) 
+  for (i in seq_len(ncol(qData)))
     vioplot::vioplot(na.omit(qData[,i]), 
                      col = myColors[i], 
                      add=TRUE, 
@@ -103,9 +103,9 @@ violinPlotD <- function(qData,
     else
       N <- ncol(legend)
 
-    for (i in 1:N) {
+    for (i in seq_len(N)) {
       graphics::axis(side=1,
-                     at = 1:ncol(qData),
+                     at = seq_len(ncol(qData)),
                      labels = if (is.vector(legend) ) {legend} else {legend[,i]},
                      line= 2*i-1
                      )
@@ -126,7 +126,7 @@ violinPlotD <- function(qData,
     n=0
     for (i in subset.view) {
       n=n+1
-      for (c in 1:(ncol(qData)-1)) {
+      for (c in seq_len(ncol(qData)-1)) {
         graphics::segments(y0=qData[i,c],
                            y1=qData[i,c+1],
                            x0=c,

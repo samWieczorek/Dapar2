@@ -467,7 +467,7 @@ dapar_hc_chart <- function(hc,  chartType, zoomType="None", width=0, height=0){
 #' 
 #' @examples
 #' library(Matrix)
-#' mat <- Matrix(c(0,0,0,0,0,1,0,0,1,1,0,0,0,0,1),nrow=5, byrow=TRUE, sparse=TRUE)
+#' mat <- Matrix(c(0,0,0,0,0,1,0,0,1,1,0,0,0,0,1),nrow=5, byrow = TRUE, sparse=TRUE)
 #' res <- nonzero(mat)
 #' 
 #' @export

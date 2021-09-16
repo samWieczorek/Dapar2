@@ -24,9 +24,9 @@ This function looks for the lines that respect the request in either all conditi
 or at least one condition.
 }
 \examples{
-utils::data(Exp1_R25_pept, package='DAPARdata2')
-obj <- Exp1_R25_pept[1:10]
-level <- GetTypeDataset(obj, 2)
+utils::data(Exp1_R25_pept, package='DAPARdata')
+obj <- Exp1_R25_pept[seq_len(10)]
+level <- obj@experimentData@other$typeOfData
 pattern <- 'missing'
 metacell.mask <- match.metacell(metadata=Get_qMetadata(obj), pattern=pattern, level=level)
 percent <- FALSE

@@ -119,7 +119,7 @@ mod_Protein_Description_server <- function(id,
       as.numeric(Sys.time())
     }
 
-    observeEvent(input$btn_validate_Description, ignoreInit = T, ignoreNULL = T, {
+    observeEvent(input$btn_validate_Description, ignoreInit = TRUE, ignoreNULL = TRUE, {
       rv$dataIn <- dataIn()
      # browser()
       dataOut$trigger <- Send_Result_to_Caller(rv$dataIn)$trigger

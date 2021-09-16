@@ -33,6 +33,7 @@
 #' @export
 #' 
 #' @importFrom stats t.test
+#' @importFrom MultiAssayExperiment DataFrame
 #' 
 compute_t_tests <- function(obj, 
                             sTab, 
@@ -71,8 +72,8 @@ compute_t_tests <- function(obj,
     if(contrast == "OnevsOne"){
         nbComp <- Cond.Nb*(Cond.Nb-1)/2
         
-        for(i in 1:(Cond.Nb-1)){
-            for (j in (i+1):Cond.Nb){
+        for(i in seq_len(Cond.Nb-1)){
+            for (j in seq(from = (i+1), to = Cond.Nb, by = 1)){
                 
                 c1Indice <- which(Conditions==levels(Conditions.f)[i])
                 c2Indice <- which(Conditions==levels(Conditions.f)[j])
@@ -100,11 +101,11 @@ compute_t_tests <- function(obj,
     if(contrast == "OnevsAll"){
         nbComp <- Cond.Nb
         
-        for(i in 1:nbComp){
+        for(i in seq_len(nbComp)){
             
             c1 <- which(Conditions==levels(Conditions.f)[i])
             
-            Cond.t.all<-c(1:length(Conditions))
+            Cond.t.all<-c(seq_len(length(Conditions)))
             Cond.t.all[c1]<-levels(Conditions.f)[i]
             Cond.t.all[-c1]<-"all"
             
@@ -196,7 +197,7 @@ compute_t_tests <- function(obj,
 #'         comb <- utils::combn(levels(Conditions.f), 2)
 #'         #nbComp <- Cond.Nb*(Cond.Nb-1)/2
 #'         
-#'         for(i in 1:ncol(comb)){
+#'         for(i in seq_len(ncol(comb))){
 #'                 
 #'                 c1Indice <- which(Conditions==comb[1,i])
 #'                 c2Indice <- which(Conditions==comb[2,i])
@@ -223,11 +224,11 @@ compute_t_tests <- function(obj,
 #'     if(contrast=="OnevsAll"){
 #'         nbComp <- Cond.Nb
 #'         
-#'         for(i in 1:nbComp){
+#'         for(i in seq_len(nbComp)){
 #'             
 #'             c1 <- which(Conditions==levels(Conditions.f)[i])
 #'             
-#'             Cond.t.all<-c(1:length(Conditions))
+#'             Cond.t.all<-c(seq_len(length(Conditions)))
 #'             Cond.t.all[c1]<-levels(Conditions.f)[i]
 #'             Cond.t.all[-c1]<-"all"
 #'             

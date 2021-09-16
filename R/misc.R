@@ -14,7 +14,7 @@ Example_Palette <- function(conditions, base_palette){
   
   examplePalette <- NULL
   nbConds <- length(unique(conditions))
-  for (i in 1:nbConds){
+  for (i in seq_len(nbConds)){
     examplePalette[ which(conditions == unique(conditions)[i])] <- base_palette[i]
   }
   
@@ -41,6 +41,6 @@ Base_Palette <- function(palette.name = 'Dark2', conditions){
 
 nbConds <- length(unique(conditions))
 nbColors <- max(3, nbConds)
-basePalette <- RColorBrewer::brewer.pal(nbColors, palette.name)[1:nbConds]
+basePalette <- RColorBrewer::brewer.pal(nbColors, palette.name)[seq_len(nbConds)]
 return(basePalette)
 }

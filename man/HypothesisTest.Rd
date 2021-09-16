@@ -3,37 +3,12 @@
 \docType{data}
 \name{HypothesisTest}
 \alias{HypothesisTest}
-<<<<<<< HEAD
-=======
-\alias{HypothesisTest,SummarizedExperiment-method}
-\alias{HypothesisTest,QFeatures-method}
->>>>>>> bd1ab6a739c5a9402b382daddfe0b803a076915c
 \title{Record the adjacency matrices}
 \format{
 An object of class \code{standardGeneric} of length 1.
 }
 \usage{
 HypothesisTest
-<<<<<<< HEAD
-=======
-
-\S4method{HypothesisTest}{SummarizedExperiment}(object, test, sTab, ...)
-
-\S4method{HypothesisTest}{QFeatures}(object, i, name = "HypothesisTestAssay", test = NULL, ...)
-}
-\arguments{
-\item{object}{xxx}
-
-\item{test}{xxx}
-
-\item{sTab}{xxx}
-
-\item{...}{xxx}
-
-\item{i}{xxx}
-
-\item{name}{xxx}
->>>>>>> bd1ab6a739c5a9402b382daddfe0b803a076915c
 }
 \description{
 Record the adjacency matrices

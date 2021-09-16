@@ -56,8 +56,9 @@ xxx
 \examples{
 library(QFeatures)
 utils::data(Exp1_R25_pept, package='DAPARdata2')
-object <- Exp1_R25_pept[1:1000,]
+object <- Exp1_R25_pept[seq_len(1000),]
 object <- addAssay(object, QFeatures::filterNA(object[[2]],  pNA = 0), name='filtered')
+object <- addListAdjacencyMatrices(object, 3)
 
 object <- t_test_sam(object, i=3, name = "ttest", FUN = 'compute.t.test', contrast = 'OnevsAll')
 object <- t_test_sam(object, i=3, name = "ttest_group", FUN = 'compute.group.t.test', contrast = 'OnevsAll')

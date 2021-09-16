@@ -18,7 +18,7 @@ write_widgets_default_values <- function(name, widgets.names, widgets.defaultVal
   cat("# Define default selected values for widgets\n", file=file, append = TRUE)
   cat("widgets.default.values <- list(\n", file=file, append = TRUE)
   if (length(widgets.names) > 0)
-      for (i in 1:length(widgets.names)){
+      for (i in seq_len(length(widgets.names))){
         cat(paste0(widgets.names[i], " = ", widgets.defaultVal[i]), file=file, append = TRUE)
         if (i < length(widgets.names))
           cat(",", file=file, append = TRUE)
@@ -45,7 +45,7 @@ write_rv_widgets_def <- function(widgets.names, file){
   if (length(widgets.names)==0) return(NULL)
   cat("rv.widgets <- reactiveValues(\n", file=file, append = TRUE)
 
-  for (i in 1:length(widgets.names)){
+  for (i in seq_len(length(widgets.names))){
     cat(paste0(widgets.names[i], " =  widgets.default.values$", widgets.names[i]), file=file, append = TRUE)
     if (i < length(widgets.names))
       cat(",", file=file, append = TRUE)
@@ -88,7 +88,7 @@ Add_ObserveEvent_rv_comment <- function(file){
 
 write_observer_for_widgets <- function(widgets.names, file){
   if (length(widgets.names)>0)
-  for (i in 1:length(widgets.names))
+  for (i in seq_len(length(widgets.names)))
     cat(gsub('#name#' , widgets.names[i] , observer_for_widget_template),
         file=file, append = TRUE)
 }
@@ -111,7 +111,7 @@ write_header_for_global_step_renderUI <- function(step.name, file){
 
 write_code_for_call_renderUI_widgets <- function(widgets.renderUI.names, file){
 
-  for (i in 1:length(widgets.renderUI.names)){
+  for (i in seq_len(length(widgets.renderUI.names))){
     cat(gsub('#widget.name#' , widgets.renderUI.names[i] , code_for_global_step_renderUI_call_widget_renderUI),
         file = file, append = TRUE)
     if (i < length(widgets.renderUI.names))
@@ -126,7 +126,7 @@ write_additional_comma <- function(file){
 
 write_code_for_call_direct_widgets <- function(widgets.direct.names, step.name, file){
   txt <- gsub('#step.name#' , step.name , code_for_global_step_renderUI_call_widget)
-  for (i in 1:length(widgets.direct.names)){
+  for (i in seq_len(length(widgets.direct.names))){
     cat(gsub('#widget.name#', widgets.direct.names[i], txt),
         file = file, append = TRUE)
     if (i < length(widgets.direct.names))

@@ -270,7 +270,7 @@ mod_plots_tracking_server <- function(id,
       {
         rv.track$res$rand.indices <- NULL
       } else {
-        rv.track$res$rand.indices <- sample(1:nrow(obj()), as.numeric(rv.track$res$randSelect), replace=FALSE)
+        rv.track$res$rand.indices <- sample(seq_len(nrow(obj())), as.numeric(rv.track$res$randSelect), replace=FALSE)
       }
     })
 

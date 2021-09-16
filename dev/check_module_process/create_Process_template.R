@@ -35,12 +35,12 @@ server <- function(input, output, session){
   output$show_step_forms <- renderUI({
     members <- as.integer(input$members) # default 2
     req(input$members > 0)
-    rv$step_value <- lapply(1:as.numeric(input$members), function(i) {
+    rv$step_value <- lapply(seq_len(as.numeric(input$members)), function(i) {
       mod_AddStep_server(paste0('step_', i),
                          n = reactive({i}),
                          nTotal = reactive({as.numeric(input$members)}))
     })
-    lapply(1:members, function(i) {
+    lapply(seq_len(members), function(i) {
       mod_AddStep_ui(paste0('step_', i))
     })
   })
@@ -65,7 +65,7 @@ server <- function(input, output, session){
 
     #----------------------------------------------------------------#
 
-    ll.steps <- lapply(1:length(rv$step_value), function(x){rv$step_value[[x]]$name()})
+    ll.steps <- lapply(seq_len(length(rv$step_value)), function(x){rv$step_value[[x]]$name()})
     vec.steps <- unlist(ll.steps) #separe chaque etape
     steps <- paste0('\'',vec.steps,'\'') #chaque mot encadre
     steps <- paste0(steps,collapse = ",") #chaine char sep par ,

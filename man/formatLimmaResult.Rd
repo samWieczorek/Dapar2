@@ -23,7 +23,7 @@ are identical and correspond to the description of the comparison.
 xxxx
 }
 \examples{
-\dontrun{
+\donttest{
 library(QFeatures)
 utils::data(Exp1_R25_pept, package='DAPARdata2')
 object <- Exp1_R25_pept

@@ -103,13 +103,13 @@ output$Step1_a_UI <- renderUI({
   rv.widgets$Step1_a
   if (rv$steps.enabled['Step1'])
     selectInput(ns('Step1_a'), 'Step1_a in renderUI',
-                choices = 1:4,
+                choices = seq_len(4),
                 selected = rv.widgets$Step1_a,
                 width = '150px')
   else
     shinyjs::disabled(
       selectInput(ns('Step1_a'), 'Step1_a in renderUI',
-                  choices = 1:4,
+                  choices = seq_len(4),
                   selected = rv.widgets$Step1_a,
                   width = '150px')
       )
@@ -126,13 +126,13 @@ output$Step1 <- renderUI({
 div(
 if (rv$steps.enabled['Step1'])
                 selectInput(ns('Step1_b'), 'Select Step1_b',
-                          choices = 1:3,
+                          choices = seq_len(3),
                           selected = rv.widgets$Step1_b,
                           width = '150px')
               else
                 shinyjs::disabled(
                   selectInput(ns('Step1_b'), 'Select Step1_b',
-                              choices = 1:5,
+                              choices = seq_len(5),
                               selected = rv.widgets$Step1_b,
                               width = '150px')
                 )

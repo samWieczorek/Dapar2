@@ -20,14 +20,6 @@ setMethod("ComplexFilterFeatures", "SummarizedExperiment",
             
             # Build fictive column that represents the complex query
             
-            # i <- length(experiments(object))
-            # 
-            # ## Create a fictive column for each assays otherwise the filter method
-            # ## of QFeatures will truncate the object
-            # for (k in 1:length(experiments(object)))
-            #   rowData(object[[k]]) <- setNames(cbind(rowData(object[[k]]),tmp=rep(0, nrow(object[[k]]))),
-            #                                    c(names(rowData(object[[k]])),newColName)
-            #   )
             if (missing(cmd))
               stop("'cmd' is required;")
             else if (!(cmd %in% c('delete', 'keep')))
@@ -249,7 +241,7 @@ SymFilteringOperators <- function()
 #' 
 #' @examples
 #' utils::data(Exp1_R25_pept, package='DAPARdata')
-#' ind <- getIndicesOfLinesToRemove(Exp1_R25_pept[1:100], "Potential_contaminant", 
+#' ind <- getIndicesOfLinesToRemove(Exp1_R25_pept[seq_len(100)], "Potential_contaminant", 
 #' prefix="+")
 #' 
 #' @export
@@ -296,7 +288,7 @@ GetIndicesForPrefix <- function(object, col = NULL, prefix = NULL)
 #' 
 #' @examples
 #' utils::data(Exp1_R25_pept, package='DAPARdata')
-#' obj <- Exp1_R25_pept[1:10,]
+#' obj <- Exp1_R25_pept[seq_len(10),]
 #' level <- GetTypeDataset(obj)
 #' pattern <- 'missing'
 #' type <- 'AllCond'
@@ -382,7 +374,7 @@ GetIndices_ComplexQueryFiltering <- function(obj, level, pattern, type, percent,
 #' 
 #' @examples
 #' utils::data(Exp1_R25_pept, package='DAPARdata')
-#' obj <- Exp1_R25_pept[1:10]
+#' obj <- Exp1_R25_pept[seq_len(10)]
 #' level <- obj@experimentData@other$typeOfData
 #' pattern <- 'missing'
 #' metacell.mask <- match.metacell(metadata=Get_qMetadata(obj), pattern=pattern, level=level)
@@ -483,7 +475,7 @@ GetIndices_WholeLine <- function(metacell.mask){
 #' 
 #' #' @examples
 #' utils::data(Exp1_R25_pept, package='DAPARdata')
-#' obj <- Exp1_R25_pept[1:10]
+#' obj <- Exp1_R25_pept[seq_len(10)]
 #' level <- obj@experimentData@other$typeOfData
 #' pattern <- 'missing'
 #' metacell.mask <- match.metacell(metadata=Get_qMetadata(obj), pattern=pattern, level=level)
@@ -545,7 +537,7 @@ GetIndices_BasedOnConditions <- function(metacell.mask,
               nrow=nrow(metacell.mask),
               ncol=nbCond)
   
-  for (c in 1:nbCond) {
+  for (c in seq_len(nbCond)) {
     ind.cond <- which(conds == u_conds[c])
     inter <- rowSums(metacell.mask[, ind.cond])
     if (isTRUE(percent))
@@ -608,6 +600,7 @@ GetIndices_BasedOnConditions <- function(metacell.mask,
 #' @export
 #' 
 #' @import SummarizedExperiment
+#' @importFrom MultiAssayExperiment experiments
 #' 
 MVrowsTagToOne <- function(object, type, th=0, percent=TRUE) {
   
@@ -624,7 +617,7 @@ MVrowsTagToOne <- function(object, type, th=0, percent=TRUE) {
   
   ## Create a fictive column for each assays otherwise the filter method
   ## of QFeatures will truncate the object
-  for (k in 1:length(experiments(object)))
+  for (k in seq_len(length(experiments(object))))
     rowData(object[[k]]) <- setNames(cbind(rowData(object[[k]]),tmp=rep(0, nrow(object[[k]]))),
                                      c(names(rowData(object[[k]])),newColName)
     )
@@ -639,7 +632,7 @@ MVrowsTagToOne <- function(object, type, th=0, percent=TRUE) {
   
   
   if (type == "None") {
-    keepThat <- seq(1:nrow(df))
+    keepThat <- seq_len(nrow(df))
   } else if (type == "EmptyLines") {
     keepThat <- which(apply(!is.na(df), 1, sum) >= 1)
   } else if (type == "WholeMatrix") {
@@ -657,12 +650,12 @@ MVrowsTagToOne <- function(object, type, th=0, percent=TRUE) {
     s <- matrix(rep(0, nrow(df)*nbCond),nrow=nrow(df), ncol=nbCond)
     
     if (isTRUE(percent)) {
-      for (c in 1:nbCond) {
+      for (c in seq_len(nbCond)) {
         ind <- which(sampleTab[['Condition']] == conditions[c])
         s[,c] <- (rowSums(!is.na(df[,ind]))/length(ind)) >= th
       }
     } else {
-      for (c in 1:nbCond) {
+      for (c in seq_len(nbCond)) {
         ind <- which(sampleTab[['Condition']] == conditions[c])
         if (length(ind) == 1){
           s[,c] <- !is.na(df[,ind]) >= th 
@@ -770,7 +763,7 @@ MVrowsTagToOne <- function(object, type, th=0, percent=TRUE) {
 #'   }
 #'   
 #'   if (condition == "None") {
-#'     keepThat <- seq(1:nrow(data))
+#'     keepThat <- seq_len(nrow(data)))
 #'   } else if (condition == "EmptyLines") {
 #'     keepThat <- which(apply(!DAPAR::is.MV(data), 1, sum) >= 1)
 #'   } else if (condition == "WholeMatrix") {
@@ -789,12 +782,12 @@ MVrowsTagToOne <- function(object, type, th=0, percent=TRUE) {
 #'                 ncol=nbCond)
 #'     
 #'     if (isTRUE(percent)) {
-#'       for (c in 1:nbCond) {
+#'       for (c in seq_len(nbCond)) {
 #'         ind <- which(Biobase::pData(obj)$Condition == conditions[c])
 #'         s[,c] <- (rowSums(!DAPAR::is.MV(data[,ind]))/length(ind)) >= threshold
 #'       }
 #'     } else {
-#'       for (c in 1:nbCond) {
+#'       for (c in seq_len(nbCond)) {
 #'         ind <- which(Biobase::pData(obj)$Condition == conditions[c])
 #'         if (length(ind) == 1){
 #'           s[,c] <- (!DAPAR::is.MV(data[,ind]) >= threshold) 
@@ -863,6 +856,7 @@ MVrowsTagToOne <- function(object, type, th=0, percent=TRUE) {
 #' @import dplyr
 #' @importFrom tidyr pivot_longer %>%
 #' @importFrom methods is
+#' @importFrom MultiAssayExperiment experiments
 #' 
 MVrowsTagToOne_HB <- function(obj, sTab, int.prop, mode = "None"){
   
@@ -896,7 +890,7 @@ MVrowsTagToOne_HB <- function(obj, sTab, int.prop, mode = "None"){
   
   ## Create a fictive column for each assays otherwise the filter method
   ## of QFeatures will truncate the object
-  for (k in 1:length(experiments(obj)))
+  for (k in seq_len(length(experiments(obj))))
     rowData(obj[[k]]) <- setNames(cbind(rowData(obj[[k]]),tmp=rep(0, nrow(obj[[k]]))),
                                   c(names(rowData(obj[[k]])),newColName)
     )
@@ -924,7 +918,7 @@ MVrowsTagToOne_HB <- function(obj, sTab, int.prop, mode = "None"){
   longer_intensities$feature <- factor(longer_intensities$feature,
                                        levels = unique(longer_intensities$feature))
   if(mode == "None"){
-    to_keep <- 1:nrow(obj)
+    to_keep <- seq_len(nrow(obj))
   }else if(mode == "WholeMatrix"){
     nb_samples <- ncol(intensities)
     threshold <- ceiling(nb_samples*int.prop)
@@ -1021,6 +1015,7 @@ MVrowsTagToOne_HB <- function(obj, sTab, int.prop, mode = "None"){
 #' @export
 #' 
 #' @import SummarizedExperiment
+#' @importFrom MultiAssayExperiment experiments
 #' 
 removeAdditionalCol <- function(object, colToRemove=NULL) {
   
@@ -1028,7 +1023,7 @@ removeAdditionalCol <- function(object, colToRemove=NULL) {
   if(is.null(colToRemove)){return(NULL)} 
   colToRemove <- "tagNA"
   
-  for (k in 1:length(experiments(object)))
+  for (k in seq_len(length(experiments(object))))
   {
     if( is.na(match(colToRemove,names(rowData(object[[k]])))) ) {
       print(paste0("Warning: ",colToRemove," isn't a column name of rowData(obj)"))

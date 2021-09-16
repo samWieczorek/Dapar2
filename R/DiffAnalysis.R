@@ -20,7 +20,7 @@
 #' @examples
 #' library(QFeatures)
 #' utils::data(Exp1_R25_pept, package='DAPARdata2')
-#' object <- Exp1_R25_pept[1:1000,]
+#' object <- Exp1_R25_pept[seq_len(1000),]
 #' object <- addAssay(object, QFeatures::filterNA(object[[2]],  pNA = 0), name='filtered')
 #' sTab <- colData(object)
 #' gttest.se <- t_test_sam(object[[3]], sTab, FUN = compute.t.test)
@@ -102,7 +102,7 @@ setMethod("diff_analysis_sam", "QFeatures",
 #' @examples
 #' library(QFeatures)
 #' utils::data(Exp1_R25_pept, package='DAPARdata2')
-#' object <- Exp1_R25_pept[1:1000,]
+#' object <- Exp1_R25_pept[seq_len(1000),]
 #' object <- addAssay(object, QFeatures::filterNA(object[[2]],  pNA = 0), name='filtered')
 #' object <- addListAdjacencyMatrices(object, 3)
 #' sTab <- colData(object)
@@ -117,7 +117,7 @@ setMethod("diff_analysis_sam", "QFeatures",
 #' 
 histPValue_HC <- function(pval_ll, bins=80, pi0=1){
   
-  h <- graphics::hist(sort(unlist(pval_ll)), freq=F,breaks=bins)
+  h <- graphics::hist(sort(unlist(pval_ll)), freq = FALSE, breaks = bins)
   
   serieInf <- sapply(h$density, function(x)min(pi0, x) )
   serieSup <- sapply(h$density, function(x)max(0, x-pi0) )
@@ -207,7 +207,7 @@ histPValue_HC <- function(pval_ll, bins=80, pi0=1){
 #' @examples
 #' library(QFeatures)
 #' utils::data(Exp1_R25_pept, package='DAPARdata2')
-#' obj <- Exp1_R25_pept[1:1000]
+#' obj <- Exp1_R25_pept[seq_len(1000)]
 #' obj <- addAssay(obj, QFeatures::filterNA(obj[[2]],  pNA = 0), name='filtered')
 #' se <- t_test_sam(obj[[3]], colData(obj), FUN = compute.t.test)
 #' ind_logFC <- grep('_logFC', colnames(metadata(se)$t_test))
@@ -264,7 +264,7 @@ diffAnaComputeFDR <- function(logFC,
 #' @examples
 #' library(QFeatures)
 #' utils::data(Exp1_R25_pept, package='DAPARdata2')
-#' object <- Exp1_R25_pept[1:1000,]
+#' object <- Exp1_R25_pept[seq_len(1000),]
 #' object <- addAssay(object, QFeatures::filterNA(object[[2]],  pNA = 0), name='filtered')
 #' sTab <- colData(object)
 #' gttest.se <- t_test_sam(object[[3]], sTab, FUN = compute.t.test)
@@ -274,6 +274,7 @@ diffAnaComputeFDR <- function(logFC,
 #' 
 #' allComp <- Get_AllComparisons(object[['diffAna']])
 #' 
+#' @importFrom MultiAssayExperiment DataFrame
 #' 
 #' @export
 #' 
@@ -326,12 +327,13 @@ Get_AllComparisons <- function(obj){
 #' @examples
 #' library(QFeatures)
 #' utils::data(Exp1_R25_pept, package='DAPARdata2')
-#' obj <- Exp1_R25_pept[1:1000]
+#' obj <- Exp1_R25_pept[seq_len(1000)]
 #' obj <- addAssay(obj, QFeatures::filterNA(obj[[2]],  pNA = 0), name='filtered')
 #' obj <- addAssay(obj, t_test_sam(obj[[3]], colData(obj), FUN = 'compute.t.test'), name='t-test')
 #' comp <- '25fmol_vs_10fmol'
 #' da.se <- diffAnalysis(obj[['t-test']], comp, th_pval=0, th_logFC=0)
 #' 
+#' @importFrom MultiAssayExperiment DataFrame
 #' @export
 #' 
 diffAnalysis <- function(obj, 

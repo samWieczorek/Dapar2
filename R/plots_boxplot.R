@@ -24,7 +24,7 @@
 #' qData <- assay(Exp1_R25_pept[[2]])
 #' conds <- colData(Exp1_R25_pept)[["Condition"]]
 #' key <- rowData(Exp1_R25_pept[[2]])[[metadata(Exp1_R25_pept)$keyId]]
-#' boxPlotD_HC(qData, conds, keyId = key, conds, subset.view=1:10)
+#' boxPlotD_HC(qData, conds, keyId = key, conds, subset.view=seq_len(10))
 #' 
 #' @import highcharter
 #' 
@@ -54,7 +54,7 @@ boxPlotD_HC <- function(qData,
   if (is.null(legend)) {
     legend <- conds
     for (i in unique(conds))
-      legend[which(conds==i)] <- paste0(i, '_', 1:length(which(conds==i)))
+      legend[which(conds==i)] <- paste0(i, '_', seq_len(length(which(conds==i))))
   }
   
   if (!is.null(subset.view)) {
@@ -221,7 +221,7 @@ boxPlotD_HC <- function(qData,
                                   color=pal[n], 
                                   dashStyle = "shortdot",
                                   name=Biobase::fData(obj)[i,keyId],
-                                  tooltip=list(enabled=T,headerFormat ="",pointFormat="{point.series.name} : {point.y: .2f} ") )
+                                  tooltip=list(enabled=TRUE,headerFormat ="",pointFormat="{point.series.name} : {point.y: .2f} ") )
      
    }
  }   
