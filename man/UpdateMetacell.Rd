@@ -3,15 +3,31 @@
 \docType{data}
 \name{UpdateMetacell}
 \alias{UpdateMetacell}
+<<<<<<< HEAD:man/UpdateMetacell.Rd
+=======
+\alias{UpdateMetacell,SummarizedExperiment-method}
+>>>>>>> bd1ab6a739c5a9402b382daddfe0b803a076915c:man/UpdateMetacell.Rd
 \title{Update metacell after imputation}
 \format{
 An object of class \code{standardGeneric} of length 1.
 }
 \usage{
 UpdateMetacell
+<<<<<<< HEAD:man/UpdateMetacell.Rd
 }
 \value{
 NA
+=======
+
+\S4method{UpdateMetacell}{SummarizedExperiment}(object, na.type, ...)
+}
+\arguments{
+\item{object}{An object of class `SummarizedExperiment`}
+
+\item{na.type}{xxx}
+
+\item{...}{xxx}
+>>>>>>> bd1ab6a739c5a9402b382daddfe0b803a076915c:man/UpdateMetacell.Rd
 }
 \description{
 Update the metacell information of missing values that were imputed

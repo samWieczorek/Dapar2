@@ -87,9 +87,11 @@ check the clusterability of the data and estimate a number of clusters using
   values. This should lead to a smaller number of final clusters.
 }
 \examples{
-test_anova <- wrapperClassic1wayAnova(fibrose)
+\dontrun{
+test_anova <- wrapperClassic1wayAnova(iris)
 test_clust_pipeline <- wrapperRunClustering(obj = fibrose,
                                  clustering_method = "affinityPropReduced", adjusted_pvals = test_anova$P_Value$anova1way)
+                                 }
 
 }
 \references{

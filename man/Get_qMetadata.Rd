@@ -3,12 +3,36 @@
 \docType{data}
 \name{Get_qMetadata}
 \alias{Get_qMetadata}
+<<<<<<< HEAD:man/Get_qMetadata.Rd
 \title{xxxx}
 \format{
 An object of class \code{standardGeneric} of length 1.
 }
 \usage{
 Get_qMetadata
+=======
+\alias{Get_qMetadata,SummarizedExperiment-method}
+\alias{Get_qMetadata,QFeatures-method}
+\title{xxxx}
+\format{
+An object of class \code{standardGeneric} of length 1.
+}
+\usage{
+Get_qMetadata
+
+\S4method{Get_qMetadata}{SummarizedExperiment}(object, names, ...)
+
+\S4method{Get_qMetadata}{QFeatures}(object, i, ...)
+}
+\arguments{
+\item{object}{An object of class `QFeatures`}
+
+\item{names}{xxx}
+
+\item{...}{xxx}
+
+\item{i}{xxx}
+>>>>>>> bd1ab6a739c5a9402b382daddfe0b803a076915c:man/Get_qMetadata.Rd
 }
 \description{
 xxxx

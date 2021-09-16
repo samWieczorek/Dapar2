@@ -11,9 +11,12 @@ mod_all_plots_server(id, dataIn)
 
 \item{dataIn}{xxxx}
 }
+<<<<<<< HEAD
 \value{
 NA
 }
+=======
+>>>>>>> bd1ab6a739c5a9402b382daddfe0b803a076915c
 \description{
 A shiny Module.
 }

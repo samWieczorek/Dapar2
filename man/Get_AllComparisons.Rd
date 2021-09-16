@@ -2,7 +2,7 @@
 % Please edit documentation in R/DiffAnalysis.R
 \name{Get_AllComparisons}
 \alias{Get_AllComparisons}
-\title{Returns list that contains a list of the statistical tests performed with DaparToolshed and recorded
+\title{Returns list that contains a list of the statistical tests performed with Dapar2 and recorded
 in an object of class \code{QFeatures}.}
 \usage{
 Get_AllComparisons(obj)

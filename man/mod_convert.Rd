@@ -22,11 +22,14 @@ mod_Convert_server(
 \item{steps.enabled}{xxx}
 
 \item{remoteReset}{xxx}
+<<<<<<< HEAD
 }
 \value{
 NA
 
 NA
+=======
+>>>>>>> bd1ab6a739c5a9402b382daddfe0b803a076915c
 }
 \description{
 A shiny Module.

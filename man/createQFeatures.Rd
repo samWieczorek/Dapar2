@@ -53,7 +53,11 @@ proteins and is used to generate adjacency matrix and process to aggregation.}
 \item{processes}{xxxx}
 
 \item{typePipeline}{The type of pipeline used with this dataset. The list of predefined
+<<<<<<< HEAD
 pipelines in DaparToolshed can be obtained with the function \code{pipelines()}. Default value is NULL}
+=======
+pipelines in Dapar2 can be obtained with the function \code{pipelines()}. Default value is NULL}
+>>>>>>> bd1ab6a739c5a9402b382daddfe0b803a076915c
 
 \item{software}{xxx}
 }

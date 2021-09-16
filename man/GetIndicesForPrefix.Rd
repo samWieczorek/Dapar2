@@ -21,7 +21,7 @@ This function returns the indice of the lines to delete, based on a
 prefix string
 }
 \examples{
-utils::data(Exp1_R25_pept, package='DAPARdata')
+utils::data(Exp1_R25_pept, package='DAPARdata2')
 ind <- getIndicesOfLinesToRemove(Exp1_R25_pept[1:100], "Potential_contaminant", 
 prefix="+")
 

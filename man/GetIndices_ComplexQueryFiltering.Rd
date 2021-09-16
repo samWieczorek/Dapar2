@@ -33,9 +33,9 @@ Delete the lines in the matrix of intensities and the metadata table
 given their indice.
 }
 \examples{
-utils::data(Exp1_R25_pept, package='DAPARdata')
+utils::data(Exp1_R25_pept, package='DAPARdata2')
 obj <- Exp1_R25_pept[1:10,]
-level <- GetTypeDataset(obj)
+level <- GetTypeDataset(obj, 2)
 pattern <- 'missing'
 type <- 'AllCond'
 percent <- FALSE

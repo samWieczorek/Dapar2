@@ -31,11 +31,11 @@ xxxxxx
 \examples{
 library(QFeatures)
 utils::data(Exp1_R25_pept, package='DAPARdata2')
-obj <- Exp1_R25_pept[1:1000,]
+obj <- Exp1_R25_pept[1:1000]
 obj <- addAssay(obj, QFeatures::filterNA(obj[[2]],  pNA = 0), name='filtered')
-obj <- addListAdjacencyMatrices(obj, 3)
+obj <- SetAdjMat(obj, 3)
 sTab <- colData(obj)
-gttest <- compute.group.t.test(obj[[3]], sTab, contrast="OnevsAll",)
+gttest <- compute.group.t.test(obj[[3]], sTab)
 
 }
 \author{

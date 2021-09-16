@@ -3,12 +3,33 @@
 \docType{data}
 \name{ComplexFilterFeatures}
 \alias{ComplexFilterFeatures}
+\alias{ComplexFilterFeatures,SummarizedExperiment-method}
+\alias{ComplexFilterFeatures,QFeatures-method}
 \title{Complex filter features}
 \format{
 An object of class \code{standardGeneric} of length 1.
 }
 \usage{
 ComplexFilterFeatures
+
+\S4method{ComplexFilterFeatures}{SummarizedExperiment}(object, cmd, ...)
+
+\S4method{ComplexFilterFeatures}{QFeatures}(object, i, name = "filterAssay", ...)
+}
+\arguments{
+\item{object}{An object of class `QFeatures`.}
+
+\item{cmd}{xxx}
+
+\item{...}{Additional parameters passed to inner functions.}
+
+\item{i}{A numeric vector or a character vector giving the index or the 
+name, respectively, of the assay(s) to be processed.}
+
+\item{name}{A `character(1)` naming the new assay name. Defaults
+are `ttestAssay`.}
+
+\item{..}{xxx}
 }
 \description{
 Filter an assay with a complex query

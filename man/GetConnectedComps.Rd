@@ -3,12 +3,25 @@
 \docType{data}
 \name{GetConnectedComps}
 \alias{GetConnectedComps}
+\alias{GetConnectedComps,SummarizedExperiment-method}
+\alias{GetConnectedComps,QFeatures-method}
 \title{Record the adjacency matrices}
 \format{
 An object of class \code{standardGeneric} of length 1.
 }
 \usage{
 GetConnectedComps
+
+\S4method{GetConnectedComps}{SummarizedExperiment}(object, ...)
+
+\S4method{GetConnectedComps}{QFeatures}(object, i, ...)
+}
+\arguments{
+\item{object}{xxx}
+
+\item{...}{xxx}
+
+\item{i}{xxx}
 }
 \description{
 Record the adjacency matrices

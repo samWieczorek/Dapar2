@@ -22,12 +22,14 @@ A matrix containing the quantitative aggregated data for proteins.
 Method to aggregate peptides into proteins with the top n approach.
 }
 \examples{
+\dontrun{
 library(QFeatures)
 utils::data(Exp1_R25_pept, package='DAPARdata2')
-obj <- Exp1_R25_pept[1:1000,]
-obj <- addListAdjacencyMatrices(obj, 2)
-X <- GetAdjMat(obj[[2]])$all
-inner.aggregate.topn(assay(obj[[2]]), X, n=3)
+obj <- Exp1_R25_pept[1:1000]
+obj <- SetAdjMat(obj, 2)
+X <- GetAdjMat(obj, 2)$all
+res <- inner.aggregate.topn(assay(obj, 2), X, n=3)
+}
 
 }
 \author{

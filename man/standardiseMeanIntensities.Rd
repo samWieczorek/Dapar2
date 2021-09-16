@@ -25,11 +25,13 @@ the array data in the same order than the condition column in the phenotype
 data).
 }
 \examples{
+\dontrun{
 library(QFeatures)
 utils::data(Exp1_R25_prot, package='DAPARdata2')
 obj <- Exp1_R25_prot
 sTab <- colData(obj)
 standards <- standardiseMeanIntensities(obj[[2]], sTab)
+}
 
 }
 \author{

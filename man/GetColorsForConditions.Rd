@@ -21,6 +21,7 @@ NA
 xxxx
 }
 \examples{
+library(SummarizedExperiment)
 utils::data(Exp1_R25_pept, package='DAPARdata2')
 conditions <- colData(Exp1_R25_pept)$Condition
 GetColorsForConditions(conditions, ExtendPalette(2))
