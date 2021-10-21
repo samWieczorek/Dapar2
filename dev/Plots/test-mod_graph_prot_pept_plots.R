@@ -2,8 +2,11 @@ library(visNetwork)
 library(highcharter)
 
 
-source(file.path("../../../R/Plots","mod_graph_pept_prot.R"), local=TRUE)$value
+setwd('~/GitHub/DaparToolshed/dev')
 
+dirpath <- '../R'
+for (l in list.files(path = dirpath, pattern = ".R"))
+  source(file.path(dirpath, l), local=TRUE)$value
 
 
 ui <- fluidPage(

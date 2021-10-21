@@ -2,9 +2,12 @@ library(highcharter)
 library(shiny)
 library(SummarizedExperiment)
 
+setwd('~/GitHub/DaparToolshed/dev')
 
-source(file.path("../../R","mod_plots_density.R"), local=TRUE)$value
-source(file.path("../../R","mod_popover_for_help.R"), local=TRUE)$value
+dirpath <- '../R'
+for (l in list.files(path = dirpath, pattern = ".R"))
+  source(file.path(dirpath, l), local=TRUE)$value
+
 
 ui <- fluidPage(
   mod_plots_density_ui('plots_density')

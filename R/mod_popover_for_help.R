@@ -57,11 +57,11 @@ mod_popover_for_help_server <- function(id, data){
     
     output$write_title_ui <- renderUI({
       req(data)
-      data$title
+      HTML(paste0("<strong><font size=\"4\">", data$title, "</font></strong>"))
     })
     
     output$dot <- renderUI({
-      tags$button(tags$sup("[?]"), class="Prostar_tooltip")
+      tags$button(tags$sup("?"), class="Prostar_tooltip")
     })
     
     output$show_Pop <- renderUI({

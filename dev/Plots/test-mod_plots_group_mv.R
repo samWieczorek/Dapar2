@@ -3,9 +3,11 @@ library(highcharter)
 library(SummarizedExperiment)
 
 
-source(file.path("../../R", "mod_plots_group_mv.R"), local=TRUE)$value
-source(file.path('../../R', 'mod_popover_for_help.R'), local=TRUE)$value
-source(file.path('../../R', 'global.R'), local=TRUE)$value
+setwd('~/GitHub/DaparToolshed/dev')
+
+dirpath <- '../R'
+for (l in list.files(path = dirpath, pattern = ".R"))
+  source(file.path(dirpath, l), local=TRUE)$value
 
 
 ui <- fluidPage(

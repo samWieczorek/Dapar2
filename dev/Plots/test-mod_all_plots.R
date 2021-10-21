@@ -1,20 +1,12 @@
 library(shiny)
 library(highcharter)
 
-source(file.path("../../../R", "mod_plots_intensity.R"), local = TRUE)$value
-source(file.path("../../../R", "mod_plots_tracking.R"), local = TRUE)$value
-source(file.path("../../../R", "mod_plots_legend_colored_exprs.R"), local = TRUE)$value
-source(file.path("../../../R", "mod_plots_corr_matrix.R"), local = TRUE)$value
-source(file.path("../../../R", "mod_plots_heatmap.R"), local = TRUE)$value
-source(file.path("../../../R", "mod_plots_group_mv.R"),  local = TRUE)$value
-source(file.path("../../../R", "mod_plots_se_explorer.R"),  local = TRUE)$value
-source(file.path("../../../R", "mod_plots_var_dist.R"), local = TRUE)$value
-source(file.path("../../../R", "mod_plots_pca.R"), local = TRUE)$value
-source(file.path("../../../R", "mod_all_plots.R"), local=TRUE)$value
+setwd('~/GitHub/DaparToolshed/dev')
 
-source(file.path("../../../R", "mod_popover_for_help.R"), local = TRUE)$value
-source(file.path("../../../R", "global.R"), local = TRUE)$value
-source(file.path("../../../R", "mod_format_DT.R"), local = TRUE)$value
+dirpath <- '../R'
+for (l in list.files(path = dirpath, pattern = ".R"))
+  source(file.path(dirpath, l), local=TRUE)$value
+
 
 
 ui <- fluidPage(

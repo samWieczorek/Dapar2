@@ -2,11 +2,15 @@ library(shiny)
 library(SummarizedExperiment)
 
 
-source(file.path('../../R', 'mod_plots_tracking.R'), local=TRUE)$value
+setwd('~/GitHub/DaparToolshed/dev')
+
+dirpath <- '../R'
+for (l in list.files(path = dirpath, pattern = ".R"))
+  source(file.path(dirpath, l), local=TRUE)$value
 
 
 ui <- fluidPage(
-  checkboxInput('sync', 'sync Slave with Master', value=FALSE),
+  checkboxInput('sync', 'sync Slave with Master', value = FALSE),
   fluidRow(
     column(6,tagList(h3('Master'),
                      mod_plots_tracking_ui('master_tracking')
@@ -19,11 +23,11 @@ ui <- fluidPage(
   ),
 
   fluidRow(
-    column(6,tagList(h3('Output of master'),
+    column(6, tagList(h3('Output of master'),
                      uiOutput('master_out')
     )
     ),
-    column(6,tagList(h3('Output of slave'),
+    column(6, tagList(h3('Output of slave'),
                      uiOutput('slave_out')
     )
     )

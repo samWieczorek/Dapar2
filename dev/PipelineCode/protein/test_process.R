@@ -9,6 +9,12 @@ library(crayon)
 
 options(shiny.fullstacktrace = TRUE)
 
+
+pipeline <- 'Protein'
+process <- 'Description'
+process <- 'Normalization'
+showValues <- TRUE
+
 setwd('~/GitHub/DaparToolshed/dev')
 
 dirpath <- '../R'
@@ -35,6 +41,7 @@ mod_test_process_server <- function(id){
     ns <- session$ns
     utils::data(Exp1_R25_prot, package='DAPARdata2')
     
+    name <- paste0(pipeline, '_', process)
     #obj <- NULL
     obj <- Exp1_R25_prot
     
@@ -45,7 +52,7 @@ mod_test_process_server <- function(id){
 
     observe({
        
-      rv$dataOut <- mod_nav_process_server(id = 'Protein_Description',
+      rv$dataOut <- mod_nav_process_server(id = name,
                                            dataIn = reactive({rv$dataIn})
                                            )
 
@@ -53,7 +60,7 @@ mod_test_process_server <- function(id){
     
     
     output$UI <- renderUI({
-      mod_nav_process_ui(ns('Protein_Description'))
+      mod_nav_process_ui(ns(name))
     })
     
     
@@ -61,6 +68,7 @@ mod_test_process_server <- function(id){
     #--------------------------------------------------------------------
     
     output$show_Debug_Infos <- renderUI({
+      req(showValues)
       fluidRow(
         column(width=2,
                tags$b(h4(style = 'color: blue;', "Data In")),

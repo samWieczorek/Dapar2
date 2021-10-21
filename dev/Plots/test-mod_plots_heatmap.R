@@ -1,7 +1,11 @@
 library(shiny)
 library(SummarizedExperiment)
 
-source(file.path("../../R","mod_plots_heatmap.R"), local=TRUE)$value
+setwd('~/GitHub/DaparToolshed/dev')
+
+dirpath <- '../R'
+for (l in list.files(path = dirpath, pattern = ".R"))
+  source(file.path(dirpath, l), local=TRUE)$value
 
 
 ui <- fluidPage(
