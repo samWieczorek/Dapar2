@@ -39,6 +39,7 @@ mod_Convert_ui <- function(id){
 #'
 #' @import QFeatures
 #' @importFrom shinyalert shinyalert
+#' @importFrom shinyjs disabled
 #'
 #' @export
 #'

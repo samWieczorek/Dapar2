@@ -109,9 +109,9 @@ mod_plots_se_explorer_server <- function(id,
       req(obj())
       switch(input$DS_TabsChoice,
              None = {return(NULL)},
-             tabExprs = DT::dataTableOutput(ns("table")),
-             tabfData = DT::dataTableOutput(ns("viewfData")),
-             tabpData = DT::dataTableOutput(ns("viewpData"))
+             tabExprs = DT::DTOutput(ns("table")),
+             tabfData = DT::DTOutput(ns("viewfData")),
+             tabpData = DT::DTOutput(ns("viewpData"))
       )
       
     })
@@ -119,7 +119,7 @@ mod_plots_se_explorer_server <- function(id,
     
     
     
-    output$viewpData <- DT::renderDataTable({
+    output$viewpData <- DT::renderDT({
       req(obj())
       
       data <- tibble::as_tibble(colData())
@@ -155,7 +155,7 @@ mod_plots_se_explorer_server <- function(id,
     })
     
     
-    output$viewfData <- DT::renderDataTable({
+    output$viewfData <- DT::renderDT({
       req(obj())
       
       
@@ -206,7 +206,7 @@ mod_plots_se_explorer_server <- function(id,
     
     
     #################
-    output$table <- DT::renderDataTable({
+    output$table <- DT::renderDT({
       req(obj())
       df <- getDataForExprs()
       

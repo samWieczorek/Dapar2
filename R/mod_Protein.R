@@ -41,6 +41,7 @@ mod_Protein_ui <- function(id){
 #' @import shiny
 #'
 mod_Protein_server <- function(id,
+                               nav.mode = 'pipeline',
                                dataIn = reactive({NULL}),
                                steps.enabled = reactive({NULL}),
                                remoteReset = reactive({FALSE}),

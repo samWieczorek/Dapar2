@@ -7,7 +7,7 @@
 #' @author Samuel Wieczorek
 #' 
 #' @examples
-#' utils::data(Exp1_R25_pept, package='DAPARdata2')
+#' utils::data(Exp1_R25_pept, package='DaparToolshedData')
 #' ll.X <- GetAdjMat(Exp1_R25_pept, 2)
 #' 
 #' @export
@@ -48,7 +48,7 @@ setMethod("GetAdjMat", "QFeatures",
 #' @author Samuel Wieczorek
 #' 
 #' @examples
-#' utils::data(Exp1_R25_pept, package='DAPARdata2')
+#' utils::data(Exp1_R25_pept, package='DaparToolshedData')
 #' Exp1_R25_pept <- SetAdjMat(Exp1_R25_pept, 2)
 #' 
 #' @export
@@ -89,7 +89,7 @@ setMethod("SetAdjMat", "QFeatures",
 #' @author Samuel Wieczorek
 #' 
 #' @examples
-#' utils::data(Exp1_R25_pept, package='DAPARdata2')
+#' utils::data(Exp1_R25_pept, package='DaparToolshedData')
 #' ll.X <- SetConnectedComps(Exp1_R25_pept, 2)
 #' 
 #' @export
@@ -130,7 +130,7 @@ setMethod("GetConnectedComps", "QFeatures",
 #' @author Samuel Wieczorek
 #' 
 #' @examples
-#' utils::data(Exp1_R25_pept, package='DAPARdata2')
+#' utils::data(Exp1_R25_pept, package='DaparToolshedData')
 #' ll.X <- SetConnectedComps(Exp1_R25_pept, 2)
 #' 
 #' @export
@@ -233,7 +233,7 @@ GetProstarVersions <- function(){
 #' 
 #' @examples
 #' library(QFeatures)
-#' utils::data(Exp1_R25_pept, package='DAPARdata2')
+#' utils::data(Exp1_R25_pept, package='DaparToolshedData')
 #' qData <- assay(Exp1_R25_pept,1)
 #' nEmptyLines(qData)
 #' 
@@ -260,7 +260,7 @@ nEmptyLines <- function(qData){
 #' 
 #' @examples
 #' library(QFeatures)
-#' utils::data(Exp1_R25_pept, package='DAPARdata2')
+#' utils::data(Exp1_R25_pept, package='DaparToolshedData')
 #' obj <- Exp1_R25_pept
 #' data <- rowData(Exp1_R25_pept[['original']])[,metadata(Exp1_R25_pept)$OriginOfValues]
 #' is.OfType(as.data.frame(data@listData), "MEC")
@@ -292,7 +292,7 @@ is.OfType <- function(data, type){
 #' 
 #' @examples
 #' library(QFeatures)
-#' utils::data(Exp1_R25_pept, package='DAPARdata2')
+#' utils::data(Exp1_R25_pept, package='DaparToolshedData')
 #' obj <- Exp1_R25_pept
 #' data <- rowData(Exp1_R25_pept[['original']])[,metadata(Exp1_R25_pept)$OriginOfValues]
 #' is.MV(as.data.frame(data@listData))
@@ -328,7 +328,7 @@ is.MV <- function(data){
 #' @author Samuel Wieczorek, Enora Fremy
 #' 
 #' @examples
-#' utils::data(Exp1_R25_pept, package='DAPARdata2')
+#' utils::data(Exp1_R25_pept, package='DaparToolshedData')
 #' getListNbValuesInLines(Exp1_R25_pept, 1)
 #' 
 #' @export

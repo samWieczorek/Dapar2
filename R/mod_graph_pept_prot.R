@@ -8,6 +8,7 @@
 #'
 #' @importFrom shiny NS tagList
 #' @import visNetwork
+#' @importFrom DT renderDT DTOutput formatStyle %>% styleEqual
 #' 
 #' @return NA
 #' 
@@ -28,13 +29,13 @@ mod_graph_pept_prot_ui <- function(id){
                                               multiple = TRUE,
                                               shinyBS::bsCollapsePanel("One - One CC",
                                                                        fluidRow(
-                                                                         column(width=4, DT::dataTableOutput(ns("OneOneDT"))),
-                                                                         column(width=8, DT::dataTableOutput(ns("OneOneDTDetailed")))
+                                                                         column(width=4, DT::DTOutput(ns("OneOneDT"))),
+                                                                         column(width=8, DT::DTOutput(ns("OneOneDTDetailed")))
                                                                        ),style = "info"),
                                               shinyBS::bsCollapsePanel("One - Multi CC",
                                                                        fluidRow(
-                                                                         column(width=4, DT::dataTableOutput(ns("OneMultiDT"))),
-                                                                         column(width=8, DT::dataTableOutput(ns("OneMultiDTDetailed")))
+                                                                         column(width=4, DT::DTOutput(ns("OneMultiDT"))),
+                                                                         column(width=8, DT::DTOutput(ns("OneMultiDTDetailed")))
                                                                        ), style = "primary")
                           )
                         )
@@ -50,7 +51,7 @@ mod_graph_pept_prot_ui <- function(id){
                           fluidRow(
                             column(width=6,tagList(
                               highchartOutput(ns("jiji")),
-                              shinyjs::hidden( dataTableOutput(ns('CCMultiMulti')))
+                              shinyjs::hidden( DTOutput(ns('CCMultiMulti')))
                             )),
                             column(width=6, tagList(
                               visNetworkOutput(ns("visNet_CC"), height='600px')))
@@ -186,7 +187,7 @@ mod_graph_pept_prot_server <- function(id, cc, matAdj, dataIn){
 
 
 
-    output$CCMultiMulti <- renderDataTable({
+    output$CCMultiMulti <- renderDT({
       Get_CC_Multi2Any()
       df <- do.call(rbind,lapply(cc()[Get_CC_Multi2Any()],
                                  function(x){
@@ -249,15 +250,15 @@ mod_graph_pept_prot_server <- function(id, cc, matAdj, dataIn){
 
       tagList(
         h4("Proteins"),
-        dataTableOutput(ns('CCDetailedProt')),
+        DTOutput(ns('CCDetailedProt')),
         h4("Specific peptides"),
-        dataTableOutput(ns('CCDetailedSpecPep')),
+        DTOutput(ns('CCDetailedSpecPep')),
         h4("Shared peptides"),
-        dataTableOutput(ns('CCDetailedSharedPep'))
+        DTOutput(ns('CCDetailedSharedPep'))
       )
     })
 
-    output$CCDetailedProt<- renderDataTable({
+    output$CCDetailedProt<- renderDT({
       req(rv.cc$selectedCC)
       rv.cc$detailedselectedNode
       if(is.null(rv.cc$detailedselectedNode$protLabels)){return(NULL)}
@@ -284,7 +285,7 @@ mod_graph_pept_prot_server <- function(id, cc, matAdj, dataIn){
 
     #######
 
-    output$CCDetailedSharedPep <- renderDataTable({
+    output$CCDetailedSharedPep <- renderDT({
       rv.cc$detailedselectedNode
       input$pepInfo
 
@@ -331,7 +332,7 @@ mod_graph_pept_prot_server <- function(id, cc, matAdj, dataIn){
 
 
     #####-----------
-    output$CCDetailedSpecPep <- renderDataTable({
+    output$CCDetailedSpecPep <- renderDT({
       rv.cc$detailedselectedNode
       input$pepInfo
       if(is.null((rv.cc$detailedselectedNode$specPepLabels))){return(NULL)}
@@ -430,7 +431,7 @@ mod_graph_pept_prot_server <- function(id, cc, matAdj, dataIn){
 
 
 
-    output$OneMultiDT <- renderDataTable({
+    output$OneMultiDT <- renderDT({
       req(cc())
 
       dat <- DT::datatable(BuildOne2MultiTab(),
@@ -456,7 +457,7 @@ mod_graph_pept_prot_server <- function(id, cc, matAdj, dataIn){
 
 
 
-    output$OneMultiDTDetailed <- renderDataTable({
+    output$OneMultiDTDetailed <- renderDT({
       input$pepInfo
       req(input$OneMultiDT_rows_selected)
 
@@ -502,7 +503,7 @@ mod_graph_pept_prot_server <- function(id, cc, matAdj, dataIn){
 
 
 
-    output$OneOneDT <- renderDataTable({
+    output$OneOneDT <- renderDT({
       req(cc())
 
       dat <- DT::datatable(BuildOne2OneTab(),
@@ -527,7 +528,7 @@ mod_graph_pept_prot_server <- function(id, cc, matAdj, dataIn){
 
 
 
-    output$OneOneDTDetailed <- renderDataTable({
+    output$OneOneDTDetailed <- renderDT({
       req(cc())
       req(input$OneOneDT_rows_selected)
       input$pepInfo

@@ -81,7 +81,7 @@ aggregateFeatures_sam <- function(object, i, aggType='all', name, meta.names = N
   if (isEmpty(object))
     return(object)
   if (name %in% names(object))
-    stop("There's already an assay named '", name, "'.")
+    stop("There is already an assay named '", name, "'.")
   if (missing(aggType))
     stop("'aggType' is required.")    
   if (missing(i))
@@ -156,11 +156,11 @@ aggregateFeatures_sam <- function(object, i, aggType='all', name, meta.names = N
   test <- which(as.matrix(X)==1, arr.ind=TRUE)
   from <- test[,'col']
   to <- test[,'row']
-  hits <- S4Vectors::Hits(from=from, 
-                          to=to, 
-                          nLnode=ncol(X), 
-                          nRnode=nrow(X),
-                          sort.by.query=TRUE
+  hits <- S4Vectors::Hits(from = from, 
+                          to = to, 
+                          nLnode = ncol(X), 
+                          nRnode = nrow(X),
+                          sort.by.query = TRUE
   )
   
   elementMetadata(hits)$names_from <- rownames(assay_i)[hits@to]
@@ -270,6 +270,62 @@ ComputeAdjacencyMatrices <- function(obj.se){
 }
 
 
+#' @param X xxx
+#' @param onlyShared xxx
+#' @param onlySpec xxx
+#' 
+submatadj <- function(X, 
+                         onlyShared = F, 
+                         onlySpec = F){
+  
+  subX <- X
+  if (onlyShared){
+    tag <- which(rowSums(X) > 1)
+    if (length(tag)==0){
+      
+    } else if (length(tag) == 1){
+      subX <- Matrix(X[tag,],
+             sparse = TRUE,
+             nrow = 1,
+             dimnames = list(rownames(X)[tag],
+                             colnames(X))
+      )
+    } else {
+      tag <- which(rowSums(X) == 1)
+      subX <- Matrix(X[tag,],
+                     sparse = TRUE,
+                     dimnames = list(rownames(X)[tag],
+                                     colnames(X))
+      )
+    }
+
+  }
+  
+  if (onlySpec){
+    #compute the matrix with only specific peptides
+    ind <- which(rowSums(X) == 1)
+    if (length(tag)==0){
+      
+    } else if (length(tag) == 1){
+      subX <- Matrix(X[tag,],
+                     sparse = TRUE,
+                     nrow = 1,
+                     dimnames = list(rownames(X)[tag],
+                                     colnames(X))
+      )
+    } else {
+      tag <- which(rowSums(X) == 1)
+      subX <- Matrix(X[tag,],
+                     sparse = TRUE,
+                     dimnames = list(rownames(X)[tag],
+                                     colnames(X))
+      )
+    }
+  }
+  
+  
+  return(subX)
+}
 
 
 #' This function computes few values about the adjacency matrix such as the number of proteins that are only defined by 

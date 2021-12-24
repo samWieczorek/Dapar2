@@ -19,6 +19,7 @@ list.plots.module <- c(
 #' @param id,input,output,session Internal parameters for {shiny}.
 #'
 #' @importFrom shiny NS tagList
+#' @importFrom shinyjs useShinyjs 
 #' 
 #' @return NA
 #'
@@ -55,6 +56,7 @@ mod_all_plots_ui <- function(id){
 #' @importFrom base64enc dataURI
 #' @importFrom SummarizedExperiment colData
 #' @importFrom MultiAssayExperiment metadata
+#' @importFrom shinyjs show hide hidden
 #' 
 #' @return NA
 #'

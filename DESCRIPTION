@@ -23,6 +23,8 @@ Depends: R (>= 4.1.0)
 Imports:
     Biobase,
     S4Vectors,
+    DT,
+    colourpicker,
     QFeatures,
     methods,
     apcluster,
@@ -43,7 +45,6 @@ Imports:
     graph,
     FactoMineR, 
     factoextra,
-    DT, 
     doParallel,
     dplyr,
     foreach,
@@ -65,7 +66,6 @@ Imports:
     purrr,
     ggplot2,
     reshape2,
-    colourpicker,
     htmlwidgets,
     shiny,
     shinyBS,
@@ -91,6 +91,7 @@ Collate:
     palette.R
     metacell.R
     aggregation.R
+    mod_Agregation.R
     compute.t.tests.R
     DiffAnalysis.R
     group_ttest.R
@@ -155,5 +156,4 @@ Suggests:
     knitr,
     rmarkdown,
     BiocStyle,
-    testthat, 
-    DAPARdata2
+    testthat

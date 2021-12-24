@@ -158,7 +158,7 @@ metacell.def <- function(level){
 #' @author Samuel Wieczorek
 #' 
 #' @examples
-#' utils::data(Exp1_R25_pept, package='DAPARdata2')
+#' utils::data(Exp1_R25_pept, package='DaparToolshedData')
 #' Get_qMetadata_names(Exp1_R25_pept)
 #' 
 #' @export
@@ -202,7 +202,7 @@ setMethod("Get_qMetadata_names", "QFeatures",
 #' @author Samuel Wieczorek
 #' 
 #' @examples
-#' utils::data(Exp1_R25_pept, package='DAPARdata2')
+#' utils::data(Exp1_R25_pept, package='DaparToolshedData')
 #' GetTypeDataset(Exp1_R25_pept[[2]])
 #' 
 #' @export
@@ -249,7 +249,7 @@ setMethod("GetTypeDataset", "QFeatures",
 #' @author Samuel Wieczorek
 #' 
 #' @examples
-#' utils::data(Exp1_R25_pept, package='DAPARdata2')
+#' utils::data(Exp1_R25_pept, package='DaparToolshedData')
 #' SetTypeDataset(Exp1_R25_pept[[2]])
 #' @export
 #' @return NA
@@ -307,7 +307,7 @@ setMethod("SetTypeDataset", "QFeatures",
 #' @author Samuel Wieczorek
 #' 
 #' @examples 
-#' utils::data(Exp1_R25_pept, package='DAPARdata2')
+#' utils::data(Exp1_R25_pept, package='DaparToolshedData')
 #' object <- Exp1_R25_pept
 #' conds <- colData(object)$Condition
 #' df <- assay(Exp1_R25_pept, 2)
@@ -365,10 +365,10 @@ Set_POV_MEC_tags <- function(conds, df, level){
 #' @author Samuel Wieczorek
 #' 
 #' @examples 
-#' file <- system.file("extdata", "Exp1_R25_pept.txt", package="DAPARdata2")
+#' file <- system.file("extdata", "Exp1_R25_pept.txt", package="DaparToolshedData")
 #' data <- read.table(file, header=TRUE, sep="\t",stringsAsFactors = FALSE)
 #' metadataFile <- system.file("extdata", "samples_Exp1_R25.txt", 
-#' package="DAPARdata2")
+#' package="DaparToolshedData")
 #' metadata <- read.table(metadataFile, header=TRUE, sep="\t", as.is=TRUE, 
 #' stringsAsFactors = FALSE)
 #' conds <- metadata$Condition
@@ -434,10 +434,10 @@ BuildMetaCell <- function(from = NULL,
 #' @author Samuel Wieczorek
 #' 
 #' @examples 
-#' file <- system.file("extdata", "Exp1_R25_pept.txt", package="DAPARdata2")
+#' file <- system.file("extdata", "Exp1_R25_pept.txt", package="DaparToolshedData")
 #' data <- read.table(file, header=TRUE, sep="\t",stringsAsFactors = FALSE)
 #' metadataFile <- system.file("extdata", "samples_Exp1_R25.txt", 
-#' package="DAPARdata2")
+#' package="DaparToolshedData")
 #' metadata <- read.table(metadataFile, header=TRUE, sep="\t", as.is=TRUE, 
 #' stringsAsFactors = FALSE)
 #' conds <- metadata$Condition
@@ -509,10 +509,10 @@ Metacell_generic <- function(qdata, conds, level){
 #' 
 #' @examples
 #' \donttest{ 
-#' file <- system.file("extdata", "Exp1_R25_pept.txt", package="DAPARdata2")
+#' file <- system.file("extdata", "Exp1_R25_pept.txt", package="DaparToolshedData")
 #' data <- read.table(file, header=TRUE, sep="\t",stringsAsFactors = FALSE)
 #' metadataFile <- system.file("extdata", "samples_Exp1_R25.txt", 
-#' package="DAPARdata2")
+#' package="DaparToolshedData")
 #' metadata <- read.table(metadataFile, header=TRUE, sep="\t", as.is=TRUE, 
 #' stringsAsFactors = FALSE)
 #' conds <- metadata$Condition
@@ -582,10 +582,10 @@ Metacell_proline <- function(qdata, conds, df, level=NULL){
 #' @author Samuel Wieczorek
 #' 
 #' @examples 
-#' file <- system.file("extdata", "Exp1_R25_pept.txt", package="DAPARdata2")
+#' file <- system.file("extdata", "Exp1_R25_pept.txt", package="DaparToolshedData")
 #' data <- read.table(file, header=TRUE, sep="\t",stringsAsFactors = FALSE)
 #' metadataFile <- system.file("extdata", "samples_Exp1_R25.txt", 
-#' package="DAPARdata2")
+#' package="DaparToolshedData")
 #' metadata <- read.table(metadataFile, header=TRUE, sep="\t", as.is=TRUE, 
 #' stringsAsFactors = FALSE)
 #' conds <- metadata$Condition
@@ -656,7 +656,7 @@ Metacell_maxquant <- function(qdata, conds, df, level=NULL){
 #' @author Samuel Wieczorek
 #'
 #' @examples
-#' utils::data(Exp1_R25_pept, package='DAPARdata2')
+#' utils::data(Exp1_R25_pept, package='DaparToolshedData')
 #' obj <- Exp1_R25_pept[seq_len(10),]
 #' metadata <- Get_qMetadata(obj)
 #' m <- match.metacell(metadata, pattern="missing", level = 'peptide')
@@ -697,7 +697,7 @@ match.metacell <- function(df, pattern, level){
 #' xxxx
 #' 
 #' @examples
-#' utils::data(Exp1_R25_pept, package='DAPARdata2')
+#' utils::data(Exp1_R25_pept, package='DaparToolshedData')
 #' obj <- Exp1_R25_pept[seq_len(10),]
 #' mc <- Get_qMetadata(obj[[2]])
 #' 
@@ -756,7 +756,7 @@ setMethod("Get_qMetadata", "QFeatures",
 #' Update the metacell information of missing values that were imputed
 #' 
 #' @examples
-#' utils::data(Exp1_R25_pept, package='DAPARdata2')
+#' utils::data(Exp1_R25_pept, package='DaparToolshedData')
 #' obj <- Exp1_R25_pept[seq_len(10),]
 #' obj[[2]] <- UpdateMetacell(obj[[2]], na.type = 'missing')
 #' 

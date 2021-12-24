@@ -41,19 +41,19 @@ mod_plots_cc_ui <- function(id) {
                                             shinyBS::bsCollapsePanel("One - One CC", 
                                                                      fluidRow(
                                                                        column(width=4, mod_format_DT_ui(ns('OneOneDT'))
-                                                                              #DT::dataTableOutput(ns("OneOneDT"))
+                                                                              #DT::DTOutput(ns("OneOneDT"))
                                                                        ),
                                                                        column(width=8, mod_format_DT_ui(ns('OneOneDTDetailed'))
-                                                                              #DT::dataTableOutput(ns("OneOneDTDetailed"))
+                                                                              #DT::DTOutput(ns("OneOneDTDetailed"))
                                                                        )
                                                                      ),style = "info"),
                                             shinyBS::bsCollapsePanel("One - Multi CC", 
                                                                      fluidRow(
                                                                        column(width=4, mod_format_DT_ui(ns('OneMultiDT'))
-                                                                              #DT::dataTableOutput(ns("OneMultiDT"))
+                                                                              #DT::DTOutput(ns("OneMultiDT"))
                                                                        ),
                                                                        column(width=8, mod_format_DT_ui(ns('OneMultiDTDetailed'))
-                                                                              #DT::dataTableOutput(ns("OneMultiDTDetailed"))
+                                                                              #DT::DTOutput(ns("OneMultiDTDetailed"))
                                                                        )
                                                                      ), style = "primary")
                         )
@@ -70,7 +70,7 @@ mod_plots_cc_ui <- function(id) {
                         fluidRow(
                           column(width=6,tagList(
                             #highchartOutput(ns("jiji")),
-                            shinyjs::hidden( dataTableOutput(ns('CCMultiMulti')))
+                            shinyjs::hidden( DTOutput(ns('CCMultiMulti')))
                           )),
                           column(width=6, tagList(
                             visNetworkOutput(ns("visNet_CC"), height='600px')))
@@ -219,7 +219,7 @@ mod_plots_cc_server <- function(input, output, session,
   
   
   
-  output$CCMultiMulti <- renderDataTable({
+  output$CCMultiMulti <- renderDT({
     Get_CC_Multi2Any()
     
     print(Get_CC_Multi2Any())
@@ -287,20 +287,20 @@ mod_plots_cc_server <- function(input, output, session,
     
     tagList(
       h4("Proteins"),
-      dataTableOutput(ns('CCDetailedProt')),
+      DTOutput(ns('CCDetailedProt')),
       h4("Specific peptides"),
-      dataTableOutput(ns('CCDetailedSpecPep')),
+      DTOutput(ns('CCDetailedSpecPep')),
       h4("Shared peptides"),
-      dataTableOutput(ns('CCDetailedSharedPep'))
+      DTOutput(ns('CCDetailedSharedPep'))
     )
   })
   
-  output$CCDetailedProt<- renderDataTable({
+  output$CCDetailedProt<- renderDT({
     req(rv.cc$selectedCC)
     rv.cc$detailedselectedNode
     if(is.null(rv.cc$detailedselectedNode$protLabels)){return(NULL)}
     
-    # print("output$CCDetailedProt<- renderDataTable(")
+    # print("output$CCDetailedProt<- renderDT(")
     df <- data.frame(proteinId = unlist(rv.cc$detailedselectedNode$protLabels)
                      #other = rep(NA,length(rv.cc$detailedselectedNode$protLabels))
     )
@@ -323,7 +323,7 @@ mod_plots_cc_server <- function(input, output, session,
   
   #######
   
-  output$CCDetailedSharedPep <- renderDataTable({
+  output$CCDetailedSharedPep <- renderDT({
     rv.cc$detailedselectedNode
     input$pepInfo
     
@@ -370,7 +370,7 @@ mod_plots_cc_server <- function(input, output, session,
   
   
   #####-----------
-  output$CCDetailedSpecPep <- renderDataTable({
+  output$CCDetailedSpecPep <- renderDT({
     rv.cc$detailedselectedNode
     input$pepInfo
     if(is.null((rv.cc$detailedselectedNode$specPepLabels))){return(NULL)}
@@ -469,7 +469,7 @@ mod_plots_cc_server <- function(input, output, session,
   
   
   
-  # output$OneMultiDT <- renderDataTable({
+  # output$OneMultiDT <- renderDT({
   #   req(cc())
   #   
   #   dat <- DT::datatable(BuildOne2MultiTab(),
@@ -497,7 +497,7 @@ mod_plots_cc_server <- function(input, output, session,
                        style = reactive({NULL}))
   
   
-  # output$OneMultiDTDetailed <- renderDataTable({
+  # output$OneMultiDTDetailed <- renderDT({
   #   input$pepInfo
   #   req(input$OneMultiDT_rows_selected)
   #   
@@ -566,7 +566,7 @@ mod_plots_cc_server <- function(input, output, session,
                        style = reactive({NULL}))
   
   
-  # output$OneOneDT <- renderDataTable({
+  # output$OneOneDT <- renderDT({
   #   req(cc())
   #   
   #   dat <- DT::datatable(BuildOne2OneTab(),
@@ -595,7 +595,7 @@ mod_plots_cc_server <- function(input, output, session,
   
   
   
-  # output$OneOneDTDetailed <- renderDataTable({
+  # output$OneOneDTDetailed <- renderDT({
   #   req(cc())
   #   req(input$OneOneDT_rows_selected)
   #   input$pepInfo
