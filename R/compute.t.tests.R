@@ -25,7 +25,7 @@
 #' 
 #' @examples
 #' library(QFeatures)
-#' utils::data(Exp1_R25_pept, package='DAPARdata2')
+#' Exp1_R25_pept <- readRDS(system.file("data", 'Exp1_R25_pept.rda', package="DaparToolshedData"))
 #' Exp1_R25_pept <- addAssay(Exp1_R25_pept, QFeatures::filterNA(Exp1_R25_pept[[2]], pNA = 0), name='filtered')
 #' sTab <- as.data.frame(colData(Exp1_R25_pept))
 #' ttest <- compute_t_tests(Exp1_R25_pept[['filtered']], sTab ,"OnevsOne")
@@ -161,9 +161,9 @@ compute_t_tests <- function(obj,
 #' #' are identical and correspond to the description of the comparison. 
 #' #' @author Florence Combes, Samuel Wieczorek
 #' #' @examples
-#' #' utils::data(Exp1_R25_pept, package='DAPARdata2')
+#' #' Exp1_R25_pept <- readRDS(system.file("data", 'Exp1_R25_pept.rda', package="DaparToolshedData"))
 #' #' Exp1_R25_pept <- addAssay(Exp1_R25_pept, 
-#' QFeatures::filterNA(Exp1_R25_pept[['original_log']],  pNA = 0), name='filtered')
+#' #' QFeatures::filterNA(Exp1_R25_pept[['original_log']],  pNA = 0), name='filtered')
 #' #' sTab <- as.data.frame(colData(Exp1_R25_pept)@listData)
 #' #' qData <- assay(Exp1_R25_pept[['filtered']])
 #' #' ttest <- compute.t.tests2(qData,sTab ,"OnevsOne")

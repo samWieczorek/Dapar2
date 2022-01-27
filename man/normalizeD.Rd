@@ -54,7 +54,7 @@ The following functions are currently available:
 #' Provides several methods to normalize quantitative data from a numeric matrix.
 They are organized in six main families : GlobalQuantileAlignement, sumByColumns, QuantileCentering, MeanCentering, LOESS, vsn
 For the first family, there is no type.
-For the five other families, two type categories are available : 
+For the five other families, two type categories are available :
 "Overall" which means that the value for each protein (ie row) is computed over all the samples ;
 "within conditions" which means that the value for each protein (ie row) is computed condition by condition.
 Normalization can be based only on a subset of protein.
@@ -62,7 +62,7 @@ Proteins with NA in this subset are ignored.
 }
 \examples{
 library(QFeatures)
-utils::data(Exp1_R25_pept, package='DAPARdata2')
+Exp1_R25_pept <- readRDS(system.file("data", 'Exp1_R25_pept.rda', package="DaparToolshedData"))
 object <- Exp1_R25_pept
 conds <- colData(object)$Condition
 object <- normalizeD(object, i=2, name = "norm", method='SumByColumns', conds=conds, type='overall')

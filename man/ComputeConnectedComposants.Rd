@@ -16,7 +16,7 @@ A list of items containing the connex components derived from the matrices given
 This function computes the connex components of a graph, represented by an adjacency matrix.
 }
 \examples{
-utils::data(Exp1_R25_pept, package='DAPARdata2')
+Exp1_R25_pept <- readRDS(system.file("data", 'Exp1_R25_pept.rda', package="DaparToolshedData"))
 cc <- ComputeConnectedComposants(Exp1_R25_pept[[2]])
 
 }

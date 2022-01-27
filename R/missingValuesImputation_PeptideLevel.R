@@ -13,7 +13,7 @@
 #' #' 
 #' #' @examples
 #' #' library(QFeatures)
-#' #' utils::data(Exp1_R25_pept, package='DAPARdata2')
+#' #' Exp1_R25_pept <- readRDS(system.file("data", 'Exp1_R25_pept.rda', package="DaparToolshedData"))
 #' #' obj <- Exp1_R25_pept[seq_len(1000),]
 #' #' sampleTab <- colData(obj)
 #' #' dat <- impute_mle_dapar(assay(obj[[2]]), colData(obj))
@@ -62,7 +62,7 @@
 #' #' 
 #' #' @examples
 #' #' library(QFeatures)
-#' #' utils::data(Exp1_R25_pept, package='DAPARdata2')
+#' #' Exp1_R25_pept <- readRDS(system.file("data", 'Exp1_R25_pept.rda', package="DaparToolshedData"))
 #' #' obj <- Exp1_R25_pept[seq_len(1000),]
 #' #' x <- assay(obj[[2]])
 #' #' sampleTab <- colData(obj)
@@ -228,7 +228,7 @@
 #' #' 
 #' #' @examples
 #' #' library(QFeatures)
-#' #' utils::data(Exp1_R25_pept, package='DAPARdata2')
+#' #' Exp1_R25_pept <- readRDS(system.file("data", 'Exp1_R25_pept.rda', package="DaparToolshedData"))
 #' #' obj <- Exp1_R25_pept[seq_len(1000)]
 #' #' x <- assay(obj[[2]])
 #' #' sampleTab <- colData(obj)

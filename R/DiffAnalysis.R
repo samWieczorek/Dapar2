@@ -19,7 +19,7 @@
 #'
 #' @examples
 #' library(QFeatures)
-#' utils::data(Exp1_R25_pept, package='DAPARdata2')
+#' Exp1_R25_pept <- readRDS(system.file("data", 'Exp1_R25_pept.rda', package="DaparToolshedData"))
 #' object <- Exp1_R25_pept[seq_len(1000),]
 #' object <- addAssay(object, QFeatures::filterNA(object[[2]],  pNA = 0), name='filtered')
 #' sTab <- colData(object)
@@ -101,7 +101,7 @@ setMethod("diff_analysis_sam", "QFeatures",
 #' 
 #' @examples
 #' library(QFeatures)
-#' utils::data(Exp1_R25_pept, package='DAPARdata2')
+#' Exp1_R25_pept <- readRDS(system.file("data", 'Exp1_R25_pept.rda', package="DaparToolshedData"))
 #' object <- Exp1_R25_pept[seq_len(1000),]
 #' object <- addAssay(object, QFeatures::filterNA(object[[2]],  pNA = 0), name='filtered')
 #' object <- addListAdjacencyMatrices(object, 3)
@@ -206,7 +206,7 @@ histPValue_HC <- function(pval_ll, bins=80, pi0=1){
 #' 
 #' @examples
 #' library(QFeatures)
-#' utils::data(Exp1_R25_pept, package='DAPARdata2')
+#' Exp1_R25_pept <- readRDS(system.file("data", 'Exp1_R25_pept.rda', package="DaparToolshedData"))
 #' obj <- Exp1_R25_pept[seq_len(1000)]
 #' obj <- addAssay(obj, QFeatures::filterNA(obj[[2]],  pNA = 0), name='filtered')
 #' se <- t_test_sam(obj[[3]], colData(obj), FUN = compute.t.test)
@@ -263,7 +263,7 @@ diffAnaComputeFDR <- function(logFC,
 #' 
 #' @examples
 #' library(QFeatures)
-#' utils::data(Exp1_R25_pept, package='DAPARdata2')
+#' Exp1_R25_pept <- readRDS(system.file("data", 'Exp1_R25_pept.rda', package="DaparToolshedData"))
 #' object <- Exp1_R25_pept[seq_len(1000),]
 #' object <- addAssay(object, QFeatures::filterNA(object[[2]],  pNA = 0), name='filtered')
 #' sTab <- colData(object)
@@ -326,7 +326,7 @@ Get_AllComparisons <- function(obj){
 #' 
 #' @examples
 #' library(QFeatures)
-#' utils::data(Exp1_R25_pept, package='DAPARdata2')
+#' Exp1_R25_pept <- readRDS(system.file("data", 'Exp1_R25_pept.rda', package="DaparToolshedData"))
 #' obj <- Exp1_R25_pept[seq_len(1000)]
 #' obj <- addAssay(obj, QFeatures::filterNA(obj[[2]],  pNA = 0), name='filtered')
 #' obj <- addAssay(obj, t_test_sam(obj[[3]], colData(obj), FUN = 'compute.t.test'), name='t-test')

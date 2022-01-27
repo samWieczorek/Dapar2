@@ -24,7 +24,7 @@ number of missing values. A white square is plotted for missing values.
 }
 \examples{
 library(QFeatures)
-utils::data(Exp1_R25_pept, package='DAPARdata2')
+Exp1_R25_pept <- readRDS(system.file("data", 'Exp1_R25_pept.rda', package="DaparToolshedData"))
 mvImage(Exp1_R25_pept, 2)
 
 }

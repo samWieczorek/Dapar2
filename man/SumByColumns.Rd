@@ -24,7 +24,7 @@ Normalisation SumByColumns
 }
 \examples{
 library(QFeatures)
-utils::data(Exp1_R25_pept, package='DAPARdata2')
+Exp1_R25_pept <- readRDS(system.file("data", 'Exp1_R25_pept.rda', package="DaparToolshedData"))
 library(QFeatures)
 qData <- assay(Exp1_R25_pept[['original_log']])
 conds <- colData(Exp1_R25_pept)[["Condition"]]

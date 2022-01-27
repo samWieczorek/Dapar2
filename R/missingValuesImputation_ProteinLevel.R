@@ -4,7 +4,7 @@
 #' #' 
 #' #' @examples
 #' #' library(QFeatures)
-#' #' utils::data(Exp1_R25_pept, package='DAPARdata2')
+#' #' Exp1_R25_pept <- readRDS(system.file("data", 'Exp1_R25_pept.rda', package="DaparToolshedData"))
 #' #' obj <- Exp1_R25_pept[seq_len(1000),]
 #' #' obj <- impute_dapar(obj, 2,'foo1',  'POV_det_quant', conds=colData(obj)$Condition)
 #' #' 
@@ -86,7 +86,7 @@
 #' #' 
 #' #' @examples
 #' #' library(QFeatures)
-#' #' utils::data(Exp1_R25_pept, package='DAPARdata2')
+#' #' Exp1_R25_pept <- readRDS(system.file("data", 'Exp1_R25_pept.rda', package="DaparToolshedData"))
 #' #' obj <- Exp1_R25_pept[seq_len(1000),]
 #' #' imp <- impute_matrix_dapar(assay(obj[[2]]), method='knn_by_conds', colData(obj)$Condition, 3)
 #' #' 
@@ -189,7 +189,7 @@
 #' #' 
 #' #' @examples
 #' #' library(QFeatures)
-#' #' utils::data(Exp1_R25_pept, package='DAPARdata2')
+#' #' Exp1_R25_pept <- readRDS(system.file("data", 'Exp1_R25_pept.rda', package="DaparToolshedData"))
 #' #' obj <- Exp1_R25_pept[seq_len(1000),]
 #' #' imp <- POV_impute_knn_by_conditions(assay(obj[[2]]), colData(obj)$Condition, 3)
 #' #' 
@@ -248,7 +248,7 @@
 #' #' 
 #' #' @examples
 #' #' library(QFeatures)
-#' #' utils::data(Exp1_R25_pept, package='DAPARdata2')
+#' #' Exp1_R25_pept <- readRDS(system.file("data", 'Exp1_R25_pept.rda', package="DaparToolshedData"))
 #' #' obj <- Exp1_R25_pept[seq_len(1000),]
 #' #' imp <- impute_knn_by_conditions(assay(obj[[2]]), colData(obj)$Condition, 3)
 #' #' 
@@ -293,7 +293,7 @@
 #' #' 
 #' #' @examples
 #' #' library(QFeatures)
-#' #' utils::data(Exp1_R25_pept, package='DAPARdata2')
+#' #' Exp1_R25_pept <- readRDS(system.file("data", 'Exp1_R25_pept.rda', package="DaparToolshedData"))
 #' #' object <- Exp1_R25_pept[seq_len(1000),]
 #' #' object <- addAssay(object, QFeatures::filterNA(object[[2]],  pNA = 0.2), name='filtered')
 #' #' imp <- impute_pa(assay(object[['filtered']]), colData(object)$Condition)
@@ -332,7 +332,7 @@
 #' #' 
 #' #' @examples
 #' #' library(QFeatures)
-#' #' utils::data(Exp1_R25_pept, package='DAPARdata2')
+#' #' Exp1_R25_pept <- readRDS(system.file("data", 'Exp1_R25_pept.rda', package="DaparToolshedData"))
 #' #' impute_det_quant(assay(Exp1_R25_pept[[2]]))
 #' #' 
 #' #' @export
@@ -364,7 +364,7 @@
 #' #' 
 #' #' @examples
 #' #' library(QFeatures)
-#' #' utils::data(Exp1_R25_pept, package='DAPARdata2')
+#' #' Exp1_R25_pept <- readRDS(system.file("data", 'Exp1_R25_pept.rda', package="DaparToolshedData"))
 #' #' POV_impute_det_quant(assay(Exp1_R25_pept[[2]]), colData(Exp1_R25_pept)$Condition)
 #' #' 
 #' #' @export
@@ -405,7 +405,7 @@
 #' #' 
 #' #' @examples
 #' #' library(QFeatures)
-#' #' utils::data(Exp1_R25_pept, package='DAPARdata2')
+#' #' Exp1_R25_pept <- readRDS(system.file("data", 'Exp1_R25_pept.rda', package="DaparToolshedData"))
 #' #' qData <- assay(Exp1_R25_pept[[2]])
 #' #' getQuantile4Imp(qData) 
 #' #' 
@@ -436,7 +436,7 @@
 #' #' 
 #' #' @examples
 #' #' library(QFeatures)
-#' #' utils::data(Exp1_R25_pept, package='DAPARdata2')
+#' #' Exp1_R25_pept <- readRDS(system.file("data", 'Exp1_R25_pept.rda', package="DaparToolshedData"))
 #' #' obj <- Exp1_R25_pept[seq_len(1000)]
 #' #' imp <- impute_slsa(assay(obj[[2]]), colData(obj))
 #' #' 
@@ -475,7 +475,7 @@
 #' #' 
 #' #' @examples
 #' #' library(QFeatures)
-#' #' utils::data(Exp1_R25_pept, package='DAPARdata2')
+#' #' Exp1_R25_pept <- readRDS(system.file("data", 'Exp1_R25_pept.rda', package="DaparToolshedData"))
 #' #' obj <- Exp1_R25_pept[seq_len(1000)]
 #' #' imp <- POV_impute_slsa(assay(obj[[2]]), colData(obj))
 #' #' 
@@ -518,7 +518,7 @@
 #' #' @author Samuel Wieczorek
 #' #' 
 #' #' @examples
-#' #' utils::data(Exp1_R25_pept, package='DAPARdata')
+#' #'Exp1_R25_pept <- readRDS(system.file("data", 'Exp1_R25_pept.rda', package="DaparToolshedData"))
 #' #' impute_fixed_value(assay(Exp1_R25_pept[seq_len(1000)], 2), 0.001)
 #' #' 
 #' #' @export
@@ -549,7 +549,7 @@
 #' #' 
 #' #' @examples
 #' #' library(QFeatures)
-#' #' utils::data(Exp1_R25_pept, package='DAPARdata2')
+#' #' Exp1_R25_pept <- readRDS(system.file("data", 'Exp1_R25_pept.rda', package="DaparToolshedData"))
 #' #' obj <- Exp1_R25_pept[seq_len(1000)]
 #' #' lapala <- find_MEC_matrix(assay(obj[[2]]), colData(obj)$Condition)
 #' #' assay(obj[[2]]) <- impute_det_quant(assay(obj[[2]]))
@@ -581,7 +581,7 @@
 #' #' 
 #' #' @examples
 #' #' library(QFeatures)
-#' #' utils::data(Exp1_R25_pept, package='DAPARdata2')
+#' #' Exp1_R25_pept <- readRDS(system.file("data", 'Exp1_R25_pept.rda', package="DaparToolshedData"))
 #' #' obj <- Exp1_R25_pept[seq_len(1000)]
 #' #' lapala <- find_MEC_matrix(assay(obj[[2]]), colData(obj)$Condition)
 #' #' 

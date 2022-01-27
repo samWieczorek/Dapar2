@@ -29,7 +29,7 @@ number of missing values (NA) per lines (ie proteins) and per conditions.
 }
 \examples{
 library(highcharter)
-utils::data(Exp1_R25_pept, package='DAPARdata2')
+Exp1_R25_pept <- readRDS(system.file("data", 'Exp1_R25_pept.rda', package="DaparToolshedData"))
 qData <- SummarizedExperiment::assay(Exp1_R25_pept[[2]])
 conds <- SummarizedExperiment::colData(Exp1_R25_pept)$Condition
 mvPerLinesHistoPerCondition_HC(qData, conds)

@@ -24,7 +24,7 @@ Method to compute the detailed number of quantified peptides used for aggregatin
 }
 \examples{
 library(QFeatures)
-utils::data(Exp1_R25_pept, package='DAPARdata2')
+Exp1_R25_pept <- readRDS(system.file("data", 'Exp1_R25_pept.rda', package="DaparToolshedData"))
 obj <- Exp1_R25_pept
 qPepData <- assay(obj,2)
 obj <- addListAdjacencyMatrices(obj, 2)

@@ -19,7 +19,7 @@
 #' @examples
 #' \donttest{
 #' Sys.setenv("R_ZIPCMD"= Sys.which("zip"))
-#' utils::data(Exp1_R25_pept, package='DAPARdata2')
+#' Exp1_R25_pept <- readRDS(system.file("data", 'Exp1_R25_pept.rda', package="DaparToolshedData"))
 #' obj <- Exp1_R25_pept[seq_len(1000)]
 #' writeQFeaturesToExcel(obj, "foo")
 #' }
@@ -175,7 +175,7 @@ listSheets <- function(file){
 #' #' 
 #' #' @examples
 #' #' \donttest{
-#' #' utils::data(Exp1_R25_pept, package='DAPARdata2')
+#' #' Exp1_R25_pept <- readRDS(system.file("data", 'Exp1_R25_pept.rda', package="DaparToolshedData"))
 #' #' obj <- Exp1_R25_pept[seq_len(1000)]
 #' #' writeMSnsetToCSV(obj, "foo")
 #' #' }

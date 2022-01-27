@@ -37,7 +37,7 @@ differential analysis. The FDR is computed with the function \code{p.adjust}\{st
 }
 \examples{
 library(QFeatures)
-utils::data(Exp1_R25_pept, package='DAPARdata2')
+Exp1_R25_pept <- readRDS(system.file("data", 'Exp1_R25_pept.rda', package="DaparToolshedData"))
 obj <- Exp1_R25_pept[seq_len(1000)]
 obj <- addAssay(obj, QFeatures::filterNA(obj[[2]],  pNA = 0), name='filtered')
 se <- t_test_sam(obj[[3]], colData(obj), FUN = compute.t.test)

@@ -5,7 +5,7 @@
 #' #' @author Samuel Wieczorek
 #' #' 
 #' #' @examples
-#' #' utils::data(Exp1_R25_pept, package='DAPARdata2')
+#' #' Exp1_R25_pept <- readRDS(system.file("data", 'Exp1_R25_pept.rda', package="DaparToolshedData"))
 #' #' Exp1_R25_pept <- addAssay(Exp1_R25_pept, QFeatures::filterNA(Exp1_R25_pept[[2]],  pNA = 0), name='filtered')
 #' #' 
 #' #' Exp1_R25_pept <- HypothesisTest(object = Exp1_R25_pept, i = 3, test = 't_test', contrast='OnevsOne', type='Student')
@@ -115,7 +115,7 @@
 #' #' 
 #' #' @examples
 #' #' library(QFeatures)
-#' #' utils::data(Exp1_R25_pept, package='DAPARdata2')
+#' #' Exp1_R25_pept <- readRDS(system.file("data", 'Exp1_R25_pept.rda', package="DaparToolshedData"))
 #' #' obj <- Exp1_R25_pept[seq_len(1000)]
 #' #' obj <- addAssay(obj, QFeatures::filterNA(obj[[2]],  pNA = 0), name='filtered')
 #' #' se <- t_test_sam(obj[[3]], colData(obj), FUN = compute.t.test)

@@ -16,7 +16,7 @@ A list of Connected Components (CC)
 Method to build the list of connected components of an adjacency matrix
 }
 \examples{
-utils::data(Exp1_R25_pept, package='DAPARdata2') 
+Exp1_R25_pept <- readRDS(system.file("data", 'Exp1_R25_pept.rda', package="DaparToolshedData")) 
 X <- GetAdjMat(Exp1_R25_pept[[2]])$all
 ll <- get.pep.prot.cc(X)
 

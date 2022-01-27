@@ -32,7 +32,7 @@ Normalisation QuantileCentering
 }
 \examples{
 library(QFeatures)
-utils::data(Exp1_R25_pept, package='DAPARdata2')
+Exp1_R25_pept <- readRDS(system.file("data", 'Exp1_R25_pept.rda', package="DaparToolshedData"))
 obj <- Exp1_R25_pept[['original_log']]
 conds <- colData(Exp1_R25_pept)[['Condition']]
 normalized <- QuantileCentering(assay(obj), conds, type="within conditions", subset.norm= seq_len(10))

@@ -1,13 +1,13 @@
 
-#' @export
-#' 
-#' @return NA
-#'
-AddItemToDataset <- function(dataset, name){
-  addAssay(dataset,
-           dataset[[length(dataset)]],
-           name=name)
-}
+#' #' @export
+#' #' 
+#' #' @return NA
+#' #'
+#' AddItemToDataset <- function(dataset, name){
+#'   addAssay(dataset,
+#'            dataset[[length(dataset)]],
+#'            name=name)
+#' }
 
 
 #' @export

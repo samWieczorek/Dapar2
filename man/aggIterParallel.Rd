@@ -36,7 +36,7 @@ Method to aggregate peptides into proteins with the iterative approach with use 
 \examples{
 library(doParallel)
 library(QFeatures)
-utils::data(Exp1_R25_pept, package='DAPARdata2')
+Exp1_R25_pept <- readRDS(system.file("data", 'Exp1_R25_pept.rda', package="DaparToolshedData"))
 obj <- Exp1_R25_pept[seq_len(1000),]
 obj <- addListAdjacencyMatrices(obj, 2)
 X <- as.matrix(GetAdjMat(obj[[2]])$all)

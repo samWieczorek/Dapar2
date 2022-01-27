@@ -63,7 +63,7 @@
 #'
 #' @examples
 #' library(QFeatures)
-#' utils::data(Exp1_R25_pept, package='DAPARdata2')
+#' Exp1_R25_pept <- readRDS(system.file("data", 'Exp1_R25_pept.rda', package="DaparToolshedData"))
 #' obj <- Exp1_R25_pept
 #' aggregateFeatures_sam(obj,2, aggType= 'all', name='aggregated', 
 #' meta.names = 'Sequence', fun='aggTopn', n=3)
@@ -198,23 +198,23 @@ aggregateFeatures_sam <- function(object, i, aggType='all', name, meta.names = N
 #' @author Samuel Wieczorek
 #' 
 #' @examples
-#' utils::data(Exp1_R25_pept, package='DAPARdata2')
+#' Exp1_R25_pept <- readRDS(system.file("data", 'Exp1_R25_pept.rda', package="DaparToolshedData"))
 #' obj <- Exp1_R25_pept[seq_len(1000),]
-#' ll.x <- ComputeAdjacencyMatrices(obj[[2]])
+#' ll.x <- ComputeAdjacencyMatrices(obj[[2]], col.proteins = "Protein_group_IDs")
 #' 
 #' @export
 #' 
 #' @importFrom Matrix Matrix
 #' 
-ComputeAdjacencyMatrices <- function(obj.se){
+ComputeAdjacencyMatrices <- function(obj.se, col.proteins = NULL, split = ';'){
   if(class(obj.se) != 'SummarizedExperiment')
     stop("'obj.se' is not a 'SummarizedExperiment' object")
 
   md <- metadata(obj.se)
-  if (is.null(md$parentProtId) || md$parentProtId == '' || nchar(md$parentProtId) == 0){
+  if (is.null(col.proteins) || col.proteins == '' || nchar(col.proteins) == 0){
     warning("'parentProtId' is missing.")
     return(obj.se)
-  } else if (!(md$parentProtId %in% colnames(rowData(obj.se)))){
+  } else if (!(col.proteins %in% colnames(rowData(obj.se)))){
     warning("'parentProtId' is not correctly set and does not seem to belongs to the dataset.")
     return(obj.se)
   }
@@ -222,7 +222,7 @@ ComputeAdjacencyMatrices <- function(obj.se){
   
   # A vector of proteins ids. The length of this vector is equal to the number of peptides one wants to aggregate, 
   # each line of it correspond to a peptide. Each element of this vector is either one element or a combination of elements seperated by a comma.
-  plist <- rowData(obj.se)[,md$parentProtId]
+  plist <- rowData(obj.se)[,col.proteins]
   
   # A vector of names of peptides (a unique Id). The size of this vector is equal to the size of the parameter 'plist'.
   names <- names(obj.se)
@@ -233,50 +233,36 @@ ComputeAdjacencyMatrices <- function(obj.se){
     return(NULL)
   }
   
-  Xshared <- Xspec <- Xall <- NULL
+  Xall <- NULL
   
   # the separator that is allowed is ','
-  pg <- gsub(";", ",", as.character(plist), fixed=TRUE)
-  PG.l <- strsplit(as.character(pg), split=",", fixed=TRUE)
+  pg <- gsub(",", split, as.character(plist), fixed=TRUE)
+  PG.l <- strsplit(as.character(pg), split= split, fixed=TRUE)
   t <- table(data.frame(A = rep(seq_along(PG.l), lengths(PG.l)),
                         B = unlist(PG.l)))
   
   #compute the matrix with all peptides
-    Xall <- Matrix::Matrix(t, sparse = TRUE, dimnames = list(names(obj.se), colnames(t)))
+    Xall <- Matrix::Matrix(t, 
+                           sparse = TRUE, 
+                           dimnames = list(names(obj.se), colnames(t)))
 
-  #compute the matrix with only shared peptides
-    tmpShared <- t
-    ll <- which(rowSums(tmpShared)==1)
-    if (length(ll) > 0)
-      tmpShared[ll,] <- 0
-
-    Xshared <- Matrix::Matrix(tmpShared, sparse = TRUE, dimnames = list(names(obj.se), colnames(t)))
-
-  #compute the matrix with only specific peptides
-    tmpSpec <- t
-    ll <- which(rowSums(tmpSpec)>1)
-    if (length(ll) > 0)
-      tmpSpec[ll,] <- 0
-
-    Xspec <- Matrix::Matrix(tmpSpec, sparse=TRUE, dimnames = list(names(obj.se), colnames(t)))
-
-    
-  x.list <- list(all = Xall, 
-                 onlyShared = Xshared, 
-                 onlySpec = Xspec)
-  
-  
-  return (x.list)
+  return (Xall)
 }
 
 
+#' @title Substract part of a adjacency matrix
+#' 
 #' @param X xxx
 #' @param onlyShared xxx
 #' @param onlySpec xxx
 #' 
-submatadj <- function(X, 
-                         onlyShared = F, 
-                         onlySpec = F){
+#' @return A matrix
+#' 
+#' @author Samuel Wieczorek
+#' 
+submatadj <- function(X,
+                      onlyShared = FALSE,
+                      onlySpec = FALSE){
   
   subX <- X
   if (onlyShared){
@@ -348,7 +334,7 @@ submatadj <- function(X,
 #' @author Samuel Wieczorek
 #' 
 #' @examples
-#' utils::data(Exp1_R25_pept, package='DAPARdata2')
+#' Exp1_R25_pept <- readRDS(system.file("data", 'Exp1_R25_pept.rda', package="DaparToolshedData"))
 #' obj <- Exp1_R25_pept[seq_len(1000),]
 #' obj <- addListAdjacencyMatrices(obj, 2)
 #' X <- GetAdjMat(obj[[2]])$all
@@ -407,7 +393,7 @@ matAdjStats <- function(X){
 #' @author Alexia Dorffer, Samuel Wieczorek
 #' 
 #' @examples
-#' utils::data(Exp1_R25_pept, package='DAPARdata2')
+#' Exp1_R25_pept <- readRDS(system.file("data", 'Exp1_R25_pept.rda', package="DaparToolshedData"))
 #' obj <- Exp1_R25_pept[seq_len(1000),]
 #' obj <- addListAdjacencyMatrices(obj, 2)
 #' X <- as.matrix(GetAdjMat(obj[[2]])$all)
@@ -463,7 +449,7 @@ GraphPepProt_hc <- function(X, type = 'all'){
 #' 
 #' @examples
 #' library(QFeatures)
-#' utils::data(Exp1_R25_pept, package='DAPARdata2')
+#' Exp1_R25_pept <- readRDS(system.file("data", 'Exp1_R25_pept.rda', package="DaparToolshedData"))
 #' obj <- Exp1_R25_pept[seq_len(1000),]
 #' qPepData <- assay(obj,2)
 #' obj <- addListAdjacencyMatrices(obj, 2)
@@ -506,7 +492,7 @@ GetNbPeptidesUsed <- function(qPepData, X){
 #' 
 #' @examples
 #' library(QFeatures)
-#' utils::data(Exp1_R25_pept, package='DAPARdata2')
+#' Exp1_R25_pept <- readRDS(system.file("data", 'Exp1_R25_pept.rda', package="DaparToolshedData"))
 #' obj <- Exp1_R25_pept
 #' qPepData <- assay(obj,2)
 #' obj <- addListAdjacencyMatrices(obj, 2)
@@ -545,7 +531,7 @@ GetDetailedNbPeptidesUsed <- function(X, qPepData){
 #' @author Samuel Wieczorek
 #' 
 #' @examples
-#' utils::data(Exp1_R25_pept, package='DAPARdata2')
+#' Exp1_R25_pept <- readRDS(system.file("data", 'Exp1_R25_pept.rda', package="DaparToolshedData"))
 #' obj <- Exp1_R25_pept[seq_len(1000),]
 #' obj <- addListAdjacencyMatrices(obj, 2)
 #' X <- GetAdjMat(obj[[2]])$all
@@ -579,7 +565,7 @@ GetDetailedNbPeptides <- function(X){
 #' 
 #' @examples
 #' library(QFeatures)
-#' utils::data(Exp1_R25_pept, package='DAPARdata2')
+#' Exp1_R25_pept <- readRDS(system.file("data", 'Exp1_R25_pept.rda', package="DaparToolshedData"))
 #' obj <- Exp1_R25_pept[seq_len(1000),]
 #' obj <- addListAdjacencyMatrices(obj, 2)
 #' X <- GetAdjMat(obj[[2]])$all
@@ -611,7 +597,7 @@ inner.sum <- function(qPepData, X){
 #' 
 #' @examples
 #' library(QFeatures)
-#' utils::data(Exp1_R25_pept, package='DAPARdata2')
+#' Exp1_R25_pept <- readRDS(system.file("data", 'Exp1_R25_pept.rda', package="DaparToolshedData"))
 #' obj <- Exp1_R25_pept[seq_len(1000),]
 #' obj <- addListAdjacencyMatrices(obj, 2)
 #' X <- GetAdjMat(obj[[2]])$all
@@ -651,7 +637,7 @@ inner.mean <- function(qPepData, X){
 #' 
 #' @examples
 #' library(QFeatures)
-#' utils::data(Exp1_R25_pept, package='DAPARdata2')
+#' Exp1_R25_pept <- readRDS(system.file("data", 'Exp1_R25_pept.rda', package="DaparToolshedData"))
 #' obj <- Exp1_R25_pept[seq_len(1000),]
 #' obj <- addListAdjacencyMatrices(obj, 2)
 #' X <- GetAdjMat(obj[[2]])$all
@@ -711,7 +697,7 @@ inner.aggregate.topn <-function(qPepData, X, method='Mean', n=10){
 #' 
 #' @examples
 #' library(QFeatures)
-#' utils::data(Exp1_R25_pept, package='DAPARdata2')
+#' Exp1_R25_pept <- readRDS(system.file("data", 'Exp1_R25_pept.rda', package="DaparToolshedData"))
 #' obj <- Exp1_R25_pept[seq_len(1000),]
 #' obj <- addListAdjacencyMatrices(obj, 2)
 #' X <- GetAdjMat(obj[[2]])$all
@@ -787,7 +773,7 @@ inner.aggregate.iter <- function(qPepData, X, init.method='Sum', method='Mean', 
 #' 
 #' @examples
 #' library(QFeatures)
-#' utils::data(Exp1_R25_pept, package='DAPARdata2')
+#'Exp1_R25_pept <- readRDS(system.file("data", 'Exp1_R25_pept.rda', package="DaparToolshedData"))
 #' obj <- Exp1_R25_pept[seq_len(1000),]
 #' obj <- addListAdjacencyMatrices(obj, 2)
 #' X <- as.matrix(GetAdjMat(obj[[2]], 'all'))
@@ -821,7 +807,7 @@ aggSum <- function(qPepData, X){
 #' 
 #' @examples 
 #' library(QFeatures)
-#' utils::data(Exp1_R25_pept, package='DAPARdata2')
+#' Exp1_R25_pept <- readRDS(system.file("data", 'Exp1_R25_pept.rda', package="DaparToolshedData"))
 #' obj <- Exp1_R25_pept[seq_len(1000),]
 #' obj <- addListAdjacencyMatrices(obj, 2)
 #' X <- as.matrix(GetAdjMat(obj[[2]])$all)
@@ -862,7 +848,7 @@ aggMean <- function(qPepData, X){
 #' @examples 
 #' library(doParallel)
 #' library(QFeatures)
-#' utils::data(Exp1_R25_pept, package='DAPARdata2')
+#' Exp1_R25_pept <- readRDS(system.file("data", 'Exp1_R25_pept.rda', package="DaparToolshedData"))
 #' obj <- Exp1_R25_pept[seq_len(1000),]
 #' obj <- addListAdjacencyMatrices(obj, 2)
 #' X <- as.matrix(GetAdjMat(obj[[2]])$all)
@@ -922,7 +908,7 @@ aggIterParallel <- function(qPepData, X, conditions=NULL, init.method='Sum', met
 #' 
 #' @examples
 #' library(QFeatures)
-#' utils::data(Exp1_R25_pept, package='DAPARdata2')
+#' Exp1_R25_pept <- readRDS(system.file("data", 'Exp1_R25_pept.rda', package="DaparToolshedData"))
 #' obj <- Exp1_R25_pept[seq_len(1000),]
 #' obj <- addListAdjacencyMatrices(obj, 2)
 #' X <- as.matrix(GetAdjMat(obj[[2]])$all)
@@ -973,7 +959,7 @@ aggIter <- function(qPepData, X, conditions=NULL, init.method='Sum', method='Mea
 #' 
 #' @examples
 #' library(QFeatures)
-#' utils::data(Exp1_R25_pept, package='DAPARdata2')
+#' Exp1_R25_pept <- readRDS(system.file("data", 'Exp1_R25_pept.rda', package="DaparToolshedData"))
 #' obj <- Exp1_R25_pept[seq_len(1000),]
 #' obj <- addListAdjacencyMatrices(obj, 2)
 #' X <- as.matrix(GetAdjMat(obj[[2]])$all)
@@ -1057,7 +1043,7 @@ aggregate_with_matAdj <- function(qPepData, X, FUN, ...){
 #' 
 #' @examples
 #' library(QFeatures)
-#' utils::data(Exp1_R25_pept, package='DAPARdata2')
+#' Exp1_R25_pept <- readRDS(system.file("data", 'Exp1_R25_pept.rda', package="DaparToolshedData"))
 #' obj <- Exp1_R25_pept[seq_len(1000),]
 #' obj <- addListAdjacencyMatrices(obj, 2)
 #' X <- GetAdjMat(obj[[2]])$all
@@ -1110,7 +1096,7 @@ rowdata_stats_Aggregation_sam <- function(qPepData, X){
 #' 
 #' @examples
 #' library(QFeatures)
-#' utils::data(Exp1_R25_pept, package='DAPARdata2')
+#' Exp1_R25_pept <- readRDS(system.file("data", 'Exp1_R25_pept.rda', package="DaparToolshedData"))
 #' obj <- Exp1_R25_pept[seq_len(1000),]
 #' obj <- addListAdjacencyMatrices(obj, 2)
 #' X <- as.matrix(GetAdjMat(obj[[2]], 'all'))
@@ -1192,7 +1178,7 @@ aggMetadata_sam <- function(pepMetadata, names, X, simplify=TRUE){
 #' 
 #' @examples
 #' library(QFeatures)
-#' utils::data(Exp1_R25_pept, package='DAPARdata2')
+#' Exp1_R25_pept <- readRDS(system.file("data", 'Exp1_R25_pept.rda', package="DaparToolshedData"))
 #' obj <- Exp1_R25_pept[seq_len(1000),]
 #' obj <- addListAdjacencyMatrices(obj, 2)
 #' X <- as.matrix(GetAdjMat(obj[[2]])$all)

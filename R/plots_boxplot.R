@@ -20,7 +20,7 @@
 #' 
 #' @examples
 #' library(QFeatures)
-#' utils::data(Exp1_R25_pept, package='DAPARdata2')
+#' Exp1_R25_pept <- readRDS(system.file("data", 'Exp1_R25_pept.rda', package="DaparToolshedData"))
 #' qData <- assay(Exp1_R25_pept[[2]])
 #' conds <- colData(Exp1_R25_pept)[["Condition"]]
 #' key <- rowData(Exp1_R25_pept[[2]])[[metadata(Exp1_R25_pept)$keyId]]

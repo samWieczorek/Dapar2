@@ -116,7 +116,7 @@
 #' #'
 #' #' @examples
 #' #' library(QFeatures)
-#' #' utils::data(Exp1_R25_prot, package='DAPARdata2')
+#' #' Exp1_R25_prot <- readRDS(system.file("data", 'Exp1_R25_prot.rda', package="DaparToolshedData"))
 #' #' object <- Exp1_R25_prot
 #' #' filter_600 <- VariableFilter(field='Sequence_length', value=as.numeric('600'), condition='>')
 #' #' object <- filterFeaturesSam(object, i=2, filter=reverse_600)
@@ -240,7 +240,7 @@
 #' #' @author Samuel Wieczorek
 #' #' 
 #' #' @examples
-#' #' utils::data(Exp1_R25_pept, package='DAPARdata')
+#' #' Exp1_R25_pept <- readRDS(system.file("data", 'Exp1_R25_pept.rda', package="DaparToolshedData"))
 #' #' ind <- getIndicesOfLinesToRemove(Exp1_R25_pept[seq_len(100)], "Potential_contaminant", 
 #' #' prefix="+")
 #' #' 
@@ -287,7 +287,7 @@
 #' #' @author Samuel Wieczorek
 #' #' 
 #' #' @examples
-#' #' utils::data(Exp1_R25_pept, package='DAPARdata')
+#' #' Exp1_R25_pept <- readRDS(system.file("data", 'Exp1_R25_pept.rda', package="DaparToolshedData"))
 #' #' obj <- Exp1_R25_pept[seq_len(10),]
 #' #' level <- GetTypeDataset(obj)
 #' #' pattern <- 'missing'
@@ -324,7 +324,7 @@
 #'     return(NULL)
 #'   }
 #'   
-#'   mask <- match.metacell(metadata = Get_qMetadata(obj), 
+#'   mask <- match.qMetadata(metadata = Get_qMetadata(obj), 
 #'                          pattern  =pattern, 
 #'                          level = level)
 #'   
@@ -373,11 +373,11 @@
 #' #' @return NA
 #' #' 
 #' #' @examples
-#' #' utils::data(Exp1_R25_pept, package='DAPARdata')
+#' #' Exp1_R25_pept <- readRDS(system.file("data", 'Exp1_R25_pept.rda', package="DaparToolshedData"))
 #' #' obj <- Exp1_R25_pept[seq_len(10)]
 #' #' level <- obj@experimentData@other$typeOfData
 #' #' pattern <- 'missing'
-#' #' metacell.mask <- match.metacell(metadata=Get_qMetadata(obj), pattern=pattern, level=level)
+#' #' metacell.mask <- match.qMetadata(metadata=Get_qMetadata(obj), pattern=pattern, level=level)
 #' #' percent <- FALSE
 #' #' th <- 3
 #' #' op <- '>='
@@ -431,11 +431,11 @@
 #' #' @return NA
 #' #' 
 #' #' @examples
-#' #' utils::data(Exp1_R25_pept, package='DAPARdata')
+#' #' Exp1_R25_pept <- readRDS(system.file("data", 'Exp1_R25_pept.rda', package="DaparToolshedData"))
 #' #' obj <- Exp1_R25_pept[20:30]
 #' #' level <- obj@experimentData@other$typeOfData
 #' #' pattern <- 'missing POV'
-#' #' metacell.mask <- match.metacell(metadata=GetMetacell(obj), pattern=pattern, level=level)
+#' #' metacell.mask <- match.qMetadata(metadata=GetMetacell(obj), pattern=pattern, level=level)
 #' #' ind <- GetIndices_WholeLine(metacell.mask)
 #' #'
 #' #'@export
@@ -474,11 +474,11 @@
 #' #' @return NA
 #' #' 
 #' #' #' @examples
-#' #' utils::data(Exp1_R25_pept, package='DAPARdata')
+#' #' Exp1_R25_pept <- readRDS(system.file("data", 'Exp1_R25_pept.rda', package="DaparToolshedData"))
 #' #' obj <- Exp1_R25_pept[seq_len(10)]
 #' #' level <- obj@experimentData@other$typeOfData
 #' #' pattern <- 'missing'
-#' #' metacell.mask <- match.metacell(metadata=Get_qMetadata(obj), pattern=pattern, level=level)
+#' #' metacell.mask <- match.qMetadata(metadata=Get_qMetadata(obj), pattern=pattern, level=level)
 #' #' type <- 'AllCond'
 #' #' conds <- Biobase::pData(obj)$Condition
 #' #' op <- '>='
@@ -593,7 +593,7 @@
 #' #' 
 #' #' @examples
 #' #' library(QFeatures)
-#' #' utils::data(Exp1_R25_pept, package='DAPARdata2')
+#' #' Exp1_R25_pept <- readRDS(system.file("data", 'Exp1_R25_pept.rda', package="DaparToolshedData"))
 #' #' object <- Exp1_R25_pept
 #' #' res <- MVrowsTagToOne(object, type = "AtLeastOneCond", th=0.7, percent=TRUE)
 #' #' 
@@ -714,7 +714,7 @@
 #' #' #' @author Enora Fremy, Samuel Wieczorek
 #' #' #' 
 #' #' #' @examples
-#' #' #' utils::data(Exp1_R25_pept, package='DAPARdata')
+#' #' #' Exp1_R25_pept <- readRDS(system.file("data", 'Exp1_R25_pept.rda', package="DaparToolshedData"))
 #' #' #' mvFilterGetIndices(Exp1_R25_pept, condition = "WholeMatrix", threshold=2)
 #' #' #' mvFilterGetIndices(Exp1_R25_pept, condition = "EmptyLines")
 #' #' #' mvFilterGetIndices(Exp1_R25_pept, condition = "WholeMatrix", percent=TRUE, threshold=0.5)
@@ -841,7 +841,7 @@
 #' #' 
 #' #' @examples
 #' #' library(QFeatures)
-#' #' utils::data(Exp1_R25_prot, package='DAPARdata2')
+#' #' Exp1_R25_prot <- readRDS(system.file("data", 'Exp1_R25_prot.rda', package="DaparToolshedData"))
 #' #' obj <- Exp1_R25_pept
 #' #' sTab <- colData(obj)
 #' #' 
@@ -1006,7 +1006,7 @@
 #' #' 
 #' #' @examples
 #' #' library(QFeatures)
-#' #' utils::data(Exp1_R25_pept, package='DAPARdata2')
+#' #' Exp1_R25_pept <- readRDS(system.file("data", 'Exp1_R25_pept.rda', package="DaparToolshedData"))
 #' #' object <- Exp1_R25_pept[[2]]
 #' #' sampleTab <- colData(Exp1_R25_pept)
 #' #' obj <- MVrowsTagToOne(obj=object, i=2, sampleTab, newColName="LinesKept", type="AllCond", th=2)

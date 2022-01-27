@@ -5,8 +5,8 @@
 \title{Creates an object of class \code{QFeatures} from text file}
 \usage{
 createQFeatures(
-  data,
-  file,
+  data = NULL,
+  file = NULL,
   sample,
   indQData,
   keyId = "AutoID",
@@ -32,7 +32,7 @@ createQFeatures(
 of a column in designTable that have to be integrated in
 the \code{rowData()} table of the \code{QFeatures} object.}
 
-\item{keyId}{The indice of the column containing the ID of entities 
+\item{keyId}{The indice of the column containing the ID of entities
 (peptides or proteins)}
 
 \item{indQMetadata}{xxxxxxxxxxx}
@@ -61,9 +61,21 @@ pipelines in DaparToolshed can be obtained with the function \code{pipelines()}.
 An instance of class \code{QFeatures}.
 }
 \description{
-Builds an object of class \code{QFeatures} from a 
-single tabulated-like file for quantitative and meta-data and a dataframe 
+Builds an object of class \code{QFeatures} from a
+single tabulated-like file for quantitative and meta-data and a dataframe
 for the samples description.
+}
+\examples{
+{
+data.file <- system.file("extdata", "Exp1_R25_pept.txt", package="DaparToolshedData")
+data <- read.table(data.file, header=TRUE, sep="\t", as.is=TRUE, stringsAsFactors = FALSE)
+sample.file <- system.file("extdata", "samples_Exp1_R25.txt", package="DaparToolshedData")
+sample <- read.table(sample.file, header=TRUE, sep="\t", as.is=TRUE, stringsAsFactors = FALSE)
+ft <- createQFeatures(data = data, sample = sample, indQData = 56:61, keyId = 'Sequence', analysis = 'test',
+logTransform = TRUE, indQMetadata = 43:48, typeDataset = 'peptide',
+parentProtId = 'Protein_group_IDs', forceNA = TRUE, software = 'maxquant')
+}
+
 }
 \author{
 Samuel Wieczorek

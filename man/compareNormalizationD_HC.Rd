@@ -41,7 +41,7 @@ normalization
 }
 \examples{
 library(QFeatures)
-utils::data(Exp1_R25_pept, package='DAPARdata2')
+Exp1_R25_pept <- readRDS(system.file("data", 'Exp1_R25_pept.rda', package="DaparToolshedData"))
 obj <- Exp1_R25_pept[1:1000,]
 conds <- colData(obj)$Condition
 id <- metadata(obj)$keyId

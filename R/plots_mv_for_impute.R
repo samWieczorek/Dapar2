@@ -23,7 +23,7 @@
 #' 
 #' @examples
 #' library(QFeatures)
-#' utils::data(Exp1_R25_pept, package='DAPARdata2')
+#' Exp1_R25_pept <- readRDS(system.file("data", 'Exp1_R25_pept.rda', package="DaparToolshedData"))
 #' hc_mvTypePlot2(Exp1_R25_pept, 2, title="POV distribution")
 #' 
 #' pal <- ExtendPalette(length(unique(conds)), 'Dark2')
@@ -179,7 +179,7 @@ hc_mvTypePlot2 <- function(obj,
 #' 
 #' @examples
 #' library(QFeatures)
-#' utils::data(Exp1_R25_pept, package='DAPARdata2')
+#' Exp1_R25_pept <- readRDS(system.file("data", 'Exp1_R25_pept.rda', package="DaparToolshedData"))
 #' mvImage(Exp1_R25_pept, 2)
 #' 
 #' @export

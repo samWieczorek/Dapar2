@@ -11,7 +11,7 @@
 #' @author Samuel Wieczorek
 #' 
 #' @examples 
-#' utils::data(Exp1_R25_pept, package='DAPARdata2')
+#' Exp1_R25_pept <- readRDS(system.file("data", 'Exp1_R25_pept.rda', package="DaparToolshedData"))
 #' cc <- ComputeConnectedComposants(Exp1_R25_pept[[2]])
 #' 
 #' @export
@@ -56,7 +56,7 @@ ComputeConnectedComposants <- function(obj.se){
 #' @author Thomas Burger, Samuel Wieczorek
 #' 
 #' @examples
-#' utils::data(Exp1_R25_pept, package='DAPARdata2') 
+#' Exp1_R25_pept <- readRDS(system.file("data", 'Exp1_R25_pept.rda', package="DaparToolshedData")) 
 #' X <- GetAdjMat(Exp1_R25_pept[[2]])$all
 #' ll <- get.pep.prot.cc(X)
 #' 
@@ -158,7 +158,7 @@ get.pep.prot.cc <- function(X){
 #' @author Thomas Burger, Samuel Wieczorek
 #' 
 #' @examples
-#' utils::data(Exp1_R25_pept, package='DAPARdata2') 
+#' Exp1_R25_pept <- readRDS(system.file("data", 'Exp1_R25_pept.rda', package="DaparToolshedData")) 
 #' X <- GetAdjMat(Exp1_R25_pept[[2]])$all
 #' ll <- get.pep.prot.cc(X)
 #' g <- buildGraph(ll[[1]], X)
@@ -213,7 +213,7 @@ buildGraph <- function(The.CC, X){
 #' @author Thomas Burger, Samuel Wieczorek
 #' 
 #' @examples
-#' utils::data(Exp1_R25_pept, package='DAPARdata2') 
+#' Exp1_R25_pept <- readRDS(system.file("data", 'Exp1_R25_pept.rda', package="DaparToolshedData")) 
 #' X <- GetAdjMat(Exp1_R25_pept[[2]])$all
 #' ll <- get.pep.prot.cc(X)
 #' g <- buildGraph(ll[[1]], X)
@@ -259,7 +259,7 @@ display.CC.visNet <- function(g,
 #' @author Thomas Burger
 #' 
 #' @examples
-#' utils::data(Exp1_R25_pept, package='DAPARdata2') 
+#' Exp1_R25_pept <- readRDS(system.file("data", 'Exp1_R25_pept.rda', package="DaparToolshedData")) 
 #' X <- GetAdjMat(Exp1_R25_pept[[2]])$all
 #' ll <- get.pep.prot.cc(X)
 #' plotJitterCC(ll)

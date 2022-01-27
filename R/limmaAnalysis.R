@@ -8,7 +8,7 @@
 #' #' 
 #' #' @examples
 #' #' library(QFeatures)
-#' #' utils::data(Exp1_R25_pept, package='DAPARdata2')
+#' #' Exp1_R25_pept <- readRDS(system.file("data", 'Exp1_R25_pept.rda', package="DaparToolshedData"))
 #' #' CheckDesign(colData(Exp1_R25_pept))
 #' #' 
 #' #' @export
@@ -89,7 +89,7 @@
 #' #' 
 #' #' @examples
 #' #' library(QFeatures)
-#' #' utils::data(Exp1_R25_pept, package='DAPARdata2')
+#' #' Exp1_R25_pept <- readRDS(system.file("data", 'Exp1_R25_pept.rda', package="DaparToolshedData"))
 #' #' test.design(colData(Exp1_R25_pept)[,seq_len(3)])
 #' #' 
 #' #' @export
@@ -156,7 +156,7 @@
 #' #' 
 #' #' @examples
 #' #' library(QFeatures)
-#' #' utils::data(Exp1_R25_pept, package='DAPARdata2')
+#' #' Exp1_R25_pept <- readRDS(system.file("data", 'Exp1_R25_pept.rda', package="DaparToolshedData"))
 #' #' check.conditions(colData(Exp1_R25_pept)$Condition)
 #' #' 
 #' #' @export
@@ -197,7 +197,7 @@
 #' #' 
 #' #' @examples
 #' #' library(QFeatures)
-#' #' utils::data(Exp1_R25_pept, package='DAPARdata2')
+#' #' Exp1_R25_pept <- readRDS(system.file("data", 'Exp1_R25_pept.rda', package="DaparToolshedData"))
 #' #' make.design(colData(Exp1_R25_pept))
 #' #' 
 #' #' @export
@@ -234,7 +234,7 @@
 #' #' 
 #' #' @examples
 #' #' library(QFeatures)
-#' #' utils::data(Exp1_R25_pept, package='DAPARdata2')
+#' #' Exp1_R25_pept <- readRDS(system.file("data", 'Exp1_R25_pept.rda', package="DaparToolshedData"))
 #' #' make.design.1(colData(Exp1_R25_pept))
 #' #' 
 #' #' @export
@@ -281,7 +281,7 @@
 #' #' @examples
 #' #' \donttest{
 #' #' library(QFeatures)
-#' #' utils::data(Exp1_R25_pept, package='DAPARdata2')
+#' #' Exp1_R25_pept <- readRDS(system.file("data", 'Exp1_R25_pept.rda', package="DaparToolshedData"))
 #' #' make.design.2(colData(Exp1_R25_pept))
 #' #' }
 #' #' 
@@ -334,7 +334,7 @@
 #' #' 
 #' #' @examples
 #' #' library(QFeatures)
-#' #' utils::data(Exp1_R25_pept, package='DAPARdata2')
+#' #' Exp1_R25_pept <- readRDS(system.file("data", 'Exp1_R25_pept.rda', package="DaparToolshedData"))
 #' #' sTab <-cbind(colData(Exp1_R25_pept), Tech.Rep=seq_len(6))
 #' #' make.design.3(sTab)
 #' #' 
@@ -403,7 +403,7 @@
 #' #' 
 #' #' @examples
 #' #' library(QFeatures)
-#' #' utils::data(Exp1_R25_pept, package='DAPARdata2')
+#' #' Exp1_R25_pept <- readRDS(system.file("data", 'Exp1_R25_pept.rda', package="DaparToolshedData"))
 #' #' design <- make.design(colData(Exp1_R25_pept))
 #' #' conds <- colData(Exp1_R25_pept)$Condition
 #' #' make.contrast(design, conds)
@@ -493,7 +493,7 @@
 #' #' 
 #' #' @examples
 #' #' library(QFeatures)
-#' #' utils::data(Exp1_R25_pept, package='DAPARdata2')
+#' #' Exp1_R25_pept <- readRDS(system.file("data", 'Exp1_R25_pept.rda', package="DaparToolshedData"))
 #' #' Exp1_R25_pept <- addAssay(Exp1_R25_pept, QFeatures::filterNA(Exp1_R25_pept[[2]],  pNA = 0), name='filtered')
 #' #' sTab <- colData(Exp1_R25_pept)
 #' #' se <- Exp1_R25_pept[['filtered']]
@@ -581,7 +581,7 @@
 #' #' @examples
 #' #' \donttest{
 #' #' library(QFeatures)
-#' #' utils::data(Exp1_R25_pept, package='DAPARdata2')
+#' #' Exp1_R25_pept <- readRDS(system.file("data", 'Exp1_R25_pept.rda', package="DaparToolshedData"))
 #' #' object <- Exp1_R25_pept
 #' #' object <- addAssay(object, QFeatures::filterNA(object[[2]],  pNA = 0), name='filtered')
 #' #' qData <- assay(object, 'filtered')

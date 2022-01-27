@@ -4,7 +4,7 @@
 \alias{ComputeAdjacencyMatrices}
 \title{Function matrix of appartenance group}
 \usage{
-ComputeAdjacencyMatrices(obj.se)
+ComputeAdjacencyMatrices(obj.se, col.proteins = NULL, split = ";")
 }
 \arguments{
 \item{obj.se}{An object of class 'SummarizedExperiment'}
@@ -22,9 +22,9 @@ obj (class 'SummarizedExperiment')
 Method to create a list of three binary matrices with proteins in columns and peptides in lines.
 }
 \examples{
-utils::data(Exp1_R25_pept, package='DAPARdata2')
+Exp1_R25_pept <- readRDS(system.file("data", 'Exp1_R25_pept.rda', package="DaparToolshedData"))
 obj <- Exp1_R25_pept[seq_len(1000),]
-ll.x <- ComputeAdjacencyMatrices(obj[[2]])
+ll.x <- ComputeAdjacencyMatrices(obj[[2]], col.proteins = "Protein_group_IDs")
 
 }
 \author{

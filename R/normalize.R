@@ -59,7 +59,7 @@ else
 #'
 #' @examples
 #' library(QFeatures)
-#' utils::data(Exp1_R25_pept, package='DAPARdata2')
+#' Exp1_R25_pept <- readRDS(system.file("data", 'Exp1_R25_pept.rda', package="DaparToolshedData"))
 #' object <- Exp1_R25_pept
 
 #' conds <- colData(object)$Condition
@@ -150,7 +150,7 @@ setMethod("normalizeD", "QFeatures",
 #'
 #' @examples
 #' library(QFeatures)
-#' utils::data(Exp1_R25_pept, package='DAPARdata2')
+#' Exp1_R25_pept <- readRDS(system.file("data", 'Exp1_R25_pept.rda', package="DaparToolshedData"))
 #' qData <- assay(Exp1_R25_pept[['original']])
 #' normalized <- GlobalQuantileAlignment(qData)
 #'
@@ -181,7 +181,7 @@ GlobalQuantileAlignment <- function(qData) {
 #'
 #' @examples
 #' library(QFeatures)
-#' utils::data(Exp1_R25_pept, package='DAPARdata2')
+#' Exp1_R25_pept <- readRDS(system.file("data", 'Exp1_R25_pept.rda', package="DaparToolshedData"))
 #' library(QFeatures)
 #' qData <- assay(Exp1_R25_pept[['original_log']])
 #' conds <- colData(Exp1_R25_pept)[["Condition"]]
@@ -269,7 +269,7 @@ if( missing(conds) || is.null(conds))
 #'
 #' @examples
 #' library(QFeatures)
-#' utils::data(Exp1_R25_pept, package='DAPARdata2')
+#' Exp1_R25_pept <- readRDS(system.file("data", 'Exp1_R25_pept.rda', package="DaparToolshedData"))
 #' obj <- Exp1_R25_pept[['original_log']]
 #' conds <- colData(Exp1_R25_pept)[['Condition']]
 #' normalized <- QuantileCentering(assay(obj), conds, type="within conditions", subset.norm= seq_len(10))
@@ -347,7 +347,7 @@ QuantileCentering <- function(qData,
 #'
 #' @examples
 #' library(QFeatures)
-#' utils::data(Exp1_R25_pept, package='DAPARdata2')
+#'Exp1_R25_pept <- readRDS(system.file("data", 'Exp1_R25_pept.rda', package="DaparToolshedData"))
 #' qData <- assay(Exp1_R25_pept[['original_log']])
 #' conds <- colData(Exp1_R25_pept)[['Condition']]
 #' normalized <- MeanCentering(qData, conds, type="overall")
@@ -412,7 +412,7 @@ MeanCentering <- function(qData,
 #'
 #' @examples
 #' library(QFeatures)
-#' utils::data(Exp1_R25_pept, package='DAPARdata2')
+#' Exp1_R25_pept <- readRDS(system.file("data", 'Exp1_R25_pept.rda', package="DaparToolshedData"))
 #' qData <- assay(Exp1_R25_pept[['original_log']])
 #' conds <- colData(Exp1_R25_pept)[['Condition']]
 #' normalized <- vsn(qData, conds, type="overall")
@@ -458,7 +458,7 @@ vsn = function(qData,
 #'
 #' @examples
 #' library(QFeatures)
-#' utils::data(Exp1_R25_pept, package='DAPARdata2')
+#' Exp1_R25_pept <- readRDS(system.file("data", 'Exp1_R25_pept.rda', package="DaparToolshedData"))
 #' qData <- assay(Exp1_R25_pept[['original_log']])
 #' conds <- colData(Exp1_R25_pept)[['Condition']]
 #' normalized <- LOESS(qData, conds, type="overall")

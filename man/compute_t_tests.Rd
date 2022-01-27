@@ -32,7 +32,7 @@ xxx
 }
 \examples{
 library(QFeatures)
-utils::data(Exp1_R25_pept, package='DAPARdata2')
+Exp1_R25_pept <- readRDS(system.file("data", 'Exp1_R25_pept.rda', package="DaparToolshedData"))
 Exp1_R25_pept <- addAssay(Exp1_R25_pept, QFeatures::filterNA(Exp1_R25_pept[[2]], pNA = 0), name='filtered')
 sTab <- as.data.frame(colData(Exp1_R25_pept))
 ttest <- compute_t_tests(Exp1_R25_pept[['filtered']], sTab ,"OnevsOne")

@@ -103,7 +103,7 @@
 #' #' @author Samuel Wieczorek
 #' #' 
 #' #' @examples
-#' #' utils::data(Exp1_R25_pept, package='DAPARdata2')
+#' #' Exp1_R25_pept <- readRDS(system.file("data", 'Exp1_R25_pept.rda', package="DaparToolshedData"))
 #' #' conditions <- colData(Exp1_R25_pept)$Condition
 #' #' GetColorsForConditions(conditions, ExtendPalette(2))
 #' #' 
@@ -152,7 +152,7 @@
 #' #' @export
 #' #' 
 #' #' @examples
-#' #' utils::data(Exp1_R25_pept, package='DAPARdata2')
+#' #' Exp1_R25_pept <- readRDS(system.file("data", 'Exp1_R25_pept.rda', package="DaparToolshedData"))
 #' #' conditions <- colData(Exp1_R25_pept)$Condition
 #' #' Base_Palette(palette.name = 'Dark2', conditions)
 #' #'

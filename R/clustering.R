@@ -45,7 +45,7 @@ standardise <- function (data)
 #' 
 #' @examples
 #' library(QFeatures)
-#' utils::data(Exp1_R25_prot, package='DAPARdata2')
+#' Exp1_R25_prot <- readRDS(system.file("data", 'Exp1_R25_prot.rda', package="DaparToolshedData"))
 #' obj <- Exp1_R25_prot
 #' sTab <- colData(obj)
 #' standards <- standardiseMeanIntensities(obj[[2]], sTab)
@@ -157,7 +157,7 @@ checkClusterability <- function(standards){
 #' 
 #' @examples
 #' library(QFeatures)
-#' utils::data(Exp1_R25_pept, package='DAPARdata2')
+#' utils::data(Exp1_R25_pept, package='DaparToolshedData')
 #' test_anova <- wrapperClassic1wayAnova(Exp1_R25_pept)
 #' vizu <- visualizeClusters(dat = standardized_means,
 #'                           clust_model = km_model,

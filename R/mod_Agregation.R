@@ -1,12 +1,32 @@
 
+#' @title Module agregation
+#' 
+#' @param id
+#' 
+#' @rdname mod_Agregation
+#' 
+#' @export
+#' 
 mod_Agregation_ui <- function(id){
   ns <- NS(id)
 }
 
 
-
+#' @param id xxx
+#' @param dataIn xxx
+#' @param steps.enabled xxx
+#' @param remoteReset xxx
+#' @param steps.status xxx
+#' @param current.pos xxx
+#' @param verbose xxx
+#' 
+#' 
+#' 
+#' 
+#' @rdname mod_Agregation
 #' @importFrom shinyjs toggle hidden
 #' 
+#' @export
 #' 
 mod_Agregation_server <- function(id,
                                   dataIn = reactive({NULL}),
@@ -136,7 +156,7 @@ mod_Agregation_server <- function(id,
         uiOutput(ns('Agregation_includeShared_ui')),
         uiOutput(ns('Agregation_Consider_ui')),
         uiOutput(ns('Agregation_nTopn_ui')),
-        uiOutput(ns("Agregation_operator_ui")),
+        uiOutput(ns("Agregation_0perator_ui")),
         
         # Insert validation button
         uiOutput(ns('Agregation_btn_validate')),
@@ -165,6 +185,13 @@ mod_Agregation_server <- function(id,
     
     
     output$Agregation_includeShared_ui <- renderUI({
+      mod_popover_for_help_server("modulePopover_includeShared",
+                                  data = list(title="Include shared peptides",
+                                              content= HTML(paste0("<ul><li><strong>No:</strong> only protein-specific peptides</li><li><strong>Yes 1:</strong> shared peptides processed as protein specific</li><li><strong>Yes 2</strong>: proportional redistribution of shared peptides</li></ul>")
+                                              )
+                                  )
+      )
+      
       widget <- radioButtons(ns("Agregation_includeShared"), 
                              NULL, 
                              choices = c("No" = "No",
@@ -177,17 +204,12 @@ mod_Agregation_server <- function(id,
         toggleWidget(rv$steps.enabled['Agregation'], widget )
       )
       
-      mod_popover_for_help_server("modulePopover_includeShared", 
-                 data = list(title="Include shared peptides",
-                                      content= HTML(paste0("<ul><li><strong>No:</strong> only protein-specific peptides</li><li><strong>Yes 1:</strong> shared peptides processed as protein specific</li><li><strong>Yes 2</strong>: proportional redistribution of shared peptides</li></ul>")
-                                      )
-                 )
-      )
+      
       
       
     })
     
-
+    
     output$Agregation_ProteinId_ui <- renderUI({
       # req (is.null(GetProteinId(rv$dataIn))
       # 
@@ -203,9 +225,9 @@ mod_Agregation_server <- function(id,
     output$Agregation_Consider_ui <- renderUI({
       
       widget <- radioButtons("Agregation_Consider", "Consider",
-                   choices=c('all peptides'="allPeptides", 
-                             "N most abundant"="onlyN"),
-                   selected = rv.widgets$Agregation_Consider)
+                             choices=c('all peptides' = "allPeptides", 
+                                       "N most abundant" = "onlyN"),
+                             selected = rv.widgets$Agregation_Consider)
       toggleWidget(rv$steps.enabled['Agregation'], widget )
     })
     
@@ -213,29 +235,33 @@ mod_Agregation_server <- function(id,
     
     
     output$Agregation_nTopn_ui <- renderUI({
-      req (rv.widgets$Agregation_consider == 'onlyN')
+      browser()
+      req (rv.widgets$Agregation_Consider == 'onlyN')
       
       widget <- numericInput(ns("Agregation_nTopn"), "N",
-                   value = rv.widgets$Agregation_topN, 
-                   min = 0, 
-                   step = 1, 
-                   width = '100px')
+                             value = rv.widgets$Agregation_nTopn, 
+                             min = 0, 
+                             step = 1, 
+                             width = '100px')
+      
       toggleWidget(rv$steps.enabled['Agregation'], widget )
     })
     
     
-    output$Agregation_operator_ui <- renderUI({
+    output$Agregation_Operator_ui <- renderUI({
       req(rv.widgets$Agregation_includeShared)
       
-      choice <- NULL
-      if (rv.widgets$Agregation_includeShared %in% c("No", "Yes1")){
-        choice <- c("Mean"="Mean","Sum"="Sum")
-      } else {choice <- c("Mean"="Mean")}
-      choice
+      # choice <- NULL
+      # if (rv.widgets$Agregation_includeShared %in% c("No", "Yes1")){
+      #   choice <- c("Mean"="Mean","Sum"="Sum")
+      # } else {choice <- c("Mean"="Mean")}
+      # choice
       
       widget <- radioButtons(ns("Agregation_operator"), "Operator", 
-                   choices = choice, 
-                   selected = rv.widgets$Agregation_operator)
+                             choices = if (rv.widgets$Agregation_includeShared %in% c("No", "Yes1")){
+                               choice <- c("Mean"="Mean","Sum"="Sum")
+                             } else {choice <- c("Mean"="Mean")}, 
+                             selected = rv.widgets$Agregation_Operator)
       toggleWidget(rv$steps.enabled['Agregation'], widget )
     })
     
@@ -244,10 +270,10 @@ mod_Agregation_server <- function(id,
     output$warningAgregationMethod <- renderUI({
       req(rv$dataIn)
       
-      m <- match.metacell(DAPAR::GetMetacell(rv$dataIn), 
-                          pattern = "missing", 
-                          level = 'peptide')
-      #browser()
+      m <- match.qMetadata(qMetadata(rv$dataIn, length(rv$dataIn)), 
+                           pattern = "missing", 
+                           level = 'peptide')
+      
       if (length(which(m)) > 0)
       {
         tags$p(style = "color: red;",
@@ -263,17 +289,17 @@ mod_Agregation_server <- function(id,
       } else {
         ch <- c("Sum" = 'Sum', "Mean"="Mean")
       }
-     })
+    })
     
     
     
     
     output$specificPeptideBarplot <- renderUI({
-      req(adjacencyMatrix(rv$dataIn[[length(rv$dataIn)]]))
+      req(GetAdjMat())
       withProgress(message = 'Rendering plot, pleast wait...',detail = '', value = 1, {
         tagList(
           h4("Only specific peptides"),
-          plotOutput("aggregationPlotUnique", width="400px")
+          plotOutput(ns("aggregationPlotUnique"), width="400px")
         )
       })
     })
@@ -283,7 +309,7 @@ mod_Agregation_server <- function(id,
       withProgress(message = 'Rendering plot, pleast wait...',detail = '', value = 1, {
         tagList(
           h4("All (specific & shared) peptides"),
-          plotOutput("aggregationPlotShared", width="400px")
+          plotOutput(ns("aggregationPlotShared"), width="400px")
         )
       })
     })
@@ -301,6 +327,7 @@ mod_Agregation_server <- function(id,
     
     
     GetAdjMat <- reactive({
+      #browser()
       req(rv$dataIn)
       rowData(rv$dataIn[[length(rv$dataIn)]])$adjacencyMatrix
     })
@@ -349,14 +376,14 @@ mod_Agregation_server <- function(id,
             }
           }
         } else {
-          X <-submatadj(GetAdjMat(), onlySpec = TRUE)
+          X <- submatadj(GetAdjMat(), onlySpec = TRUE)
           if (rv.widgets$Agregation_consider == 'allPeptides') {
             ll.agg <- do.call(paste0('aggregate', rv.widgets$Agregation_operator),
                               list(obj.pep = rv$dataIn,
                                    X = X))
           } else {
             ll.agg <- aggregateTopn(rv$dataIn, 
-                                    X, 
+                                    X = X, 
                                     rv.widgets$Agregation_operator,
                                     n = as.numeric(rv.widgets$Agregation_topN)
             )
@@ -389,8 +416,8 @@ mod_Agregation_server <- function(id,
         )
       }
       
-      })
-
+    })
+    
     output$downloadAggregationIssues <- downloadHandler(
       
       filename = 'aggregation_issues.txt',
@@ -399,7 +426,7 @@ mod_Agregation_server <- function(id,
         tmp.peptides <- lapply(rv.custom$temp.agregate$issues, function(x)paste0(x, collapse=","))
         df <- data.frame(Proteins=names(rv.custom$temp.agregate$issues), 
                          Peptides = as.data.frame(do.call(rbind, tmp.peptides))
-                         )
+        )
         colnames(df) <- c('Proteins', 'Peptides')
         write.table(df, file = file, row.names = FALSE, quote=FALSE, sep="\t")
       }

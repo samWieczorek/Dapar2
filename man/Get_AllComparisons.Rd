@@ -19,7 +19,7 @@ list of two DataFrame: one for the logFC data and one for the p-values data.
 }
 \examples{
 library(QFeatures)
-utils::data(Exp1_R25_pept, package='DAPARdata2')
+Exp1_R25_pept <- readRDS(system.file("data", 'Exp1_R25_pept.rda', package="DaparToolshedData"))
 object <- Exp1_R25_pept[seq_len(1000),]
 object <- addAssay(object, QFeatures::filterNA(object[[2]],  pNA = 0), name='filtered')
 sTab <- colData(object)

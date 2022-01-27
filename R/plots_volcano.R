@@ -44,7 +44,7 @@
 #' @examples
 #' \donttest{
 #' library(QFeatures)
-#' utils::data(Exp1_R25_pept, package='DAPARdata2')
+#' utils::data(Exp1_R25_pept, package='DaparToolshedData')
 #' obj <- QFeatures::filterNA(Exp1_R25_pept,i='original') # remove all rows with NAs
 #' qData <- assay(obj[['original']])
 #' pData <- as.data.frame(colData(obj))

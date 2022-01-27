@@ -1,23 +1,43 @@
 btn_style <- "display:inline-block; vertical-align: middle; padding: 7px"
 
 
-AddItemToDataset <- function(dataset, name){
-  addAssay(dataset,
-           dataset[[length(dataset)]],
-           name=name)
-}
+#' #' @title Add an item to the dataset
+#' #' 
+#' #' @param dataset xxx
+#' #' @param name xxx
+#' #' @return the dataset
+#' AddItemToDataset <- function(dataset, name){
+#'   addAssay(dataset,
+#'            dataset[[length(dataset)]],
+#'            name=name)
+#' }
 
 
+#' @title Module of filtering protein process
+#' 
 #' @export
+#' 
 #' @return NA
+#' 
+#' @rdname mod_Protein_Filtering
+#' 
 mod_Protein_Filtering_ui <- function(id){
   ns <- NS(id)
 }
 
 
+#' @title Module of filtering protein process
+#' 
+#' @param id xxx
+#' @param dataIn xxx
+#' @param steps.enabled xxx
+#' @param remoteReset xxx
+#' 
 #' @export
 #'
 #' @return NA
+#' 
+#' @rdname mod_Protein_Filtering
 mod_Protein_Filtering_server <- function(id,
                                          dataIn = NULL,
                                          steps.enabled = reactive({NULL}),

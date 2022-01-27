@@ -26,7 +26,7 @@ data).
 }
 \examples{
 library(QFeatures)
-utils::data(Exp1_R25_prot, package='DAPARdata2')
+Exp1_R25_prot <- readRDS(system.file("data", 'Exp1_R25_prot.rda', package="DaparToolshedData"))
 obj <- Exp1_R25_prot
 sTab <- colData(obj)
 standards <- standardiseMeanIntensities(obj[[2]], sTab)

@@ -24,7 +24,7 @@
 #' @examples
 #' \donttest{
 #' library(QFeatures)
-#' utils::data(Exp1_R25_prot, package='DAPARdata2')
+#' Exp1_R25_prot <- readRDS(system.file("data", 'Exp1_R25_prot.rda', package="DaparToolshedData"))
 #' conds <- colData(Exp1_R25_prot)[['Condition']]
 #' qData <- assay(Exp1_R25_prot)
 #' heatmapD(qData, conds)
@@ -154,7 +154,7 @@ heatmapD <- function(qData,
 #' 
 #' @examples
 #' library(QFeatures)
-#' utils::data(Exp1_R25_pept, package='DAPARdata2')
+#'Exp1_R25_pept <- readRDS(system.file("data", 'Exp1_R25_pept.rda', package="DaparToolshedData"))
 #' qData <- assay(Exp1_R25_pept[[2]])[1:1000,]
 #' heatmapForMissingValues(qData)
 #' 

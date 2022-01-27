@@ -1,174 +1,132 @@
 
-
-
-#' @title Returns the contains of the slot processing  of an object of 
-#' class \code{MSnSet}
 #' 
-#' @author Samuel Wieczorek
 #' 
-#' @examples
-#' utils::data(Exp1_R25_pept, package='DaparToolshedData')
-#' ll.X <- GetAdjMat(Exp1_R25_pept, 2)
+#' #' @title Record the adjacency matrices 
+#' #' 
+#' #' @author Samuel Wieczorek
+#' #' 
+#' #' @examples
+#' #' Exp1_R25_pept <- readRDS(system.file("data", 'Exp1_R25_pept.rda', package="DaparToolshedData"))
+#' #' Exp1_R25_pept <- SetAdjMat(Exp1_R25_pept, 2)
+#' #' 
+#' #' @export
+#' #' 
+#' "SetAdjMat"
 #' 
-#' @export
 #' 
-"GetAdjMat"
-
-
-#' @param  obj.se An object (peptides) of class \code{SummarizedExperiment}.
+#' #' @param  obj.se An object (peptides) of class \code{SummarizedExperiment}.
+#' #' 
+#' #' @return The slot processing of obj@processingData
+#' #' 
+#' setMethod('SetAdjMat', "SummarizedExperiment",
+#'           function(object, ...) {
+#'             if (GetTypeDataset(object) != 'peptide')
+#'               warning("This function is only available for a peptide dataset.")
+#'             
+#'             metadata(object)$ll.AdjMat <-  ComputeAdjacencyMatrices(object)
+#'             object
+#'           }
+#' )
 #' 
-#' @return The slot processing of obj@processingData
 #' 
-setMethod('GetAdjMat', "SummarizedExperiment",
-          function(object, ...) {
-  if (GetTypeDataset(object) != 'peptide')
-    warning("This function is only available for a peptide dataset.")
-            
-  metadata(object)$ll.AdjMat
-          }
-)
-
-
-setMethod("GetAdjMat", "QFeatures",
-          function(object, i, ...) {
-            if (missing(i))
-              stop("Provide index or name of assay to be processed")
-            if (length(i) != 1)
-              stop("Only one assay to be processed at a time")
-            if (is.numeric(i)) i <- names(object)[[i]]
-            
-            GetAdjMat(object[[i]])
-          }
-)
-
-
-
-#' @title Record the adjacency matrices 
+#' setMethod("SetAdjMat", "QFeatures",
+#'           function(object, i, ...) {
+#'             if (missing(i))
+#'               stop("Provide index or name of assay to be processed")
+#'             if (length(i) != 1)
+#'               stop("Only one assay to be processed at a time")
+#'             if (is.numeric(i)) i <- names(object)[[i]]
+#'             
+#'             object[[i]] <- SetAdjMat(object[[i]])
+#'             object
+#'           }
+#' )
 #' 
-#' @author Samuel Wieczorek
+#' #' @title Record the adjacency matrices 
+#' #' 
+#' #' @author Samuel Wieczorek
+#' #' 
+#' #' @examples
+#' #' Exp1_R25_pept <- readRDS(system.file("data", 'Exp1_R25_pept.rda', package="DaparToolshedData"))
+#' #' ll.X <- SetConnectedComps(Exp1_R25_pept, 2)
+#' #' 
+#' #' @export
+#' #' 
+#' "GetConnectedComps"
 #' 
-#' @examples
-#' utils::data(Exp1_R25_pept, package='DaparToolshedData')
-#' Exp1_R25_pept <- SetAdjMat(Exp1_R25_pept, 2)
 #' 
-#' @export
+#' #' @param  obj.se An object (peptides) of class \code{SummarizedExperiment}.
+#' #' 
+#' #' @return The slot processing of obj@processingData
+#' #' 
+#' setMethod('GetConnectedComps', "SummarizedExperiment",
+#'           function(object,  ...) {
+#'             if (GetTypeDataset(object) != 'peptide')
+#'               warning("This function is only available for a peptide dataset.")
+#'             
+#'             metadata(object)$ll.CC
+#'           }
+#' )
 #' 
-"SetAdjMat"
-
-
-#' @param  obj.se An object (peptides) of class \code{SummarizedExperiment}.
 #' 
-#' @return The slot processing of obj@processingData
+#' setMethod("GetConnectedComps", "QFeatures",
+#'           function(object, i, ...) {
+#'             if (missing(i))
+#'               stop("Provide index or name of assay to be processed")
+#'             if (length(i) != 1)
+#'               stop("Only one assay to be processed at a time")
+#'             if (is.numeric(i)) i <- names(object)[[i]]
+#'             
+#'             GetConnectedComps(object[[i]])
+#'           }
+#' )
 #' 
-setMethod('SetAdjMat', "SummarizedExperiment",
-          function(object, ...) {
-            if (GetTypeDataset(object) != 'peptide')
-              warning("This function is only available for a peptide dataset.")
-            
-            metadata(object)$ll.AdjMat <-  ComputeAdjacencyMatrices(object)
-            object
-          }
-)
-
-
-setMethod("SetAdjMat", "QFeatures",
-          function(object, i, ...) {
-            if (missing(i))
-              stop("Provide index or name of assay to be processed")
-            if (length(i) != 1)
-              stop("Only one assay to be processed at a time")
-            if (is.numeric(i)) i <- names(object)[[i]]
-            
-            object[[i]] <- SetAdjMat(object[[i]])
-            object
-          }
-)
-
-#' @title Record the adjacency matrices 
 #' 
-#' @author Samuel Wieczorek
 #' 
-#' @examples
-#' utils::data(Exp1_R25_pept, package='DaparToolshedData')
-#' ll.X <- SetConnectedComps(Exp1_R25_pept, 2)
+#' #' @title Record the adjacency matrices 
+#' #' 
+#' #' @author Samuel Wieczorek
+#' #' 
+#' #' @examples
+#' #' Exp1_R25_pept <- readRDS(system.file("data", 'Exp1_R25_pept.rda', package="DaparToolshedData"))
+#' #' ll.X <- SetConnectedComps(Exp1_R25_pept, 2)
+#' #' 
+#' #' @export
+#' #' 
+#' "SetConnectedComps"
 #' 
-#' @export
 #' 
-"GetConnectedComps"
-
-
-#' @param  obj.se An object (peptides) of class \code{SummarizedExperiment}.
+#' #' @param  obj.se An object (peptides) of class \code{SummarizedExperiment}.
+#' #' 
+#' #' @return The slot processing of obj@processingData
+#' #' 
+#' setMethod('SetConnectedComps', "SummarizedExperiment",
+#'           function(object,  ...) {
+#'             if (GetTypeDataset(object) != 'peptide')
+#'               warning("This function is only available for a peptide dataset.")
+#'             
+#'             metadata(object)$ll.CC <-  ComputeConnectedComposants(object)
+#'             object
+#'           }
+#' )
 #' 
-#' @return The slot processing of obj@processingData
 #' 
-setMethod('GetConnectedComps', "SummarizedExperiment",
-          function(object,  ...) {
-            if (GetTypeDataset(object) != 'peptide')
-              warning("This function is only available for a peptide dataset.")
-            
-            metadata(object)$ll.CC
-          }
-)
-
-
-setMethod("GetConnectedComps", "QFeatures",
-          function(object, i, ...) {
-            if (missing(i))
-              stop("Provide index or name of assay to be processed")
-            if (length(i) != 1)
-              stop("Only one assay to be processed at a time")
-            if (is.numeric(i)) i <- names(object)[[i]]
-            
-            GetConnectedComps(object[[i]])
-          }
-)
-
-
-
-#' @title Record the adjacency matrices 
+#' setMethod("SetConnectedComps", "QFeatures",
+#'           function(object, i, ...) {
+#'             if (missing(i))
+#'               stop("Provide index or name of assay to be processed")
+#'             if (length(i) != 1)
+#'               stop("Only one assay to be processed at a time")
+#'             if (is.numeric(i)) i <- names(object)[[i]]
+#'             
+#'             object[[i]] <- SetConnectedComps(object[[i]])
+#'             object
+#'           }
+#' )
 #' 
-#' @author Samuel Wieczorek
 #' 
-#' @examples
-#' utils::data(Exp1_R25_pept, package='DaparToolshedData')
-#' ll.X <- SetConnectedComps(Exp1_R25_pept, 2)
 #' 
-#' @export
 #' 
-"SetConnectedComps"
-
-
-#' @param  obj.se An object (peptides) of class \code{SummarizedExperiment}.
-#' 
-#' @return The slot processing of obj@processingData
-#' 
-setMethod('SetConnectedComps', "SummarizedExperiment",
-          function(object,  ...) {
-            if (GetTypeDataset(object) != 'peptide')
-              warning("This function is only available for a peptide dataset.")
-            
-            metadata(object)$ll.CC <-  ComputeConnectedComposants(object)
-            object
-          }
-)
-
-
-setMethod("SetConnectedComps", "QFeatures",
-          function(object, i, ...) {
-            if (missing(i))
-              stop("Provide index or name of assay to be processed")
-            if (length(i) != 1)
-              stop("Only one assay to be processed at a time")
-            if (is.numeric(i)) i <- names(object)[[i]]
-            
-            object[[i]] <- SetConnectedComps(object[[i]])
-            object
-          }
-)
-
-
-
-
 
 
 #' @title Versions of installed packages of Prostar suite
@@ -233,7 +191,7 @@ GetProstarVersions <- function(){
 #' 
 #' @examples
 #' library(QFeatures)
-#' utils::data(Exp1_R25_pept, package='DaparToolshedData')
+#' Exp1_R25_pept <- readRDS(system.file("data", 'Exp1_R25_pept.rda', package="DaparToolshedData"))
 #' qData <- assay(Exp1_R25_pept,1)
 #' nEmptyLines(qData)
 #' 
@@ -260,7 +218,7 @@ nEmptyLines <- function(qData){
 #' 
 #' @examples
 #' library(QFeatures)
-#' utils::data(Exp1_R25_pept, package='DaparToolshedData')
+#' Exp1_R25_pept <- readRDS(system.file("data", 'Exp1_R25_pept.rda', package="DaparToolshedData"))
 #' obj <- Exp1_R25_pept
 #' data <- rowData(Exp1_R25_pept[['original']])[,metadata(Exp1_R25_pept)$OriginOfValues]
 #' is.OfType(as.data.frame(data@listData), "MEC")
@@ -292,7 +250,7 @@ is.OfType <- function(data, type){
 #' 
 #' @examples
 #' library(QFeatures)
-#' utils::data(Exp1_R25_pept, package='DaparToolshedData')
+#' Exp1_R25_pept <- readRDS(system.file("data", 'Exp1_R25_pept.rda', package="DaparToolshedData"))
 #' obj <- Exp1_R25_pept
 #' data <- rowData(Exp1_R25_pept[['original']])[,metadata(Exp1_R25_pept)$OriginOfValues]
 #' is.MV(as.data.frame(data@listData))
@@ -328,7 +286,7 @@ is.MV <- function(data){
 #' @author Samuel Wieczorek, Enora Fremy
 #' 
 #' @examples
-#' utils::data(Exp1_R25_pept, package='DaparToolshedData')
+#' Exp1_R25_pept <- readRDS(system.file("data", 'Exp1_R25_pept.rda', package="DaparToolshedData"))
 #' getListNbValuesInLines(Exp1_R25_pept, 1)
 #' 
 #' @export

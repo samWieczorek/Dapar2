@@ -26,7 +26,7 @@ This function is a wrapper to 'heatmap.2' that displays a numeric matrix
 \examples{
 \donttest{
 library(QFeatures)
-utils::data(Exp1_R25_prot, package='DAPARdata2')
+Exp1_R25_prot <- readRDS(system.file("data", 'Exp1_R25_prot.rda', package="DaparToolshedData"))
 conds <- colData(Exp1_R25_prot)[['Condition']]
 qData <- assay(Exp1_R25_prot)
 heatmapD(qData, conds)

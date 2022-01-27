@@ -23,7 +23,7 @@ number of missing values (NA) per lines (ie proteins).
 }
 \examples{
 library(QFeatures)
-utils::data(Exp1_R25_pept, package='DAPARdata2')
+Exp1_R25_pept <- readRDS(system.file("data", 'Exp1_R25_pept.rda', package="DaparToolshedData"))
 qData <- assay(Exp1_R25_pept[[2]])
 mvPerLinesHisto_HC(qData)
 

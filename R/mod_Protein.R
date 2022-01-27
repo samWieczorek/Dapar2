@@ -4,16 +4,20 @@ btn_style <- "display:inline-block; vertical-align: middle; padding: 7px"
 #source(file.path('.', 'mod_Protein_Normalization.R'), local=TRUE)$value
 
 
+#' @title Module of Protein pipeline
+#' 
 #' @export
 #' 
 #' @return NA
+#' 
+#' @rdname mod_Protein
 #' 
 mod_Protein_ui <- function(id){
   ns <- NS(id)
 }
 
 
-#' @title xxx
+#' @title Module of Protein pipeline
 #'
 #' @description
 #' This module contains the configuration informations for the corresponding pipeline.
@@ -35,6 +39,8 @@ mod_Protein_ui <- function(id){
 #' @return NA
 #'
 #' @author Samuel Wieczorek
+#' 
+#' @rdname mod_Protein
 #'
 #' @export
 #'

@@ -39,7 +39,7 @@ Visualize the clusters according to pvalue thresholds
 }
 \examples{
 library(QFeatures)
-utils::data(Exp1_R25_pept, package='DAPARdata2')
+utils::data(Exp1_R25_pept, package='DaparToolshedData')
 test_anova <- wrapperClassic1wayAnova(Exp1_R25_pept)
 vizu <- visualizeClusters(dat = standardized_means,
                           clust_model = km_model,

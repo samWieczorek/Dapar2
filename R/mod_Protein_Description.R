@@ -1,8 +1,13 @@
 
 btn_style <- "display:inline-block; vertical-align: middle; padding: 7px"
 
+#' @title Module for the description of pipeline Protein
+#' 
 #' @export
+#' 
 #' @return NA
+#' 
+#' @rdname mod_Protein_Description
 #' 
 mod_Protein_Description_ui <- function(id){
   ns <- NS(id)
@@ -10,7 +15,7 @@ mod_Protein_Description_ui <- function(id){
 
 
 
-#' @title xxx
+#' @title Module for the description of pipeline Protein
 #'
 #' @description
 #' This module contains the configuration informations for the corresponding pipeline.
@@ -32,7 +37,10 @@ mod_Protein_Description_ui <- function(id){
 #' @author Samuel Wieczorek
 #'
 #' @export
+#' 
 #' @return NA
+#' 
+#' @rdname mod_Protein_Description
 #' 
 mod_Protein_Description_server <- function(id,
                                            dataIn = reactive({NULL}),

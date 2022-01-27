@@ -21,7 +21,7 @@
 #' 
 #' @examples
 #' library(QFeatures)
-#' utils::data(Exp1_R25_prot, package='DAPARdata2')
+#' Exp1_R25_prot <- readRDS(system.file("data", 'Exp1_R25_prot.rda', package="DaparToolshedData"))
 #' qData <- assay(Exp1_R25_prot[[2]])
 #' key <- rowData(Exp1_R25_prot[[2]])[[ metadata(Exp1_R25_prot)[['keyId']] ]]
 #' conds <- colData(Exp1_R25_prot)[["Condition"]]

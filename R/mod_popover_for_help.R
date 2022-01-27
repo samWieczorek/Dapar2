@@ -19,6 +19,7 @@
 #' @export 
 #' @importFrom shiny NS tagList 
 #' @importFrom shinyjs inlineCSS useShinyjs
+#' 
 mod_popover_for_help_ui <- function(id){
   ns <- NS(id)
   tagList(
@@ -51,7 +52,7 @@ mod_popover_for_help_ui <- function(id){
 #' 
 mod_popover_for_help_server <- function(id, data){
   
-  
+  require(shinyBS)
   moduleServer(id, function(input, output, session){
     ns <- session$ns
     
