@@ -19,6 +19,17 @@ A matrix
 \description{
 Substract part of a adjacency matrix
 }
+\examples{
+obj <- readRDS('~/GitHub/DaparToolshedData/data/Exp2_R100_pept.rda')
+X <-rowData(obj[[2]])$adjacencyMatrix
+X <- X[1:6, 1:6]
+X[2,3] <- 2
+X[3,5] <- 2
+X[6, 1:2] <- 3
+X[5, 4] <- 3
+X
+
+}
 \author{
 Samuel Wieczorek
 }

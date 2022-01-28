@@ -20,10 +20,8 @@ Method to plot the disrtibution (histogram) of peptides w.r.t the proteins with 
 in an adjacency matrix
 }
 \examples{
-Exp1_R25_pept <- readRDS(system.file("data", 'Exp1_R25_pept.rda', package="DaparToolshedData"))
-obj <- Exp1_R25_pept[seq_len(1000),]
-obj <- addListAdjacencyMatrices(obj, 2)
-X <- as.matrix(GetAdjMat(obj[[2]])$all)
+obj <- readRDS(system.file("data", 'Exp1_R25_pept.rda', package="DaparToolshedData"))
+X <- rowData(obj[[2]])$adjacencyMatrix
 GraphPepProt_hc(X)
 
 }

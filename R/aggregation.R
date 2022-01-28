@@ -253,31 +253,49 @@ ComputeAdjacencyMatrices <- function(obj.se, col.proteins = NULL, split = ';'){
 #' @title Substract part of a adjacency matrix
 #' 
 #' @param X xxx
-#' @param onlyShared xxx
-#' @param onlySpec xxx
+#' @param type xxx
 #' 
 #' @return A matrix
 #' 
 #' @author Samuel Wieczorek
 #' 
+#' @importFrom Matrix Matrix
+#' 
+#' @export
+#' 
+#' @examples
+#' obj <- readRDS('~/GitHub/DaparToolshedData/data/Exp2_R100_pept.rda')
+#' X <-rowData(obj[[2]])$adjacencyMatrix
+#' X <- X[1:6, 1:6]
+#' X[2,3] <- 2
+#' X[3,5] <- 2
+#' X[6, 1:2] <- 3
+#' X[5, 4] <- 3
+#' X
+#' 
 submatadj <- function(X,
-                      onlyShared = FALSE,
-                      onlySpec = FALSE){
-  
+                      type = 'all'){
+ X <- as(X, 'matrix')
   subX <- X
-  if (onlyShared){
-    tag <- which(rowSums(X) > 1)
-    if (length(tag)==0){
-      
-    } else if (length(tag) == 1){
+  X.binary <- X
+  X.binary[which(X.binary != 0)] <- 1
+  
+  
+  tag <- switch(type,
+                all = seq_len(nrow(X)),
+                spec = which(rowSums(X.binary) == 1),
+                shared = which(rowSums(X.binary) > 1)
+                )
+
+    
+  if (length(tag) == 1){
       subX <- Matrix(X[tag,],
-             sparse = TRUE,
-             nrow = 1,
-             dimnames = list(rownames(X)[tag],
-                             colnames(X))
+                     nrow = length(tag),
+                     sparse = TRUE,
+                     dimnames = list(rownames(X)[tag],
+                                     colnames(X))
       )
-    } else {
-      tag <- which(rowSums(X) == 1)
+    } else if (length(tag) > 1){
       subX <- Matrix(X[tag,],
                      sparse = TRUE,
                      dimnames = list(rownames(X)[tag],
@@ -285,31 +303,6 @@ submatadj <- function(X,
       )
     }
 
-  }
-  
-  if (onlySpec){
-    #compute the matrix with only specific peptides
-    ind <- which(rowSums(X) == 1)
-    if (length(tag)==0){
-      
-    } else if (length(tag) == 1){
-      subX <- Matrix(X[tag,],
-                     sparse = TRUE,
-                     nrow = 1,
-                     dimnames = list(rownames(X)[tag],
-                                     colnames(X))
-      )
-    } else {
-      tag <- which(rowSums(X) == 1)
-      subX <- Matrix(X[tag,],
-                     sparse = TRUE,
-                     dimnames = list(rownames(X)[tag],
-                                     colnames(X))
-      )
-    }
-  }
-  
-  
   return(subX)
 }
 
@@ -393,10 +386,8 @@ matAdjStats <- function(X){
 #' @author Alexia Dorffer, Samuel Wieczorek
 #' 
 #' @examples
-#' Exp1_R25_pept <- readRDS(system.file("data", 'Exp1_R25_pept.rda', package="DaparToolshedData"))
-#' obj <- Exp1_R25_pept[seq_len(1000),]
-#' obj <- addListAdjacencyMatrices(obj, 2)
-#' X <- as.matrix(GetAdjMat(obj[[2]])$all)
+#' obj <- readRDS(system.file("data", 'Exp1_R25_pept.rda', package="DaparToolshedData"))
+#' X <- rowData(obj[[2]])$adjacencyMatrix
 #' GraphPepProt_hc(X)
 #' 
 #' @import highcharter
@@ -405,10 +396,11 @@ matAdjStats <- function(X){
 #' 
 GraphPepProt_hc <- function(X, type = 'all'){
   if (is.null(X)){
-    warning('The parameter mat is empty.')
+    warning("'X' is empty.")
     return (NULL)
   } 
-
+#browser()
+  X <- as(X, 'matrix')
   t <- t(X)
   t <- apply(X, 2, sum, na.rm=TRUE)
   tab <- table(t)

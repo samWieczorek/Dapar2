@@ -58,11 +58,12 @@ mod_Agregation_server <- function(id,
   widgets.default.values <- list(
     Agregation_ProteinId = NULL,
     Agregation_includeShared = NULL,
-    Agregation_Consider = NULL,
+    Agregation_consider = NULL,
     Agregation_nTopn = NULL,
-    Agregation_Operator = NULL,
+    Agregation_operator = NULL,
     nbPeptides = 0,
-    Agregation_filterProtAfterAgregation = FALSE
+    Agregation_filterProtAfterAgregation = FALSE,
+    Agregation_barplotType = 'all'
   )
   
   
@@ -154,7 +155,7 @@ mod_Agregation_server <- function(id,
         
         uiOutput(ns("Agregation_ProteinId_ui")),
         uiOutput(ns('Agregation_includeShared_ui')),
-        uiOutput(ns('Agregation_Consider_ui')),
+        uiOutput(ns('Agregation_consider_ui')),
         uiOutput(ns('Agregation_nTopn_ui')),
         uiOutput(ns("Agregation_0perator_ui")),
         
@@ -168,18 +169,9 @@ mod_Agregation_server <- function(id,
                                        class = actionBtnClass)),
         
         hr(),
-        div(
-          div( style="display:inline-block; vertical-align: top;",
-               uiOutput(ns("specificPeptideBarplot"))),
-          div( style="display:inline-block; vertical-align: top; padding-right: 20px;",       
-               uiOutput(ns("allPeptideBarplot"))),
-          div( style="display:inline-block; vertical-align: top;",
-               tagList(
-                 DT::DTOutput(ns("aggregationStats"))
-               )
-          )
-        )
-        
+        uiOutput(ns('Agregation_barplotType_ui')),
+        highchartOutput(ns("peptideBarplot"), width="400px"),
+        DT::DTOutput(ns("aggregationStats"))
       )
     })
     
@@ -203,13 +195,9 @@ mod_Agregation_server <- function(id,
         mod_popover_for_help_ui(ns("modulePopover_includeShared")),
         toggleWidget(rv$steps.enabled['Agregation'], widget )
       )
-      
-      
-      
-      
+
     })
-    
-    
+
     output$Agregation_ProteinId_ui <- renderUI({
       # req (is.null(GetProteinId(rv$dataIn))
       # 
@@ -222,12 +210,12 @@ mod_Agregation_server <- function(id,
     
     
     
-    output$Agregation_Consider_ui <- renderUI({
+    output$Agregation_consider_ui <- renderUI({
       
-      widget <- radioButtons("Agregation_Consider", "Consider",
+      widget <- radioButtons(ns("Agregation_consider"), "Consider",
                              choices=c('all peptides' = "allPeptides", 
                                        "N most abundant" = "onlyN"),
-                             selected = rv.widgets$Agregation_Consider)
+                             selected = rv.widgets$Agregation_consider)
       toggleWidget(rv$steps.enabled['Agregation'], widget )
     })
     
@@ -235,20 +223,19 @@ mod_Agregation_server <- function(id,
     
     
     output$Agregation_nTopn_ui <- renderUI({
-      browser()
-      req (rv.widgets$Agregation_Consider == 'onlyN')
+      req (rv.widgets$Agregation_consider == 'onlyN')
       
       widget <- numericInput(ns("Agregation_nTopn"), "N",
                              value = rv.widgets$Agregation_nTopn, 
                              min = 0, 
                              step = 1, 
                              width = '100px')
-      
       toggleWidget(rv$steps.enabled['Agregation'], widget )
     })
     
     
-    output$Agregation_Operator_ui <- renderUI({
+    output$Agregation_operator_ui <- renderUI({
+      browser()
       req(rv.widgets$Agregation_includeShared)
       
       # choice <- NULL
@@ -261,7 +248,7 @@ mod_Agregation_server <- function(id,
                              choices = if (rv.widgets$Agregation_includeShared %in% c("No", "Yes1")){
                                choice <- c("Mean"="Mean","Sum"="Sum")
                              } else {choice <- c("Mean"="Mean")}, 
-                             selected = rv.widgets$Agregation_Operator)
+                             selected = rv.widgets$Agregation_operator)
       toggleWidget(rv$steps.enabled['Agregation'], widget )
     })
     
@@ -269,7 +256,6 @@ mod_Agregation_server <- function(id,
     
     output$warningAgregationMethod <- renderUI({
       req(rv$dataIn)
-      
       m <- match.qMetadata(qMetadata(rv$dataIn, length(rv$dataIn)), 
                            pattern = "missing", 
                            level = 'peptide')
@@ -283,34 +269,30 @@ mod_Agregation_server <- function(id,
       
     })
     
-    observeEvent(rv.widgets$Agregation_includeShared, {
-      if (rv.widgets$Agregation_includeShared == 'Yes2'){
-        ch <- c("Mean" = "Mean")  
-      } else {
-        ch <- c("Sum" = 'Sum', "Mean"="Mean")
-      }
+    
+    output$Agregation_barplotType_ui <- renderUI({
+      
+      widget <- selectInput(ns("Agregation_barplotType"), "Barplot type",
+                             choices=c('all peptides' = "all", 
+                                       "Only Specific peptides" = "spec",
+                                       "Only shared peptides" = "shared"),
+                             selected = rv.widgets$Agregation_barplotType,
+                            width = '200')
+      toggleWidget(rv$steps.enabled['Agregation'], widget )
+    })
+
+    output$peptideBarplot <- renderHighchart({
+      req(GetAdjMat())
+     withProgress(message = 'Rendering plot, pleast wait...',detail = '', value = 1, {
+        GraphPepProt_hc(submatadj(GetAdjMat(),
+                                  type = rv.widgets$Agregation_barplotType))
+       })
     })
     
-    
-    
-    
-    output$specificPeptideBarplot <- renderUI({
+    output$allPeptideBarplot <- renderHighchart({
       req(GetAdjMat())
       withProgress(message = 'Rendering plot, pleast wait...',detail = '', value = 1, {
-        tagList(
-          h4("Only specific peptides"),
-          plotOutput(ns("aggregationPlotUnique"), width="400px")
-        )
-      })
-    })
-    
-    output$allPeptideBarplot <- renderUI({
-      req(GetAdjMat())
-      withProgress(message = 'Rendering plot, pleast wait...',detail = '', value = 1, {
-        tagList(
-          h4("All (specific & shared) peptides"),
-          plotOutput(ns("aggregationPlotShared"), width="400px")
-        )
+        GraphPepProt_hc(GetAdjMat())
       })
     })
     
@@ -348,9 +330,9 @@ mod_Agregation_server <- function(id,
         incProgress(0.5, detail = 'Aggregation in progress')
         
         ll.agg <- NULL
-        if(rv.widgets$Agregation_includeSharedPeptides %in% c("Yes2", "Yes1")){
+        if(rv.widgets$Agregation_includeShared %in% c("Yes2", "Yes1")){
           X <- submatadj(GetAdjMat(), onlyShared = TRUE)
-          if (rv.widgets$Agregation_includeSharedPeptides == 'Yes1'){
+          if (rv.widgets$Agregation_includeShared == 'Yes1'){
             if (rv.widgets$Agregation_consider == 'allPeptides') {
               ll.agg <- do.call(paste0('aggregate', rv.widgets$Agregation_operator),
                                 list( obj.pep = rv$dataIn, 
@@ -396,6 +378,20 @@ mod_Agregation_server <- function(id,
       return(ll.agg)
       
     })
+
+    
+    
+    output$displayNbPeptides <- renderUI({
+      req(rv$widgets$aggregation$filterProtAfterAgregation)
+      
+      if (rv$widgets$aggregation$filterProtAfterAgregation) {
+        numericInput("nbPeptides", "Nb of peptides defining a protein", 
+                     value = 0, min =0, step=1,
+                     width = "250px")
+      }
+    })
+    
+    
     
     
     
