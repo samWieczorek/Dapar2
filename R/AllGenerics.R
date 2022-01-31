@@ -9,6 +9,9 @@ setGeneric("impute_dapar", function(object, ...) standardGeneric("impute_dapar")
 setGeneric("filterFeaturesSam", function(object, ...) standardGeneric("filterFeaturesSam"))
 
 setGeneric("UpdateqMetadata", function(object, ...) standardGeneric("UpdateqMetadata"))
+setGeneric("AggregateQmetadata", function(object, ...) standardGeneric("AggregateQmetadata"))
+setGeneric("aggregate.process", function(object, ...) standardGeneric("aggregate.process"))
+
 
 setGeneric("qMetadata", function(object, ...) standardGeneric("qMetadata"))
 

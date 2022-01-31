@@ -4,20 +4,21 @@
 \alias{submatadj}
 \title{Substract part of a adjacency matrix}
 \usage{
-submatadj(X, onlyShared = FALSE, onlySpec = FALSE)
+submatadj(X, type = "all")
 }
 \arguments{
 \item{X}{xxx}
 
-\item{onlyShared}{xxx}
-
-\item{onlySpec}{xxx}
+\item{type}{xxx}
 }
 \value{
 A matrix
 }
 \description{
-Substract part of a adjacency matrix
+
+}
+\details{
+
 }
 \examples{
 obj <- readRDS('~/GitHub/DaparToolshedData/data/Exp2_R100_pept.rda')
