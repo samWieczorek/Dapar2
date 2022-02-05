@@ -12,9 +12,9 @@ An object of class \code{standardGeneric} of length 1.
 \usage{
 qMetadata
 
-\S4method{qMetadata}{SummarizedExperiment}(object, ...)
+\S4method{qMetadata}{SummarizedExperiment}(object, qMetaName = "qMetadata")
 
-\S4method{qMetadata}{QFeatures}(object, i, ...)
+\S4method{qMetadata}{QFeatures}(object, i, qMetaName = "qMetadata")
 }
 \arguments{
 \item{object}{An object of class 'QFeatures'}

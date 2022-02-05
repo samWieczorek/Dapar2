@@ -90,7 +90,9 @@ Collate:
     AllGenerics.R
     palette.R
     qMetadata.R
-    aggregation.R
+    aggregation_func.R
+    mod_Filtering.R
+    mod_query_metacell.R
     mod_Agregation.R
     compute.t.tests.R
     DiffAnalysis.R

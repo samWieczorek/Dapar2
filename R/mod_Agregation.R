@@ -337,7 +337,7 @@ mod_Agregation_server <- function(id,
     RunAggregation <- reactive({
       req(adjacencyMatrix(rv$dataIn[[length(rv$dataIn)]]))
       
-      ll.agg <- aggregate.process(rv$dataIn, length(rv$dataIn))
+      #ll.agg <- aggregate.process(rv$dataIn, length(rv$dataIn))
       # rv.widgets$Agregation_includeShared
       # rv.widgets$Agregation_operator
       # rv.widgets$Agregation_consider
@@ -516,6 +516,23 @@ mod_Agregation_server <- function(id,
     
     
     observeEvent(input$AddMetadata_btn_validate, {
+      
+      
+      for(c in rv.widgets$AddMetadata_columnsForProteinDatasetBox){
+        newCol <- AggCustomMetadata(peptideData = Biobase::fData(rv$current.obj), 
+                                    X = X,
+                                    cols2agg = c, 
+                                    proteinNames = rownames(Biobase::fData(rv$temp.aggregate$obj.prot))
+        )
+        cnames <- colnames(Biobase::fData(rv$temp.aggregate$obj.prot))
+        Biobase::fData(rv$temp.aggregate$obj.prot) <- 
+          data.frame(Biobase::fData(rv$temp.aggregate$obj.prot), newCol)
+        
+        colnames(Biobase::fData(rv$temp.aggregate$obj.prot)) <- c(cnames, paste0('agg_',c))
+        
+      }
+        
+        
       #dataOut$trigger <- Magellan::Timestamp()
       #dataOut$value <- rv$dataIn
       rv$steps.status['AddMetadata'] <- global$VALIDATED
@@ -538,6 +555,9 @@ mod_Agregation_server <- function(id,
     
     
     observeEvent(input$Save_btn_validate, {
+      
+      
+      
       #dataOut$trigger <- Magellan::Timestamp()
       #dataOut$value <- rv$dataIn
       rv$steps.status['Save'] <- global$VALIDATED
