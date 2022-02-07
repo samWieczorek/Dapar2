@@ -5,23 +5,23 @@
 \title{Method to aggregate peptides into proteins with the iterative approach.}
 \usage{
 inner.aggregate.iter(
-  qPepData,
+  qData,
   X,
   init.method = "Sum",
-  method = "Mean",
+  iter.method = "Mean",
   n = NULL
 )
 }
 \arguments{
-\item{qPepData}{A data.frame of quantitative data}
-
 \item{X}{An adjacency matrix}
 
 \item{init.method}{The method used to initialize the iterative algotirhm. Default is 'Sum'.}
 
-\item{method}{The method used for xxx. Default value is 'Mean'.}
-
 \item{n}{An integer which is xxx}
+
+\item{qPepData}{A data.frame of quantitative data}
+
+\item{method}{The method used for xxx. Default value is 'Mean'.}
 }
 \value{
 A  matrix containing the quantitative aggregated data for proteins.

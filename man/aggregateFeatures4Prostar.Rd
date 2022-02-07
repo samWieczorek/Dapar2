@@ -2,33 +2,43 @@
 % Please edit documentation in R/aggregation_func.R
 \name{aggregateFeatures4Prostar,QFeatures-method}
 \alias{aggregateFeatures4Prostar,QFeatures-method}
+\alias{aggregateQmetadata}
+\alias{aggregateFeatures}
+\alias{aggregateFeatures,QFeatures-method}
+\alias{aggcounts}
+\alias{aggcounts,SummarizedExperiment-method}
+\alias{adjacencyMatrix,SummarizedExperiment-method}
+\alias{adjacencyMatrix,QFeatures-method}
 \title{Aggregate an assay's quantitative features which take into account
 the peptides shared between proteins}
 \usage{
 \S4method{aggregateFeatures4Prostar}{QFeatures}(object, i, name = "newAssay", fcol, fun, ...)
 }
 \arguments{
-\item{object}{An instance of class [QFeatures].}
+\item{object}{An instance of class [QFeatures] or [SummarizedExperiment].}
 
 \item{i}{The index or name of the assay which features will be
 aggregated the create the new assay.}
 
-\item{name}{A `character(1)` naming the new assay. Default is `newAssay`. Note that the function will fail if there's
+\item{name}{A `character(1)` naming the new assay. Default is
+`newAssay`. Note that the function will fail if there's
 already an assay with `name`.}
+
+\item{fcol}{A `character(1)` naming a rowdata variable (of assay
+`i` in case of a `QFeatures`) defining how to aggregate the
+features of the assay. This variable is either a `character`
+or a (possibly sparse) matrix. See below for details.}
 
 \item{fun}{A function used for quantitative feature
 aggregation. See Details for examples.}
 
 \item{...}{Additional parameters passed the `fun`.}
-
-\item{aggType}{The type of peptides used for the aggregation. Possibla values are: 'all', 'onlyShared' and 'onlySPec'. This argument automatically
-selects the corresponding adjacency matrix.}
-
-\item{meta.names}{A vector of character strings that are the metadata of the peptides which needs to be aggregated
-and kept in the protein dataset}
 }
 \value{
 A `QFeatures` object with an additional assay.
+
+A `QFeatures` object with an additional assay or a
+ `SummarizedExperiment` object (or subclass thereof).
 }
 \description{
 This function aggregates the quantitative features of an assay,
@@ -36,21 +46,28 @@ applying an aggregation function (`fun`) to sets of features as
 defined by the `fcol` feature variable. The new assay's features
 will be named based on the unique `fcol` values.
 This function is largely inspired by xxxx . The difference is that it can take into account the peptides shared between proteins.
+
+This function aggregates the quantitative features of an assay,
+applying a summarisation function (`fun`) to sets of features.
+The `fcol` variable name points to a rowData column that defines
+how to group the features during aggregate. This variable can
+eigher be a vector (we then refer to an *aggregation by vector*)
+or an adjacency matrix (*aggregation by matrix*).
 }
 \details{
 Aggregation is performed by a function that takes a matrix as
 input and returns a xxxxx. Examples
 thereof are
 
-- [DaparToolshed:aggSum()] to use the sum of each column (default);
+- [colMeansMat] to use the sum of each column (default);
 
-- [DaparToolshed:aggMean()] to use the sum of each column;
+- [colSumsMat] to use the sum of each column;
 
-- [DaparToolshed:aggIter()] to use the mean of each column;
+- [aggIter] to use xxxx;
 
-- [DaparToolshed:aggIterParallel()] same as previous function but use parallelism.
+- [aggIterParallel] same as previous function but use parallelism.
 
-- [DaparToolshed::aggTopn] to use the sum of each column;
+- [aggTopn] to use the sum of each column;
 }
 \examples{
 feat2 <- readRDS('~/GitHub/DaparToolshedData/data/Exp2_R100_pept.rda')
@@ -65,9 +82,16 @@ feat2 <- AggregateFeatures4Prostar(object = feat2,
                                    fcol = "adjacencyMatrix", 
                                    fun = aggSum)
 
+
 }
 \seealso{
 The *QFeatures* vignette provides an extended example and
     the *Processing* vignette, for a complete quantitative
     proteomics data processing pipeline.
+
+The *QFeatures* vignette provides an extended example and
+    the *Processing* vignette, for a complete quantitative
+    proteomics data processing pipeline. The
+    [MsCoreUtils::aggregate_by_vector()] manual page provides
+    further details.
 }

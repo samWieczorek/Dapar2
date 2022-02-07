@@ -6,7 +6,7 @@
 \alias{qMetadata,QFeatures-method}
 \alias{qMetadata<-}
 \alias{aggQmeta}
-\alias{FinalizeAggregation}
+\alias{FinalizeAggregation,QFeatures-method}
 \title{Finalizes the aggregation process}
 \usage{
 \S4method{aggregateQmetadata}{QFeatures}(object, i, fcol, name = "newAssay", fun = aggQmeta, ...)
@@ -19,7 +19,7 @@ qMetadata(object, i, qMetaName = "qMetadata") <- value
 
 aggQmeta(object, conds)
 
-FinalizeAggregation(object)
+\S4method{FinalizeAggregation}{QFeatures}(object, from, to, ...)
 }
 \arguments{
 \item{object}{An object of class 'SummarizedExperiment'}

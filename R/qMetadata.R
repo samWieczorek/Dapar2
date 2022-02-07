@@ -822,3 +822,129 @@ search.qMetadata.tags <- function(pattern, level, depth = '1'){
   return(tags)
   
 }
+
+
+
+
+
+
+#-----------------------------------------
+
+#' @title
+#' Combine peptide metadata to build protein metadata
+#' 
+#' @description 
+#' Agregation rules for the cells quantitative metadata of peptides. 
+#' Please refer to the qMetadata.def vocabulary in `qMetadata.def()`
+#' 
+#' # Basic agreagtion
+#' Agregation of non imputed values (2.X) with quantitative values 
+#' (1.0, 1.X, 3.0, 3.X)
+#' |----------------------------
+#' Not possible
+#' |----------------------------
+#' 
+#' Agregation of different types of missing values (among 2.1, 2.2)
+#' |----------------------------
+#' * Agregation of 2.1 peptides between each other gives a missing value 
+#'   non imputed (2.0)
+#' * Agreagtion of 2.2 peptides between each other givesa missing value 
+#'   non imputed (2.0)
+#' * Agregation of a mix of 2.1 and 2.2 gives a missing value non imputed (2.0)
+#' |----------------------------
+#' 
+#' 
+#' Agregation of a mix of quantitative values (among 1.0, 1.1, 1.2, 3.0, 3.X)
+#' |----------------------------
+#' * if the type of all the peptides to agregate is 1.0, 1.1 or 1.2, 
+#'   then the final metadata is set the this tag
+#' * if the set of metacell to agregate is a mix of 1.0, 1.1 or 1.2, 
+#'   then the final metadata is set to 1.0
+#' * if the set of metacell to agregate is a mix of 3.X and 3.0, 
+#'   then the final metadata is set to 3.0
+#' * if the set of metacell to agregate is a mix of 3.X and 3.0 and other (X.X),
+#'   then the final metadata is set to 4.0
+#' |----------------------------
+#' 
+#' # Post processing
+#' Update metacell with POV/MEC status for the categories 2.0 and 3.0
+#' TODO
+#' 
+#' @param met xxx
+#' 
+#' @param level xxx
+#' 
+#' @examples
+#' \dontrun{
+#' ll <- qMetadata.def('peptide')$node
+#' for (i in 1:length(ll))
+#' test <- lapply(combn(ll, i, simplify = FALSE), 
+#' function(x) tag <- qMetadata_combine(x, 'peptide'))
+#' }
+#' 
+#' @export
+#' 
+qMetadata_combine <- function(met, level) {
+  tag <- NULL
+  if (length(met)==0)
+    return('missing')
+  
+  u_met <- unique(met)
+  
+  # Define an auxiliary function
+  ComputeNbTags <- function(tag){
+    sum(unlist(lapply( search.qMetadata.tags(tag, level), 
+                       function(x) length(grep(x, u_met)))))
+  }
+  
+  
+  nb.tags <- lapply(qMetadata.def(level)$node, 
+                    function(x) as.numeric(x %in% u_met))
+  n.imputed <- ComputeNbTags('imputed')
+  n.missing <- ComputeNbTags('missing')
+  n.quanti <- ComputeNbTags('quanti')
+  
+  
+  if(n.missing > 0 && (n.imputed > 0 || n.quanti > 0)) tag <- 'STOP'
+  # stop("You try to combine missing values (2.X) with quantitative values (1.X or 3.X).")
+  
+  # sw : Agregation of a mix of 2.X gives a missing value non imputed (2.0)
+  if (n.missing > 0 && n.quanti == 0 && n.imputed == 0) tag <- 'missing'
+  
+  
+  # # Agregation of a mix of 2.1 and 2.2 gives a missing value non imputed (2.0)
+  # if (length(u_met)== length(grep('missing_', u_met))) tag <- 'missing'
+  # 
+  # # Agreagtion of 2.2 peptides between each other givesa missing value non imputed (2.0)
+  # if (length(u_met)==1 && 'missing_MEC' == u_met) tag <- 'missing'
+  # 
+  # # Agreagtion of 2.2 peptides between each other gives a missing value non imputed (2.0)
+  # if (length(u_met)==1 && 'missing_POV' == u_met) tag <- 'missing'
+  #     
+  # # Agregation of 2.1 peptides between each other gives a missing value non imputed (2.0)
+  # if (length(u_met)==1 && 'missing_MEC' == u_met) tag <- 'missing'
+  
+  # if the type of all the peptides to agregate is 1.0, 1.1 or 1.2, then the final
+  # metadata is set the this tag
+  if (length(u_met)==1 && u_met == 'quanti') tag <- 'quanti'
+  if (length(u_met)==1 && u_met == 'identified') tag <- 'identified'
+  if (length(u_met)==1 && u_met == 'recovered') tag <- 'recovered'
+  
+  
+  # if the set of metacell to agregate is a mix of 1.0, 1.1 or 1.2, then the final
+  # metadata is set to 1.0
+  if (n.quanti > 1 && n.imputed == 0 && n.missing==0) tag <- 'quanti'
+  
+  
+  # If the set of metacell to agregate is a mix of 3.X and 3.0, then the final
+  # metadata is set to 3.0
+  if (n.quanti == 0 && n.imputed > 0 && n.missing == 0) tag <- 'imputed'
+  
+  # If the set of metacell to agregate is a mix of 3.X and 3.0 and other (X.X), 
+  # then the final metadata is set to 4.0
+  if (n.quanti > 0 && n.imputed > 0 && n.missing == 0)
+    tag <- 'combined'
+  
+  #print(paste0(paste0(u_met, collapse=' '), ' ---> ', tag))
+  return(tag)
+}

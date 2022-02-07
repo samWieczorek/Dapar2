@@ -11,7 +11,7 @@ updateAdjacencyMatrix(X, mode = "all", ...)
 
 \item{mode}{xxx}
 
-\item{...}{xxx}
+\item{...}{Additional parameters passed to some mode functions}
 
 \item{se}{xxx}
 }
@@ -28,8 +28,8 @@ Mode can be
 \examples{
 feat2 <- readRDS('~/GitHub/DaparToolshedData/data/Exp2_R100_pept.rda')
 feat2 <- feat2[1:10,]
-X <- makeAdjacencyMatrix(rowData(feat2[['original_log']])[,'Protein_group_IDs'])
-rownames(X) <- rownames(feat2[['original_log']])
-updateAdjacencyMatrix(feat2[['original_log']], X, mode = 'all')
+X <- makeAdjacencyMatrix(rowData(feat2[[2]])[,'Protein_group_IDs'])
+rownames(X) <- rownames(feat2[[2]])
+updateAdjacencyMatrix(X, mode = 'all')
 
 }

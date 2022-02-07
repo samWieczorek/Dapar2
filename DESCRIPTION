@@ -91,6 +91,7 @@ Collate:
     palette.R
     qMetadata.R
     aggregation_func.R
+    adjacencyMatrixInfos.R
     mod_Filtering.R
     mod_query_metacell.R
     mod_Agregation.R
