@@ -12,6 +12,7 @@ setGeneric("UpdateqMetadata", function(object, ...) standardGeneric("UpdateqMeta
 setGeneric("aggregateQmetadata", function(object, ...) standardGeneric("aggregateQmetadata"))
 setGeneric("aggregateFeatures4Prostar", function(object, ...) standardGeneric("aggregateFeatures4Prostar"))
 setGeneric("FinalizeAggregation", function(object, ...) standardGeneric("FinalizeAggregation"))
+setGeneric("filterXFeatures", function(object, ...) standardGeneric("filterXFeatures"))
 
 
 setGeneric("qMetadata", function(object, ...) standardGeneric("qMetadata"))

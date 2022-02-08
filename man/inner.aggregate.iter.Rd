@@ -7,7 +7,7 @@
 inner.aggregate.iter(
   qData,
   X,
-  init.method = "Sum",
+  init.method = "colSumsMat",
   iter.method = "Mean",
   n = NULL
 )

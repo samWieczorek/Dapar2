@@ -180,77 +180,6 @@ setMethod("aggregateQmetadata", "SummarizedExperiment",
 
 
 
-#' @export
-#'
-#' @importFrom ProtGenerics adjacencyMatrix
-#'
-#' @rdname qMetadata-aggregate
-#'
-#' @param object An instance of class `SummarizedExperiment` or
-#'     `QFeatures`.
-#'
-#' @param qMetaName `character(1)` with the variable name containing
-#'     the adjacency matrix. Default is `"qMetadata"`.
-#'
-#' @param i The index or name of the assays to extract the advaceny
-#'     matrix from. All must have a rowdata variable named `qMetaName`.
-setMethod("qMetadata", "QFeatures",
-          function(object, i, qMetaName = "qMetadata")
-            List(lapply(experiments(object)[i],
-                        .qMetadata,
-                        qMetaName = qMetaName)))
-
-setMethod("qMetadata", "SummarizedExperiment",
-          function(object, qMetaName = "qMetadata")
-            .qMetadata(object, qMetaName))
-
-#' @export
-#'
-#' @rdname qMetadata-aggregate
-#'
-#' @param i When adding an adjacency matrix to an assay of a
-#'     `QFeatures` object, the index or name of the assay the
-#'     adjacency matrix will be added to. Ignored when `x` is an
-#'     `SummarizedExperiment`.
-#'
-#' @param value An adjacency matrix with row and column names. The
-#'     matrix will be coerced to compressed, column-oriented sparse
-#'     matrix (class `dgCMatrix`) as defined in the `Matrix` package,
-#'     as generaled by the [sparseMatrix()] constructor.
-"qMetadata<-" <- function(object, i, qMetaName = "qMetadata", value) {
-  if (is.null(colnames(value)) | is.null(rownames(value)))
-    stop("The matrix must have row and column names.")
-  ## Coerse to a data.frame
-  value <- as(value, "data.frame")
-  if (inherits(object, "SummarizedExperiment")) {
-    if (!identical(rownames(value), rownames(object)))
-      stop("Row names of the SummarizedExperiment and the qMetadata data.frame must match.")
-    if (qMetaName %in% colnames(rowData(object)))
-      stop("Found an existing variable ", qMetaName, ".")
-    rowData(object)[[qMetaName]] <- value
-    return(object)
-  }
-  stopifnot(inherits(object, "QFeatures"))
-  if (length(i) != 1)
-    stop("'i' must be of length one. Repeat the call to add a matrix to multiple assays.")
-  if (is.numeric(i) && i > length(object))
-    stop("Subscript is out of bounds.")
-  if (is.character(i) && !(i %in% names(object)))
-    stop("Assay '", i, "' not found.")
-  se <- object[[i]]
-  object[[i]] <- qMetadata(se, qMetaName) <- value
-  return(object)
-}
-
-.qMetadata <- function(x, qMetaName = "qMetadata") {
-  stopifnot(qMetaName %in% names(rowData(x)))
-  ans <- rowData(x)[[qMetaName]]
-  if (is.null(colnames(ans)) | is.null(rownames(ans)))
-    warning("The qMetadata data.frame should have row and column names.")
-  ans
-}
-
-
 #' @title xxx
 #' 
 #' @description xxx
@@ -279,9 +208,7 @@ updateAdjacencyMatrix <- function(X, mode = 'all', ...){
   X.binary <- X
   # Used if X is a weighted matrix
   X.binary[which(X.binary != 0)] <- 1
-  
   switch(mode,
-         all = X,
          onlySpec = X[which(rowSums(X.binary) > 1),] <- 0,
          onlyShared = X[which(rowSums(X.binary) == 1),] <- 0,
          topn = X <- .Build_Topn_Mat(X, ...)
@@ -290,47 +217,7 @@ updateAdjacencyMatrix <- function(X, mode = 'all', ...){
 }
 
 
-#' @title xxxxx
-#' @description xxx 
-#' @details This function builds an intermediate matrix with scores for each peptide
-#' based on 'fun' parameter. Once this matrix is built, one select the 'n' peptides
-#' which have the higher score
-#' 
-#' - rowMedians xxx
-#' - rowMeans xxx
-#' - rowSums xxx
-#' 
-#' @param qData xxx
-#' @param X xxx
-#' @param fun xxx
-#' @param n xxx
-#' 
-#' 
-#' @examples 
-#' 
-.Build_Topn_Mat <- function(X, qData = NULL, fun = 'rowMedians', n = 10){
-  
-  stopifnot(inherits(X, "dgCMatrix"))
-  if(!(fun %in% c('rowMedians', 'rowMeans', 'rowSums'))){
-    warning("'fun' must be one of the following: 'rowMedians', 'rowMeans', 'rowSums'")
-    return(NULL)
-  }
 
-  temp.X <- as(X * do.call(fun, list(qData)), "dgCMatrix")
-  
-  # Get the 'n' entities with the best score for each column
-  for (c in seq_len(ncol(X))){
-    v <- order(temp.X[,c],decreasing=TRUE)[seq_len(n)]
-    l <- v[which((temp.X[,c])[v] != 0)]
-    
-    if (length(l) > 0){
-      diff <- setdiff( which(X[,c] == 1), l)
-      if (length(diff)) {X[diff,c] <- 0}
-    }
-  }
-  
-  X
-}
 
 
 
@@ -364,11 +251,11 @@ updateAdjacencyMatrix <- function(X, mode = 'all', ...){
 #' 
 inner.aggregate.iter <- function(qData, 
                                  X, 
-                                 init.method='Sum', 
-                                 iter.method='Mean', 
+                                 init.method = 'colSumsMat', 
+                                 iter.method = 'Mean', 
                                  n = NULL){
   
-  if (!(init.method %in% c("Sum", "Mean"))) {
+  if (!(init.method %in% c("colSumsMat", "colMeansMat"))) {
     warning("Wrong parameter init.method")
     return(NULL)
   }
@@ -384,11 +271,8 @@ inner.aggregate.iter <- function(qData,
     return(NULL)
   }
   
-  yprot <- NULL
-  switch(init.method,
-         Sum = yprot <- inner.sum(qData, X),
-         Mean = yprot <- inner.mean(qData, X)
-  ) 
+  yprot <- do.call(init.method, list(X, qData))
+   
   conv <- 1
   
   while(conv > 10**(-10)){
@@ -401,8 +285,8 @@ inner.aggregate.iter <- function(qData,
     
     # l'appel a la fonction ci-dessous depend des parametres choisis par l'utilisateur
     switch(iter.method,
-           Mean = yprot <- inner.mean(qData, X.new),
-           onlyN = yprot <- inner.aggregate.topn(qData,X.new,'Mean', n)
+           Mean = yprot <- colMeansMat(X.new, qData),
+           onlyN = yprot <- inner.aggregate.topn(qData, X.new, 'Mean', n)
     )
     
     mean.prot.new <- rowMeans(as.matrix(yprot), na.rm = TRUE)
@@ -508,23 +392,26 @@ aggIterParallel <- function(qPepData, X, conditions=NULL, init.method='Sum', met
 #' 
 #' @export
 #'
-aggIterative <- function(qPepData, 
-                         X, 
+aggIterative <- function(x,
+                         MAT, 
                          conditions = NULL, 
                          init.method = 'Sum', 
-                         method = 'Mean', 
+                         iter.method = 'Mean', 
                          n = NULL){
   if (is.null(conditions)){
     warning("The parameter 'conditions' is NULL: the aggregation cannot be process.")
     return(NULL)
   }
   
-  protData <- matrix(rep(0,ncol(X)*ncol(qPepData)), nrow=ncol(X))
+  protData <- matrix(rep(0,ncol(x)*ncol(MAT)), nrow=ncol(x))
   
   for (cond in unique(conditions)){
-    condsIndices <- which(conditions == cond)
-    qData <- qPepData[,condsIndices]
-    protData[,condsIndices]  <- inner.aggregate.iter(qData, X, init.method, method, n)
+    ind <- which(conditions == cond)
+    protData[,ind]  <- inner.aggregate.iter(MAT[,ind],
+                                            x, 
+                                            init.method,
+                                            iter.method, 
+                                            n)
   }
   
   return(protData)

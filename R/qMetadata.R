@@ -948,3 +948,79 @@ qMetadata_combine <- function(met, level) {
   #print(paste0(paste0(u_met, collapse=' '), ' ---> ', tag))
   return(tag)
 }
+
+
+
+
+
+
+#' @export
+#'
+#' @importFrom ProtGenerics adjacencyMatrix
+#'
+#' @rdname qMetadata-aggregate
+#'
+#' @param object An instance of class `SummarizedExperiment` or
+#'     `QFeatures`.
+#'
+#' @param qMetaName `character(1)` with the variable name containing
+#'     the adjacency matrix. Default is `"qMetadata"`.
+#'
+#' @param i The index or name of the assays to extract the advaceny
+#'     matrix from. All must have a rowdata variable named `qMetaName`.
+setMethod("qMetadata", "QFeatures",
+          function(object, i, qMetaName = "qMetadata")
+            List(lapply(experiments(object)[i],
+                        .qMetadata,
+                        qMetaName = qMetaName)))
+
+setMethod("qMetadata", "SummarizedExperiment",
+          function(object, qMetaName = "qMetadata")
+            .qMetadata(object, qMetaName))
+
+#' @export
+#'
+#' @rdname qMetadata-aggregate
+#'
+#' @param i When adding an adjacency matrix to an assay of a
+#'     `QFeatures` object, the index or name of the assay the
+#'     adjacency matrix will be added to. Ignored when `x` is an
+#'     `SummarizedExperiment`.
+#'
+#' @param value An adjacency matrix with row and column names. The
+#'     matrix will be coerced to compressed, column-oriented sparse
+#'     matrix (class `dgCMatrix`) as defined in the `Matrix` package,
+#'     as generaled by the [sparseMatrix()] constructor.
+#'     
+"qMetadata<-" <- function(object, i, qMetaName = "qMetadata", value) {
+  if (is.null(colnames(value)) | is.null(rownames(value)))
+    stop("The matrix must have row and column names.")
+  ## Coerse to a data.frame
+  value <- as(value, "data.frame")
+  if (inherits(object, "SummarizedExperiment")) {
+    if (!identical(rownames(value), rownames(object)))
+      stop("Row names of the SummarizedExperiment and the qMetadata data.frame must match.")
+    if (qMetaName %in% colnames(rowData(object)))
+      stop("Found an existing variable ", qMetaName, ".")
+    rowData(object)[[qMetaName]] <- value
+    return(object)
+  }
+  stopifnot(inherits(object, "QFeatures"))
+  if (length(i) != 1)
+    stop("'i' must be of length one. Repeat the call to add a matrix to multiple assays.")
+  if (is.numeric(i) && i > length(object))
+    stop("Subscript is out of bounds.")
+  if (is.character(i) && !(i %in% names(object)))
+    stop("Assay '", i, "' not found.")
+  se <- object[[i]]
+  object[[i]] <- qMetadata(se, qMetaName) <- value
+  return(object)
+}
+
+.qMetadata <- function(x, qMetaName = "qMetadata") {
+  stopifnot(qMetaName %in% names(rowData(x)))
+  ans <- rowData(x)[[qMetaName]]
+  if (is.null(colnames(ans)) | is.null(rownames(ans)))
+    warning("The qMetadata data.frame should have row and column names.")
+  ans
+}

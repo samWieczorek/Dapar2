@@ -44,10 +44,10 @@ mod_Agregation_server <- function(id,
     mode = 'process',
     
     # List of all steps of the process
-    steps = c('Description', 'Agregation', 'AddMetadata', 'Save'),
+    steps = c('Description', 'Agregation', 'Save'),
     
     # A vector of boolean indicating if the steps are mandatory or not.
-    mandatory = c(TRUE, TRUE, FALSE, TRUE),
+    mandatory = c(TRUE, TRUE, TRUE),
     
     path_to_md_dir =  system.file('md/', package='DaparToolshed')
   )
@@ -57,7 +57,7 @@ mod_Agregation_server <- function(id,
   # This is only for simple workflows
   widgets.default.values <- list(
     Agregation_ProteinId = NULL,
-    Agregation_includeShared = NULL,
+    Agregation_useOfShared = NULL,
     Agregation_consider = NULL,
     Agregation_nTopn = NULL,
     Agregation_operator = NULL,
@@ -155,7 +155,7 @@ mod_Agregation_server <- function(id,
         uiOutput(ns("warningAgregationMethod")),
         
         uiOutput(ns("Agregation_ProteinId_ui")),
-        uiOutput(ns('Agregation_includeShared_ui')),
+        uiOutput(ns('Agregation_useOfShared_ui')),
         uiOutput(ns('Agregation_consider_ui')),
         uiOutput(ns('Agregation_nTopn_ui')),
         uiOutput(ns("Agregation_0perator_ui")),
@@ -177,23 +177,23 @@ mod_Agregation_server <- function(id,
     })
     
     
-    output$Agregation_includeShared_ui <- renderUI({
-      mod_popover_for_help_server("modulePopover_includeShared",
+    output$Agregation_useOfShared_ui <- renderUI({
+      mod_popover_for_help_server("modulePopover_useOfShared",
                                   data = list(title="Include shared peptides",
                                               content= HTML(paste0("<ul><li><strong>No:</strong> only protein-specific peptides</li><li><strong>Yes 1:</strong> shared peptides processed as protein specific</li><li><strong>Yes 2</strong>: proportional redistribution of shared peptides</li></ul>")
                                               )
                                   )
       )
       
-      widget <- radioButtons(ns("Agregation_includeShared"), 
+      widget <- radioButtons(ns("Agregation_useOfShared"), 
                              NULL, 
                              choices = c("No" = "No",
-                                         "Yes (as protein specific)"= "Yes1" ,
-                                         "Yes (redistribution)" = "Yes2" ),
-                             selected = rv.widgets$Agregation_includeShared)
+                                         "As protein specific"= "asSpec" ,
+                                         "For redistribution" = "forDistrib" ),
+                             selected = rv.widgets$Agregation_useOfShared)
       
       tagList(
-        mod_popover_for_help_ui(ns("modulePopover_includeShared")),
+        mod_popover_for_help_ui(ns("modulePopover_useOfShared")),
         toggleWidget(rv$steps.enabled['Agregation'], widget )
       )
 
@@ -236,10 +236,10 @@ mod_Agregation_server <- function(id,
     
     
     output$Agregation_operator_ui <- renderUI({
-      req(rv.widgets$Agregation_includeShared)
+      req(rv.widgets$Agregation_useOfShared)
       
       widget <- radioButtons(ns("Agregation_operator"), "Operator", 
-                             choices = if (rv.widgets$Agregation_includeShared %in% c("No", "Yes1")){
+                             choices = if (rv.widgets$Agregation_useOfShared %in% c("No", "asSpec")){
                                choice <- c("Mean"="Mean","Sum"="Sum")
                              } else {choice <- c("Mean"="Mean")}, 
                              selected = rv.widgets$Agregation_operator)
@@ -274,8 +274,8 @@ mod_Agregation_server <- function(id,
       
       widget <- selectInput(ns("Agregation_barplotType"), "Barplot type",
                              choices=c('All peptides' = "all", 
-                                       "Only specific peptides" = "spec",
-                                       "Only shared peptides" = "shared"),
+                                       "Only specific peptides" = "onlySpec",
+                                       "Only shared peptides" = "onlyShared"),
                              selected = rv.widgets$Agregation_barplotType,
                             width = '200')
       toggleWidget(rv$steps.enabled['Agregation'], widget )
@@ -284,9 +284,13 @@ mod_Agregation_server <- function(id,
     output$peptideBarplot <- renderHighchart({
       req(adjacencyMatrix(rv$dataIn[[length(rv$dataIn)]]))
      withProgress(message = 'Rendering plot, pleast wait...',detail = '', value = 1, {
-       X <- adjacencyMatrix(rv$dataIn[[length(rv$dataIn)]])
-        GraphPepProt_hc(submatadj(X,
-                                  type = rv.widgets$Agregation_barplotType))
+       X <- adjacencyMatrix(GetCurrentSE())
+       if (is.null(X)){
+         X <- makeAdjacencyMatrix(rowData(GetCurrentSE())[,'Protein_group_IDs'])
+          rownames(X) <- rownames(GetCurrentSE())
+       }
+       X <- updateAdjacencyMatrix(X, mode = rv.widgets$Agregation_barplotType)
+      GraphPepProt_hc(X)
        })
     })
 
@@ -333,15 +337,23 @@ mod_Agregation_server <- function(id,
     #   )
     # })
     
+    
+    GetCurrentSE <- reactive({
+      rv$dataIn[[length(rv$dataIn)]]
+    })
+    
     ########################################################
     RunAggregation <- reactive({
-      req(adjacencyMatrix(rv$dataIn[[length(rv$dataIn)]]))
       
-      #ll.agg <- aggregate.process(rv$dataIn, length(rv$dataIn))
-      # rv.widgets$Agregation_includeShared
-      # rv.widgets$Agregation_operator
-      # rv.widgets$Agregation_consider
-      # rv.widgets$Agregation_topN
+      # By default, save the whole adjacency matrix
+      fcol <- 'Protein_group_IDs'
+      X.all <- makeAdjacencyMatrix(rowData(GetCurrentSE())[,fcol])
+      rownames(X.all) <- rownames(GetCurrentSE())
+      browser()
+      rowData(GetCurrentSE())['adjacencyMatrix'] <- NULL
+      adjacencyMatrix(GetCurrentSE()) <- X.all
+      
+      
       
       # withProgress(message = '',detail = '', value = 0, {
       #   incProgress(0.2, detail = 'loading foreach package')
@@ -349,58 +361,75 @@ mod_Agregation_server <- function(id,
       #   
       #   incProgress(0.5, detail = 'Aggregation in progress')
       #   
-      #   ll.agg <- NULL
-      #   if(rv.widgets$Agregation_includeShared %in% c("Yes2", "Yes1")){
-      #     X <- adjacencyMatrix(rv$dataIn[[length(rv$dataIn)]])
-      #     X <- submatadj(X, type = 'all')
-      #     if (rv.widgets$Agregation_includeShared == 'Yes1'){
-      #       
-      #       ll.agg <- switch(rv.widgets$Agregation_consider,
-      #                        allPeptides = do.call(paste0('aggregate', rv.widgets$Agregation_operator),
-      #                                              list( obj.pep = rv$dataIn, 
-      #                                                    X = X)),
-      #                        onlyN = aggregateTopn(rv$dataIn, 
-      #                                              X,
-      #                                              rv.widgets$Agregation_operator, 
-      #                                              n = as.numeric(rv.widgets$Agregation_topN))
-      #       )
-      # 
-      #     } else {
-      #       
-      #       ll.agg <- switch(rv.widgets$Agregation_consider,
-      #                        allPeptides = aggregateIterParallel(obj.pep = rv$dataIn, 
-      #                                                            X = X,
-      #                                                            init.method = 'Sum', 
-      #                                                            method = 'Mean'),
-      #                        onlyN = aggregateIterParallel(rv$dataIn, 
-      #                                                      X, 
-      #                                                      init.method = 'Sum', 
-      #                                                      method = 'onlyN', 
-      #                                                      n = rv.widgets$Agregation_topN)
-      #       )
-      #       
-      #     }
-      #   } else {
-      #     # Only specific peptides
-      #     X <- adjacencyMatrix(rv$dataIn[[length(rv$dataIn)]])
-      #     X <- submatadj(X, type = 'spec')
-      #     browser()
-      #     ll.agg <- switch(rv.widgets$Agregation_consider,
-      #                      allPeptides = do.call(paste0('aggregate', rv.widgets$Agregation_operator),
-      #                                            list(obj.pep = rv$dataIn,
-      #                                                 X = X)),
-      #                      onlyN = aggregateTopn(rv$dataIn, 
-      #                                            X = X, 
-      #                                            rv.widgets$Agregation_operator,
-      #                                            n = as.numeric(rv.widgets$Agregation_topN)
-      #                      )
-      #                      )
-      # 
-      #   }
-      # } )
-      
-      
-      #ll.agg <- rv$dataIn
+         ll.agg <- NULL
+         
+         if(rv.widgets$Agregation_useOfShared == "forDistrib"){
+           if (rv.widgets$Agregation_consider == 'allPeptides'){
+             # aggIterative agregation method
+             ll.agg <- aggregateFeatures4Prostar(object = rv$dataIn,
+                                                 i = length(rv$dataIn), 
+                                                 name = 'aggregated',
+                                                 fcol = "adjacencyMatrix", 
+                                                 fun = aggIterative,
+                                                 conditions = colData(object)$Condition, 
+                                                 init.method = 'rowSums',
+                                                 iter.method = 'Mean')
+           } else if (rv.widgets$Agregation_consider == 'onlyN'){
+             ll.agg <- aggregateFeatures4Prostar(object = rv$dataIn,
+                                                 i = length(rv$dataIn), 
+                                                 name = 'aggregated',
+                                                 fcol = "adjacencyMatrix", 
+                                                 fun = aggIterative,
+                                                 conditions = colData(object)$Condition, 
+                                                 init.method = 'rowSums',
+                                                 iter.method = 'onlyN',
+                                                 n = 10)
+             }
+         } else if (rv.widgets$Agregation_useOfShared == "asSpec") {
+           if (rv.widgets$Agregation_consider == 'allPeptides') {
+             X.all <- X.all
+           } else if (rv.widgets$Agregation_consider == 'onlyN') {
+             rowData(GetCurrentSE())[['adjacencyMatrix']] <- NULL
+             X.n <- updateAdjacencyMatrix(X,
+                                          mode = 'topn',
+                                          qData = assay(GetCurrentSE()),
+                                          fun = 'rowMeans',
+                                          n = rv.widgets$Agregation_topn)
+             adjacencyMatrix(GetCurrentSE()) <- X.n
+             }
+           ll.agg <- aggregateFeatures4Prostar(object = rv$dataIn,
+                                               i = length(rv$dataIn), 
+                                               name = 'aggregated',
+                                               fcol = "adjacencyMatrix", 
+                                               fun = rv.widgets$Agregation_operator)
+           
+           
+         } else if (rv.widgets$Agregation_useOfShared == "no") {
+           
+           # Extract only specific peptides for adjacency matrix
+           rowData(GetCurrentSE())[['adjacencyMatrix']] <- NULL
+           X.spec <- updateAdjacencyMatrix(adjacencyMatrix(GetCurrentSE()),
+                                        mode = 'onlySpec',
+                                        qData = assay(GetCurrentSE())
+                                        )
+           adjacencyMatrix(GetCurrentSE()) <- X.spec
+           
+           if (rv.widgets$Agregation_consider == 'onlyN') {
+             # Extract only n best peptides for adjacency matrix
+             rowData(GetCurrentSE())[['adjacencyMatrix']] <- NULL
+             X.best.n <- updateAdjacencyMatrix(adjacencyMatrix(GetCurrentSE()),
+                                          mode = 'topn',
+                                          qData = assay(GetCurrentSE()),
+                                          fun = 'rowMeans',
+                                          n = rv.widgets$Agregation_topn)
+             adjacencyMatrix(GetCurrentSE()) <- X.best.n
+           }
+           ll.agg <- aggregateFeatures4Prostar(object = rv$dataIn,
+                                               i = length(rv$dataIn), 
+                                               name = 'aggregated',
+                                               fcol = "adjacencyMatrix", 
+                                               fun = rv.widgets$Agregation_operator)
+         }
       return(ll.agg)
       
     })
@@ -464,79 +493,6 @@ mod_Agregation_server <- function(id,
     )
     
     
-    #-------------------------------------------------------
-    
-    output$AddMetadata <- renderUI({
-      wellPanel(
-        uiOutput(ns('AddMetadata_columnsForProteinDatasetBox_ui')),
-        uiOutput(ns('AddMetadata_btn_validate_ui'))
-      )
-    })
-    
-    
-    
-    
-    output$AddMetadata_columnsForProteinDatasetBox_ui <- renderUI({
-      
-      req(rv$dataIn)
-      
-      choices <- setNames(nm = names(rowData(rv$dataIn[[length(rv$dataIn)]])))
-      toRemove <- match(c('adjacencyMatrix', 'qMetadata'), choices)
-      choices <- choices[-toRemove]
-      
-      
-      mod_popover_for_help_server("modulePopover_colsForAggreg",
-                                  data = list(title="Include shared peptides",
-                                              content= HTML(paste0("<ul><li><strong>No:</strong> only protein-specific peptides</li><li><strong>Yes 1:</strong> shared peptides processed as protein specific</li><li><strong>Yes 2</strong>: proportional redistribution of shared peptides</li></ul>")
-                                              )
-                                  )
-      )
-      
-      widget <- selectInput(ns("AddMetadata_columnsForProteinDatasetBox"),
-                            label = "",
-                            choices = choices,
-                            multiple = TRUE, 
-                            width='200px',
-                            selectize = TRUE,
-                            selected = rv.widgets$AddMetadata_columnsForProteinDatasetBox)
-      
-      tagList(
-        mod_popover_for_help_ui(ns("modulePopover_colsForAggreg")),
-        toggleWidget(rv$steps.enabled['AddMetadata'], widget )
-      )
-      
-    })
-    
-    output$AddMetadata_btn_validate_ui <- renderUI({
-      widget <- actionButton(ns("AddMetadata_btn_validate"),
-                             "Perform",
-                             class = btn_success_color)
-      toggleWidget(rv$steps.enabled['AddMetadata'], widget)
-    })
-    
-    
-    observeEvent(input$AddMetadata_btn_validate, {
-      
-      
-      for(c in rv.widgets$AddMetadata_columnsForProteinDatasetBox){
-        newCol <- AggCustomMetadata(peptideData = Biobase::fData(rv$current.obj), 
-                                    X = X,
-                                    cols2agg = c, 
-                                    proteinNames = rownames(Biobase::fData(rv$temp.aggregate$obj.prot))
-        )
-        cnames <- colnames(Biobase::fData(rv$temp.aggregate$obj.prot))
-        Biobase::fData(rv$temp.aggregate$obj.prot) <- 
-          data.frame(Biobase::fData(rv$temp.aggregate$obj.prot), newCol)
-        
-        colnames(Biobase::fData(rv$temp.aggregate$obj.prot)) <- c(cnames, paste0('agg_',c))
-        
-      }
-        
-        
-      #dataOut$trigger <- Magellan::Timestamp()
-      #dataOut$value <- rv$dataIn
-      rv$steps.status['AddMetadata'] <- global$VALIDATED
-    })
     
     
     #--------------------------------------------------------

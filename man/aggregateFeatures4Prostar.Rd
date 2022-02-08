@@ -59,15 +59,15 @@ Aggregation is performed by a function that takes a matrix as
 input and returns a xxxxx. Examples
 thereof are
 
-- [colMeansMat] to use the sum of each column (default);
+- [MsCoreUtils::colMeansMat] to use the sum of each column (default);
 
-- [colSumsMat] to use the sum of each column;
+- [MsCoreUtils::colSumsMat] to use the sum of each column;
 
-- [aggIter] to use xxxx;
+- [DaparToolshed::aggIter] to use xxxx;
 
-- [aggIterParallel] same as previous function but use parallelism.
+- [DaparToolshed::aggIterParallel] same as previous function but use parallelism.
 
-- [aggTopn] to use the sum of each column;
+- [DaparToolshed::aggTopn] to use the sum of each column;
 }
 \examples{
 feat2 <- readRDS('~/GitHub/DaparToolshedData/data/Exp2_R100_pept.rda')
