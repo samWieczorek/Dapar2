@@ -91,6 +91,8 @@ Collate:
     palette.R
     qMetadata.R
     aggregation_func.R
+    DaparToolshed_filterAdjmat.R
+    DaparToolshed-filterFeatures.R
     adjacencyMatrixInfos.R
     mod_Filtering.R
     mod_query_metacell.R

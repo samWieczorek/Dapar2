@@ -180,43 +180,6 @@ setMethod("aggregateQmetadata", "SummarizedExperiment",
 
 
 
-#' @title xxx
-#' 
-#' @description xxx
-#' @details Mode can be
-#' - all xxxx
-#' - onlySpec xxx
-#' - onlyShared xxx
-#' - topn xxx
-#' 
-#' @param se xxx
-#' @param X xxx
-#' @param mode xxx
-#' @param ... Additional parameters passed to some mode functions
-#' 
-#' @export
-#' 
-#' @examples
-#' feat2 <- readRDS('~/GitHub/DaparToolshedData/data/Exp2_R100_pept.rda')
-#' feat2 <- feat2[1:10,]
-#' X <- makeAdjacencyMatrix(rowData(feat2[[2]])[,'Protein_group_IDs'])
-#' rownames(X) <- rownames(feat2[[2]])
-#' updateAdjacencyMatrix(X, mode = 'all')
-#'
-updateAdjacencyMatrix <- function(X, mode = 'all', ...){
-  
-  X.binary <- X
-  # Used if X is a weighted matrix
-  X.binary[which(X.binary != 0)] <- 1
-  switch(mode,
-         onlySpec = X[which(rowSums(X.binary) > 1),] <- 0,
-         onlyShared = X[which(rowSums(X.binary) == 1),] <- 0,
-         topn = X <- .Build_Topn_Mat(X, ...)
-         )
-  return(X)
-}
-
-
 
 
 
