@@ -1,85 +1,157 @@
-##' @exportMethod filterAdjmatOneSE
+
+##' @exportClass NumericVariableFilter
+##' @rdname QFeatures-filtering
+setClass("ComplexFilter",
+         slots = c(name="character", params="list"),
+         prototype = list(name=character(), params=list())
+)
+
+
+##' @param field `character(1)` refering to the name of the variable
+##'     to apply the filter on.
+##'
+##' @param value `character()` or `integer()` value for the
+##'     `CharacterVariableFilter` and `NumericVariableFilter` filters
+##'     respectively.
+##'
+##' @param condition `character(1)` defining the condition to be used in
+##'     the filter. For `NumericVariableFilter`, one of `"=="`,
+##'     `"!="`, `">"`, `"<"`, `">="` or `"<="`. For
+##'     `CharacterVariableFilter`, one of `"=="`, `"!="`,
+##'     `"startsWith"`, `"endsWith"` or `"contains"`. Default
+##'     condition is `"=="`.
+##'
+##' @param not `logical(1)` indicating whether the filtering should be negated
+##'     or not. `TRUE` indicates is negated (!). `FALSE` indicates not negated.
+##'     Default `not` is `FALSE`, so no negation.
+##'
+##' @export VariableFilter
+##' @rdname QFeatures-filtering
+ComplexFilter <- function(name, params) {
+  new("ComplexFilter",
+        name = name,
+        params = params)
+}
+
+
+
+
+##' @exportMethod filterFeaturesOneSE
 ##' @rdname AdjMat-filtering
-setMethod("filterAdjmatOneSE", "QFeatures",
-          function(object, i, name = "newAssay", idcol, fcol, filters, ...) {
+setMethod("filterFeaturesOneSE", "QFeatures",
+          function(object, i, name = "newAssay", filters) {
             if (isEmpty(object))
               return(object)
             if (name %in% names(object))
               stop("There's already an assay named '", name, "'.")
             if (missing(i))
               i <- main_assay(object)
-            #browser()
-            if (missing(idcol))
-              idcol <- '_temp_ID_'
-            else {
-              if (!is.null(idcol)){
-                if (nrow(object[[i]]) != length(unique(rowData(object[[i]])[, idcol]))){
-                warning("'idcol' must contain different values. As it is not the case, 
-                        the id of the dataset will be represented by the column
-                        named '_temp_ID_'")
-                idcol <- '_temp_ID_'
-                }
-              }
+            
+            if (missing(filters))
+              return(object)
+            
+            if (is.null(metadata(object[[i]])$idcol)){
+              warning('xxx')
+              metadata(object[[i]])$idcol <- '_temp_ID_'
             }
+
             ## Create the aggregated assay
-            filtered.SE <- filterAdjmatOneSE(object[[i]], fcol, filters, ...)
+            new.se <- filterFeaturesOneSE(object[[i]], filters)
+           
             ## Add the assay to the QFeatures object
             object <- addAssay(object,
-                               filtered.SE,
+                               new.se,
                                name = name)
-            ## Link the input assay to the aggregated assay
-            rowData(object[[i]])[idcol] <- rownames(object[[i]])
-            rowData(object[[name]])[idcol] <- rownames(object[[name]])
-            object <- addAssayLink(object,
+            
+            if (nrow(new.se) > 0){
+              idcol <- metadata(object[[i]])$idcol
+              ## Link the input assay to the aggregated assay
+              rowData(object[[i]])[,idcol] <- rownames(object[[i]])
+              rowData(object[[name]])[,idcol] <- rownames(object[[name]])
+              object <- addAssayLink(object,
                          from = names(object)[i],
                          to  = name,
                          varFrom = idcol,
                          varTo = idcol)
-            
-            #browser()
-            #rowData(object[[i]])[['_temp_ID_']] <- NULL
-            #rowData(object[[name]])[['_temp_ID_']] <- NULL
+            }
             
            return(object) 
           })
 
 
-##' @exportMethod filterAdjmatOneSE
+##' @exportMethod filterFeaturesOneSE
 ##' @rdname AdjMat-filtering
-setMethod("filterAdjmatOneSE", "SummarizedExperiment",
-          function(object, fcol, filters, ...){
-             stopifnot('adjacencyMatrix' %in% names(rowData(object)))
-              # Reduce the adjacency matrix w.r.t the modes parameters
-              # Apply a filter at a time and update the object
-              for (p in names(filters)){
-                X <- adjacencyMatrix(object)
-                filtered.X <- updateAdjacencyMatrix(X = X, mode = p, filters[[p]])
-                rowData(object)$adjacencyMatrix <- filtered.X
-                
-                lonelyPeptides <- which(rowSums(as.matrix(filtered.X)) == 0)
-                if (length(lonelyPeptides) > 0){
-                  object <- object[-lonelyPeptides]
-                  filtered.X <- adjacencyMatrix(object)
-                }
-                
-                # Find and delete lonely proteins
-                
-                lonelyProteins <- which(colSums(as.matrix(filtered.X)) == 0)
-                if (length(lonelyProteins) > 0){
-                  X <- filtered.X[, -lonelyProteins]
-                  rowData(object)$adjacencyMatrix <- X
-                  rowData(object)[,fcol] <- makePeptideProteinVector(X)
-                }
-              }
-              
-              
-              
-              return(object)
-
+setMethod("filterFeaturesOneSE", "SummarizedExperiment",
+          function(object, filters){
+            for (f in filters)
+              object <- do.call(f@name, list(object, f@params))
+            return(object)
             }
           )
 
 
+filtersOnAdjmat <- function()
+  c('specPeptides', 'sharedPeptides', 'topnPeptides')
+
+specPeptides <- function(object, ...){
+  stopifnot(inherits(object, 'SummarizedExperiment'))
+  stopifnot('adjacencyMatrix' %in% names(rowData(object)))
+  stopifnot(!is.null(metadata(object)$fcol))
+  
+  X <- adjacencyMatrix(object)
+  
+  # Mask for only specific peptides
+  x.spec <- as.matrix(X) != 0
+  ind <- which(rowSums(x.spec) > 1)
+  if (length(ind) > 0){
+    X[ind,] <- 0
+    object <- .UpdateSEBasedOnAdjmat(object, X)
+  }
+  
+  return(object)
+}
+
+
+sharedPeptides <- function(object, ...){
+  stopifnot(inherits(object, 'SummarizedExperiment'))
+  stopifnot('adjacencyMatrix' %in% names(rowData(object)))
+  stopifnot(!is.null(metadata(object)$fcol))
+  
+  X <- adjacencyMatrix(object)
+  
+  # Mask for only shared peptides
+  x.spec <- as.matrix(X) != 0
+  ind <- which(rowSums(x.spec) == 1)
+  if (length(ind) > 0){
+    X[ind,] <- 0
+    object <- .UpdateSEBasedOnAdjmat(object, X)
+  }
+  
+  return(object)
+}
+
+
+
+.UpdateSEBasedOnAdjmat <- function(object, X){
+  rowData(object)$adjacencyMatrix <- X
+  # Identify and delete the empty lines in the dataset
+  emptyLines <- which(rowSums(X) == 0)
+  if (length(emptyLines) > 0)
+    object <- object[-emptyLines]
+
+  # Reload the adjacency matrix after lines deletion
+  # Identify empty columns in the adjacency matrix
+  X <- adjacencyMatrix(object)
+  emptyCols <- which(colSums(X) == 0)
+
+  if (length(emptyCols) > 0){
+    X <- X[, -emptyCols]
+    rowData(object)$adjacencyMatrix <- X
+    rowData(object)[,metadata(object)$fcol] <- makePeptideProteinVector(X)
+  }
+
+return(object)
+}
 
 
 #' @title xxxxx
@@ -102,9 +174,18 @@ setMethod("filterAdjmatOneSE", "SummarizedExperiment",
 #'
 #' @export
 #' 
-Build_Topn_Mat <- function(X, qData = NULL, fun = 'rowMedians', n = 10){
+topnPeptides <- function(object, ...){
+  stopifnot(inherits(object, 'SummarizedExperiment'))
+  stopifnot('adjacencyMatrix' %in% names(rowData(object)))
+  
+  # Preparing the variables
+  fun <- list(...)[[1]]$fun
+  n <- list(...)[[1]]$n
+  X <- adjacencyMatrix(object)
+  qData <- assay(object)
   
   stopifnot(inherits(X, "dgCMatrix"))
+  
   if(!(fun %in% c('rowMedians', 'rowMeans', 'rowSums'))){
     warning("'fun' must be one of the following: 'rowMedians', 'rowMeans', 'rowSums'")
     return(NULL)
@@ -116,94 +197,9 @@ Build_Topn_Mat <- function(X, qData = NULL, fun = 'rowMedians', n = 10){
   for (c in seq_len(ncol(temp.X))){
     v <- order(temp.X[,c],decreasing=TRUE)[seq_len(n)]
     l <- v[which((temp.X[,c])[v] != 0)]
-    
     if (length(l) > 0)
       X[-l, c] <- 0
   }
-
-  return(X)
+  object <- .UpdateSEBasedOnAdjmat(object, X)
+  return(object)
 }
-
-
-
-
-#' @title xxx
-#' 
-#' @description xxx
-#' @details Mode can be
-#' - all xxxx
-#' - onlySpec xxx
-#' - onlyShared xxx
-#' - topn xxx
-#' 
-#' @param se xxx
-#' @param X xxx
-#' @param mode xxx
-#' @param ... Additional parameters passed to some mode functions
-#' 
-#' @export
-#' 
-#' @examples
-#' feat2 <- readRDS('~/GitHub/DaparToolshedData/data/Exp2_R100_pept.rda')
-#' feat2 <- feat2[1:10,]
-#' X <- makeAdjacencyMatrix(rowData(feat2[[2]])[,'Protein_group_IDs'])
-#' rownames(X) <- rownames(feat2[[2]])
-#' updateAdjacencyMatrix(X, mode = 'all')
-#'
-updateAdjacencyMatrix <- function(X, mode, ...){
-  
-  argg <- list(...)[[1]]
-  X.binary <- as.matrix(X) != 0
-  # Used if X is a weighted matrix
-  switch(mode,
-         spec = {
-           ind <- which(rowSums(X.binary) > 1)
-           if (length(ind) > 0)
-             X[ind,] <- 0
-           },
-         shared = {
-           ind <- which(rowSums(X.binary) == 1)
-           if (length(ind) > 0)
-             X[ind,] <- 0
-           },
-         topn = {
-           X <- Build_Topn_Mat(X = X,
-                               qData = argg[['qData']],
-                               fun = argg[['fun']],
-                               n = argg[['n']])
-         }
-  )
-  return(X)
-}
-
-
-# 
-# 
-# ##' @exportMethod aggregateFeatures
-# ##' @rdname QFeatures-filtering-oneSE
-# setMethod("filterFeaturesOneSE", "QFeatures",
-#           function(object, i, name, filters.def, ...) {
-#             if (isEmpty(object))
-#               return(object)
-#             if (name %in% names(object))
-#               stop("There's already an assay named '", name, "'.")
-#             if (missing(i))
-#               i <- main_assay(object)
-#             
-#             ## Create the aggregated assay
-#             aggAssay <- filterFeaturesOneSE(object[[i]], fcol, fun, ...)
-#             
-#             new.object <- filterFeatures()
-#             ## Add the assay to the QFeatures object
-#             object <- addAssay(object,
-#                                new.object[length(new.object)],
-#                                name = name)
-#             ## Link the input assay to the aggregated assay
-#             addAssayLink(object,
-#                          from = i,
-#                          to  = name,
-#                          varFrom = fcol,
-#                          varTo = fcol)
-#           })
-# 
-
