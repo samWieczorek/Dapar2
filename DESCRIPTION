@@ -92,7 +92,7 @@ Collate:
     qMetadata.R
     aggregation_func.R
     DaparToolshed_filterAdjmat.R
-    DaparToolshed-filterFeatures.R
+    DaparToolshed-filterFeaturesOneSE.R
     adjacencyMatrixInfos.R
     mod_Filtering.R
     mod_query_metacell.R
