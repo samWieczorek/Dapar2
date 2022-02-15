@@ -9,9 +9,9 @@
 \alias{FinalizeAggregation,QFeatures-method}
 \title{Finalizes the aggregation process}
 \usage{
-\S4method{qMetadata}{QFeatures}(object, i, qMetaName = "qMetadata")
+\S4method{qMetadata}{QFeatures}(object, i, slotName = "qMetadata")
 
-qMetadata(object, i, qMetaName = "qMetadata") <- value
+qMetadata(object, i, slotName = "qMetadata") <- value
 
 \S4method{aggregateQmetadata}{QFeatures}(object, i, fcol, name = "newAssay", fun = aggQmeta, ...)
 
@@ -29,15 +29,15 @@ aggQmeta(object, conds)
 adjacency matrix will be added to. Ignored when `x` is an
 `SummarizedExperiment`.}
 
-\item{qMetaName}{`character(1)` with the variable name containing
-the adjacency matrix. Default is `"qMetadata"`.}
-
 \item{value}{An adjacency matrix with row and column names. The
 matrix will be coerced to compressed, column-oriented sparse
 matrix (class `dgCMatrix`) as defined in the `Matrix` package,
 as generaled by the [sparseMatrix()] constructor.}
 
 \item{conds}{xxx}
+
+\item{qMetaName}{`character(1)` with the variable name containing
+the adjacency matrix. Default is `"qMetadata"`.}
 
 \item{obj.pep}{A peptide object of class \code{MSnset}}
 

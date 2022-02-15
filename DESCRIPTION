@@ -92,7 +92,10 @@ Collate:
     qMetadata.R
     aggregation_func.R
     DaparToolshed_filterAdjmat.R
+    DaparToolshed_QFeatures_Addons.R
+    DaparToolshed_filter_qMetadata.R
     DaparToolshed-filterFeaturesOneSE.R
+    DaparToolshed-complexFilters.R
     adjacencyMatrixInfos.R
     mod_Filtering.R
     mod_query_metacell.R
@@ -105,7 +108,6 @@ Collate:
     limmaAnalysis.R
     plots_mv_for_impute.R
     ConnectedComps.R
-    Filtering.R
     normalize.R
     plots_boxplot.R
     plots_compare_normalization_plots.R

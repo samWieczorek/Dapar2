@@ -142,176 +142,6 @@ qMetadata.def <- function(level){
 }
 
 
-#' @title Get the quantitative cell metadata
-#' 
-#' @description 
-#' These names are common to all assays contained in the object. This is why
-#' they are stored in the global metadata. This function is used whenever it is necessary
-#' to (re)detect MEC and POV (new dataset or when post processing protein qMetadata 
-#' after aggregation)
-
-"qMetadata"
-
-#' 
-#' @param object  An object of class 'QFeatures'
-#' 
-#' @author Samuel Wieczorek
-#' 
-#' @examples
-#' Exp1_R25_pept <- readRDS(system.file("data", 'Exp1_R25_pept.rda', package="DaparToolshedData"))
-#' qMetadata(Exp1_R25_pept)
-#' 
-#' @rdname qMetadata
-#' 
-#' @export
-#' 
-#' @return NA
-#' 
-setMethod("qMetadata", "SummarizedExperiment",
-          function(object, ...) {
-            value <- rowData(object)$qMetadata
-            if(is.null(value)){
-              warning(" The quantitative metadata dataframe does not exist. Returns NULL.")
-              return(NULL)
-            } else 
-              return(value)
-          }
-)
-
-
-#' 
-#' @param object  An object of class 'QFeatures'
-#' 
-#' @param i xxx
-#' 
-#' @rdname qMetadata
-#' 
-#' @export
-#' 
-#' @return NA
-#' 
-setMethod("qMetadata", "QFeatures",
-          function(object, i, ...) {
-            if (missing(i))
-              stop("Provide index or name of assay to be processed")
-            if (length(i) != 1)
-              stop("Only one assay to be processed at a time")
-            if (is.numeric(i)) i <- names(object)[[i]]
-            
-            qMetadata(object[[i]])
-          }
-)
-
-
-
-
-#' @title Get the type of dataset
-#' 
-#' @author Samuel Wieczorek
-#' 
-#' @examples
-#' Exp1_R25_pept <- readRDS(system.file("data", 'Exp1_R25_pept.rda', package="DaparToolshedData"))
-#' GetTypeDataset(Exp1_R25_pept[[2]])
-#' 
-#' @export
-#' @return NA
-#' 
-"GetTypeDataset"
-
-
-#' 
-#' @param object  An object of class 'SummarizedExperiment'
-#' 
-#' @return NA
-#' 
-#' @rdname GetTypeDataset
-#' 
-setMethod("GetTypeDataset", "SummarizedExperiment",
-          function(object, ...) {
-            value <- metadata(object)[['typeDataset']]
-            if(is.null(value)){
-              warning(" The 'typeDataset' slot does not exist. Returns NULL.")
-              return(NULL)
-            } else 
-              return(value)
-          }
-)
-
-#' @param object xxx
-#' 
-#' @param i xxx
-#' 
-#' @export
-#' 
-#' @return NA
-#' 
-#' @rdname
-#' 
-setMethod("GetTypeDataset", "QFeatures",
-          function(object, i, ...) {
-            if (missing(i))
-              stop("Provide index or name of assay to be processed")
-            if (length(i) != 1)
-              stop("Only one assay to be processed at a time")
-            if (is.numeric(i)) i <- names(object)[[i]]
-            
-            GetTypeDataset(object[[i]])
-          }
-)
-
-
-#' @title Get the type of dataset
-#' 
-#' @author Samuel Wieczorek
-#' 
-#' @examples
-#' Exp1_R25_pept <- readRDS(system.file("data", 'Exp1_R25_pept.rda', package="DaparToolshedData"))
-#' SetTypeDataset(Exp1_R25_pept[[2]])
-#' @export
-#' 
-#' @rdname SetTypeDataset
-#' 
-#' @return NA
-#' 
-"SetTypeDataset"
-
-#' 
-#' @param object  An object of class 'SummarizedExperiment'
-#' 
-#' @param type xxx
-#' 
-#' @export
-#' 
-#' @rdname SetTypeDataset
-#'
-setMethod("SetTypeDataset", "SummarizedExperiment",
-          function(object, type, ...) {
-            metadata(object)$typeDataset <- type
-            object
-          }
-)
-
-#' @param object  An object of class 'QFeatures'
-#' 
-#' @param i xxx
-#' 
-#' @param type xxx
-#' 
-#' @rdname SetTypeDataset
-#' 
-#' @return NA
-setMethod("SetTypeDataset", "QFeatures",
-          function(object, i, type, ...) {
-            if (missing(i))
-              stop("Provide index or name of assay to be processed")
-            if (length(i) != 1)
-              stop("Only one assay to be processed at a time")
-            if (is.numeric(i)) i <- names(object)[[i]]
-            
-            GetTypeDataset(object[[i]], type)
-          }
-)
-
 
 #' @title Sets the MEC tag in the qMetadata
 #' 
@@ -335,7 +165,7 @@ setMethod("SetTypeDataset", "QFeatures",
 #' object <- Exp1_R25_pept
 #' conds <- colData(object)$Condition
 #' df <- assay(Exp1_R25_pept, 2)
-#' level <- GetTypeDataset(object, 2)
+#' level <- typeDataset(object, 2)
 #' df <- Set_POV_MEC_tags(object, 1, level)
 #' 
 #' @param  conds xxx.
@@ -747,7 +577,7 @@ setMethod("UpdateqMetadata", "SummarizedExperiment",
             
             if (missing(object))
               stop("'object' is required.")
-            level <- GetTypeDataset(object)
+            level <- typeDataset(object)
             if (missing(na.type)){
               values <- unname(search.qMetadata.tags('missing', level))
               stop("'na.type' is required. Available values are: ", 

@@ -88,7 +88,7 @@ mod_plots_intensity_server <- function(id,
     output$slave_tracking_ui <- renderUI({
       slave()
       dataIn()
-      if ((slave()==FALSE) && GetTypeDataset(dataIn()) == 'protein')
+      if ((slave()==FALSE) && typeDataset(dataIn()) == 'protein')
         mod_plots_tracking_ui(ns('slave_tracking'))
       else
         return(NULL)

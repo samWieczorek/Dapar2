@@ -200,18 +200,15 @@ createQFeatures <- function(data = NULL,
 
   # Fill the metadata for whole object
   metadata(obj)$versions <- GetProstarVersions()
-  metadata(obj)$keyId <- keyId
-  metadata(obj)$params <- list()
-  metadata(obj)$RawPValues <- FALSE
-  #metadata(obj)$qMetadata_names <- colnames(data)[indQMetadata]
-  metadata(obj)$analysis <- analysis
-  metadata(obj)$typePipeline <- typePipeline
-  metadata(obj)$processes <- c('original', processes)
-
+  metadata(obj)$analysis <- list(analysis = analysis,
+                                 typePipeline = typePipeline,
+                                 processes = c('original', processes)
+  )
+  
   # Fill the metadata for the first assay
-  metadata(obj[['original']])$typeDataset <- typeDataset
-  metadata(obj[['original']])$parentProtId <- parentProtId
-
+  typeDataset(obj[['original']]) <- typeDataset
+  parentProtId(obj[['original']]) <- parentProtId
+  idcol(obj[['original']]) <- keyId
 
   if (tolower(typeDataset) == 'peptide'){
     rowData(obj[['original']])$adjacencyMatrix <- ComputeAdjacencyMatrices(obj[['original']], 
@@ -296,7 +293,7 @@ createQFeatures <- function(data = NULL,
 #' #'   df <- cbind(Biobase::fData(obj), Biobase::exprs(obj))
 #' #'   i <- (ncol(Biobase::fData(obj))+1):(ncol(df))
 #' #'   feat <- QFeatures::readQFeatures(df, ecol = i, sep = "\t", name = "original", fnames = keyId)
-#' #'   feat[['original']] <- SetTypeDataset(feat[['original']], obj@experimentData@other$typeOfData)
+#' #'   typeDataset(feat[['original']], obj@experimentData@other$typeOfData)
 #' #'   
 #' #'   ## Encoding the sample data
 #' #'   sample <- lapply(Biobase::pData(obj),function(x){ gsub(".", "_", x, fixed=TRUE)})

@@ -20,7 +20,7 @@
 #' #' 
 #' setMethod('SetAdjMat', "SummarizedExperiment",
 #'           function(object, ...) {
-#'             if (GetTypeDataset(object) != 'peptide')
+#'             if (typeDataset(object) != 'peptide')
 #'               warning("This function is only available for a peptide dataset.")
 #'             
 #'             metadata(object)$ll.AdjMat <-  ComputeAdjacencyMatrices(object)
@@ -61,7 +61,7 @@
 #' #' 
 #' setMethod('GetConnectedComps', "SummarizedExperiment",
 #'           function(object,  ...) {
-#'             if (GetTypeDataset(object) != 'peptide')
+#'             if (typeDataset(object) != 'peptide')
 #'               warning("This function is only available for a peptide dataset.")
 #'             
 #'             metadata(object)$ll.CC
@@ -102,7 +102,7 @@
 #' #' 
 #' setMethod('SetConnectedComps', "SummarizedExperiment",
 #'           function(object,  ...) {
-#'             if (GetTypeDataset(object) != 'peptide')
+#'             if (typeDataset(object) != 'peptide')
 #'               warning("This function is only available for a peptide dataset.")
 #'             
 #'             metadata(object)$ll.CC <-  ComputeConnectedComposants(object)

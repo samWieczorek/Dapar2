@@ -457,7 +457,7 @@ aggQmeta <- function(object, conds) {
   stopifnot(inherits(object, "SummarizedExperiment"))
   
   qMeta = qMetadata(object)
-  level = GetTypeDataset(object)
+  level = typeDataset(object)
   X <- adjacencyMatrix(object)
   
   rowcol <- function(meta.col, X.col)

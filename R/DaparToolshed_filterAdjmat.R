@@ -1,8 +1,17 @@
 
 
-filtersOnAdjmat <- function()
+adjMatFilters <- function()
   c('specPeptides', 'sharedPeptides', 'topnPeptides')
 
+#' @title xxx
+#' @description 
+#' @rdname adjacency-matrix-filter
+#' @param object An object of class `SummarizedExperiment`
+#' @param ... A `list()` of additional parameters
+#' 
+#' @value An object of class `SummarizedExperiment`
+#' 
+#' 
 specPeptides <- function(object, ...){
   stopifnot(inherits(object, 'SummarizedExperiment'))
   stopifnot('adjacencyMatrix' %in% names(rowData(object)))
@@ -21,6 +30,16 @@ specPeptides <- function(object, ...){
   return(object)
 }
 
+
+#' @title xxx
+#' @description 
+#' @rdname adjacency-matrix-filter
+#' @param object An object of class `SummarizedExperiment`
+#' @param ... A `list()` of additional parameters
+#' 
+#' @value An object of class `SummarizedExperiment`
+#' 
+#' 
 
 sharedPeptides <- function(object, ...){
   stopifnot(inherits(object, 'SummarizedExperiment'))
@@ -64,6 +83,11 @@ return(object)
 }
 
 
+#' @rdname adjacency-matrix-filter
+#' @export
+topnFunctions <- function()
+  c('rowMedians', 'rowMeans', 'rowSums')
+
 #' @title xxxxx
 #' @description xxx 
 #' @details This function builds an intermediate matrix with scores for each peptide
@@ -74,11 +98,11 @@ return(object)
 #' - rowMeans xxx
 #' - rowSums xxx
 #' 
-#' @param qData xxx
-#' @param X xxx
-#' @param fun xxx
-#' @param n xxx
+#' @param object xxx
+#' @param ... A `list()` of additional parameters
 #' 
+#' @rdname adjacency-matrix-filter
+#' @value An object of class `SummarizedExperiment`
 #' 
 #' @examples 
 #'
@@ -96,7 +120,7 @@ topnPeptides <- function(object, ...){
   
   stopifnot(inherits(X, "dgCMatrix"))
   
-  if(!(fun %in% c('rowMedians', 'rowMeans', 'rowSums'))){
+  if(!(fun %in% topnFunctions())){
     warning("'fun' must be one of the following: 'rowMedians', 'rowMeans', 'rowSums'")
     return(NULL)
   }

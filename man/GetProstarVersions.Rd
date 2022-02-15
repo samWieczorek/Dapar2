@@ -32,7 +32,7 @@ Return the versions of Prostar, DaparToolshed and DaparData
 #' 
 setMethod('SetAdjMat', "SummarizedExperiment",
           function(object, ...) {
-            if (GetTypeDataset(object) != 'peptide')
+            if (typeDataset(object) != 'peptide')
               warning("This function is only available for a peptide dataset.")
             
             metadata(object)$ll.AdjMat <-  ComputeAdjacencyMatrices(object)
@@ -73,7 +73,7 @@ setMethod("SetAdjMat", "QFeatures",
 #' 
 setMethod('GetConnectedComps', "SummarizedExperiment",
           function(object,  ...) {
-            if (GetTypeDataset(object) != 'peptide')
+            if (typeDataset(object) != 'peptide')
               warning("This function is only available for a peptide dataset.")
             
             metadata(object)$ll.CC
@@ -114,7 +114,7 @@ setMethod("GetConnectedComps", "QFeatures",
 #' 
 setMethod('SetConnectedComps', "SummarizedExperiment",
           function(object,  ...) {
-            if (GetTypeDataset(object) != 'peptide')
+            if (typeDataset(object) != 'peptide')
               warning("This function is only available for a peptide dataset.")
             
             metadata(object)$ll.CC <-  ComputeConnectedComposants(object)

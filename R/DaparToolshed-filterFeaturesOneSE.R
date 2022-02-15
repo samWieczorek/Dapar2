@@ -1,9 +1,11 @@
 
-##' @exportClass ComplexFilter
+##' @exportClass FunctionFilter
 ##' @rdname filterFeaturesOneSE
-setClass("ComplexFilter",
-         slots = c(name="character", params="list"),
-         prototype = list(name=character(), params=list())
+setClass("FunctionFilter",
+         slots = c(name="character", 
+                   params="list"),
+         prototype = list(name=character(), 
+                          params=list())
 )
 
 
@@ -25,15 +27,13 @@ setClass("ComplexFilter",
 ##'     or not. `TRUE` indicates is negated (!). `FALSE` indicates not negated.
 ##'     Default `not` is `FALSE`, so no negation.
 ##'
-##' @export ComplexFilter
+##' @export FunctionFilter
 ##' @rdname xxx
-ComplexFilter <- function(name, params) {
-  new("ComplexFilter",
+FunctionFilter <- function(name, ...) {
+  new("FunctionFilter",
       name = name,
-      params = params)
+      params = list(...))
 }
-
-
 
 
 ##' @exportMethod filterFeaturesOneSE
@@ -50,10 +50,7 @@ setMethod("filterFeaturesOneSE", "QFeatures",
             if (missing(filters))
               return(object)
             
-            if (is.null(metadata(object[[i]])$idcol)){
-              warning('xxx')
-              metadata(object[[i]])$idcol <- '_temp_ID_'
-            }
+            
             
             ## Create the aggregated assay
             new.se <- filterFeaturesOneSE(object[[i]], filters)
@@ -65,6 +62,13 @@ setMethod("filterFeaturesOneSE", "QFeatures",
             
             if (nrow(new.se) > 0){
               idcol <- metadata(object[[i]])$idcol
+              if (is.null(idcol)){
+                warning('xxx')
+                metadata(object[[i]])$idcol <- '_temp_ID_'
+                idcol <- '_temp_ID_'
+              }
+                
+              
               ## Link the input assay to the aggregated assay
               rowData(object[[i]])[,idcol] <- rownames(object[[i]])
               rowData(object[[name]])[,idcol] <- rownames(object[[name]])
@@ -83,8 +87,23 @@ setMethod("filterFeaturesOneSE", "QFeatures",
 ##' @rdname filterFeaturesOneSE
 setMethod("filterFeaturesOneSE", "SummarizedExperiment",
           function(object, filters){
-            for (f in filters)
-              object <- do.call(f@name, list(object, f@params))
+            for (f in filters){
+              if (inherits(f, "AnnotationFilter")){
+                x <- rowData(object)
+                sel <- if (field(f) %in% names(x)){
+                  do.call(condition(f),
+                          list(x[, field(f)],
+                               value(f)))
+                } else{
+                  rep(FALSE, nrow(x))
+                }
+
+                object <- object[sel]
+              }
+              else if (inherits(f, "FunctionFilter"))
+                object <- do.call(f@name, 
+                                  append(list(object=object), f@params))
+            }
             return(object)
           }
 )

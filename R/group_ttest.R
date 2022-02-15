@@ -106,7 +106,7 @@
 #'             if (is.numeric(i)) i <- names(object)[[i]]
 #'             if (!(FUN %in% HypothesisTestMethods()))
 #'               stop(paste0("'FUN' must be one of the following:", HypothesisTestMethods()))
-#'             if (is.null(GetAdjMat(object[[i]])) && GetTypeDataset(object[[i]]) == 'peptide')
+#'             if (is.null(GetAdjMat(object[[i]])) && typeDataset(object[[i]]) == 'peptide')
 #'               object <- addListAdjacencyMatrices(object, i)
 #'             
 #'             object <- addAssay(object,

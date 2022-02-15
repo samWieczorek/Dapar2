@@ -26,7 +26,7 @@ Exp1_R25_pept <- readRDS(system.file("data", 'Exp1_R25_pept.rda', package="Dapar
 object <- Exp1_R25_pept
 conds <- colData(object)$Condition
 df <- assay(Exp1_R25_pept, 2)
-level <- GetTypeDataset(object, 2)
+level <- typeDataset(object, 2)
 df <- Set_POV_MEC_tags(object, 1, level)
 
 }

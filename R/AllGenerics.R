@@ -6,25 +6,24 @@ setGeneric("normalizeD", function(object, ...) standardGeneric("normalizeD"))
 
 setGeneric("impute_dapar", function(object, ...) standardGeneric("impute_dapar"))
 
-setGeneric("filterFeaturesSam", function(object, ...) standardGeneric("filterFeaturesSam"))
-
 setGeneric("UpdateqMetadata", function(object, ...) standardGeneric("UpdateqMetadata"))
 setGeneric("aggregateQmetadata", function(object, ...) standardGeneric("aggregateQmetadata"))
 setGeneric("aggregateFeatures4Prostar", function(object, ...) standardGeneric("aggregateFeatures4Prostar"))
 setGeneric("FinalizeAggregation", function(object, ...) standardGeneric("FinalizeAggregation"))
 setGeneric("filterFeaturesOneSE", function(object, ...) standardGeneric("filterFeaturesOneSE"))
 
-
 setGeneric("qMetadata", function(object, ...) standardGeneric("qMetadata"))
-
-setGeneric("GetTypeDataset", function(object, ...) standardGeneric("GetTypeDataset"))
-setGeneric("SetTypeDataset", function(object, ...) standardGeneric("SetTypeDataset"))
-
-setGeneric("ComplexFilterFeatures", function(object, ...) standardGeneric("ComplexFilterFeatures"))
-
-setGeneric("GetConnectedComps", function(object, ...) standardGeneric("GetConnectedComps"))
-setGeneric("SetConnectedComps", function(object, ...) standardGeneric("SetConnectedComps"))
-
+setGeneric("qMetadata<-", function(object, ..., value) standardGeneric("qMetadata<-"))
+setGeneric("typeDataset", function(object, ...) standardGeneric("typeDataset"))
+setGeneric("typeDataset<-", function(object, ..., value) standardGeneric("typeDataset<-"))
+setGeneric("idcol", function(object, ...) standardGeneric("idcol"))
+setGeneric("idcol<-", function(object, ..., value) standardGeneric("idcol<-"))
+setGeneric("parentProtId", function(object, ...) standardGeneric("parentProtId"))
+setGeneric("parentProtId<-", function(object, ..., value) standardGeneric("parentProtId<-"))
+setGeneric("analysis", function(object, ...) standardGeneric("analysis"))
+setGeneric("analysis<-", function(object, ..., value) standardGeneric("analysis<-"))
+setGeneric("version", function(object, ...) standardGeneric("version"))
+setGeneric("version<-", function(object, ..., value) standardGeneric("version<-"))
 
 
 setGeneric("GetHypoyhesisTest", function(object, ...) standardGeneric("GetHypoyhesisTest"))

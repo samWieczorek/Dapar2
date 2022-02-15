@@ -54,7 +54,7 @@ mod_plots_se_explorer_server <- function(id,
       
       .choices<- NULL
       
-      switch(GetTypeDataset(obj()),
+      switch(typeDataset(obj()),
              protein = {
                .choices <- list( "Quantitative data" = "tabExprs",
                                  "Proteins metadata" = "tabfData",
