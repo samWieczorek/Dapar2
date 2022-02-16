@@ -3,37 +3,16 @@
 \docType{data}
 \name{normalizeD}
 \alias{normalizeD}
-\alias{normalizeD,SummarizedExperiment-method}
-\alias{normalizeD,QFeatures-method}
 \title{Check the validity of the experimental design.}
 \format{
 An object of class \code{standardGeneric} of length 1.
 }
 \usage{
 normalizeD
-
-\S4method{normalizeD}{SummarizedExperiment}(object, method, withTracking = FALSE, ...)
-
-\S4method{normalizeD}{QFeatures}(object, i, name = "normalizedAssay", ...)
-}
-\arguments{
-\item{object}{An object of class `QFeatures`.}
-
-\item{method}{xxxxx. See xxx for methods available.}
-
-\item{withTracking}{xxx}
-
-\item{...}{Additional parameters passed to inner functions.}
-
-\item{i}{xxxx}
-
-\item{name}{xxxx}
 }
 \value{
 An instance of class 'SummerizedExperiment' where the quantitative
 data in the \code{array()} tab has been normalized.
-
-NA
 }
 \description{
 This manual page describes the computation of statistical test using [QFeatures] objects. In the following

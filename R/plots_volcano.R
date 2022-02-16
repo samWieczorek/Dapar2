@@ -67,6 +67,8 @@
 #' 
 #' @import highcharter
 #' 
+#' @rdname differential-analysis
+#' 
 diffAnaVolcanoplot_rCharts <- function(df, 
                                        threshold_pVal = 1e-60, 
                                        threshold_logFC = 0, 

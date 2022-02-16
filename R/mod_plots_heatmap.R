@@ -10,8 +10,6 @@
 #'
 #' @param session internal
 #'
-#' @rdname mod_plots_heatmap
-#'
 #' @keywords internal
 #'
 #' @export
@@ -19,6 +17,8 @@
 #' @importFrom shiny NS tagList
 #' 
 #' @return NA
+#' 
+#' @rdname descriptives-statistics-plots
 #'
 mod_plots_heatmap_ui <- function(id){
   ns <- NS(id)
@@ -57,8 +57,7 @@ mod_plots_heatmap_ui <- function(id){
 }
 
 
-#' @rdname mod_plots_heatmap
-#'
+
 #' @export
 #'
 #' @keywords internal
@@ -66,6 +65,8 @@ mod_plots_heatmap_ui <- function(id){
 #' @importFrom SummarizedExperiment assay
 #' 
 #' @return NA
+#' 
+#' @rdname descriptives-statistics-plots
 #'
 mod_plots_heatmap_server <- function(id, obj, conds, width = 900){
 

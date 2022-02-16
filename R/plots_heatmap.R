@@ -35,6 +35,8 @@
 #' 
 #' @export
 #' 
+#' @rdname descriptive-statistics-plots
+#' 
 heatmapD <- function(qData, 
                      conds, 
                      distance = "euclidean", 
@@ -163,6 +165,8 @@ heatmapD <- function(qData,
 #' @importFrom grDevices heat.colors
 #' 
 #' @importFrom graphics image strwidth strheight axis mtext text title layout par plot.new
+#' 
+#' @rdname descriptive-statistics-plots
 #' 
 heatmapForMissingValues <- function (x, 
                            col = grDevices::heat.colors(100),

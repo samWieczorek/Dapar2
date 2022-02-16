@@ -31,6 +31,8 @@
 #' 
 #' @import highcharter
 #' 
+#' @rdname descriptive-statistics-plots
+#' 
 mvHisto_HC <- function(qData, 
                        conds, 
                        showValues = FALSE, 

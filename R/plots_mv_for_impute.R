@@ -33,6 +33,8 @@
 #' 
 #' @import highcharter
 #' 
+#' @rdname imputation
+#' 
 hc_mvTypePlot2 <- function(obj, 
                            i, 
                            title=NULL, 
@@ -183,6 +185,8 @@ hc_mvTypePlot2 <- function(obj,
 #' mvImage(Exp1_R25_pept, 2)
 #' 
 #' @export
+#' 
+#' @rdname imputation
 #' 
 mvImage <- function(obj, i){
   

@@ -4,7 +4,7 @@
 #'
 #' @param id,input,output,session Internal parameters for {shiny}.
 #'
-#' @noRd
+#' @rdname connected-components
 #'
 #' @importFrom shiny NS tagList
 #' @import visNetwork
@@ -66,7 +66,7 @@ mod_graph_pept_prot_ui <- function(id){
 
 #' graph_pept_prot Server Function
 #'
-#' @noRd
+#' @rdname connected-components
 #' 
 #' @return NA
 #' 

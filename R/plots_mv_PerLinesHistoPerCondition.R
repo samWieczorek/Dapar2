@@ -26,6 +26,7 @@
 #' @export
 #' 
 #' @import highcharter
+#' @rdname descriptive-statistics-plots
 #' 
 mvPerLinesHistoPerCondition_HC <- function(qData, conds, indLegend = "auto", palette = NULL){
   

@@ -28,6 +28,8 @@
 #' 
 #' @importFrom openxlsx createStyle createWorkbook addWorksheet writeData addStyle writeData
 #' 
+#' @rdname import-export-dataset
+#' 
 writeQFeaturesToExcel <- function(obj, filename) {
   
   POV_Style <- openxlsx::createStyle(fgFill = "lightblue")
@@ -121,6 +123,8 @@ writeQFeaturesToExcel <- function(obj, filename) {
 #' 
 #' @importFrom readxl read_excel
 #' 
+#' @rdname import-export-dataset
+#' 
 readExcel <- function(file, extension, sheet){
   # data <- NULL
   # if (extension=="xls") {
@@ -154,6 +158,8 @@ readExcel <- function(file, extension, sheet){
 #' @importFrom openxlsx getSheetNames
 #' 
 #' @return A list of sheets name
+#' 
+#' @rdname import-export-dataset
 #' 
 listSheets <- function(file){
   ll <- openxlsx::getSheetNames(file)

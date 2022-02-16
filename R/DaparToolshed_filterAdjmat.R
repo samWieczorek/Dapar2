@@ -1,18 +1,85 @@
+##' @title Filter a peptide assay on the basis of its adjacency matrix.
+##' 
+##' @description
+##' 
+##' These functions filters (delete) peptides of an assay, applying a function
+##' on peptides and proteins. They can be used alone but the usual usage is to
+##' create an instance of a class [FunctionFilter] and to pass it to the function
+##' [filterFeaturesOneSE] in order to create a new assay, embedded into the [QFeatures]
+##' object.
+##' 
+##' 
+##' @details This function builds an intermediate matrix with scores for each peptide
+##' based on 'fun' parameter. Once this matrix is built, one select the 'n' peptides
+##' which have the higher score
+##' 
+##' The list of filter functions is given by [adjMatFilters()]:
+##'  
+##' - [specPeptides()]: returns a new assay of class [SummazizedExperiment] with only
+##' specific peptides;
+##' 
+##' - [sharedpeptides()]: returns a new assay of class [SummazizedExperiment] with only
+##' shared peptides;
+##' 
+##' - [topnPeptides()]: returns a new assay of class [SummazizedExperiment] with only
+##' the 'n' peptides which best satisfies the condition. The condition is represented by
+##' functions which calculates a score for each peptide among all samples. The list
+##' of these functions is given by [topnFunctions()]:
+##' 
+##' - [rowMedians()]: xxx;
+##' 
+##' - [rowMeans()]: xxx;
+##' 
+##' - [rowSums()]: xxx;
+##' 
+##' 
+##' @param object An object of class `SummarizedExperiment`
+##' @param fun A `list()` of additional parameters
+##' @param top A `integer(1)` which is the number of xxx
+##' 
+##' @rdname adjacency-matrix-filter
+##' 
+##' @seealso The [QFeatures-filtering-oneSE] man page for the class `FunctionFilter`.
+##' 
+##' @return An object of class `SummarizedExperiment` 
+##'
+##' @author Samuel Wieczorek
+##' 
+##' @examples 
+##' 
+##' #------------------------------------------------
+##' # This function will keep only specific peptides
+##' #------------------------------------------------
+##' 
+##' FunctionFilter('specPeptides', list()))
+##' 
+##' #------------------------------------------------
+##' # This function will keep only shared peptides
+##' #------------------------------------------------
+##' 
+##' FunctionFilter('sharedPeptides', list()))
+##' 
+##' #------------------------------------------------
+##' # This function will keep only the 'n' best peptides
+##' # w.r.t the quantitative sum of each peptides among 
+##' # all samples
+##' #------------------------------------------------
+##' 
+##' FunctionFilter('topnPeptides', fun = 'rowSums', top = 2)
+##'
+NULL
 
 
+##' @export
+##' @rdname adjacency-matrix-filter
 adjMatFilters <- function()
   c('specPeptides', 'sharedPeptides', 'topnPeptides')
 
-#' @title xxx
-#' @description 
-#' @rdname adjacency-matrix-filter
-#' @param object An object of class `SummarizedExperiment`
-#' @param ... A `list()` of additional parameters
-#' 
-#' @value An object of class `SummarizedExperiment`
-#' 
-#' 
-specPeptides <- function(object, ...){
+
+
+##' @export
+##' @rdname adjacency-matrix-filter
+specPeptides <- function(object){
   stopifnot(inherits(object, 'SummarizedExperiment'))
   stopifnot('adjacencyMatrix' %in% names(rowData(object)))
   stopifnot(!is.null(metadata(object)$fcol))
@@ -31,17 +98,9 @@ specPeptides <- function(object, ...){
 }
 
 
-#' @title xxx
-#' @description 
-#' @rdname adjacency-matrix-filter
-#' @param object An object of class `SummarizedExperiment`
-#' @param ... A `list()` of additional parameters
-#' 
-#' @value An object of class `SummarizedExperiment`
-#' 
-#' 
-
-sharedPeptides <- function(object, ...){
+##' @export
+##' @rdname adjacency-matrix-filter
+sharedPeptides <- function(object){
   stopifnot(inherits(object, 'SummarizedExperiment'))
   stopifnot('adjacencyMatrix' %in% names(rowData(object)))
   stopifnot(!is.null(metadata(object)$fcol))
@@ -83,38 +142,21 @@ return(object)
 }
 
 
-#' @rdname adjacency-matrix-filter
-#' @export
+##' @export
+##' @rdname adjacency-matrix-filter
 topnFunctions <- function()
   c('rowMedians', 'rowMeans', 'rowSums')
 
-#' @title xxxxx
-#' @description xxx 
-#' @details This function builds an intermediate matrix with scores for each peptide
-#' based on 'fun' parameter. Once this matrix is built, one select the 'n' peptides
-#' which have the higher score
-#' 
-#' - rowMedians xxx
-#' - rowMeans xxx
-#' - rowSums xxx
-#' 
-#' @param object xxx
-#' @param ... A `list()` of additional parameters
-#' 
-#' @rdname adjacency-matrix-filter
-#' @value An object of class `SummarizedExperiment`
-#' 
-#' @examples 
-#'
-#' @export
-#' 
-topnPeptides <- function(object, ...){
+
+##' @export
+##' @rdname adjacency-matrix-filter
+topnPeptides <- function(object, fun, top){
   stopifnot(inherits(object, 'SummarizedExperiment'))
   stopifnot('adjacencyMatrix' %in% names(rowData(object)))
   
   # Preparing the variables
-  fun <- list(...)[[1]]$fun
-  n <- list(...)[[1]]$n
+  #fun <- list(...)[[1]]$fun
+  #n <- list(...)[[1]]$top
   X <- adjacencyMatrix(object)
   qData <- assay(object)
   

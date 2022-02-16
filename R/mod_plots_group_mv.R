@@ -12,8 +12,6 @@
 #'
 #' @param session internal
 #'
-#' @rdname mod_plots_group_mv
-#'
 #' @keywords internal
 #'
 #' @export
@@ -22,6 +20,8 @@
 #' @importFrom highcharter highchartOutput
 #' 
 #' @return NA
+#' 
+#' @rdname descriptives-statistics-plots
 #'
 mod_plots_group_mv_ui <- function(id){
   ns <- NS(id)
@@ -34,10 +34,6 @@ mod_plots_group_mv_ui <- function(id){
   )
 }
 
-# Module Server
-
-#' @rdname mod_plots_group_mv
-#'
 #' @param id xxx
 #' @param obj xxx
 #' @param conds xxx
@@ -49,6 +45,8 @@ mod_plots_group_mv_ui <- function(id){
 #'
 #' @importFrom SummarizedExperiment assay
 #' @import highcharter
+#' 
+#' @rdname descriptives-statistics-plots
 #'
 mod_plots_group_mv_server <- function(id, obj, conds, base_palette){
 

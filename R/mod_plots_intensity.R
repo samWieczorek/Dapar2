@@ -12,7 +12,7 @@
 #'
 #' @param session internal
 #'
-#' @rdname mod_plots_intensity_plots
+#' @rdname descriptives-statistics-plots
 #'
 #' @keywords internal
 #'
@@ -22,7 +22,7 @@
 #'
 #' @import shinyjs
 #'
-#'@return NA
+#' @return NA
 #'
 mod_plots_intensity_ui <- function(id){
   ns <- NS(id)
@@ -46,7 +46,7 @@ mod_plots_intensity_ui <- function(id){
 
 # Module Server
 
-#' @rdname mod_plots_intensity_plots
+#' @rdname descriptives-statistics-plots
 #'
 #' @export
 #'

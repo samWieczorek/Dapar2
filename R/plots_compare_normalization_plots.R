@@ -45,6 +45,8 @@
 #' 
 #' @export
 #' 
+#' @rdname normalization
+#' 
 compareNormalizationD_HC <- function(qDataBefore,
                                      qDataAfter,
                                      conds,

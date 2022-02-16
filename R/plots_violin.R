@@ -37,6 +37,8 @@
 #' 
 #' @export
 #' 
+#' @rdname descriptive-statistics-plots
+#' 
 violinPlotD <- function(qData, 
                         conds, 
                         keyId, 

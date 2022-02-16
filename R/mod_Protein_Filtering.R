@@ -19,7 +19,7 @@ btn_style <- "display:inline-block; vertical-align: middle; padding: 7px"
 #' 
 #' @return NA
 #' 
-#' @rdname mod_Protein_Filtering
+#' @rdname pipeline-protein
 #' 
 mod_Protein_Filtering_ui <- function(id){
   ns <- NS(id)
@@ -37,7 +37,8 @@ mod_Protein_Filtering_ui <- function(id){
 #'
 #' @return NA
 #' 
-#' @rdname mod_Protein_Filtering
+#' @rdname pipeline-protein
+#' 
 mod_Protein_Filtering_server <- function(id,
                                          dataIn = NULL,
                                          steps.enabled = reactive({NULL}),

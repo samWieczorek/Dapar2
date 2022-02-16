@@ -32,6 +32,8 @@
 #' 
 #' @export
 #' 
+#' @rdname descriptive-statistics-plots
+#' 
 CVDistD_HC <- function(qData, 
                        conds = NULL, 
                        palette = NULL){

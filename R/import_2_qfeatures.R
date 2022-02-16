@@ -1,25 +1,4 @@
 
-#' @title Standardize names
-#'
-#' @description Replace some characters in names by 'underscore'
-#'
-#' @param x A vector of strings to be processed
-#'
-#' @return NA
-#'
-#' @author Samuel Wieczorek
-#'
-#' @export
-#'
-ReplaceSpecialChars <- function(x){
-  if (is.null(x))
-    return(x)
-
-  val <- x
-  for (c in c(".", ' ', '-'))
-    val <- gsub(c, '_', x, fixed=TRUE)
-  val
-}
 
 
 #' Builds an object of class \code{QFeatures} from a
@@ -82,6 +61,8 @@ ReplaceSpecialChars <- function(x){
 #' @import SummarizedExperiment
 #'
 #' @export
+#' 
+#' @rdname import-export-dataset
 #'
 createQFeatures <- function(data = NULL,
                             file = NULL,
@@ -231,102 +212,3 @@ createQFeatures <- function(data = NULL,
   return(obj)
 }
 
-
-#' 
-#' #' 
-#' #' 
-#' #' #' @title Creates an object of class \code{QFeatures} from an object of class \code{MSnSet}
-#' #' #' 
-#' #' #' @description xxxx
-#' #' #' 
-#' #' #' @param obj xxx.
-#' #' #' 
-#' #' #' @param analysis xxx
-#' #' #' 
-#' #' #' @param parentProtId For peptide entities, a string which is the name of a column in rowData. It contains the id of parent
-#' #' #' proteins and is used to generate adjacency matrix and process to aggregation.
-#' #' #' 
-#' #' #' @param keyId The indice of the column containing the ID of entities 
-#' #' #' (peptides or proteins)
-#' #' #' 
-#' #' #' @param pipelineType xxxx
-#' #' #' 
-#' #' #' @param processes xxxx
-#' #' #' 
-#' #' #' @return An instance of class \code{QFeatures}.
-#' #' #' 
-#' #' #' @author Samuel Wieczorek
-#' #' #' 
-#' #' #' @examples 
-#' #' #' library(QFeatures)
-#' #' #' library(MSnbase)
-#' #' #' Exp1_R25_pept <- readRDS(system.file("data", 'Exp1_R25_pept.rda', package="DaparToolshedData"))
-#' #' #' obj <- Exp1_R25_pept
-#' #' #' parentId <- 'Protein_group_IDs'
-#' #' #' keyid <- 'Sequence'
-#' #' #' ft <- convertMSnset2QFeatures(obj, 'conv',parentId, keyid )
-#' #' #' 
-#' #' #' @importFrom Biobase exprs fData pData
-#' #' #' 
-#' #' #' @importFrom QFeatures readQFeatures
-#' #' #' 
-#' #' #' @export
-#' #' #' 
-#' #' convertMSnset2QFeatures <- function(obj, analysis, parentProtId, keyId, pipelineType = NULL, processes = NULL) {
-#' #'   
-#' #'   
-#' #'   if (class(obj) != 'MSnSet')
-#' #'     stop("This dataset is not a MSnset file.")
-#' #'   
-#' #'   if(missing(analysis))
-#' #'     stop("'analysis' is required.")
-#' #'   if(missing(parentProtId))
-#' #'     stop("'parentProtId' is required.")
-#' #'   if(missing(keyId))
-#' #'     stop("'keyId' is required.")
-#' #'   # if(missing(pipelineType))
-#' #'   #   stop("'pipelineType' is required.")
-#' #'   # if(missing(processes))
-#' #'   #   stop("'processes' is required.")
-#' #'   
-#' #'   
-#' #'   df <- cbind(Biobase::fData(obj), Biobase::exprs(obj))
-#' #'   i <- (ncol(Biobase::fData(obj))+1):(ncol(df))
-#' #'   feat <- QFeatures::readQFeatures(df, ecol = i, sep = "\t", name = "original", fnames = keyId)
-#' #'   typeDataset(feat[['original']], obj@experimentData@other$typeOfData)
-#' #'   
-#' #'   ## Encoding the sample data
-#' #'   sample <- lapply(Biobase::pData(obj),function(x){ gsub(".", "_", x, fixed=TRUE)})
-#' #'   SummarizedExperiment::colData(feat)@listData <- sample
-#' #'   
-#' #'   feat <- QFeatures::zeroIsNA(feat,seq_along(feat))
-#' #'   
-#' #'   if (is.null(obj@experimentData@other$OriginOfValues))
-#' #'   {
-#' #'     warning("The MSnset file odes not contain any information about the origin of values.")
-#' #'     warning("So, this convert tool cannot be used. Please use the convert GUI from raw datasets in Prostar.")
-#' #'     return(NULL)
-#' #'   } else {
-#' #'     origin <- obj@experimentData@other$OriginOfValues
-#' #'   }
-#' #'   
-#' #'   daparVersion <- if (is.na(utils::installed.packages()["DaparToolshed"])) 'NA' else utils::installed.packages()["DaparToolshed",'Version']
-#' #'   ProstarVersion <-if (is.na(utils::installed.packages()["Prostar2"])) 'NA' else utils::installed.packages()["Prostar2",'Version']
-#' #'   
-#' #'   
-#' #'   metadata(feat) <- list(versions = list(Prostar_Version = ProstarVersion,
-#' #'                                          DAPAR_Version = daparVersion),
-#' #'                          parentProtId = parentProtId,
-#' #'                          keyId = keyId,
-#' #'                          params = list(),
-#' #'                          RawPValues = obj@experimentData@other$RawPValues,
-#' #'                          OriginOfValues = origin,
-#' #'                          analysis = analysis,
-#' #'                          pipelineType = pipelineType,
-#' #'                          processes=c('original',processes)
-#' #'   )
-#' #'   
-#' #'   return(feat)
-#' #'   
-#' #'   
-#' #' }

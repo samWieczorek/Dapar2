@@ -1,4 +1,28 @@
 
+#' @title Standardize names
+#'
+#' @description Replace some characters in names by 'underscore'
+#'
+#' @param x A vector of strings to be processed
+#'
+#' @return NA
+#'
+#' @author Samuel Wieczorek
+#'
+#' @export
+#'
+ReplaceSpecialChars <- function(x){
+  if (is.null(x))
+    return(x)
+  
+  val <- x
+  for (c in c(".", ' ', '-'))
+    val <- gsub(c, '_', x, fixed=TRUE)
+  val
+}
+
+
+
 #' 
 #' 
 #' #' @title Record the adjacency matrices 

@@ -58,6 +58,8 @@
 #' @author Thomas Burger, Samuel Wieczorek
 #'
 #'@export
+#'
+#' @rdname quantitative-metadata
 #' 
 qMetadata.def <- function(level){
   if(missing(level))
@@ -176,6 +178,7 @@ qMetadata.def <- function(level){
 #'
 #' @export
 #'
+#' @rdname quantitative-metadata
 #' 
 Set_POV_MEC_tags <- function(conds, df, level){
   u_conds <- unique(conds)
@@ -233,6 +236,8 @@ Set_POV_MEC_tags <- function(conds, df, level){
 #' 
 #' @export
 #' 
+#' @rdname quantitative-metadata
+#'  
 BuildqMetadata <- function(from = NULL, 
                            level,
                            qdata = NULL,
@@ -297,6 +302,8 @@ BuildqMetadata <- function(from = NULL,
 #' 
 #' @export
 #' 
+#' @rdname quantitative-metadata
+#'  
 qMetadata_generic <- function(qdata, conds, level){
   
   if (missing(qdata))
@@ -371,6 +378,8 @@ qMetadata_generic <- function(qdata, conds, level){
 #' 
 #' @export
 #' 
+#' @rdname quantitative-metadata
+#'  
 qMetadata_proline <- function(qdata, 
                               conds, 
                               df, 
@@ -443,6 +452,7 @@ qMetadata_proline <- function(qdata,
 #' df2 <- qMetadata_maxquant(qdata, conds, df, 'peptide')
 #' 
 #' @export
+#' @rdname quantitative-metadata
 #' 
 qMetadata_maxquant <- function(qdata, 
                                conds, 
@@ -512,6 +522,8 @@ qMetadata_maxquant <- function(qdata,
 #' m <- match.qMetadata(metadata, "missing", 'peptide')
 #'
 #' @export
+#' 
+#' @rdname quantitative-metadata
 #'
 match.qMetadata <- function(df, pattern, level){
   if (missing(df))
@@ -565,7 +577,7 @@ match.qMetadata <- function(df, pattern, level){
 #' 
 #' @export
 #' 
-#' @rdname UpdateqMetadata
+#' @rdname quantitative-metadata
 #' 
 #' @return NA
 #' 
@@ -618,6 +630,8 @@ setMethod("UpdateqMetadata", "SummarizedExperiment",
 #' 
 #' @export
 #' @return NA
+#' 
+#' @rdname quantitative-metadata
 #' 
 
 search.qMetadata.tags <- function(pattern, level, depth = '1'){
@@ -714,6 +728,8 @@ search.qMetadata.tags <- function(pattern, level, depth = '1'){
 #' 
 #' @export
 #' 
+#' @rdname quantitative-metadata
+#' 
 qMetadata_combine <- function(met, level) {
   tag <- NULL
   if (length(met)==0)
@@ -788,8 +804,6 @@ qMetadata_combine <- function(met, level) {
 #'
 #' @importFrom ProtGenerics adjacencyMatrix
 #'
-#' @rdname qMetadata-aggregate
-#'
 #' @param object An instance of class `SummarizedExperiment` or
 #'     `QFeatures`.
 #'
@@ -798,6 +812,9 @@ qMetadata_combine <- function(met, level) {
 #'
 #' @param i The index or name of the assays to extract the advaceny
 #'     matrix from. All must have a rowdata variable named `qMetaName`.
+#'    
+#' @rdname quantitative-metadata
+#' 
 setMethod("qMetadata", "QFeatures",
           function(object, i, qMetaName = "qMetadata")
             List(lapply(experiments(object)[i],
@@ -810,8 +827,6 @@ setMethod("qMetadata", "SummarizedExperiment",
 
 #' @export
 #'
-#' @rdname qMetadata-aggregate
-#'
 #' @param i When adding an adjacency matrix to an assay of a
 #'     `QFeatures` object, the index or name of the assay the
 #'     adjacency matrix will be added to. Ignored when `x` is an
@@ -822,6 +837,8 @@ setMethod("qMetadata", "SummarizedExperiment",
 #'     matrix (class `dgCMatrix`) as defined in the `Matrix` package,
 #'     as generaled by the [sparseMatrix()] constructor.
 #'     
+#' @rdname quantitative-metadata
+#' 
 "qMetadata<-" <- function(object, i, qMetaName = "qMetadata", value) {
   if (is.null(colnames(value)) | is.null(rownames(value)))
     stop("The matrix must have row and column names.")

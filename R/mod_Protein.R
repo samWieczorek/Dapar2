@@ -10,7 +10,7 @@ btn_style <- "display:inline-block; vertical-align: middle; padding: 7px"
 #' 
 #' @return NA
 #' 
-#' @rdname mod_Protein
+#' @rdname pipeline-protein
 #' 
 mod_Protein_ui <- function(id){
   ns <- NS(id)
@@ -40,7 +40,7 @@ mod_Protein_ui <- function(id){
 #'
 #' @author Samuel Wieczorek
 #' 
-#' @rdname mod_Protein
+#' @rdname pipeline-protein
 #'
 #' @export
 #'

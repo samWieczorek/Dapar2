@@ -12,4 +12,4 @@
 
 
 
-`DaparToolshed` is a package that provides xxx
+`DaparToolshed` is a package that provides functions for the visualization and the statistical analysis of proteomic data.

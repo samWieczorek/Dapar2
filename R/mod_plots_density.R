@@ -3,22 +3,26 @@
 #' @description  A shiny Module.
 #'
 #' @param id shiny id
-#'
 #' @param input internal
-#'
 #' @param output internal
-#'
 #' @param session internal
-#'
-#' @rdname mod_plots_density
+#' @param obj xxx
+#' @param conds xxx
+#' @param legend xxx
+#' @param base_palette xxx
 #'
 #' @keywords internal
+#' 
+#' @return NA
+#' 
+#' @examples 
+#' 
+#' xxxx
 #'
-#' @export
-#'
+NULL
+
 #' @importFrom shiny NS tagList
-#'
-#'@return NA
+#'@rdname descriptives-statistics-plots
 #'
 mod_plots_density_ui <- function(id){
   ns <- NS(id)
@@ -27,15 +31,12 @@ mod_plots_density_ui <- function(id){
   )
 }
 
-#' @rdname mod_plots_density
-#'
 #' @export
 #'
 #' @keywords internal
 #'
 #' @importFrom SummarizedExperiment assay
-#'
-#'@return NA
+#' @rdname descriptives-statistics-plots
 #'
 mod_plots_density_server <- function(id, obj, conds, legend = NULL, base_palette = NULL){
 

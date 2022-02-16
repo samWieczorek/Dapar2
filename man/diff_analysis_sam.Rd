@@ -3,28 +3,12 @@
 \docType{data}
 \name{diff_analysis_sam}
 \alias{diff_analysis_sam}
-\alias{diff_analysis_sam,SummarizedExperiment-method}
-\alias{diff_analysis_sam,QFeatures-method}
 \title{Check the validity of the experimental design}
 \format{
 An object of class \code{standardGeneric} of length 1.
 }
 \usage{
 diff_analysis_sam
-
-\S4method{diff_analysis_sam}{SummarizedExperiment}(object, ...)
-
-\S4method{diff_analysis_sam}{QFeatures}(object, i, name = "diffAnaAssay", ...)
-}
-\arguments{
-\item{object}{An object of class `QFeatures` or `SummarizedExperiment`.}
-
-\item{...}{Additional parameters passed to inner functions.}
-
-\item{i}{A numeric vector or a character vector giving the index or the 
-name, respectively, of the assay(s) to be processed.}
-
-\item{name}{A `character(1)` naming the new assay name. Default is `ttestAssay`.}
 }
 \description{
 This manual page describes the computation of statistical test using [QFeatures] objects. In the following

@@ -3,6 +3,8 @@
 #' @title Quantitative cell metadata scopes for filtering
 #'
 #' @export
+#' 
+#' @rdname qMetadata-filter
 #'
 #' @return NA
 #'
@@ -14,6 +16,8 @@ qMetadataFilteringScope <- function()
 #' @title Operators for complex queries
 #'
 #' @export
+#' 
+#' @rdname qMetadata-filter
 #'
 #' @return NA
 #'
@@ -52,6 +56,8 @@ SymFilteringOperators <- function()
 #' ind <- GetIndices_WholeMatrix(mask, op, percent, th)
 #'
 #' @export
+#' 
+#' @rdname qMetadata-filter
 #'
 qMetadatWholeMatrix <- function(object, cmd, pattern, percent, th, operator){
   if(missing(object))
@@ -134,6 +140,8 @@ qMetadatWholeMatrix <- function(object, cmd, pattern, percent, th, operator){
 #'
 #'@export
 #'
+#' @rdname qMetadata-filter
+#'
 qMetadataWholeLine <- function(object, cmd, pattern){
   if(missing(object))
     return(NULL)
@@ -205,7 +213,9 @@ qMetadataWholeLine <- function(object, cmd, pattern){
 #' percent <- FALSE
 #' ind <- GetIndices_BasedOnConditions(mask, type, conds, percent, op, th)
 #'
-#'@export
+#' @export
+#'
+#' @rdname qMetadata-filter
 #'
 qMetadataOnConditions <- function(object,
                                   cmd,

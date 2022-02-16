@@ -1,27 +1,31 @@
-# Module UI
-
 #' @title   mod_plots_cc_ui and mod_plots_cc_server
 #' 
 #' @description  A shiny Module.
 #'
 #' @param id shiny id
-#' 
 #' @param input internal
-#' 
 #' @param output internal
-#' 
 #' @param session internal
-#'
-#' @rdname plots_cc
-#'
+#' @param cc xxx
+#' @param matAdj xxx
+#' @param obj xxx
+#' 
 #' @keywords internal
 #' 
-#' @export 
 #' @return NA
 #' 
-#' @importFrom shiny NS tagList
+#' @rdname connected-components
 #' 
+#' @examples 
+#' 
+#' xxx
+#' 
+NULL
 
+ 
+#' @importFrom shiny NS tagList
+#' @export
+#' @rdname connected-components
 mod_plots_cc_ui <- function(id) {
   
   ns <- NS(id)
@@ -83,28 +87,12 @@ mod_plots_cc_ui <- function(id) {
 }
 
 
-# Module Server
-
-#' @param cc xxx
-#' 
-#' @param matAdj xxx
-#' 
-#' @param obj xxx
-#' 
-#' @return NA
-#' 
-#' @rdname  plots_cc
-#' 
-#' @export
-#' 
-#' @keywords internal
-#' 
+ 
 #' @importFrom SummarizedExperiment rowData
-#'
 #' @importFrom visNetwork visEvents visOptions
-#' 
 #' @importFrom tibble tibble
-#' 
+#' @export
+#' @rdname connected-components
 mod_plots_cc_server <- function(input, output, session,
                                 cc, matAdj, obj){
   

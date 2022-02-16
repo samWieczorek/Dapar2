@@ -4,7 +4,7 @@
 #'
 #' @param id,input,output,session Internal parameters for {shiny}.
 #'
-#' @noRd
+#' @rdname descriptives-statistics-plots
 #'
 #' @importFrom shiny NS tagList
 #'
@@ -19,7 +19,7 @@ mod_plots_pca_ui <- function(id){
 
 #' plots_pca Server Function
 #'
-#' @noRd
+#' @rdname descriptives-statistics-plots
 #'
 #' @importFrom SummarizedExperiment assay
 #'

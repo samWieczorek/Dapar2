@@ -28,6 +28,8 @@
 #' 
 #' @export
 #' 
+#' @rdname descriptive-statistics-plots
+#' 
 densityPlotD_HC <- function(qData, 
                             conds, 
                             legend=NULL, 

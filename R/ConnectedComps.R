@@ -16,6 +16,8 @@
 #' 
 #' @export
 #' 
+#' @rdname connected-components
+#' 
 ComputeConnectedComposants <- function(obj.se){
   if (length(metadata(obj.se)$ll.AdjMat) == 0)
   {
@@ -65,6 +67,8 @@ ComputeConnectedComposants <- function(obj.se){
 #' @importFrom Matrix %&% crossprod
 #' 
 #' @importFrom graph graphAM connComp 
+#' 
+#' @rdname connected-components
 #' 
 get.pep.prot.cc <- function(X){
   if (is.null(X)){
@@ -165,6 +169,8 @@ get.pep.prot.cc <- function(X){
 #' 
 #' @export
 #' 
+#' @rdname connected-components
+#' 
 buildGraph <- function(The.CC, X){
   
   subX <- as.matrix(X[The.CC$peptides, The.CC$proteins])
@@ -223,6 +229,8 @@ buildGraph <- function(The.CC, X){
 #' 
 #' @export
 #' 
+#' @rdname connected-components
+#' 
 display.CC.visNet <- function(g, 
                               obj=NULL,
                               prot.tooltip=NULL, 
@@ -268,6 +276,8 @@ display.CC.visNet <- function(g,
 #' 
 #' @importFrom graphics plot
 #' 
+#' @rdname connected-components
+#' 
 plotJitterCC <- function(list.of.cc){
   if (is.null(list.of.cc)){return()}
   
@@ -308,6 +318,8 @@ plotJitterCC <- function(list.of.cc){
 #' @export
 #' 
 #' @import highcharter
+#' 
+#' @rdname connected-components
 #' 
 plotJitter_hc <- function(df, clickFunction=NULL){
   

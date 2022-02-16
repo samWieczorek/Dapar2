@@ -1,98 +1,4 @@
 
-#' @title Aggregate an assay's quantitative features which take into account
-#' the peptides shared between proteins
-#'
-#' @description
-#' 
-#' This function aggregates the quantitative features of an assay,
-#' applying an aggregation function (`fun`) to sets of features as
-#' defined by the `fcol` feature variable. The new assay's features
-#' will be named based on the unique `fcol` values.
-#' This function is largely inspired by xxxx . The difference is that it can take into account the peptides shared between proteins.
-#'
-#'
-#' @param object An instance of class [QFeatures].
-#'
-#' @param i The index or name of the assay which features will be
-#'     aggregated the create the new assay.
-#' 
-#' @param name A `character(1)` naming the new assay. Default is `newAssay`. Note that the function will fail if there's
-#'     already an assay with `name`.
-#'     
-#'     
-#' @param fun A function used for quantitative feature
-#'     aggregation. See Details for examples.
-#'
-#' @param ... Additional parameters passed the `fun`.
-#'
-#' @return A `QFeatures` object with an additional assay.
-#'
-#' @details
-#'
-#' Aggregation is performed by a function that takes a matrix as
-#' input and returns a xxxxx. Examples
-#' thereof are
-#'
-#' - [MsCoreUtils::colMeansMat] to use the sum of each column (default);
-#'
-#' - [MsCoreUtils::colSumsMat] to use the sum of each column;
-#'
-#' - [DaparToolshed::aggIter] to use xxxx;
-#'
-#' - [DaparToolshed::aggIterParallel] same as previous function but use parallelism.
-#'
-#' - [DaparToolshed::aggTopn] to use the sum of each column;
-#'
-#' 
-#' @seealso The *QFeatures* vignette provides an extended example and
-#'     the *Processing* vignette, for a complete quantitative
-#'     proteomics data processing pipeline.
-#'     
-#' @rdname aggregateFeatures4Prostar
-#'
-#' @examples
-#' feat2 <- readRDS('~/GitHub/DaparToolshedData/data/Exp2_R100_pept.rda')
-#' feat2 <- feat2[1:10,]
-#' # Builds the adjacency matrix w.r.t. 'mode'
-#' X <- makeAdjacencyMatrix(rowData(feat2[['original_log']])[,'Protein_group_IDs'])
-#' rownames(X) <- rownames(feat2[['original_log']])
-#' rowData(feat2[['original_log']])[['adjacencyMatrix']] <- NULL
-#' adjacencyMatrix(feat2[['original_log']]) <- CustomAdjMat(feat2[['original_log']], X, mode = 'all')
-#' feat2 <- AggregateFeatures4Prostar(object = feat2, 
-#'                                    i = 2, 
-#'                                    fcol = "adjacencyMatrix", 
-#'                                    fun = aggSum)
-#' 
-#' @export
-#' 
-setMethod("aggregateFeatures4Prostar", "QFeatures",
-           function(object, i, name = "newAssay", fcol, fun, ...){
-  object <- aggregateFeatures(object,
-                              i, 
-                              name = name, 
-                              fcol = "adjacencyMatrix", 
-                              fun = fun,
-                              ...)
-  
-  # Aggregate quantitative cell metadata
-  object <- aggregateQmetadata(object,
-                               i, 
-                               name = name, 
-                               fcol = "qMetadata",
-                               fun = aggQmeta)
-  
-  object <- FinalizeAggregation(object, i, name)
-  
-  return(object)
-}
-)
-
-
-
-
-
-
-
 #' @title Aggregate an assay's quantitative features
 #'
 #' @description
@@ -139,7 +45,7 @@ setMethod("aggregateFeatures4Prostar", "QFeatures",
 #'
 #' @name aggregateQmetadata
 #'
-#' @rdname aggregateFeatures4Prostar
+#' @rdname DaparToolshed-aggregate
 #'
 #' @examples
 #'
@@ -211,6 +117,8 @@ setMethod("aggregateQmetadata", "SummarizedExperiment",
 #' X <- GetAdjMat(obj[[2]])$all
 #' qPepData <- assay(obj[[2]])
 #' inner.aggregate.iter(qPepData, X)
+#' 
+#' @rdname DaparToolshed-aggregate
 #' 
 inner.aggregate.iter <- function(qData, 
                                  X, 
@@ -298,6 +206,8 @@ inner.aggregate.iter <- function(qData,
 #' @import doParallel
 #' @import foreach
 #' 
+#' @rdname DaparToolshed-aggregate
+#' 
 aggIterParallel <- function(qPepData, X, conditions=NULL, init.method='Sum', method='Mean', n=NULL){
   if (is.null(conditions)){
     warning('The parameter \'conditions\' is NULL: the aggregation cannot be process.')
@@ -354,6 +264,8 @@ aggIterParallel <- function(qPepData, X, conditions=NULL, init.method='Sum', met
 #' aggIter(assay(obj,2), X, conditions)
 #' 
 #' @export
+#' 
+#' @rdname DaparToolshed-aggregate
 #'
 aggIterative <- function(x,
                          MAT, 
@@ -403,6 +315,8 @@ aggIterative <- function(x,
 #' X <- GetAdjMat(obj[[2]])$all
 #' rowdata_stats_Aggregation_sam(assay(obj,2), X)
 #' 
+#' @rdname DaparToolshed-aggregate
+#' 
 rowdata_stats_Aggregation_sam <- function(qPepData, X){
   
   X <- as.matrix(X)
@@ -451,7 +365,7 @@ NULL
 #' 
 #' @return NA
 #' 
-#' @rdname qMetadata-aggregate
+#' @rdname DaparToolshed-aggregate
 #' 
 aggQmeta <- function(object, conds) {
   stopifnot(inherits(object, "SummarizedExperiment"))
@@ -508,7 +422,7 @@ aggQmeta <- function(object, conds) {
 #' obj <- Exp1_R25_pept[1:100]
 #' FinalizeAggregation(obj, 2)
 #' 
-#' @rdname qMetadata-aggregate
+#' @rdname DaparToolshed-aggregate
 #' 
 setMethod("FinalizeAggregation", "QFeatures",
           function(object, from, to, ...){
@@ -552,20 +466,21 @@ setMethod("FinalizeAggregation", "QFeatures",
 
   
   metadata(object[[to]]) <- metadata(object[[from]])
-  metadata(object[[to]])$typeOfData <- "protein"
-  metadata(object[[to]])$keyId <- 'proteinId'
+  typeDataset(object[[to]]) <- "protein"
+  idcol(object[[to]]) <- 'proteinId'
   metadata(object[[to]])$proteinId <- 'proteinId'
    
   tryCatch({
     find.package("Prostar")
     find.package("DaparToolshed")
     
-    metadata(object[[to]])$Prostar_Version <- Biobase::package.version('Prostar')
-    metadata(object[[to]])$DaparToolshed_Version <- Biobase::package.version('DaparToolshed')
+    version(object[[to]]) <- list(Prostar = Biobase::package.version('Prostar'),
+                                   DaparToolshed_Version = Biobase::package.version('DaparToolshed')
+    )
   },
   error = function(e) {
-    metadata(object[[to]])$Prostar_Version <- NA
-    metadata(object[[to]])$DaparToolshed_Version <- NA
+    version(object[[to]]) <- list(Prostar_Version = NA,
+                                  DaparToolshed_Version = NA)
   }
   )
   

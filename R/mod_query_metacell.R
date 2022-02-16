@@ -2,22 +2,11 @@
 #' 
 #' @description xxx
 #' 
-#' @rdname mod_query_metacell
-#' 
-#' @examples 
-#' obj <- readRDS(system.file("data", 'Exp1_R25_pept.rda', package="DaparToolshedData"))
-#' 
-#' 
-#' 
-#' 
-#' 
-#' 
-
-
-
 #' @param id xxx
 #' 
 #' @export
+#' 
+#' @rdname quantitative-metadata
 #' 
 mod_query_metacell_ui <- function(id){
   
@@ -53,7 +42,7 @@ mod_query_metacell_ui <- function(id){
 #' @param operator xxx
 #' @param reset xxx
 #' 
-#' @rdname mod_query_metacell
+#' @rdname @rdname quantitative-metadata
 #' 
 #' @export
 #' 

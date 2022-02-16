@@ -8,7 +8,7 @@
 #' @param output internal
 #' @param session internal
 #'
-#' @rdname mod_legend_colored_exprs
+#' @rdname descriptives-statistics-plots
 #'
 #' @keywords internal
 #' @export 
@@ -37,7 +37,7 @@ mod_plots_legend_colored_exprs_ui <- function(id){
     
 # Module Server
     
-#' @rdname mod_legend_colored_exprs
+#' @rdname descriptives-statistics-plots
 #' @export
 #' @keywords internal
 #' @return NA

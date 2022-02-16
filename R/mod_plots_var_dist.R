@@ -9,7 +9,7 @@
 #' @param output internal
 #' @param session internal
 #'
-#' @rdname mod_var_dist_plot
+#' @rdname descriptives-statistics-plots
 #'
 #' @keywords internal
 #'
@@ -34,7 +34,7 @@ mod_plots_var_dist_ui <- function(id){
 
 # Module Server
 
-#' @rdname mod_var_dist_plot
+#' @rdname descriptives-statistics-plots
 #'
 #' @export
 #'

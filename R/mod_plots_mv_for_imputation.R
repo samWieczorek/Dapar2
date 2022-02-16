@@ -8,7 +8,7 @@
 #' @param output internal
 #' @param session internal
 #'
-#' @rdname mod_plots_mv_for_imputation
+#' @rdname imputation
 #'
 #' @keywords internal
 #' @export
@@ -30,7 +30,7 @@ mod_plots_mv_for_imputation_ui <- function(id){
 
 # Module Server
 
-#' @rdname mod_plots_mv_for_imputation
+#' @rdname imputation
 #' @export
 #' @keywords internal
 #' 

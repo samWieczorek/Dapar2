@@ -35,6 +35,8 @@
 #' 
 #' @export
 #' 
+#' @rdname descriptive-statistics-plots
+#' 
 corrMatrixD_HC <- function(obj.se, 
                            names = NULL, 
                            rate = 0.5, 

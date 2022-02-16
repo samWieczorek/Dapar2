@@ -11,6 +11,8 @@
 
 
 #' @export
+#' 
+#' @rdname pipeline-protein
 #'
 mod_Protein_Normalization_ui <- function(id){
   ns <- NS(id)
@@ -39,6 +41,8 @@ mod_Protein_Normalization_ui <- function(id){
 #' @author Samuel Wieczorek
 #'
 #' @export
+#' 
+#' @rdname pipeline-protein
 
 mod_Protein_Normalization_server <- function(id,
                                           dataIn = reactive({NULL}),

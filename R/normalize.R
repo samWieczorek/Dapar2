@@ -7,6 +7,8 @@
 #' @name normalizeMethods.dapar
 #'
 #' @export
+#' 
+#' @rdname normalization
 #'
 normalizeMethods.dapar <- function(withTracking = FALSE){
   if (isTRUE(withTracking))
@@ -80,7 +82,7 @@ else
 #'
 #' @importFrom SummarizedExperiment assay
 #'
-#' @rdname normalizeD
+#' @rdname normalization
 #'
 setMethod("normalizeD", "SummarizedExperiment",
           function(object,
@@ -117,7 +119,7 @@ setMethod("normalizeD", "SummarizedExperiment",
 #'
 #' @importFrom QFeatures addAssay addAssayLinkOneToOne
 #'
-#' @rdname normalizeD
+#' @rdname normalization
 #'
 setMethod("normalizeD", "QFeatures",
           function(object, i, name = "normalizedAssay", ...) {
@@ -157,6 +159,8 @@ setMethod("normalizeD", "QFeatures",
 #' @export
 #'
 #' @importFrom preprocessCore normalize.quantiles
+#' 
+#' @rdname normalization
 #'
 GlobalQuantileAlignment <- function(qData) {
   e <- preprocessCore::normalize.quantiles(as.matrix(qData))
@@ -190,6 +194,8 @@ GlobalQuantileAlignment <- function(qData) {
 #' @export
 #'
 #' @importFrom stats median
+#' 
+#' @rdname normalization
 #'
 SumByColumns <- function(qData,
                          conds = NULL,
@@ -277,6 +283,8 @@ if( missing(conds) || is.null(conds))
 #' @export
 #'
 #' @importFrom stats quantile
+#' 
+#' @rdname normalization
 #'
 QuantileCentering <- function(qData,
                               conds=NULL,
@@ -353,6 +361,8 @@ QuantileCentering <- function(qData,
 #' normalized <- MeanCentering(qData, conds, type="overall")
 #'
 #' @export
+#' 
+#' @rdname normalization
 #'
 MeanCentering <- function(qData,
                           conds,
@@ -420,6 +430,8 @@ MeanCentering <- function(qData,
 #' @export
 #'
 #' @importFrom vsn vsnMatrix predict
+#' 
+#' @rdname normalization
 #'
 vsn = function(qData,
                conds,
@@ -466,6 +478,8 @@ vsn = function(qData,
 #' @importFrom limma normalizeCyclicLoess
 #'
 #' @export
+#' 
+#' @rdname normalization
 #'
 LOESS <- function(qData,
                   conds,

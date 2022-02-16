@@ -9,6 +9,14 @@
 #' 
 #' @details 
 #' 
+#' 
+#' Additional slots for rowdata of a `SummarizedExperiment` object
+#'  - qMetadata: xxx
+#' 
+#' Additional slots for Metadata for a `QFeatures` object
+#'  - xxx: xxxx
+#' 
+#' Additional slots for Metadata for a `SummarizedExperiment` object
 #'  - qMetadata: xxxx
 #'  - parentProtId: xxx
 #'  - idcol: xxxx
@@ -268,7 +276,7 @@ setMethod("parentProtId", "SummarizedExperiment",
 #'     the name of the column containing. Default is `"analysis"`.
 #'
 #' @param i The index or name of the assays to extract the analysis from. 
-#'          All must have a rowdata variable named `slotName`.
+#'          All must have a metadata variable named `slotName`.
 setMethod("analysis", "QFeatures",
           function(object, i, slotName = "analysis")
             List(lapply(experiments(object)[i],

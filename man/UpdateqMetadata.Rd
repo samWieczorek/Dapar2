@@ -3,24 +3,14 @@
 \docType{data}
 \name{UpdateqMetadata}
 \alias{UpdateqMetadata}
-\alias{UpdateqMetadata,SummarizedExperiment-method}
 \title{Update quantitative metadata after imputation}
 \format{
 An object of class \code{standardGeneric} of length 1.
 }
 \usage{
 UpdateqMetadata
-
-\S4method{UpdateqMetadata}{SummarizedExperiment}(object, from, to, ...)
-}
-\arguments{
-\item{object}{An object of class `SummarizedExperiment`}
-
-\item{na.type}{xxx}
 }
 \value{
-NA
-
 NA
 }
 \description{

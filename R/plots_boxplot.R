@@ -36,6 +36,8 @@
 #' 
 #' @export
 #' 
+#' @rdname descriptive-statistics-plots
+#' 
 boxPlotD_HC <- function(qData, 
                         conds, 
                         keyId=NULL, 

@@ -1,6 +1,4 @@
 
-# Module UI
-
 #' @title   mod_plots_corr_matrix_ui and mod_plots_corr_matrix_server
 #'
 #' @description  A shiny Module.
@@ -13,7 +11,7 @@
 #'
 #' @param session internal
 #'
-#' @rdname mod_plots_corr_matrix
+#' @rdname descriptives-statistics-plots
 #'
 #' @keywords internal
 #'
@@ -56,19 +54,11 @@ mod_plots_corr_matrix_ui <- function(id){
     highchartOutput(ns("corrMatrix"),width = '600px',height = '500px')
   )
 }
-# mod_navigation_server <- function(id, style=1, pages, start=1){
-#
-#   moduleServer(id, function(input, output, session) {
-
-# Module Server
-
 #' @param obj xxx
 #'
 #' @param names xxx
 #'
 #' @param gradientRate xxx. Default value is 0.9
-#'
-#' @rdname mod_plots_corr_matrix
 #'
 #' @export
 #'
@@ -78,7 +68,7 @@ mod_plots_corr_matrix_ui <- function(id){
 #' 
 #' @return NA
 #' 
-#' 
+#' @rdname descriptives-statistics-plots
 #'
 mod_plots_corr_matrix_server <- function(id, obj, names=NULL, gradientRate=NULL){
 

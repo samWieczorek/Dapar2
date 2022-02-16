@@ -38,7 +38,7 @@
 #' 
 #' @export
 #' 
-#' @rdname diff_analysis_sam
+#' @rdname differential-analysis
 #' 
 setMethod("diff_analysis_sam", "SummarizedExperiment",
           function(object,
@@ -60,7 +60,7 @@ setMethod("diff_analysis_sam", "SummarizedExperiment",
 #' 
 #' @export
 #' 
-#' @rdname diff_analysis_sam
+#' @rdname differential-analysis
 #' 
 setMethod("diff_analysis_sam", "QFeatures",
           function(object, i, name = "diffAnaAssay",  ...) {
@@ -114,6 +114,8 @@ setMethod("diff_analysis_sam", "QFeatures",
 #' 
 #' @import highcharter
 #' @importFrom graphics hist
+#' 
+#' @rdname differential-analysis
 #' 
 histPValue_HC <- function(pval_ll, bins=80, pi0=1){
   
@@ -222,6 +224,8 @@ histPValue_HC <- function(pval_ll, bins=80, pi0=1){
 #' 
 #' @export
 #' 
+#' @rdname differential-analysis
+#' 
 diffAnaComputeFDR <- function(logFC, 
                               pval, 
                               threshold_PVal=0, 
@@ -277,6 +281,8 @@ diffAnaComputeFDR <- function(logFC,
 #' @importFrom MultiAssayExperiment DataFrame
 #' 
 #' @export
+#' 
+#' @rdname differential-analysis
 #' 
 Get_AllComparisons <- function(obj){
   
@@ -335,6 +341,8 @@ Get_AllComparisons <- function(obj){
 #' 
 #' @importFrom MultiAssayExperiment DataFrame
 #' @export
+#' 
+#' @rdname differential-analysis
 #' 
 diffAnalysis <- function(obj, 
                          comp, 

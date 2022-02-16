@@ -25,6 +25,8 @@
 #' 
 #' @import highcharter
 #' 
+#' @rdname descriptive-statistics-plots
+#' 
 mvPerLinesHisto_HC <- function(qData){
    
   coeffMax <- .1
