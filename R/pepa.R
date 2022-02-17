@@ -62,6 +62,8 @@
 #' 
 #' @importFrom stats quantile mad sd
 #' 
+#' @rdname pepa-imputation
+#' 
 fudge2LRT <- function(lmm.res.h0, lmm.res.h1, cc, n, p, s, alpha = seq(0, 1, 0.05), include.zero = TRUE)
 {
     
@@ -170,6 +172,8 @@ fudge2LRT <- function(lmm.res.h0, lmm.res.h1, cc, n, p, s, alpha = seq(0, 1, 0.0
 #' 
 #' @export
 #' 
+#' @rdname pepa-imputation
+#' 
 LH0 <- function(X, y1, y2){
     
     n <- ncol(y1)+ncol(y2)
@@ -205,6 +209,8 @@ LH0 <- function(X, y1, y2){
 #' 
 #' @export
 #' 
+#' @rdname pepa-imputation
+#' 
 LH1 <- function(X, y1, y2, j){
     n1 <- ncol(y1)
     n2 <- ncol(y2)
@@ -239,6 +245,8 @@ LH1 <- function(X, y1, y2, j){
 #' @author Thomas Burger, Laurent Jacob
 #' 
 #' @export
+#' 
+#' @rdname pepa-imputation
 #' 
 LH0.lm <- function(X, y1, y2){
     Ytilde <- matrix(c(as.vector(y1), as.vector(y2)), ncol=1)
@@ -294,6 +302,8 @@ LH0.lm <- function(X, y1, y2){
 #' @export
 #' 
 #' @importFrom stats formula logLik lm
+#' 
+#' @rdname pepa-imputation
 #' 
 LH1.lm <- function(X, y1, y2, j){
     n1 <- ncol(y1)
@@ -391,6 +401,8 @@ LH1.lm <- function(X, y1, y2, j){
 #' 
 #' @importFrom lme4 getME
 #' 
+#' @rdname pepa-imputation
+#' 
 samLRT <- function(lmm.res.h0, lmm.res.h1, cc, n, p, s1){
     s <- lh1.sam <- llr.sam <- rep(NA, p)
     lh0.sam <- rep(NA, length(cc))
@@ -486,6 +498,8 @@ samLRT <- function(lmm.res.h0, lmm.res.h1, cc, n, p, s1){
 #' @importFrom utils de
 #' 
 #' @importFrom graph nodes graphAM connComp
+#' 
+#' @rdname pepa-imputation
 #' 
 pepa.test <- function(X, y, n1, n2, global=FALSE, use.lm=FALSE){
     

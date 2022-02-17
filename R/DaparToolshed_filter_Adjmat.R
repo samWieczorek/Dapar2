@@ -172,7 +172,7 @@ topnPeptides <- function(object, fun, top){
   
   # Get the 'n' entities with the best score for each column
   for (c in seq_len(ncol(temp.X))){
-    v <- order(temp.X[,c],decreasing=TRUE)[seq_len(n)]
+    v <- order(temp.X[,c],decreasing=TRUE)[seq_len(top)]
     l <- v[which((temp.X[,c])[v] != 0)]
     if (length(l) > 0)
       X[-l, c] <- 0

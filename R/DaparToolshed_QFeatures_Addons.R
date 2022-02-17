@@ -55,19 +55,19 @@ setMethod("qMetadata", "QFeatures",
           function(object, i, slotName = "qMetadata")
             List(lapply(experiments(object)[i],
                         function(x)
-                          .GetMetadataSlot(x, slotName = slotName)))
+                          .GetRowdataSlot(x, slotName = slotName)))
 )
 
 setMethod("qMetadata", "SummarizedExperiment",
           function(object, slotName = "qMetadata")
-            .GetMetadataSlot(object, slotName))
+            .GetRowdataSlot(object, slotName))
 
 
 
 ##' @export
 ##' @name qMetadata
 ##' @rdname QFeatures-supplementary-accessors
-"qMetadata<-" <- function(object, i, slotName = "qMetadata", value) {
+"qMetadata<-" <- function(object,i,slotName = "qMetadata", value) {
   if (is.null(colnames(value)) | is.null(rownames(value)))
     stop("The DataFrame must have row and column names.")
   ## Coerse to a data.frame
@@ -109,6 +109,13 @@ setMethod("qMetadata", "SummarizedExperiment",
 ##' @noRd
 .GetMetadataSlot <- function(x, slotName = NULL) {
   ans <- metadata(x)[[slotName]]
+  ans
+}
+
+##' @title .GetMetadataSlot
+##' @noRd
+.GetRowdataSlot <- function(x, slotName = NULL) {
+  ans <- rowData(x)[[slotName]]
   ans
 }
 
@@ -282,4 +289,22 @@ setMethod("version", "QFeatures",
   return(object)
 }
 
+
+##' @exportMethod design
+##' @rdname QFeatures-supplementary-accessors
+setMethod("design", "QFeatures",
+          function(object, slotName = "design")
+            .GetMetadataSlot(object, slotName = slotName)
+)
+
+
+
+##' @export
+##' @name design
+##' @rdname QFeatures-supplementary-accessors
+"design<-" <- function(object, slotName = "design", value) {
+  stopifnot (inherits(object, "QFeatures"))
+  metadata(object)[[slotName]] <- value
+  return(object)
+}
 

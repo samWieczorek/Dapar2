@@ -122,10 +122,17 @@ createQFeatures <- function(data = NULL,
 
   if(missing(typeDataset))
     stop("'typeDataset' is required")
-
+  
   #Standardize all colnames
   colnames(data) <- ReplaceSpecialChars(colnames(data))
+  
+  if (is.numeric(indQData))
+    indQData <- colnames(data)[indQData]
+  
+  if (is.numeric(indQMetadata))
+    indQMetadata <- colnames(data)[indQMetadata]
 
+  
   keyId <- ReplaceSpecialChars(keyId)
   typeDataset <- ReplaceSpecialChars(typeDataset)
   parentProtId <- ReplaceSpecialChars(parentProtId)
@@ -135,16 +142,26 @@ createQFeatures <- function(data = NULL,
   software <- ReplaceSpecialChars(software)
 
 
-  if (keyId == 'AutoID')
-    data <- cbind(data,
-                  AutoID = rep(paste(typeDataset, "_", seq_len(nrow(data)), sep=""))
-    )
-
+  
+  
+  if (keyId == 'AutoID'){
+    auto <- rep(paste(typeDataset, "_", seq_len(nrow(data)), sep=""))
+    data <- cbind(data, AutoID = auto)
+    rownames(data) <- auto
+  } else {
+    rownames(data) <- data[,keyId]
+  }
+  # Creates the QFeatures object
+  obj <- QFeatures::readQFeatures(data,
+                                  ecol = indQData,
+                                  name = 'original',
+                                  fnames = keyId)
+  
   ## Encoding the sample data
   sample <- lapply(sample, function(x){ ReplaceSpecialChars(x)})
   SummarizedExperiment::colData(obj)@listData <- sample
-
-
+  
+  
   # Get the quantitative metadata 
   tmp.qMetadata <- NULL
   if (!is.null(indQMetadata)){
@@ -167,16 +184,11 @@ createQFeatures <- function(data = NULL,
                               df = tmp.qMetadata)
 
   
-  # Creates the QFeatures object
-  obj <- QFeatures::readQFeatures(data,
-                                  ecol = indQData,
-                                  name = 'original',
-                                  fnames = keyId)
   
   # Remove the identification columns which became useless
-  obj <- obj[, -indQMetadata, ]
+  rowData(obj[[1]])<- rowData(obj[[1]])[, -match(indQMetadata, colnames(rowData(obj[[1]])))]
   
-
+  
   # Add the quantitative cell metadata info
   qMetadata(obj[['original']]) <- qMetadata
   
@@ -198,23 +210,11 @@ createQFeatures <- function(data = NULL,
   idcol(obj[['original']]) <- keyId
 
   if (tolower(typeDataset) == 'peptide'){
-    rowData(obj[['original']])$adjacencyMatrix <- ComputeAdjacencyMatrices(obj[['original']], 
-                                                                           col.proteins = parentProtId)
-
-  #  obj <- SetConnectedComps(obj, 1)
+    X<- makeAdjacencyMatrix(rowData(obj[[1]])[ ,parentProtId])
+    rownames(X) <- rownames(rowData(obj[[1]]))
+    adjacencyMatrix(obj[[1]]) <- X
   }
 
-
-  if (isTRUE(logTransform)) {
-    obj <- addAssay(obj,
-                    logTransform(obj[['original']]),
-                    name = "original_log")
-    obj <- addAssayLinkOneToOne(obj,
-                                from = "original",
-                                to = "original_log")
-  }
-
-
-  return(obj)
+return(obj)
 }
 
