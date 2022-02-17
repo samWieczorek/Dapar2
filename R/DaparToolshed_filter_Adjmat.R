@@ -8,8 +8,15 @@
 ##' [filterFeaturesOneSE] in order to create a new assay, embedded into the [QFeatures]
 ##' object.
 ##' 
+##' @param object An object of class `SummarizedExperiment`
 ##' 
-##' @details This function builds an intermediate matrix with scores for each peptide
+##' @param fun A `list()` of additional parameters
+##' 
+##' @param top A `integer(1)` which is the number of xxx
+##' 
+##' @details
+##' 
+##' This function builds an intermediate matrix with scores for each peptide
 ##' based on 'fun' parameter. Once this matrix is built, one select the 'n' peptides
 ##' which have the higher score
 ##' 
@@ -33,15 +40,9 @@
 ##' - [rowSums()]: xxx;
 ##' 
 ##' 
-##' @param object An object of class `SummarizedExperiment`
-##' @param fun A `list()` of additional parameters
-##' @param top A `integer(1)` which is the number of xxx
-##' 
-##' @rdname adjacency-matrix-filter
-##' 
 ##' @seealso The [QFeatures-filtering-oneSE] man page for the class `FunctionFilter`.
 ##' 
-##' @return An object of class `SummarizedExperiment` 
+##' @rdname adjacency-matrix-filter
 ##'
 ##' @author Samuel Wieczorek
 ##' 

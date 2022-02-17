@@ -162,11 +162,11 @@ ReplaceSpecialChars <- function(x){
 #' @author Samuel Wieczorek
 #' 
 #' @examples
-#' GetProstarVersions()
+#' ProstarVersions()
 #' 
 #' @export
 #' 
-GetProstarVersions <- function(){
+ProstarVersions <- function(){
   
   Prostar <- DaparToolshed <- DaparData <- NA
   

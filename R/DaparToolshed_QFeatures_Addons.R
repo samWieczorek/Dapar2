@@ -1,69 +1,77 @@
-
-#' @title Additional accessors to the quantitative cell metadata
-#' 
-#' @description 
-#' These names are common to all assays contained in the object. This is why
-#' they are stored in the global metadata. This function is used whenever it is necessary
-#' to (re)detect MEC and POV (new dataset or when post processing protein qMetadata 
-#' after aggregation)
-#' 
-#' @details 
-#' 
-#' 
-#' Additional slots for rowdata of a `SummarizedExperiment` object
-#'  - qMetadata: xxx
-#' 
-#' Additional slots for Metadata for a `QFeatures` object
-#'  - xxx: xxxx
-#' 
-#' Additional slots for Metadata for a `SummarizedExperiment` object
-#'  - qMetadata: xxxx
-#'  - parentProtId: xxx
-#'  - idcol: xxxx
-#'  - typeDataset: xxx
-#'  
-#'  
+##' @title Additional accessors to the quantitative cell metadata.
+##' 
+##' @description
+##'  
+##' These names are common to all assays contained in the object. This is why
+##' they are stored in the global metadata. This function is used whenever it is necessary
+##' to (re)detect MEC and POV (new dataset or when post processing protein qMetadata 
+##' after aggregation)
+##' 
+##' @param object An instance of class `SummarizedExperiment` or `QFeatures`.
+##' 
+##' @param i The index or name of the assays to extract the quantitative metadata
+##'  from. All must have a rowdata variable named as `slotName`
+##' 
+##' @param slotName xxx
+##' 
+##' @param value xxx
+##' 
+##' 
+##' 
+##' @details 
+##' 
+##' Additional slots for rowdata of a `SummarizedExperiment` object
+##'  - qMetadata: xxx
+##' 
+##' Additional slots for Metadata for a `QFeatures` object
+##'  - xxx: xxxx
+##' 
+##' Additional slots for Metadata for a `SummarizedExperiment` object
+##'  - qMetadata: xxxx
+##'  - parentProtId: xxx
+##'  - idcol: xxxx
+##'  - typeDataset: xxx
+##'  
+##' 
+##' @section Quantitative metadata
+##' 
+##' Default slotName is `"qMetadata"`.
+##'  The value is an adjacency matrix with row and column names. The
+##'     matrix will be coerced to compressed, column-oriented sparse
+##'     matrix (class `dgCMatrix`) as defined in the `Matrix` package,
+##'     as generaled by the [sparseMatrix()] constructor.
+##' 
+##'  
+##'   @rdname QFeatures-supplementary-accessors
+##'   
+##'   @examples 
+##'   
+##'  
 NULL
 
-#--------------------------------
-
-#' @export
-#'
-#' @rdname QFeatures-supplementary-accessors
-#'
-#' @param object An instance of class `SummarizedExperiment` or
-#'     `QFeatures`.
-#'
-#' @param slotName `character(1)` with the variable name containing
-#'     the quantitative metadata. Default is `"qMetadata"`.
-#'
-#' @param i The index or name of the assays to extract the quantitative metadata
-#'  from. All must have a rowdata variable named `qMetadata`.
+##' @exportMethod qMetadata
+##' @rdname QFeatures-supplementary-accessors
 setMethod("qMetadata", "QFeatures",
           function(object, i, slotName = "qMetadata")
             List(lapply(experiments(object)[i],
-                        .qMetadata,
-                        slotName = slotName)))
+                        function(x)
+                          .GetMetadataSlot(x, slotName = slotName)))
+)
 
 setMethod("qMetadata", "SummarizedExperiment",
           function(object, slotName = "qMetadata")
-            .qMetadata(object, slotName))
+            .GetMetadataSlot(object, slotName))
 
 
-#' @export
-#'
-#' @rdname QFeatures-supplementary-accessors
-#'
-#' @param i When adding an adjacency matrix to an assay of a
-#'     `QFeatures` object, the index or name of the assay the
-#'     adjacency matrix will be added to. Ignored when `x` is an
-#'     `SummarizedExperiment`.
-#'
-#' @param value An `DataFrame` with row and column names.
+
+##' @export
+##' @name qMetadata
+##' @rdname QFeatures-supplementary-accessors
 "qMetadata<-" <- function(object, i, slotName = "qMetadata", value) {
   if (is.null(colnames(value)) | is.null(rownames(value)))
     stop("The DataFrame must have row and column names.")
-  
+  ## Coerse to a data.frame
+  #value <- as(value, "data.frame")
   if (inherits(object, "SummarizedExperiment")) {
     if (!identical(rownames(value), rownames(object)))
       stop("Row names of the SummarizedExperiment and the DataFrame must match.")
@@ -84,30 +92,29 @@ setMethod("qMetadata", "SummarizedExperiment",
   return(object)
 }
 
-.qMetadata <- function(x, slotName = "qMetadata") {
-  #stopifnot(slotName %in% names(rowData(x)))
-  ans <- rowData(x)[[slotName]]
-  if (is.null(colnames(ans)) | is.null(rownames(ans)))
-    warning("The qMetadata dataframe should have row and column names.")
+# 
+# ##' @title .qMetadata
+# ##' @name .qMetadata
+# ##' @noRd
+# .qMetadata <- function(x, slotName = "qMetadata") {
+#   #stopifnot(slotName %in% names(rowData(x)))
+#   ans <- rowData(x)[[slotName]]
+#   if (is.null(colnames(ans)) | is.null(rownames(ans)))
+#     warning("The qMetadata dataframe should have row and column names.")
+#   ans
+# }
+
+
+##' @title .GetMetadataSlot
+##' @noRd
+.GetMetadataSlot <- function(x, slotName = NULL) {
+  ans <- metadata(x)[[slotName]]
   ans
 }
 
 
-#--------------------------------------------------------
-
-
-#' @export
-#'
-#' @rdname QFeatures-supplementary-accessors
-#'
-#' @param object An instance of class `SummarizedExperiment` or
-#'     `QFeatures`.
-#'
-#' @param slotName `character(1)` with the variable name containing
-#'     the adjacency matrix. Default is `"typeDataset"`.
-#'
-#' @param i The index or name of the assays to extract the advaceny
-#'     matrix from. All must have a rowdata variable named `slotName`.
+##' @exportMethod typeDataset
+##' @rdname QFeatures-supplementary-accessors
 setMethod("typeDataset", "QFeatures",
           function(object, i, slotName = "typeDataset")
             List(lapply(experiments(object)[i],
@@ -118,16 +125,10 @@ setMethod("typeDataset", "SummarizedExperiment",
           function(object, slotName = "typeDataset")
             .GetMetadataSlot(object, slotName))
 
-#' @export
-#'
-#' @rdname QFeatures-supplementary-accessors
-#'
-#' @param i When adding an type dataset to an assay of a
-#'     `QFeatures` object, the index or name of the assay the
-#'     type dataset  will be added to. Ignored when `x` is an
-#'     `SummarizedExperiment`.
-#'
-#' @param value A `character()`.
+
+##' @export
+##' @name typeDataset
+##' @rdname QFeatures-supplementary-accessors
 "typeDataset<-" <- function(object, i, slotName = "typeDataset", value) {
   if (inherits(object, "SummarizedExperiment")) {
     metadata(object)[[slotName]] <- value
@@ -146,22 +147,9 @@ setMethod("typeDataset", "SummarizedExperiment",
 }
 
 
-#------------------------------------------------------------
 
-
-
-#' @export
-#'
-#' @rdname QFeatures-supplementary-accessors
-#'
-#' @param object An instance of class `SummarizedExperiment` or
-#'     `QFeatures`.
-#'
-#' @param slotName `character(1)` with the variable name containing
-#'     the key Id Column of the se. Default is `"idcol"`.
-#'
-#' @param i The index or name of the assays to extract the information from.
-#'  All must have a rowdata variable named `slotName`.
+##' @exportMethod idcol
+##' @rdname QFeatures-supplementary-accessors
 setMethod("idcol", "QFeatures",
           function(object, i, slotName = "idcol")
             List(lapply(experiments(object)[i],
@@ -172,16 +160,10 @@ setMethod("idcol", "SummarizedExperiment",
           function(object, slotName = "idcol")
             .GetMetadataSlot(object, slotName))
 
-#' @export
-#'
-#' @rdname QFeatures-supplementary-accessors
-#'
-#' @param i When adding an type dataset to an assay of a
-#'     `QFeatures` object, the index or name of the assay the
-#'     type dataset  will be added to. Ignored when `x` is an
-#'     `SummarizedExperiment`.
-#'
-#' @param value A `character()`.
+
+##' @export
+##' @name idcol
+##' @rdname QFeatures-supplementary-accessors
 "idcol<-" <- function(object, i, slotName = "idcol", value) {
   if (inherits(object, "SummarizedExperiment")) {
     metadata(object)[[slotName]] <- value
@@ -201,21 +183,9 @@ setMethod("idcol", "SummarizedExperiment",
 
 
 
-#--------------------------
 
-
-#' @export
-#'
-#' @rdname QFeatures-supplementary-accessors
-#'
-#' @param object An instance of class `SummarizedExperiment` or
-#'     `QFeatures`.
-#'
-#' @param slotName `character(1)` with the variable name containing
-#'     the name of the column containing. Default is `"parentProtId"`.
-#'
-#' @param i The index or name of the assays to extract the parentProtId from. 
-#'          All must have a rowdata variable named `slotName`.
+##' @exportMehod parentProtId
+##' @rdname QFeatures-supplementary-accessors
 setMethod("parentProtId", "QFeatures",
           function(object, i, slotName = "parentProtId")
             List(lapply(experiments(object)[i],
@@ -227,17 +197,10 @@ setMethod("parentProtId", "SummarizedExperiment",
             if (typeDataset(object) == 'peptide')
               .GetMetadataSlot(object, slotName))
 
-#' @export
-#'
-#' @rdname QFeatures-supplementary-accessors
-#'
-#' @param i When adding an type dataset to an assay of a
-#'     `QFeatures` object, the index or name of the assay the
-#'     type dataset  will be added to. Ignored when `x` is an
-#'     `SummarizedExperiment`.
-#'
-#' @param value A `character(1)`.
-#' 
+
+##' @export
+##' @name parentProtId
+##' @rdname QFeatures-supplementary-accessors
 "parentProtId<-" <- function(object, i, slotName = "parentProtId", value) {
   if (inherits(object, "SummarizedExperiment")) {
     if (typeDataset(object) != 'peptide')
@@ -262,21 +225,9 @@ setMethod("parentProtId", "SummarizedExperiment",
 
 
 
-#--------------------------
 
-
-#' @export
-#'
-#' @rdname QFeatures-supplementary-accessors
-#'
-#' @param object An instance of class `SummarizedExperiment` or
-#'     `QFeatures`.
-#'
-#' @param slotName `character(1)` with the variable name containing
-#'     the name of the column containing. Default is `"analysis"`.
-#'
-#' @param i The index or name of the assays to extract the analysis from. 
-#'          All must have a metadata variable named `slotName`.
+##' @exportMethod analysis
+##' @rdname QFeatures-supplementary-accessors
 setMethod("analysis", "QFeatures",
           function(object, i, slotName = "analysis")
             List(lapply(experiments(object)[i],
@@ -288,17 +239,10 @@ setMethod("analysis", "SummarizedExperiment",
           function(object, slotName = "analysis")
             .GetMetadataSlot(object, slotName))
 
-#' @export
-#'
-#' @rdname QFeatures-supplementary-accessors
-#'
-#' @param i When adding an type dataset to an assay of a
-#'     `QFeatures` object, the index or name of the assay the
-#'     type dataset  will be added to. Ignored when `x` is an
-#'     `SummarizedExperiment`.
-#'
-#' @param value A `character(1)`.
-#' 
+
+##' @export
+##' @name analysis
+##' @rdname QFeatures-supplementary-accessors
 "analysis<-" <- function(object, i, slotName = "analysis", value) {
   if (inherits(object, "SummarizedExperiment")) {
     metadata(object)[[slotName]] <- value
@@ -318,63 +262,24 @@ setMethod("analysis", "SummarizedExperiment",
 
 
 
-#--------------------------
 
 
-#' @export
-#'
-#' @rdname QFeatures-supplementary-accessors
-#'
-#' @param object An instance of class `SummarizedExperiment` or
-#'     `QFeatures`.
-#'
-#' @param slotName `character(1)` with the variable name containing
-#'     the versions of packages used. Default is `"version"`.
-#'
-#' @param i The index or name of the assays to extract the version from. 
-#'          All must have a rowdata variable named `slotName`.
+##' @exportMethod version
+##' @rdname QFeatures-supplementary-accessors
 setMethod("version", "QFeatures",
-          function(object, i, slotName = "version")
-            List(lapply(experiments(object)[i],
-                        .GetMetadataSlot,
-                        slotName = slotName)))
-
-setMethod("version", "SummarizedExperiment",
           function(object, slotName = "version")
-            .GetMetadataSlot(object, slotName))
+            .GetMetadataSlot(object, slotName = slotName)
+)
 
-#' @export
-#'
-#' @rdname QFeatures-supplementary-accessors
-#'
-#' @param i When adding an type dataset to an assay of a
-#'     `QFeatures` object, the index or name of the assay the
-#'     type dataset  will be added to. Ignored when `x` is an
-#'     `SummarizedExperiment`.
-#'
-#' @param value A `character(1)`.
-#' 
-"version<-" <- function(object, i, slotName = "version", value) {
-  if (inherits(object, "SummarizedExperiment")) {
-    metadata(object)[[slotName]] <- value
-    return(object)
-  }
-  stopifnot(inherits(object, "QFeatures"))
-  if (typeDataset(object[[i]]) != 'peptide')
-    stop("The dataset must contain peptides.")
-  if (length(i) != 1)
-    stop("'i' must be of length one. Repeat the call to add a matrix to multiple assays.")
-  if (is.numeric(i) && i > length(object))
-    stop("Subscript is out of bounds.")
-  if (is.character(i) && !(i %in% names(object)))
-    stop("Assay '", i, "' not found.")
-  se <- object[[i]]
-  metadata(object[[i]])[[slotName]] <- value
+
+
+##' @export
+##' @name version
+##' @rdname QFeatures-supplementary-accessors
+"version<-" <- function(object, slotName = "version", value) {
+  stopifnot (inherits(object, "QFeatures"))
+  metadata(object)[[slotName]] <- value
   return(object)
 }
 
 
-.GetMetadataSlot <- function(x, slotName = "version") {
-  ans <- metadata(x)[[slotName]]
-  ans
-}

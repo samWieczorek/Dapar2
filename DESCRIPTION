@@ -91,7 +91,7 @@ Collate:
     palette.R
     qMetadata.R
     aggregation_func.R
-    DaparToolshed_filterAdjmat.R
+    DaparToolshed_filter_Adjmat.R
     DaparToolshed_QFeatures_Addons.R
     DaparToolshed_filter_qMetadata.R
     DaparToolshed-filterFeaturesOneSE.R

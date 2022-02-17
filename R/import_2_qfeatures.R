@@ -1,15 +1,14 @@
-
-
-
-#' Builds an object of class \code{QFeatures} from a
+#' @title Creates an object of class \code{QFeatures} from text file.
+#' 
+#' @description 
+#' 
+#' Creates an object of class \code{QFeatures} from a
 #' single tabulated-like file for quantitative and meta-data and a dataframe
 #' for the samples description.
 #'
-#' @title Creates an object of class \code{QFeatures} from text file
-#'
 #' @param data The name of a tab-separated file that contains the data.
 #'
-#' @param file The name of a file xxx
+#' @param file `character(1)`. The name of a file xxx
 #'
 #' @param sample A dataframe describing the samples (in lines).
 #'
@@ -17,30 +16,31 @@
 #' of a column in designTable that have to be integrated in
 #' the \code{rowData()} table of the \code{QFeatures} object.
 #'
-#' @param keyId The indice of the column containing the ID of entities
+#' @param keyId A `character(1)` or `numeric(1)` which is the indice of the column containing the ID of entities
 #' (peptides or proteins)
 #'
 #' @param indQMetadata xxxxxxxxxxx
 #'
-#' @param logTransform A boolean value to indicate if the data have to be
-#' log-transformed (Default is FALSE)
-#'
-#' @param forceNA A boolean value to indicate if the 0 and NaN values of
-#' intensity have to be replaced by NA (Default is FALSE)
+#' @param force.na A `boolean` that indicates if the '0' and 'NaN' values of
+#' quantitative values  must be replaced by 'NA' (Default is FALSE)
 #'
 #' @param typeDataset A string that indicates whether the dataset is about
 #'
-#' @param parentProtId For peptide entities, a string which is the name of a column in rowData. It contains the id of parent
+#' @param parentProtId A `character(1)` For peptide entities, a string which is the name of a column in rowData. It contains the id of parent
 #' proteins and is used to generate adjacency matrix and process to aggregation.
 #'
-#' @param processes xxxx
+#' @param processes A vector of A `character()` which contains the name of processes
+#' which has already been run on the data. Default is 'original'.
 #'
-#' @param typePipeline The type of pipeline used with this dataset. The list of predefined
+#' @param typePipeline A `character(1)` The type of pipeline used with this dataset. The list of predefined
 #' pipelines in DaparToolshed can be obtained with the function \code{pipelines()}. Default value is NULL
 #'
-#' @param analysis The name of the MS analysis
+#' @param analysis A `character(1)` which is the name of the MS study. 
 #'
-#' @param software xxx
+#' @param software A `character(1)` 
+#' 
+#' @param name A `character(1)` which is the name of the assay in the QFeatures object. 
+#' Default is 'original'
 #'
 #' @return An instance of class \code{QFeatures}.
 #'
@@ -52,7 +52,7 @@
 #' sample.file <- system.file("extdata", "samples_Exp1_R25.txt", package="DaparToolshedData")
 #' sample <- read.table(sample.file, header=TRUE, sep="\t", as.is=TRUE, stringsAsFactors = FALSE)
 #' ft <- createQFeatures(data = data, sample = sample, indQData = 56:61, keyId = 'Sequence', analysis = 'test',
-#' logTransform = TRUE, indQMetadata = 43:48, typeDataset = 'peptide',
+#' indQMetadata = 43:48, typeDataset = 'peptide',
 #' parentProtId = 'Protein_group_IDs', forceNA = TRUE, software = 'maxquant')
 #' }
 #'
@@ -62,7 +62,7 @@
 #'
 #' @export
 #' 
-#' @rdname import-export-dataset
+#' @rdname import-export-QFeatures
 #'
 createQFeatures <- function(data = NULL,
                             file = NULL,
@@ -70,14 +70,14 @@ createQFeatures <- function(data = NULL,
                             indQData,
                             keyId = 'AutoID',
                             indQMetadata = NULL,
-                            logTransform = FALSE,
-                            forceNA = TRUE,
+                            force.na = TRUE,
                             typeDataset,
                             parentProtId = NULL,
                             analysis = 'foo',
                             processes = NULL,
                             typePipeline = NULL,
-                            software = NULL){
+                            software = NULL,
+                            name = 'original'){
 
 
   #Check parameters validity
@@ -140,47 +140,53 @@ createQFeatures <- function(data = NULL,
                   AutoID = rep(paste(typeDataset, "_", seq_len(nrow(data)), sep=""))
     )
 
-  obj <- QFeatures::readQFeatures(data,
-                                  ecol = indQData,
-                                  name = 'original',
-                                  fnames = keyId)
-
   ## Encoding the sample data
   sample <- lapply(sample, function(x){ ReplaceSpecialChars(x)})
   SummarizedExperiment::colData(obj)@listData <- sample
 
 
-  # Get the metacell info
+  # Get the quantitative metadata 
   tmp.qMetadata <- NULL
   if (!is.null(indQMetadata)){
     tmp.qMetadata <- data[, indQMetadata]
     tmp.qMetadata <- apply(tmp.qMetadata, 2, tolower)
-    tmp.qMetadata <- as.data.frame(apply(tmp.qMetadata, 2,
-                                        function(x) gsub("\\s", "", x)),
-                                  stringsAsFactors = FALSE)
+    tmp.qMetadata <- apply(tmp.qMetadata, 
+                           2,
+                           function(x) 
+                             gsub("\\s", "", x)
+                           )
+    tmp.qMetadata <- as.data.frame(tmp.qMetadata,
+                                   stringsAsFactors = FALSE)
   }
 
   #browser()
   qMetadata <- BuildqMetadata(from = software,
-                            level = typeDataset,
-                            qdata = assay(obj),
-                            conds = colData(obj)$Condition,
-                            df = tmp.qMetadata)
+                              level = typeDataset,
+                              qdata = assay(obj),
+                              conds = colData(obj)$Condition,
+                              df = tmp.qMetadata)
 
+  
+  # Creates the QFeatures object
+  obj <- QFeatures::readQFeatures(data,
+                                  ecol = indQData,
+                                  name = 'original',
+                                  fnames = keyId)
+  
+  # Remove the identification columns which became useless
+  obj <- obj[, -indQMetadata, ]
+  
 
   # Add the quantitative cell metadata info
-  rowData(obj[['original']])$qMetadata <- qMetadata
-  # rowData(obj[['original']]) <- cbind(rowData(obj[['original']]),
-  #                                     as.data.frame(metacell, rownames = colnames(data)[indQMetadata])
-  # )
+  qMetadata(obj[['original']]) <- qMetadata
+  
 
-
-  if (isTRUE(forceNA))
+  if (force.na)
     obj <- zeroIsNA(obj, seq_along(obj))
 
 
-  # Fill the metadata for whole object
-  metadata(obj)$versions <- GetProstarVersions()
+  # Enrich the metadata for whole QFeatures object
+  metadata(obj)$versions <- ProstarVersions()
   metadata(obj)$analysis <- list(analysis = analysis,
                                  typePipeline = typePipeline,
                                  processes = c('original', processes)

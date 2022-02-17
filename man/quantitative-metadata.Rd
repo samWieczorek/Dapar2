@@ -11,8 +11,6 @@
 \alias{UpdateqMetadata,SummarizedExperiment-method}
 \alias{search.qMetadata.tags}
 \alias{qMetadata_combine}
-\alias{qMetadata,QFeatures-method}
-\alias{qMetadata<-}
 \alias{mod_query_metacell_ui}
 \title{Quantitative metadata vocabulary for entities}
 \usage{
@@ -36,10 +34,6 @@ search.qMetadata.tags(pattern, level, depth = "1")
 
 qMetadata_combine(met, level)
 
-\S4method{qMetadata}{QFeatures}(object, i, slotName = "qMetadata")
-
-qMetadata(object, i, slotName = "qMetadata") <- value
-
 mod_query_metacell_ui(id)
 }
 \arguments{
@@ -55,29 +49,17 @@ mod_query_metacell_ui(id)
 
 \item{pattern}{The string to search.}
 
-\item{object}{An instance of class `SummarizedExperiment` or
-`QFeatures`.}
+\item{object}{xxx}
+
+\item{to}{xxx}
+
+\item{...}{xxx}
 
 \item{depth}{xxx}
 
 \item{met}{xxx}
 
-\item{i}{When adding an adjacency matrix to an assay of a
-`QFeatures` object, the index or name of the assay the
-adjacency matrix will be added to. Ignored when `x` is an
-`SummarizedExperiment`.}
-
-\item{value}{An adjacency matrix with row and column names. The
-matrix will be coerced to compressed, column-oriented sparse
-matrix (class `dgCMatrix`) as defined in the `Matrix` package,
-as generaled by the [sparseMatrix()] constructor.}
-
 \item{id}{xxx}
-
-\item{na.type}{xxx}
-
-\item{qMetaName}{`character(1)` with the variable name containing
-the adjacency matrix. Default is `"qMetadata"`.}
 }
 \value{
 A data.frame containing the different tags and corresponding colors for the level
@@ -162,6 +144,7 @@ In the quantitative columns, a missing value is identified by no value rather
 than a value equal to 0. 
 Conversion rules
 Initial conversion rules for maxquant
+
 |--------------|-----------------|-----|
 | Quanti       |    PSM count    | Tag |
 |--------------|-----------------|-----|
@@ -183,6 +166,8 @@ Initial conversion rules for maxquant
 
 Similar to the function \code{is.na} but focused on the equality with 
 the paramter 'type'.
+
+Update the quantitative metadata information of missing values that were imputed
 
 Gives all the tags of the metadata vocabulary containing the pattern 
 (parent and all its children).
@@ -285,6 +270,10 @@ obj <- Exp1_R25_pept[seq_len(10),]
 metadata <- qMetadata(obj)
 m <- match.qMetadata(metadata, "missing", 'peptide')
 
+
+obj <- Exp1_R25_pept[seq_len(10),]
+obj[[2]] <- UpdateqMetadata(obj[[2]], 'missing', 'imputed')
+
 search.qMetadata.tags('missing POV', 'peptide')
 search.qMetadata.tags('quanti', 'peptide')
 
@@ -298,6 +287,8 @@ function(x) tag <- qMetadata_combine(x, 'peptide'))
 }
 \author{
 Thomas Burger, Samuel Wieczorek
+
+Samuel Wieczorek
 
 Samuel Wieczorek
 

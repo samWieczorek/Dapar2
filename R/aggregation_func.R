@@ -53,7 +53,6 @@ NULL
 
 #' @exportMethod aggregateQmetadata
 #' @rdname qMetadata-aggregate
-#' @export
 setMethod("aggregateQmetadata", "QFeatures",
           function(object, i, fcol, name = "newAssay",
                    fun = aggQmeta, ...) {

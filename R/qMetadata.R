@@ -57,7 +57,7 @@
 #' 
 #' @author Thomas Burger, Samuel Wieczorek
 #'
-#'@export
+#' @export
 #'
 #' @rdname quantitative-metadata
 #' 
@@ -148,6 +148,7 @@ qMetadata.def <- function(level){
 #' @title Sets the MEC tag in the qMetadata
 #' 
 #' @description 
+#' 
 #' This function is based on the qMetadata dataframe to look for either missing
 #' values (used to update an initial dataset) or imputed values (used when
 #' post processing protein qMetadata after aggregation)
@@ -169,12 +170,6 @@ qMetadata.def <- function(level){
 #' df <- assay(Exp1_R25_pept, 2)
 #' level <- typeDataset(object, 2)
 #' df <- Set_POV_MEC_tags(object, 1, level)
-#' 
-#' @param  conds xxx.
-#'
-#' @param df xxx
-#'
-#' @param level xxx
 #'
 #' @export
 #'
@@ -205,6 +200,7 @@ Set_POV_MEC_tags <- function(conds, df, level){
 #' @title xxxx
 #' 
 #' @description 
+#' 
 #' xxxxxx
 #' 
 #' @param from xxx
@@ -271,6 +267,7 @@ BuildqMetadata <- function(from = NULL,
 #' @title Sets the qMetadata dataframe
 #' 
 #' @description
+#' 
 #' In the quantitative columns, a missing value is identified by no value rather
 #' than a value equal to 0. 
 #' Conversion rules
@@ -337,10 +334,12 @@ qMetadata_generic <- function(qdata, conds, level){
 #' @title Sets the qMetadata dataframe
 #' 
 #' @description
+#' 
 #' In the quantitative columns, a missing value is identified by no value rather
 #' than a value equal to 0. 
 #' Conversion rules
 #' Initial conversion rules for maxquant
+#' 
 #' |--------------|-----------------|-----|
 #' | Quanti       |    PSM count    | Tag |
 #' |--------------|-----------------|-----|
@@ -417,6 +416,7 @@ qMetadata_proline <- function(qdata,
 #' @title Sets the quantitative metadata dataframe for maxquant datasets
 #' 
 #' @description 
+#' 
 #' Initial conversion rules for maxquant
 #' |------------|-----------------------|--------|
 #' | Quanti     |     Identification    |    Tag |
@@ -553,10 +553,17 @@ match.qMetadata <- function(df, pattern, level){
 }
 
 #' @title
+#' 
 #' Update quantitative metadata after imputation
 #' 
 #' @description
+#' 
 #' Update the quantitative metadata information of missing values that were imputed
+#' 
+#' @param object xxx
+#' @param from xxx
+#' @param to xxx
+#' @param ... xxx
 #' 
 #' @examples
 #' 
@@ -568,19 +575,7 @@ match.qMetadata <- function(df, pattern, level){
 #' 
 #' @return NA
 #' 
-"UpdateqMetadata"
-
-#' 
-#' @param object An object of class `SummarizedExperiment`
-#' 
-#' @param na.type xxx
-#' 
-#' @export
-#' 
 #' @rdname quantitative-metadata
-#' 
-#' @return NA
-#' 
 setMethod("UpdateqMetadata", "SummarizedExperiment",
           function(object,
                    from,
@@ -796,78 +791,3 @@ qMetadata_combine <- function(met, level) {
 }
 
 
-
-
-
-
-#' @export
-#'
-#' @importFrom ProtGenerics adjacencyMatrix
-#'
-#' @param object An instance of class `SummarizedExperiment` or
-#'     `QFeatures`.
-#'
-#' @param qMetaName `character(1)` with the variable name containing
-#'     the adjacency matrix. Default is `"qMetadata"`.
-#'
-#' @param i The index or name of the assays to extract the advaceny
-#'     matrix from. All must have a rowdata variable named `qMetaName`.
-#'    
-#' @rdname quantitative-metadata
-#' 
-setMethod("qMetadata", "QFeatures",
-          function(object, i, qMetaName = "qMetadata")
-            List(lapply(experiments(object)[i],
-                        .qMetadata,
-                        qMetaName = qMetaName)))
-
-setMethod("qMetadata", "SummarizedExperiment",
-          function(object, qMetaName = "qMetadata")
-            .qMetadata(object, qMetaName))
-
-#' @export
-#'
-#' @param i When adding an adjacency matrix to an assay of a
-#'     `QFeatures` object, the index or name of the assay the
-#'     adjacency matrix will be added to. Ignored when `x` is an
-#'     `SummarizedExperiment`.
-#'
-#' @param value An adjacency matrix with row and column names. The
-#'     matrix will be coerced to compressed, column-oriented sparse
-#'     matrix (class `dgCMatrix`) as defined in the `Matrix` package,
-#'     as generaled by the [sparseMatrix()] constructor.
-#'     
-#' @rdname quantitative-metadata
-#' 
-"qMetadata<-" <- function(object, i, qMetaName = "qMetadata", value) {
-  if (is.null(colnames(value)) | is.null(rownames(value)))
-    stop("The matrix must have row and column names.")
-  ## Coerse to a data.frame
-  value <- as(value, "data.frame")
-  if (inherits(object, "SummarizedExperiment")) {
-    if (!identical(rownames(value), rownames(object)))
-      stop("Row names of the SummarizedExperiment and the qMetadata data.frame must match.")
-    if (qMetaName %in% colnames(rowData(object)))
-      stop("Found an existing variable ", qMetaName, ".")
-    rowData(object)[[qMetaName]] <- value
-    return(object)
-  }
-  stopifnot(inherits(object, "QFeatures"))
-  if (length(i) != 1)
-    stop("'i' must be of length one. Repeat the call to add a matrix to multiple assays.")
-  if (is.numeric(i) && i > length(object))
-    stop("Subscript is out of bounds.")
-  if (is.character(i) && !(i %in% names(object)))
-    stop("Assay '", i, "' not found.")
-  se <- object[[i]]
-  object[[i]] <- qMetadata(se, qMetaName) <- value
-  return(object)
-}
-
-.qMetadata <- function(x, qMetaName = "qMetadata") {
-  stopifnot(qMetaName %in% names(rowData(x)))
-  ans <- rowData(x)[[qMetaName]]
-  if (is.null(colnames(ans)) | is.null(rownames(ans)))
-    warning("The qMetadata data.frame should have row and column names.")
-  ans
-}
