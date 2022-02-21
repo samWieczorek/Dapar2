@@ -36,7 +36,7 @@ A list of sheets name
 This function exports a \code{QFeatures} data object to a Excel file.
 Each of the three data.frames in the \code{QFeatures} object (ie expression data,
 colData and rowData are respectively integrated into separate sheets in
-the Excel file). The colored cells in the experimental data correspond to the 
+the Excel file). The colored cells in the experimental data correspond to the
 original missing values which have been imputed.
 }
 \examples{

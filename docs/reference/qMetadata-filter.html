@@ -83,9 +83,9 @@ or at least one condition.</p>
 <dt>mask</dt>
 <dd><p>xxx</p></dd>
 <dt>type</dt>
-<dd><p>Available values are:
-* 'AllCond' (the query is valid in all the conditions),
-* 'AtLeatOneCond' (the query is valid in at leat one condition.</p></dd>
+<dd><p>Available values are:</p><ul><li><p>'AllCond' (the query is valid in all the conditions),</p></li>
+<li><p>'AtLeatOneCond' (the query is valid in at leat one condition.</p></li>
+</ul></dd>
 <dt>op</dt>
 <dd><p>String for operator to use. List of operators is available with SymFilteringOperators().</p></dd>
 </dl></div>
@@ -98,8 +98,7 @@ NA
 NA
 #' @examples
 Exp1_R25_pept &lt;- readRDS(system.file("data", 'Exp1_R25_pept.rda', package="DaparToolshedData"))
-obj &lt;- Exp1_R25_pept[seq_len(10)]
-level &lt;- obj@experimentData@other$typeOfData
+obj &lt;- Exp1_R25_peptseq_len(10)level &lt;- obj@experimentData@other$typeOfData
 pattern &lt;- 'missing'
 mask &lt;- match.qMetadata(metadata=qMetadata(obj), pattern=pattern, level=level)
 type &lt;- 'AllCond'

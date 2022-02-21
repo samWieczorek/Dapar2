@@ -2,7 +2,8 @@
 % Please edit documentation in R/plots_boxplot.R, R/plots_corr_matrix.R,
 %   R/plots_CV_dist.R, R/plots_density_plot.R, R/plots_heatmap.R,
 %   R/plots_mv_histo.R, R/plots_mv_PerLinesHisto.R,
-%   R/plots_mv_PerLinesHistoPerCondition.R, R/plots_pca.R, R/plots_violin.R
+%   R/plots_mv_PerLinesHistoPerCondition.R, R/plots_pca.R, R/plots_violin.R,
+%   R/mod_plots_density.R, R/mod_plots_heatmap.R
 \name{boxPlotD_HC}
 \alias{boxPlotD_HC}
 \alias{corrMatrixD_HC}
@@ -18,6 +19,10 @@
 \alias{plotPCA_Ind}
 \alias{plotPCA_Eigen_hc}
 \alias{violinPlotD}
+\alias{mod_plots_density_ui}
+\alias{mod_plots_density_server}
+\alias{mod_plots_heatmap_ui}
+\alias{mod_plots_heatmap_server}
 \title{Builds a boxplot from a dataframe using the library \code{highcharter}}
 \usage{
 boxPlotD_HC(
@@ -76,6 +81,14 @@ violinPlotD(
   palette = NULL,
   subset.view = NULL
 )
+
+mod_plots_density_ui(id)
+
+mod_plots_density_server(id, obj, conds, legend = NULL, base_palette = NULL)
+
+mod_plots_heatmap_ui(id)
+
+mod_plots_heatmap_server(id, obj, conds, width = 900)
 }
 \arguments{
 \item{qData}{Numeric matrix}
@@ -84,7 +97,7 @@ violinPlotD(
 
 \item{keyId}{xxx}
 
-\item{legend}{A vector of the conditions (one condition per sample).}
+\item{legend}{xxx}
 
 \item{palette}{xxx}
 
@@ -95,7 +108,7 @@ violinPlotD(
 \item{names}{A vector of strings which will be used as legend. The length
 of 'names' must be equal to the number of samples in the dataset.}
 
-\item{rate}{The rate parameter to control the exponential law for 
+\item{rate}{The rate parameter to control the exponential law for
 the gradient of colors}
 
 \item{showValues}{A logical that indicates wether numeric values should be
@@ -119,7 +132,7 @@ See \code{help(heatmap.2)}}
 
 \item{key}{Logical indicating whether a color-key should be shown.}
 
-\item{key.title}{Main title of the color key. If set to NA no title will 
+\item{key.title}{Main title of the color key. If set to NA no title will
 be plotted.}
 
 \item{main}{Main title; default to none.}
@@ -137,6 +150,18 @@ be plotted.}
 \item{res.pca}{Result of FactoMineR::PCA}
 
 \item{chosen.axes}{The dimensions to plot}
+
+\item{id}{shiny id}
+
+\item{obj}{xxx}
+
+\item{base_palette}{xxx}
+
+\item{input}{internal}
+
+\item{output}{internal}
+
+\item{session}{internal}
 }
 \value{
 A boxplot
@@ -166,6 +191,12 @@ A plot
 A histogram
 
 A violinplot
+
+NA
+
+NA
+
+NA
 }
 \description{
 Boxplot for quantitative proteomics data using the library \code{highcharter}
@@ -178,13 +209,17 @@ This function is a wrapper to 'heatmap.2' that displays a numeric matrix
 
 This method plots a histogram of missing values.
 
-This method plots a bar plot which represents the distribution of the 
+This method plots a bar plot which represents the distribution of the
 number of missing values (NA) per lines (ie proteins).
 
-This method plots a bar plot which represents the distribution of the 
+This method plots a bar plot which represents the distribution of the
 number of missing values (NA) per lines (ie proteins) and per conditions.
 
 The parameter 'conds' is used to generate the color palette.
+
+A shiny Module.
+
+A shiny Module.
 }
 \examples{
 library(QFeatures)
@@ -269,6 +304,27 @@ key <- rowData(Exp1_R25_prot[[2]])[[ metadata(Exp1_R25_prot)[['keyId']] ]]
 conds <- colData(Exp1_R25_prot)[["Condition"]]
 violinPlotD(qData, conds, key, subset.view = seq_len(5))
 
+
+data(ft)
+ui <- fluidPage(
+mod_plots_density_ui('plot')
+)
+
+server <- function(input, output, session) {
+ data(ft)
+ conds <- design(ft)$Condition
+ legend <- design(ft)[["Sample.name"]]
+  
+ mod_plots_density_server('plot',
+                           obj = reactive({ft}),
+                           conds = reactive({conds}),
+                           legend = reactive({legend}),
+                           base_palette = reactive({Example_Palette()})
+  )
+}
+
+
+shinyApp(ui=ui, server=server)
 }
 \author{
 Samuel Wieczorek, Anais Courtier, Enora Fremy
@@ -299,3 +355,4 @@ Samuel Wieczorek, Enora Fremy
 
 Samuel Wieczorek, Anais Courtier, Enora Fremy
 }
+\keyword{internal}

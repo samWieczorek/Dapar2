@@ -5,7 +5,7 @@
 #' @param id xxx
 #' 
 #' @export
-#' 
+#' @name mod_query_metacell_ui
 #' @rdname quantitative-metadata
 #' 
 mod_query_metacell_ui <- function(id){
@@ -42,7 +42,8 @@ mod_query_metacell_ui <- function(id){
 #' @param operator xxx
 #' @param reset xxx
 #' 
-#' @rdname @rdname quantitative-metadata
+#' @name mod_query_metacell_server
+#' @rdname quantitative-metadata
 #' 
 #' @export
 #' 

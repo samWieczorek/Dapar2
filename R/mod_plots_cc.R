@@ -1,4 +1,4 @@
-#' @title   mod_plots_cc_ui and mod_plots_cc_server
+#' @title mod_plots_cc_ui and mod_plots_cc_server
 #' 
 #' @description  A shiny Module.
 #'
@@ -20,12 +20,11 @@
 #' 
 #' xxx
 #' 
-NULL
-
- 
 #' @importFrom shiny NS tagList
+#' @importFrom shinyjs toggle hidden
+#' 
 #' @export
-#' @rdname connected-components
+#' @name mod_plots_cc_ui
 mod_plots_cc_ui <- function(id) {
   
   ns <- NS(id)
@@ -91,7 +90,9 @@ mod_plots_cc_ui <- function(id) {
 #' @importFrom SummarizedExperiment rowData
 #' @importFrom visNetwork visEvents visOptions
 #' @importFrom tibble tibble
+#' @importFrom shinyjs toggle hidden
 #' @export
+#' @name mod_plots_cc_server
 #' @rdname connected-components
 mod_plots_cc_server <- function(input, output, session,
                                 cc, matAdj, obj){

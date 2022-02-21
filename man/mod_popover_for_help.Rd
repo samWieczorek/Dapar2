@@ -13,8 +13,10 @@ mod_popover_for_help_server(id, data)
 \item{id}{shiny id}
 
 \item{data}{A list of two items:
-* title: xxxx
-* content: xxxx}
+\itemize{
+\item title: xxxx
+\item content: xxxx
+}}
 
 \item{input}{internal}
 

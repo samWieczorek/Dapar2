@@ -1,6 +1,8 @@
-#' @title   mod_plots_density_ui and mod_plots_density_server
+#' @title   Shiny module for density plots.
 #'
-#' @description  A shiny Module.
+#' @description  
+#' 
+#' A shiny Module.
 #'
 #' @param id shiny id
 #' @param input internal
@@ -17,35 +19,49 @@
 #' 
 #' @examples 
 #' 
-#' xxxx
-#'
-NULL
-
+#' data(ft)
+#' ui <- fluidPage(
+#' mod_plots_density_ui('plot')
+#' )
+#' 
+#' server <- function(input, output, session) {
+#'  data(ft)
+#'  conds <- design(ft)$Condition
+#'  legend <- design(ft)[["Sample.name"]]
+#'   
+#'  mod_plots_density_server('plot',
+#'                            obj = reactive({ft}),
+#'                            conds = reactive({conds}),
+#'                            legend = reactive({legend}),
+#'                            base_palette = reactive({Example_Palette()})
+#'   )
+#' }
+#' 
+#' 
+#' shinyApp(ui=ui, server=server)
+#' @export
 #' @importFrom shiny NS tagList
-#'@rdname descriptives-statistics-plots
-#'
+#' @rdname descriptive-statistics-plots
 mod_plots_density_ui <- function(id){
   ns <- NS(id)
-  tagList(
-    highchartOutput(ns("Densityplot"))
-  )
+  highchartOutput(ns("Densityplot"))
 }
 
+
 #' @export
-#'
-#' @keywords internal
-#'
-#' @importFrom SummarizedExperiment assay
-#' @rdname descriptives-statistics-plots
-#'
-mod_plots_density_server <- function(id, obj, conds, legend = NULL, base_palette = NULL){
+#' @rdname descriptive-statistics-plots
+mod_plots_density_server <- function(id, 
+                                     obj, 
+                                     conds, 
+                                     legend = NULL, 
+                                     base_palette = NULL){
 
   moduleServer(id, function(input, output, session){
     ns <- session$ns
 
     observe({
       req(obj())
-      if (class(obj()) != "SummarizedExperiment") { return(NULL) }
+      stopifnot(inherits(obj(), "SummarizedExperiment"))
     })
 
 

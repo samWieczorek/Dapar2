@@ -58,7 +58,7 @@ compareNormalizationD_HC(
 \arguments{
 \item{withTracking}{xxx}
 
-\item{object}{An object of class `QFeatures`.}
+\item{object}{An object of class \code{QFeatures}.}
 
 \item{method}{xxxxx. See xxx for methods available.}
 
@@ -115,7 +115,7 @@ A normalized numeric matrix
 A plot
 }
 \description{
-This plot compares the quantitative proteomics data before and after 
+This plot compares the quantitative proteomics data before and after
 normalization
 }
 \examples{

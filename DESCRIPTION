@@ -23,8 +23,6 @@ Depends: R (>= 4.1.0)
 Imports:
     Biobase,
     S4Vectors,
-    DT,
-    colourpicker,
     QFeatures,
     methods,
     apcluster,
@@ -72,6 +70,8 @@ Imports:
     shinyWidgets,
     shinyalert,
     shinyjs,
+    DT,
+    colourpicker,
     sos,
     grDevices,
     graphics,
@@ -91,12 +91,12 @@ Collate:
     palette.R
     example-data.R
     qMetadata.R
-    aggregation_func.R
+    DaparToolshed_aggregate.R
     DaparToolshed_filter_Adjmat.R
     DaparToolshed_QFeatures_Addons.R
     DaparToolshed_filter_qMetadata.R
     DaparToolshed-filterFeaturesOneSE.R
-    DaparToolshed-complexFilters.R
+    iterative_agregation.R
     adjacencyMatrixInfos.R
     mod_Filtering.R
     mod_query_metacell.R
@@ -166,3 +166,4 @@ Suggests:
     rmarkdown,
     BiocStyle,
     testthat
+Roxygen: list(markdown = TRUE)

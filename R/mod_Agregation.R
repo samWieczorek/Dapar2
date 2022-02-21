@@ -25,6 +25,7 @@ mod_Agregation_ui <- function(id){
 #' 
 #' @rdname mod_Agregation
 #' @importFrom shinyjs toggle hidden
+#' @importFrom DT renderDataTable
 #' 
 #' @export
 #' 

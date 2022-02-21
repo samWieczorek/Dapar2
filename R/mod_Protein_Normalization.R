@@ -40,6 +40,7 @@ mod_Protein_Normalization_ui <- function(id){
 #'
 #' @author Samuel Wieczorek
 #'
+#' @importFrom shinyjs disabled
 #' @export
 #' 
 #' @rdname pipeline-protein

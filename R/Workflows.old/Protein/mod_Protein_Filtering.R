@@ -16,6 +16,7 @@ mod_Protein_Filtering_ui <- function(id){
 
 
 #' @export
+#' @importFrom shinyjs disabled
 #'
 mod_Protein_Filtering_server <- function(id,
                                              dataIn = NULL,

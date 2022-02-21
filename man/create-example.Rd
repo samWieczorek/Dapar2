@@ -2,12 +2,12 @@
 % Please edit documentation in R/example-data.R
 \name{create_ft_example}
 \alias{create_ft_example}
-\title{Creates an object of class [QFeatures] as example}
+\title{Creates an object of class \link{QFeatures} as example}
 \usage{
-create_ft_example()
+create_ft_example(with.na = FALSE)
 }
 \value{
-An example object of class [QFeatures]
+An example object of class \link{QFeatures}
 }
 \description{
 xxxxx

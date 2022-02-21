@@ -21,62 +21,68 @@ FunctionFilter(name, ...)
 \S4method{filterFeaturesOneSE}{SummarizedExperiment}(object, filters)
 }
 \arguments{
-\item{name}{A `character(1)` naming the new assay. Default is
-`newAssay`. Note that the function will fail if there's
-already an assay with `name`.}
+\item{name}{A \code{character(1)} naming the new assay. Default is
+\code{newAssay}. Note that the function will fail if there's
+already an assay with \code{name}.}
 
-\item{object}{An instance of class [QFeatures] or [SummarizedExperiment].}
+\item{object}{An instance of class \link{QFeatures} or \link{SummarizedExperiment}.}
 
 \item{i}{The index or name of the assay which features will be
 filtered the create the new assay.}
 
-\item{filters}{A `list()` containing instances of class [AnnotationFilter] or 
-[FunctionFilter]}
+\item{filters}{A \code{list()} containing instances of class \link{AnnotationFilter} or
+\link{FunctionFilter}}
 
-\item{params}{`character()` or `integer()` parameters for the
-`name` function.}
+\item{params}{\code{character()} or \code{integer()} parameters for the
+\code{name} function.}
 }
 \value{
-A filtered `QFeature` object
+A filtered \code{QFeature} object
 }
 \description{
-The `filterFeaturesOneSE` methods enables users to filter features
-based on a variable in their `rowData`. It is directly inspired of the
-function `filterFeature` of the package `QFeatures`. 
-The first difference is that the filter only applies to one `SummarizedExperiment`
+The \code{filterFeaturesOneSE} methods enables users to filter features
+based on a variable in their \code{rowData}. It is directly inspired of the
+function \code{filterFeature} of the package \code{QFeatures}.
+The first difference is that the filter only applies to one \code{SummarizedExperiment}
 contained in the object rather than applying on all the SE.
-This method generates a new `SummarizedExperiment` object which is added to the `QFeatures` object.
+This method generates a new \code{SummarizedExperiment} object which is added to the \code{QFeatures} object.
 If the SE on which the filter applies is the last one of the object, then a new xxxx.
 If it is not the last one, the new SE is added and all the further SE are deleted.
 The features matching the
-The filters can be provided as instances of class `AnnotationFilter` (see the package `QFeatures`)
-or of class `FunctionFilter` (see below).
+The filters can be provided as instances of class \code{AnnotationFilter} (see the package \code{QFeatures})
+or of class \code{FunctionFilter} (see below).
 }
 \section{Function filters}{
 
 
 The function filters are filters as defined in the
-[DaparToolshed] package. Each filter is defined by a name (which is the name of a function)
+\link{DaparToolshed} package. Each filter is defined by a name (which is the name of a function)
 and a list which contains the parameters passed to the function.
-Those filters can be created with the `FunctionFilter` constructor.
+Those filters can be created with the \code{FunctionFilter} constructor.
 
 Those functions are divided into two main categories:
- - the one that filter on one rowData feature,
- - the one based on a two-dimensional information such as the adjacency matrix
- 
- for the first category, all filters of class [AnnotationFilter] can be used as they
- are used in `QFeatures`
- 
- For the second category, the package `DaparToolshed` provides filter functions based either 
- on the adjacency matrix:
- - [DaparToolshed::topnPeptides()]: xxxx
- - [DaparToolshed::sharedPeptides()]: xxx
- - [DaparToolshed::specPeptides()]: xxx
- 
+\itemize{
+\item the one that filter on one rowData feature,
+\item the one based on a two-dimensional information such as the adjacency matrix
+}
+
+for the first category, all filters of class \link{AnnotationFilter} can be used as they
+are used in \code{QFeatures}
+
+For the second category, the package \code{DaparToolshed} provides filter functions based either
+on the adjacency matrix:
+\itemize{
+\item 
+\item 
+\item 
+}
+
 Or based on the quantitative metadata (identification):
- - [DaparToolshed::qMetadatWholeMatrix()]: xxx
- - [DaparToolshed::qMetadataWholeLine()]: xxx
- - [DaparToolshed::qMetadataOnConditions()]: xxx
+\itemize{
+\item 
+\item 
+\item 
+}
 }
 
 \examples{

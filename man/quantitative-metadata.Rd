@@ -8,10 +8,11 @@
 \alias{qMetadata_proline}
 \alias{qMetadata_maxquant}
 \alias{match.qMetadata}
-\alias{UpdateqMetadata,SummarizedExperiment-method}
+\alias{UpdateqMetadata}
 \alias{search.qMetadata.tags}
 \alias{qMetadata_combine}
 \alias{mod_query_metacell_ui}
+\alias{mod_query_metacell_server}
 \title{Quantitative metadata vocabulary for entities}
 \usage{
 qMetadata.def(level)
@@ -35,6 +36,17 @@ search.qMetadata.tags(pattern, level, depth = "1")
 qMetadata_combine(met, level)
 
 mod_query_metacell_ui(id)
+
+mod_query_metacell_server(
+  id,
+  obj,
+  list_tags = reactive({     NULL }),
+  keep_vs_remove = reactive({     NULL }),
+  filters = reactive({     NULL }),
+  val_vs_percent = reactive({     NULL }),
+  operator = reactive({     NULL }),
+  reset = reactive({     NULL })
+)
 }
 \arguments{
 \item{level}{xxx}
@@ -60,6 +72,20 @@ mod_query_metacell_ui(id)
 \item{met}{xxx}
 
 \item{id}{xxx}
+
+\item{obj}{xxx}
+
+\item{list_tags}{xxx}
+
+\item{keep_vs_remove}{xxx}
+
+\item{filters}{xxx}
+
+\item{val_vs_percent}{xxx}
+
+\item{operator}{xxx}
+
+\item{reset}{xxx}
 }
 \value{
 A data.frame containing the different tags and corresponding colors for the level
@@ -103,9 +129,7 @@ Peptide-level vocabulary
 |    |-- 3.1 Imputed POV (color 1)
 |    |
 |    |-- 3.2 Imputed MEC (color 2)
-       
- 
- 
+
 Protein-level vocabulary:
 
 |-- 1.0 Quantitative Value
@@ -135,13 +159,13 @@ post processing protein qMetadata after aggregation)
 xxxxxx
 
 In the quantitative columns, a missing value is identified by no value rather
-than a value equal to 0. 
+than a value equal to 0.
 Conversion rules
-Quanti			Tag		
+Quanti			Tag
 NA or 0		NA
 
 In the quantitative columns, a missing value is identified by no value rather
-than a value equal to 0. 
+than a value equal to 0.
 Conversion rules
 Initial conversion rules for maxquant
 
@@ -164,52 +188,57 @@ Initial conversion rules for maxquant
 |  > 0				|       unknown col			|    1.0 |
 |------------|-----------------------|--------|
 
-Similar to the function \code{is.na} but focused on the equality with 
+Similar to the function \code{is.na} but focused on the equality with
 the paramter 'type'.
 
 Update the quantitative metadata information of missing values that were imputed
 
-Gives all the tags of the metadata vocabulary containing the pattern 
+Gives all the tags of the metadata vocabulary containing the pattern
 (parent and all its children).
 
-Agregation rules for the cells quantitative metadata of peptides. 
-Please refer to the qMetadata.def vocabulary in `qMetadata.def()`
-
-# Basic agreagtion
-Agregation of non imputed values (2.X) with quantitative values 
-(1.0, 1.X, 3.0, 3.X)
-|----------------------------
-Not possible
-|----------------------------
-
-Agregation of different types of missing values (among 2.1, 2.2)
-|----------------------------
-* Agregation of 2.1 peptides between each other gives a missing value 
-  non imputed (2.0)
-* Agreagtion of 2.2 peptides between each other givesa missing value 
-  non imputed (2.0)
-* Agregation of a mix of 2.1 and 2.2 gives a missing value non imputed (2.0)
-|----------------------------
-
-
-Agregation of a mix of quantitative values (among 1.0, 1.1, 1.2, 3.0, 3.X)
-|----------------------------
-* if the type of all the peptides to agregate is 1.0, 1.1 or 1.2, 
-  then the final metadata is set the this tag
-* if the set of metacell to agregate is a mix of 1.0, 1.1 or 1.2, 
-  then the final metadata is set to 1.0
-* if the set of metacell to agregate is a mix of 3.X and 3.0, 
-  then the final metadata is set to 3.0
-* if the set of metacell to agregate is a mix of 3.X and 3.0 and other (X.X),
-  then the final metadata is set to 4.0
-|----------------------------
-
-# Post processing
-Update metacell with POV/MEC status for the categories 2.0 and 3.0
-TODO
+Agregation rules for the cells quantitative metadata of peptides.
+Please refer to the qMetadata.def vocabulary in \code{qMetadata.def()}
 
 xxx
 }
+\section{Basic agreagtion}{
+Agregation of non imputed values (2.X) with quantitative values
+(1.0, 1.X, 3.0, 3.X)
+|----------------------------
+Not possible
+|----------------------------\tabular{l}{
+   Agregation of different types of missing values (among 2.1, 2.2) \cr
+}
+
+\itemize{
+\item Agregation of 2.1 peptides between each other gives a missing value
+non imputed (2.0)
+\item Agreagtion of 2.2 peptides between each other givesa missing value
+non imputed (2.0)
+\item Agregation of a mix of 2.1 and 2.2 gives a missing value non imputed (2.0)
+|----------------------------
+}\tabular{l}{
+   Agregation of a mix of quantitative values (among 1.0, 1.1, 1.2, 3.0, 3.X) \cr
+}
+
+\itemize{
+\item if the type of all the peptides to agregate is 1.0, 1.1 or 1.2,
+then the final metadata is set the this tag
+\item if the set of metacell to agregate is a mix of 1.0, 1.1 or 1.2,
+then the final metadata is set to 1.0
+\item if the set of metacell to agregate is a mix of 3.X and 3.0,
+then the final metadata is set to 3.0
+\item if the set of metacell to agregate is a mix of 3.X and 3.0 and other (X.X),
+then the final metadata is set to 4.0
+|----------------------------
+}
+}
+
+\section{Post processing}{
+Update metacell with POV/MEC status for the categories 2.0 and 3.0
+TODO
+}
+
 \examples{
 Exp1_R25_pept <- readRDS(system.file("data", 'Exp1_R25_pept.rda', package="DaparToolshedData"))
 object <- Exp1_R25_pept

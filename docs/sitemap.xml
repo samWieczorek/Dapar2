@@ -322,6 +322,9 @@
     <loc>/reference/is.OfType.html</loc>
   </url>
   <url>
+    <loc>/reference/iterative-aggregation.html</loc>
+  </url>
+  <url>
     <loc>/reference/Keep_Items_from_Dataset.html</loc>
   </url>
   <url>
@@ -545,6 +548,9 @@
   </url>
   <url>
     <loc>/reference/ProstarVersions.html</loc>
+  </url>
+  <url>
+    <loc>/reference/QFeatures-accessors.html</loc>
   </url>
   <url>
     <loc>/reference/QFeatures-filtering-oneSE.html</loc>

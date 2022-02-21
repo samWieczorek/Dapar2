@@ -33,6 +33,8 @@ mod_Protein_Filtering_ui <- function(id){
 #' @param steps.enabled xxx
 #' @param remoteReset xxx
 #' 
+#' 
+#' @importFrom shinyjs disabled
 #' @export
 #'
 #' @return NA

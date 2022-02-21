@@ -56,6 +56,18 @@ mod_plots_cc_server(input, output, session, cc, matAdj, obj)
 \item{clickFunction}{A JavaScript code to show an information when a point is clicked}
 
 \item{id, input, output, session}{Internal parameters for {shiny}.}
+
+\item{cc}{xxx}
+
+\item{matAdj}{xxx}
+
+\item{input}{internal}
+
+\item{output}{internal}
+
+\item{session}{internal}
+
+\item{id}{shiny id}
 }
 \value{
 A list of items containing the connex components derived from the matrices given in arguments
@@ -73,6 +85,8 @@ A plot
 NA
 
 NA
+
+NA
 }
 \description{
 This function computes the connex components of a graph, represented by an adjacency matrix.
@@ -86,6 +100,8 @@ Displays a connected component as a graph with the package 'visNetwork'.
 Jitter plot of CC
 
 Display a jitter plot for connex component with the package highcharter
+
+A shiny Module.
 
 A shiny Module.
 }
@@ -116,6 +132,9 @@ plotJitterCC(ll)
 df <- data.frame(x=seq_len(10), y=seq_len(10))
 plotJitter_hc(df)
 
+
+xxx
+
 }
 \author{
 Samuel Wieczorek
@@ -130,3 +149,4 @@ Thomas Burger
 
 Thomas Burger, Samuel Wieczorek
 }
+\keyword{internal}

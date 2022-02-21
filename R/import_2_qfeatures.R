@@ -56,9 +56,8 @@
 #' parentProtId = 'Protein_group_IDs', forceNA = TRUE, software = 'maxquant')
 #' }
 #'
-#' @import QFeatures
+#' @importFrom QFeatures readQFeatures
 #' @importFrom utils installed.packages
-#' @import SummarizedExperiment
 #'
 #' @export
 #' 
@@ -159,7 +158,7 @@ createQFeatures <- function(data = NULL,
   
   ## Encoding the sample data
   sample <- lapply(sample, function(x){ ReplaceSpecialChars(x)})
-  SummarizedExperiment::colData(obj)@listData <- sample
+  design(obj) <- sample
   
   
   # Get the quantitative metadata 

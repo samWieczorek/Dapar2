@@ -18,7 +18,7 @@
 #' 
 #' @return NA
 #' 
-#' @rdname descriptives-statistics-plots
+#' @rdname descriptive-statistics-plots
 #'
 mod_plots_heatmap_ui <- function(id){
   ns <- NS(id)
@@ -66,7 +66,7 @@ mod_plots_heatmap_ui <- function(id){
 #' 
 #' @return NA
 #' 
-#' @rdname descriptives-statistics-plots
+#' @rdname descriptive-statistics-plots
 #'
 mod_plots_heatmap_server <- function(id, obj, conds, width = 900){
 

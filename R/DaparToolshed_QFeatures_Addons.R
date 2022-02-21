@@ -1,4 +1,6 @@
-##' @title Additional accessors to the quantitative cell metadata.
+##' @title 
+##' 
+##' Additional accessors for instances of class `Qfeatures`.
 ##' 
 ##' @description
 ##'  
@@ -17,23 +19,22 @@
 ##' @param value xxx
 ##' 
 ##' 
-##' 
 ##' @details 
 ##' 
-##' Additional slots for rowdata of a `SummarizedExperiment` object
+##' Additional slots for rowdata of a `SummarizedExperiment` object:
 ##'  - qMetadata: xxx
 ##' 
-##' Additional slots for Metadata for a `QFeatures` object
+##' Additional slots for Metadata for a `QFeatures` object:
 ##'  - xxx: xxxx
 ##' 
-##' Additional slots for Metadata for a `SummarizedExperiment` object
+##' Additional slots for Metadata for a `SummarizedExperiment` object:
 ##'  - qMetadata: xxxx
 ##'  - parentProtId: xxx
 ##'  - idcol: xxxx
 ##'  - typeDataset: xxx
 ##'  
 ##' 
-##' @section Quantitative metadata
+##' @section Quantitative metadata:
 ##' 
 ##' Default slotName is `"qMetadata"`.
 ##'  The value is an adjacency matrix with row and column names. The
@@ -41,16 +42,16 @@
 ##'     matrix (class `dgCMatrix`) as defined in the `Matrix` package,
 ##'     as generaled by the [sparseMatrix()] constructor.
 ##' 
-##'  
-##'   @rdname QFeatures-supplementary-accessors
+##' @name QFeatures-accessors
+##' @rdname QFeatures-accessors
 ##'   
-##'   @examples 
-##'   
-##'  
+##' @examples 
+##' data(ft)
+##' design(ft)
 NULL
 
 ##' @exportMethod qMetadata
-##' @rdname QFeatures-supplementary-accessors
+##' @rdname QFeatures-accessors
 setMethod("qMetadata", "QFeatures",
           function(object, i, slotName = "qMetadata")
             List(lapply(experiments(object)[i],
@@ -58,6 +59,11 @@ setMethod("qMetadata", "QFeatures",
                           .GetRowdataSlot(x, slotName = slotName)))
 )
 
+
+
+
+##' @export
+##' @rdname QFeatures-accessors
 setMethod("qMetadata", "SummarizedExperiment",
           function(object, slotName = "qMetadata")
             .GetRowdataSlot(object, slotName))
@@ -65,8 +71,7 @@ setMethod("qMetadata", "SummarizedExperiment",
 
 
 ##' @export
-##' @name qMetadata
-##' @rdname QFeatures-supplementary-accessors
+##' @rdname QFeatures-accessors
 "qMetadata<-" <- function(object,i,slotName = "qMetadata", value) {
   if (is.null(colnames(value)) | is.null(rownames(value)))
     stop("The DataFrame must have row and column names.")
@@ -92,19 +97,6 @@ setMethod("qMetadata", "SummarizedExperiment",
   return(object)
 }
 
-# 
-# ##' @title .qMetadata
-# ##' @name .qMetadata
-# ##' @noRd
-# .qMetadata <- function(x, slotName = "qMetadata") {
-#   #stopifnot(slotName %in% names(rowData(x)))
-#   ans <- rowData(x)[[slotName]]
-#   if (is.null(colnames(ans)) | is.null(rownames(ans)))
-#     warning("The qMetadata dataframe should have row and column names.")
-#   ans
-# }
-
-
 ##' @title .GetMetadataSlot
 ##' @noRd
 .GetMetadataSlot <- function(x, slotName = NULL) {
@@ -121,21 +113,21 @@ setMethod("qMetadata", "SummarizedExperiment",
 
 
 ##' @exportMethod typeDataset
-##' @rdname QFeatures-supplementary-accessors
+##' @rdname QFeatures-accessors
 setMethod("typeDataset", "QFeatures",
           function(object, i, slotName = "typeDataset")
             List(lapply(experiments(object)[i],
                         .GetMetadataSlot,
                         slotName = slotName)))
-
+##' @export
+##' @rdname QFeatures-accessors
 setMethod("typeDataset", "SummarizedExperiment",
           function(object, slotName = "typeDataset")
             .GetMetadataSlot(object, slotName))
 
 
 ##' @export
-##' @name typeDataset
-##' @rdname QFeatures-supplementary-accessors
+##' @rdname QFeatures-accessors
 "typeDataset<-" <- function(object, i, slotName = "typeDataset", value) {
   if (inherits(object, "SummarizedExperiment")) {
     metadata(object)[[slotName]] <- value
@@ -156,21 +148,21 @@ setMethod("typeDataset", "SummarizedExperiment",
 
 
 ##' @exportMethod idcol
-##' @rdname QFeatures-supplementary-accessors
+##' @rdname QFeatures-accessors
 setMethod("idcol", "QFeatures",
           function(object, i, slotName = "idcol")
             List(lapply(experiments(object)[i],
                         .GetMetadataSlot,
                         slotName = slotName)))
-
+##' @export
+##' @rdname QFeatures-accessors
 setMethod("idcol", "SummarizedExperiment",
           function(object, slotName = "idcol")
             .GetMetadataSlot(object, slotName))
 
 
 ##' @export
-##' @name idcol
-##' @rdname QFeatures-supplementary-accessors
+##' @rdname QFeatures-accessors
 "idcol<-" <- function(object, i, slotName = "idcol", value) {
   if (inherits(object, "SummarizedExperiment")) {
     metadata(object)[[slotName]] <- value
@@ -191,8 +183,8 @@ setMethod("idcol", "SummarizedExperiment",
 
 
 
-##' @exportMehod parentProtId
-##' @rdname QFeatures-supplementary-accessors
+##' @exportMethod parentProtId
+##' @rdname QFeatures-accessors
 setMethod("parentProtId", "QFeatures",
           function(object, i, slotName = "parentProtId")
             List(lapply(experiments(object)[i],
@@ -206,8 +198,7 @@ setMethod("parentProtId", "SummarizedExperiment",
 
 
 ##' @export
-##' @name parentProtId
-##' @rdname QFeatures-supplementary-accessors
+##' @rdname QFeatures-accessors
 "parentProtId<-" <- function(object, i, slotName = "parentProtId", value) {
   if (inherits(object, "SummarizedExperiment")) {
     if (typeDataset(object) != 'peptide')
@@ -234,22 +225,22 @@ setMethod("parentProtId", "SummarizedExperiment",
 
 
 ##' @exportMethod analysis
-##' @rdname QFeatures-supplementary-accessors
+##' @rdname QFeatures-accessors
 setMethod("analysis", "QFeatures",
           function(object, i, slotName = "analysis")
             List(lapply(experiments(object)[i],
                         .GetMetadataSlot,
                         slotName = slotName)
-                        ))
-
+            ))
+##' @export
+##' @rdname QFeatures-accessors
 setMethod("analysis", "SummarizedExperiment",
           function(object, slotName = "analysis")
             .GetMetadataSlot(object, slotName))
 
 
 ##' @export
-##' @name analysis
-##' @rdname QFeatures-supplementary-accessors
+##' @rdname QFeatures-accessors
 "analysis<-" <- function(object, i, slotName = "analysis", value) {
   if (inherits(object, "SummarizedExperiment")) {
     metadata(object)[[slotName]] <- value
@@ -272,7 +263,7 @@ setMethod("analysis", "SummarizedExperiment",
 
 
 ##' @exportMethod version
-##' @rdname QFeatures-supplementary-accessors
+##' @rdname QFeatures-accessors
 setMethod("version", "QFeatures",
           function(object, slotName = "version")
             .GetMetadataSlot(object, slotName = slotName)
@@ -281,8 +272,7 @@ setMethod("version", "QFeatures",
 
 
 ##' @export
-##' @name version
-##' @rdname QFeatures-supplementary-accessors
+##' @rdname QFeatures-accessors
 "version<-" <- function(object, slotName = "version", value) {
   stopifnot (inherits(object, "QFeatures"))
   metadata(object)[[slotName]] <- value
@@ -291,20 +281,19 @@ setMethod("version", "QFeatures",
 
 
 ##' @exportMethod design
-##' @rdname QFeatures-supplementary-accessors
+##' @rdname QFeatures-accessors
 setMethod("design", "QFeatures",
           function(object, slotName = "design")
-            .GetMetadataSlot(object, slotName = slotName)
+            colData(object)
 )
 
 
 
 ##' @export
-##' @name design
-##' @rdname QFeatures-supplementary-accessors
+##' @rdname QFeatures-accessors
 "design<-" <- function(object, slotName = "design", value) {
   stopifnot (inherits(object, "QFeatures"))
-  metadata(object)[[slotName]] <- value
+  colData(object)@listData <- value
   return(object)
 }
 

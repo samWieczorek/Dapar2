@@ -9,6 +9,7 @@
 #' @importFrom shiny NS tagList
 #' @import visNetwork
 #' @importFrom DT renderDT DTOutput formatStyle %>% styleEqual
+#' @importFrom shinyjs toggle hidden
 #' 
 #' @return NA
 #' 
@@ -71,6 +72,7 @@ mod_graph_pept_prot_ui <- function(id){
 #' @return NA
 #' 
 #' @import visNetwork
+#' @importFrom shinyjs toggle hidden
 #' 
 mod_graph_pept_prot_server <- function(id, cc, matAdj, dataIn){
 

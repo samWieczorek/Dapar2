@@ -11,15 +11,17 @@ checkClusterability(standards)
 }
 \value{
 a list of 2 elements:
-* dip_test: the result of the clusterability of the data
-* gap_cluster: the gap statistic obtained with the function [cluster::clusGap()].
+\itemize{
+\item dip_test: the result of the clusterability of the data
+\item gap_cluster: the gap statistic obtained with the function \code{\link[cluster:clusGap]{cluster::clusGap()}}.
+}
 }
 \description{
 The first step is to standardize the data (with the \code{Mfuzz}
 package). Then the function checks that these data are clusterizable or not
- (use of [diptest::dip.test()] to determine whether the distribution is unimodal or
- multimodal). Finally, it determines the "optimal" k by the Gap statistic
- approach.
+(use of \code{\link[diptest:dip.test]{diptest::dip.test()}} to determine whether the distribution is unimodal or
+multimodal). Finally, it determines the "optimal" k by the Gap statistic
+approach.
 }
 \examples{
 checkClusterability(standardized_means)

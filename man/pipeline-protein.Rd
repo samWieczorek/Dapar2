@@ -87,14 +87,14 @@ This module contains the configuration informations for the corresponding pipeli
 It is called by the nav_pipeline module of the package Magellan
 
 #' @title Add an item to the dataset
-#' 
+#'
 #' @param dataset xxx
 #' @param name xxx
 #' @return the dataset
 AddItemToDataset <- function(dataset, name){
-  addAssay(dataset,
-           dataset[[length(dataset)]],
-           name=name)
+addAssay(dataset,
+dataset[\link{length(dataset)}],
+name=name)
 }
 
 This module contains the configuration informations for the corresponding pipeline.

@@ -16,7 +16,7 @@ GraphPepProt_hc(X, type = "all")
 A histogram
 }
 \description{
-Method to plot the disrtibution (histogram) of peptides w.r.t the proteins with proteins and peptides 
+Method to plot the disrtibution (histogram) of peptides w.r.t the proteins with proteins and peptides
 in an adjacency matrix
 }
 \examples{

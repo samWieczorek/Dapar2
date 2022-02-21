@@ -28,8 +28,10 @@ qMetadataOnConditions(object, cmd, mode, pattern, conds, percent, operator, th)
 \item{mask}{xxx}
 
 \item{type}{Available values are:
-* 'AllCond' (the query is valid in all the conditions),
-* 'AtLeatOneCond' (the query is valid in at leat one condition.}
+\itemize{
+\item 'AllCond' (the query is valid in all the conditions),
+\item 'AtLeatOneCond' (the query is valid in at leat one condition.
+}}
 
 \item{op}{String for operator to use. List of operators is available with SymFilteringOperators().}
 }
@@ -46,7 +48,7 @@ NA
 
 #' @examples
 Exp1_R25_pept <- readRDS(system.file("data", 'Exp1_R25_pept.rda', package="DaparToolshedData"))
-obj <- Exp1_R25_pept[seq_len(10)]
+obj <- Exp1_R25_pept\link{seq_len(10)}
 level <- obj@experimentData@other$typeOfData
 pattern <- 'missing'
 mask <- match.qMetadata(metadata=qMetadata(obj), pattern=pattern, level=level)

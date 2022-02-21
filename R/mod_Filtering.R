@@ -20,11 +20,9 @@ mod_Filtering_ui <- function(id){
 #' @param current.pos xxx
 #' @param verbose xxx
 #' 
-#' 
-#' 
-#' 
 #' @rdname mod_Filtering
 #' @importFrom shinyjs toggle hidden
+#' @importFrom DT dataTableOutput
 #' 
 #' @export
 #' 
@@ -162,11 +160,6 @@ mod_Filtering_server <- function(id,
     
     #-------------------------------------------------------------------
     output$Quantimetadatafiltering <- renderUI({
-      
-      
-      
-      
-      
       wellPanel(
         # uiOutput for all widgets in this UI
         # This part is mandatory

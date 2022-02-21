@@ -17,6 +17,7 @@
 #' @export
 #'
 #' @importFrom shiny NS tagList
+#' @importFrom shinyjs useShinyjs hidden
 #' 
 #' @return NA
 #'
@@ -66,7 +67,7 @@ mod_plots_tracking_ui <- function(id){
 #'
 #' @keywords internal
 #'
-#' @import shinyjs
+#' @importFrom shinyjs toggle hidden show hide
 #' 
 #' @return NA
 #'

@@ -14,12 +14,12 @@ visualizeClusters(
 )
 }
 \arguments{
-\item{dat}{the standardize data returned by the function [checkClusterability()]}
+\item{dat}{the standardize data returned by the function \code{\link[=checkClusterability]{checkClusterability()}}}
 
 \item{clust_model}{the clustering model obtained with dat.}
 
 \item{adjusted_pValues}{vector of the adjusted pvalues obtained for each protein with
-a 1-way ANOVA (for example obtained with the function [wrapperClassic1wayAnova()]).}
+a 1-way ANOVA (for example obtained with the function \code{\link[=wrapperClassic1wayAnova]{wrapperClassic1wayAnova()}}).}
 
 \item{FDR_th}{the thresholds of FDR pvalues for the coloring of the profiles.
 The default (NULL) creates 4 thresholds: 0.001, 0.005, 0.01, 0.05

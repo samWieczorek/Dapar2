@@ -2,7 +2,7 @@
 % Please edit documentation in R/adjacencyMatrixInfos.R
 \name{matAdjStats}
 \alias{matAdjStats}
-\title{Computes the number of proteins that are only defined by 
+\title{Computes the number of proteins that are only defined by
 specific peptides, shared peptides or a mixture of two.}
 \usage{
 matAdjStats(X)
@@ -12,7 +12,8 @@ matAdjStats(X)
 }
 \value{
 A list of values:
-* nbPeptides: the number of peptides in the matrix,
+\itemize{
+\item nbPeptides: the number of peptides in the matrix,
 nbSpecificPeptides: the number of specific peptides in the matrix,
 nbSharedPeptides: the number of shared peptides in the matrix,
 nbProt: the number of proteins in the matrix,
@@ -20,8 +21,9 @@ protOnlyUniquePep: the list of proteins only defined by specific peptides,
 protOnlySharedPep: the list of proteins only defined by shared peptides,
 protMixPep: the list of proteins defined by both shared and specific peptides.
 }
+}
 \description{
-This function computes few values about the adjacency matrix such as the number of proteins that are only defined by 
+This function computes few values about the adjacency matrix such as the number of proteins that are only defined by
 specific peptides, shared peptides or a mixture of two.
 }
 \examples{

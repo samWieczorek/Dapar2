@@ -1,29 +1,29 @@
-#' #' @title
-#' #' xxx
-#' #' 
-#' #' @description
-#' #' Builds a vector of `#conditions` colors. 
-#' #' 
-#' #' @param conditions xxxx
-#' #' 
-#' #' @param base_palette xxx
-#' #' 
-#' #' @export
-#' #' 
-#' #' @return NA
-#' #' 
-#' Example_Palette <- function(conditions, base_palette){
-#'   
-#'   examplePalette <- NULL
-#'   nbConds <- length(unique(conditions))
-#'   for (i in 1:nbConds){
-#'     examplePalette[ which(conditions == unique(conditions)[i])] <- base_palette[i]
-#'   }
-#'   
-#'   return(examplePalette)
-#' }
-#' 
-#' 
+#' @title
+#' xxx
+#'
+#' @description
+#' Builds a vector of `#conditions` colors.
+#'
+#' @param conds xxxx
+#'
+#' @param base_palette xxx
+#'
+#' @export
+#'
+#' @return NA
+#'
+Example_Palette <- function(conds, base_palette){
+
+  palette.ex <- NULL
+  for (i in seq_len(length(unique(conds)))){
+    ind <- which(conds == unique(conds)[i])
+    palette.ex[ind] <- base_palette[i]
+  }
+
+  return(palette.ex)
+}
+
+
 #' 
 #' #' @title Extends a base-palette of the package RColorBrewer to n colors.
 #' #' 

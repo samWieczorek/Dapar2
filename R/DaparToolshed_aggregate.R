@@ -1,33 +1,24 @@
-
-
-#' @title Aggregate an assay of peptides into proteins
-#' 
-#' @description 
-#' 
-#' This function is a wrapper for the function [QFeatures::aggregateFeatures()].
-#' It just add some meta informations to the aggregated assay, specific to
-#' DaparToolshed
+##' @title Aggregate an assay of peptides into proteins.
+##' 
+##' @description 
+##' 
+##' This function is a wrapper for the function [QFeatures::aggregateFeatures()].
+##' It just add some meta informations to the aggregated assay, specific to
+##' DaparToolshed and implement methods to aggregate the quantitative
+##' metadata.
 #' 
 ##' @title Aggregate an assay's quantitative features
 ##'
 ##' @description
 ##'
 ##' This function aggregates the quantitative features of an assay,
-##' applying a summarisation function (`fun`) to sets of features.
+##' applying a summarization function (`fun`) to sets of features.
 ##' The `fcol` variable name points to a rowData column that defines
 ##' how to group the features during aggregate. This variable can
-##' eigher be a vector (we then refer to an *aggregation by vector*)
+##' either be a vector (we then refer to an *aggregation by vector*)
 ##' or an adjacency matrix (*aggregation by matrix*).
-##'
-##' The rowData of the aggregated `SummarizedExperiment` assay
-##' contains a `.n` variable that provides the number of parent
-##' features that were aggregated.
-##'
-##' When aggregating with a vector, the newly aggregated
-##' `SummarizedExperiment` assay also contains a new `aggcounts` assay
-##' containing the aggregation counts matrix, i.e. the number of
-##' features that were aggregated for each sample, which can be
-##' accessed with the `aggcounts()` accessor.
+##' 
+##' The quantitative metadata are aggregated with a function (`fun.qmeta`).
 ##'
 ##' @param object An instance of class [QFeatures] or [SummarizedExperiment].
 ##'
@@ -46,126 +37,54 @@
 ##' @param fun A function used for quantitative feature
 ##'     aggregation. See Details for examples.
 ##'
-##' @param ... Additional parameters passed the `fun`.
+##' @param fun.qmeta A function used for quantitative metadata
+##'     aggregation. See Details for examples.
+##'
+##' @param ... Additional parameters passed the `fun` and `fun.qmeta`.
 ##'
 ##' @return A `QFeatures` object with an additional assay or a
 ##'  `SummarizedExperiment` object (or subclass thereof).
 ##'
 ##' @details
 ##'
-##' Aggregation is performed by a function that takes a matrix as
-##' input and returns a vector of length equal to `ncol(x)`. Examples
-##' thereof are
-##'
-##' - [MsCoreUtils::medianPolish()] to fits an additive model (two way
-##'   decomposition) using Tukey's median polish_ procedure using
-##'   [stats::medpolish()];
-##'
-##' - [MsCoreUtils::robustSummary()] to calculate a robust aggregation
-##'   using [MASS::rlm()] (default);
-##'
-##' - [base::colMeans()] to use the mean of each column;
-##'
-##' - `colMeansMat(x, MAT)` to aggregate feature by the calculating
-##'    the mean of peptide intensities via an adjacency matrix. Shared
-##'    peptides are re-used multiple times.
-##'
-##' - [matrixStats::colMedians()] to use the median of each column.
-##'
-##' - [base::colSums()] to use the sum of each column;
-##'
-##' - `colSumsMat(x, MAT)` to aggregate feature by the summing the
-##'    peptide intensities for each protein via an adjacency
-##'    matrix. Shared peptides are re-used multiple times.
-##'
-##' See [MsCoreUtils::aggregate_by_vector()] for more aggregation functions.
-##'
-##' @section Missing quantitative values:
-##'
-##' Missing quantitative values have different effects based on the
-##' aggregation method employed:
-##'
-##' - The aggregation functions should be able to deal with missing
-##'   values by either ignoring or propagating them. This is often
-##'   done with an `na.rm` argument, that can be passed with
-##'   `...`. For example, `rowSums`, `rowMeans`, `rowMedians`,
-##'   ... will ignore `NA` values with `na.rm = TRUE`, as illustrated
-##'   below.
-##'
-##' - Missing values will result in an error when using `medpolish`,
-##'   unless `na.rm = TRUE` is used. Note that this option relies on
-##'   implicit assumptions and/or performes an implicit imputation:
-##'   when summing, the values are implicitly imputed by 0, assuming
-##'   that the `NA` represent a trully absent features; when
-##'   averaging, the assumption is that the `NA` represented a
-##'   genuinely missing value.
-##'
-##' - When using robust summarisation, individual missing values are
-##'   excluded prior to fitting the linear model by robust
-##'   regression. To remove all values in the feature containing the
-##'   missing values, use [filterNA()].
-##'
-##' More generally, missing values often need dedicated handling such
-##' as filtering (see [filterNA()]) or imputation (see [impute()]).
-##'
-##' @section Missing values in the row data:
-##'
-##' Missing values in the row data of an assay will also impact the
-##' resulting (aggregated) assay row data, as illustrated in the
-##' example below. Any feature variables (a column in the row data)
-##' containing `NA` values will be dropped from the aggregated row
-##' data. The reasons underlying this drop are detailed in the
-##' `reduceDataFrame()` manual page: only invariant aggregated rows,
-##' i.e. rows resulting from the aggregation from identical variables,
-##' are preserved during aggregations.
-##'
-##' The situation illustrated below should however only happen in rare
-##' cases and should often be imputable using the value of the other
-##' aggregation rows before aggregation to preserve the invariant
-##' nature of that column. In cases where an `NA` is present in an
-##' otherwise variant column, the column would be dropped anyway.
-##'
-##' @section Using an adjacency matrix:
-##'
-##' When considering non-unique peptides explicitly, i.e. peptides
-##' that map to multiple proteins rather than as a protein group, it
-##' is convenient to encode this ambiguity explicitly using a
-##' peptide-by-proteins (sparse) adjacency matrix. This matrix is
-##' typically stored in the rowdata and set/retrieved with the
-##' [adjacencyMatrix()] function. It can be created manually (as
-##' illustrated below) or using `PSMatch::makeAdjacencyMatrix()`.
+##' @section Iterative aggregation function:
+##' 
+##' xxxxxx
+##' xxxxx
+##' 
+##' @section Quantitative metadata aggregation:
+##' 
+##' xxxxxx
+##' xxxx
+##' 
+##' The function to aggregate the quantitative metadata is
+##' 
+##' - `aggQmetadat()` xxxxx
 ##'
 ##' @seealso The *QFeatures* vignette provides an extended example and
-##'     the *Processing* vignette, for a complete quantitative
-##'     proteomics data processing pipeline. The
-##'     [MsCoreUtils::aggregate_by_vector()] manual page provides
-##'     further details.
+##'     the *Aggregation* vignette, for a complete quantitative
+##'     proteomics data processing pipeline. 
 ##'
-##' @aliases aggregateFeatures aggregateFeatures,QFeatures-method
-##'     aggcounts aggcounts,SummarizedExperiment-method
-##'     adjacencyMatrix,SummarizedExperiment-method
-##'     adjacencyMatrix,QFeatures-method
+##' @name aggregateFeatures4Prostar
 ##'
-##' @name aggregateFeatures
-##'
-##' @rdname QFeatures-aggregate
-##'
-##' @importFrom MsCoreUtils aggregate_by_vector aggregate_by_matrix robustSummary colCounts
+##' @rdname DaparToolshed-aggregate
 ##'
 ##' @examples
 ##'
 ##' ## ---------------------------------------
 ##' ## An example QFeatures with PSM-level data
 ##' ## ---------------------------------------
-##' data(feat1)
-##' feat1
-##'
-##' ## Aggregate PSMs into peptides
-##' feat1 <- aggregateFeatures(feat1, "psms", "Sequence", name = "peptides")
-##' feat1
+##' data(ft)
+##' ft
 ##'
 ##' ## Aggregate peptides into proteins
-##' feat1 <- aggregateFeatures(feat1, "peptides", "Protein", name = "proteins")
+##' ## using the adjacency matrix
+##' ft <- ft <- aggregateFeatures4Prostar(object = ft,
+##'                                       i = 1,
+##'                                       name = 'aggregated', 
+##'                                       fcol = 'adjacencyMatrix', 
+##'                                       fun = colSumsMat,
+##'                                       fun.qmeta = aggQmeta)
 ##' feat1
 ##'
 ##' assay(feat1[[1]])
@@ -173,86 +92,6 @@
 ##' aggcounts(feat1[[2]])
 ##' assay(feat1[[3]])
 ##' aggcounts(feat1[[3]])
-##'
-##' ## --------------------------------------------
-##' ## Aggregation with missing quantitative values
-##' ## --------------------------------------------
-##' data(ft_na)
-##' ft_na
-##'
-##' assay(ft_na[[1]])
-##' rowData(ft_na[[1]])
-##'
-##' ## By default, missing values are propagated
-##' ft2 <- aggregateFeatures(ft_na, 1, fcol = "X", fun = colSums)
-##' assay(ft2[[2]])
-##' aggcounts(ft2[[2]])
-##'
-##' ## The rowData .n variable tallies number of initial rows that
-##' ## were aggregated (irrespective of NAs) for all the samples.
-##' rowData(ft2[[2]])
-##'
-##' ## Ignored when setting na.rm = TRUE
-##' ft3 <- aggregateFeatures(ft_na, 1, fcol = "X", fun = colSums, na.rm = TRUE)
-##' assay(ft3[[2]])
-##' aggcounts(ft3[[2]])
-##'
-##' ## -----------------------------------------------
-##' ## Aggregation with missing values in the row data
-##' ## -----------------------------------------------
-##' ## Row data results without any NAs, which includes the
-##' ## Y variables
-##' rowData(ft2[[2]])
-##'
-##' ## Missing value in the Y feature variable
-##' rowData(ft_na[[1]])[1, "Y"] <- NA
-##' rowData(ft_na[[1]])
-##'
-##' ft3 <- aggregateFeatures(ft_na, 1, fcol = "X", fun = colSums)
-##' ## The Y feature variable has been dropped!
-##' assay(ft3[[2]])
-##' rowData(ft3[[2]])
-##'
-##' ## --------------------------------------------
-##' ## Using a peptide-by-proteins adjacency matrix
-##' ## --------------------------------------------
-##'
-##' ## Let's use assay peptides from object feat1 and
-##' ## define that peptide SYGFNAAR maps to proteins
-##' ## Prot A and B
-##'
-##' se <- feat1[["peptides"]]
-##' rowData(se)$Protein[3] <- c("ProtA;ProtB")
-##' rowData(se)
-##'
-##' ## This can also be defined using anadjacency matrix, manual
-##' ## encoding here. See PSMatch::makeAdjacencyMatrix() for a
-##' ## function that does it automatically.
-##' adj <- matrix(0, nrow = 3, ncol = 2,
-##'               dimnames = list(rownames(se),
-##'                               c("ProtA", "ProtB")))
-##' adj[1, 1] <- adj[2, 2] <- adj[3, 1:2] <- 1
-##' adj
-##'
-##' adjacencyMatrix(se) <- adj
-##' rowData(se)
-##' adjacencyMatrix(se)
-##'
-##' ## Aggregation using the adjacency matrix
-##' se2 <- aggregateFeatures(se, fcol = "adjacencyMatrix",
-##'                          fun = MsCoreUtils::colMeansMat)
-##'
-##' ## Peptide SYGFNAAR was taken into account in both ProtA and ProtB
-##' ## aggregations.
-##' assay(se2)
-##'
-##'
-##' ## Aggregation by matrix on a QFeature object works as with a
-##' ## vector
-##' ft <- QFeatures(list(peps = se))
-##' ft <- aggregateFeatures(ft, "peps", "adjacencyMatrix", name = "protsByMat",
-##'                         fun = MsCoreUtils::colMeansMat)
-##' assay(ft[[2]])
 ##' rowData(ft[[2]])
 NULL
 
@@ -271,7 +110,11 @@ setMethod("aggregateFeatures4Prostar", "QFeatures",
             
             
             # Add stats on agregation
-            aggAssay <- aggregateFeatures4Prostar(object[[i]], fcol, fun, ...)
+            aggAssay <- aggregateFeatures4Prostar(object[[i]], 
+                                                  design(object)$Condition,
+                                                  fcol, 
+                                                  fun, 
+                                                  ...)
             
             ## Add the assay to the QFeatures object
             object <- addAssay(object,
@@ -289,129 +132,91 @@ setMethod("aggregateFeatures4Prostar", "QFeatures",
 ##' @exportMethod aggregateFeatures4Prostar
 ##' @rdname DaparToolshed-aggregate
 setMethod("aggregateFeatures4Prostar", "SummarizedExperiment",
-          function(object, fcol, fun = MsCoreUtils::robustSummary, ...)
-            .aggregateFeatures4Prostar(object, fcol, fun, ...))
+          function(object, conds, fcol, fun = MsCoreUtils::robustSummary, ...)
+            .aggregateFeatures4Prostar(object, conds, fcol, fun, ...))
 
 
-.aggregateFeatures4Prostar <- function(object, fcol, fun, ...) {
+.aggregateFeatures4Prostar <- function(object, conds, fcol, fun, ...) {
+  
+  
+  #browser()
+  X <- adjacencyMatrix(object)
+  
+  # add agregation of qMetadata
+  # Aggregate the quantitative metdata
+  aggQ <- aggQmetadata(qMeta = qMetadata(object), 
+                       X = adjacencyMatrix(object), 
+                       level = typeDataset(object),
+                       conds = conds)
+  
+  ## Remove the qMetadata that should be dropped anyway and not be aggregated
+  ## within QFeatures::aggregateFeatures
+  rowData(object)[['qMetadata']] <- NULL
   
   ## Create the aggregated assay
   aggAssay <- aggregateFeatures(object, fcol, fun, ...)
   
-  
-  # add agregation of qMetadata
-  # Aggregate the quantitative metdata
-  aggQ <- aggQmetadata(object, conds = conds)
+  ## Add the qMetadata to the new assay
   qMetadata(aggAssay) <- aggQ
+  X.spec <- X.shared <- X
+  X.spec[which(rowSums(X.spec) > 1),] <- 0
+  X.shared[which(rowSums(X.shared) == 1),] <- 0
+  rowData(aggAssay)[['allPeptidesUsed']] <- t(X) %*% !is.na(assay(object))
+  rowData(aggAssay)[['specPeptidesUsed']] <- t(X.spec) %*% !is.na(assay(object))
+  rowData(aggAssay)[['sharedPeptidesUsed']] <- t(X.shared) %*% !is.na(assay(object))
   
+  
+  ## Enrich the new assay
   typeDataset(aggAssay) <- 'proteins'
   idcol(aggAssay) <- NULL
+ 
 
   return(aggAssay)
 }
 
 
 
-#----------------------------------------
-
-
-
-#' @title Finalizes the aggregation process 
-#' 
-#' @param qPepData A data.frame of quantitative data not logged of peptides
-#' 
-#' @param X An adjacency matrix in which lines and columns correspond 
-#' respectively to peptides and proteins.
-#' 
-#' @return A protein object of class \code{SummarizedExperiment}
-#' 
-#' @author Samuel Wieczorek
-#' 
-#' @export
-#' 
-#' @examples
-#' library(QFeatures)
-#' Exp1_R25_pept <- readRDS(system.file("data", 'Exp1_R25_pept.rda', package="DaparToolshedData"))
-#' obj <- Exp1_R25_pept[seq_len(1000),]
-#' obj <- addListAdjacencyMatrices(obj, 2)
-#' X <- GetAdjMat(obj[[2]])$all
-#' rowdata_stats_Aggregation_sam(assay(obj,2), X)
-#' 
-#' @rdname DaparToolshed-aggregate
-#' 
-rowdata_stats_Aggregation_sam <- function(qPepData, X){
-  
-  X <- as.matrix(X)
-  
-  temp <- GetDetailedNbPeptidesUsed(X, qPepData)
-  
-  pepUsed <- as.matrix(temp)
-  colnames(pepUsed) <- paste("pep_used_", colnames(qPepData), sep="")
-  rownames(pepUsed) <- colnames(X)
-  
-  n <- GetDetailedNbPeptides(X)
-  
-  fd <- data.frame(colnames(X), 
-                   n, 
-                   pepUsed)
-  
-  return (fd)
-}
-
-
-
-
-
-
 
 #' @title Get the type of dataset
 #' @description xxx
-#' 
-#' @author Samuel Wieczorek
-#' 
-#' @examples
-#' Exp1_R25_pept <- readRDS(system.file("data", 'Exp1_R25_pept.rda', package="DaparToolshedData"))
-#' obj <- Exp1_R25_pept[1:100]
-#' X <- adjacencyMatrix(obj[[2]])
-#' agg.qMmetadata <- aggQmeta(obj, 2, X)
-#' agg.meta <- aggQmeta(obj[[2]], X)
-#' 
-#' @export
-#' @return NA
-#' 
-NULL
-
-#' 
+#'
 #' @param object  An object of class 'SummarizedExperiment'
-#' @param conds xxx
-#' 
-#' @return NA
-#' 
+#' @param X xxxx
+#' @param level A `character(1)` which is the type of dataset
+#' @param conds A `character()` vector which is the names of conditions
+#' for each sample in the dataset.
+#'
+#' @return xxxxx
+#'
+#' @examples
+#' data(ft)
+#' qMeta <- qMetadata(ft, 1)
+#' X <- adjacencyMatrix(ft, 1)
+#' level <- typeDataset(ft, 1)
+#' conds <- colData(ft)$Condition
+#' aggQmeta <- aggQmetadata(qMeta, X, level, conds)
+#'
 #' @rdname DaparToolshed-aggregate
-#' 
-aggQmetadata <- function(object, conds) {
-  stopifnot(inherits(object, "SummarizedExperiment"))
-  
-  qMeta = qMetadata(object)
-  level = typeDataset(object)
-  X <- adjacencyMatrix(object)
-  
+#'
+aggQmetadata <- function(qMeta, X, level, conds) {
+  #stopifnot(inherits(object, "SummarizedExperiment"))
+
   rowcol <- function(meta.col, X.col)
     meta.col[X.col > 0]
-  
+
   df <- data.frame(stringsAsFactors = TRUE)
   for (j in 1:ncol(qMeta))
     for(i in 1:ncol(X))
-      df[i, j] <- qMetadata_combine( rowcol(qMeta[,j], X[,i]), 
+      df[i, j] <- qMetadata_combine( rowcol(qMeta[,j], X[,i]),
                                      level)
-  
+
   df[df=='NA'] <- NA
   dimnames(df) <- list(colnames(X), colnames(qMeta))
   # Delete protein with only NA
-  
+
   # Post processing of metacell to discover 'imputed POV', 'imputed MEC'
   df <- Set_POV_MEC_tags(conds, df, level)
-  
+
   df
 }
 

@@ -29,6 +29,8 @@ mod_Protein_Description_ui <- function(id){
 #' @author Samuel Wieczorek
 #'
 #' @export
+#' @importFrom shinyjs disabled
+#' 
 mod_Protein_Description_server <- function(id,
                                            dataIn = NULL,
                                            steps.enabled = reactive({NULL}),

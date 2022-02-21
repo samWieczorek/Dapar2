@@ -7,7 +7,7 @@
 Base_Palette(palette.name = "Dark2", conditions)
 }
 \arguments{
-\item{palette.name}{The name of the palette from the package `RColorBrewer`}
+\item{palette.name}{The name of the palette from the package \code{RColorBrewer}}
 
 \item{conditions}{xxxx}
 }

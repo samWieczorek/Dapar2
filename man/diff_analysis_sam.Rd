@@ -11,18 +11,17 @@ An object of class \code{standardGeneric} of length 1.
 diff_analysis_sam
 }
 \description{
-This manual page describes the computation of statistical test using [QFeatures] objects. In the following
-functions, if `object` is of class `QFeatures`, and optional assay
-index or name `i` can be specified to define the assay (by name of
+This manual page describes the computation of statistical test using \link{QFeatures} objects. In the following
+functions, if \code{object} is of class \code{QFeatures}, and optional assay
+index or name \code{i} can be specified to define the assay (by name of
 index) on which to operate.
 
 The following functions are currently available:
-
-- `compute.t.test(xxxxx)` xxxxx.
-
-- `compute.group.t.test(xxxxx)` xxxxx.
-  
-- `limma.complete.test(object, sampleTab)` uses the package Limma
+\itemize{
+\item \code{compute.t.test(xxxxx)} xxxxx.
+\item \code{compute.group.t.test(xxxxx)} xxxxx.
+\item \code{limma.complete.test(object, sampleTab)} uses the package Limma
+}
 }
 \examples{
 library(QFeatures)

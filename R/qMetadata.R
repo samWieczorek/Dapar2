@@ -58,6 +58,7 @@
 #' @author Thomas Burger, Samuel Wieczorek
 #'
 #' @export
+#' @name qMetadata.def
 #'
 #' @rdname quantitative-metadata
 #' 
@@ -173,7 +174,9 @@ qMetadata.def <- function(level){
 #'
 #' @export
 #'
+#' @name Set_POV_MEC_tags
 #' @rdname quantitative-metadata
+#' 
 #' 
 Set_POV_MEC_tags <- function(conds, df, level){
   u_conds <- unique(conds)
@@ -232,7 +235,9 @@ Set_POV_MEC_tags <- function(conds, df, level){
 #' 
 #' @export
 #' 
+#' @name BuildqMetadata
 #' @rdname quantitative-metadata
+#' 
 #'  
 BuildqMetadata <- function(from = NULL, 
                            level,
@@ -299,7 +304,9 @@ BuildqMetadata <- function(from = NULL,
 #' 
 #' @export
 #' 
+#' @name qMetadata_generic
 #' @rdname quantitative-metadata
+#' 
 #'  
 qMetadata_generic <- function(qdata, conds, level){
   
@@ -377,7 +384,9 @@ qMetadata_generic <- function(qdata, conds, level){
 #' 
 #' @export
 #' 
+#' @name qMetadata_proline
 #' @rdname quantitative-metadata
+#' 
 #'  
 qMetadata_proline <- function(qdata, 
                               conds, 
@@ -452,7 +461,9 @@ qMetadata_proline <- function(qdata,
 #' df2 <- qMetadata_maxquant(qdata, conds, df, 'peptide')
 #' 
 #' @export
+#' @name qMetadata_maxquant
 #' @rdname quantitative-metadata
+#' 
 #' 
 qMetadata_maxquant <- function(qdata, 
                                conds, 
@@ -523,7 +534,9 @@ qMetadata_maxquant <- function(qdata,
 #'
 #' @export
 #' 
+#' @name match.qMetadata
 #' @rdname quantitative-metadata
+#' 
 #'
 match.qMetadata <- function(df, pattern, level){
   if (missing(df))
@@ -575,7 +588,9 @@ match.qMetadata <- function(df, pattern, level){
 #' 
 #' @return NA
 #' 
+#' @name UpdateqMetadata
 #' @rdname quantitative-metadata
+#' 
 setMethod("UpdateqMetadata", "SummarizedExperiment",
           function(object,
                    from,
@@ -626,9 +641,10 @@ setMethod("UpdateqMetadata", "SummarizedExperiment",
 #' @export
 #' @return NA
 #' 
+#' @name search.qMetadata.tags
 #' @rdname quantitative-metadata
 #' 
-
+#' 
 search.qMetadata.tags <- function(pattern, level, depth = '1'){
   if(missing(pattern))
     stop("'pattern' is required.")
@@ -664,15 +680,12 @@ search.qMetadata.tags <- function(pattern, level, depth = '1'){
 
 
 
-
-
-
-#-----------------------------------------
-
 #' @title
+#' 
 #' Combine peptide metadata to build protein metadata
 #' 
-#' @description 
+#' @description
+#' 
 #' Agregation rules for the cells quantitative metadata of peptides. 
 #' Please refer to the qMetadata.def vocabulary in `qMetadata.def()`
 #' 
@@ -722,8 +735,9 @@ search.qMetadata.tags <- function(pattern, level, depth = '1'){
 #' }
 #' 
 #' @export
-#' 
+#' @name qMetadata_combine
 #' @rdname quantitative-metadata
+#' 
 #' 
 qMetadata_combine <- function(met, level) {
   tag <- NULL

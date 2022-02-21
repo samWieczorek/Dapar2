@@ -30,32 +30,22 @@
 #' qPepData <- assay(obj[[2]])
 #' inner.aggregate.iter(qPepData, X)
 #' 
-#' @rdname DaparToolshed-aggregate
+#' @rdname iterative-aggregation
 #' 
 inner.aggregate.iter <- function(qData, 
                                  X, 
-                                 init.method = 'colSumsMat', 
-                                 iter.method = 'Mean', 
-                                 n = NULL){
+                                 init.method = 'sum', 
+                                 iter.method = 'mean', 
+                                 ...){
+  #browser()
   
-  if (!(init.method %in% c("colSumsMat", "colMeansMat"))) {
-    warning("Wrong parameter init.method")
-    return(NULL)
-  }
+  stopifnot(init.method %in% c('sum', 'mean'))
+  stopifnot(iter.method %in% c("mean", "topn"))
   
-  if (!(iter.method %in% c("onlyN", "Mean"))){
-    warning("Wrong parameter iter.method")
-    return(NULL)
-  }
-  
-  
-  if (iter.method=='onlyN' && is.null(n)){
-    warning("Parameter n is null")
-    return(NULL)
-  }
-  
-  yprot <- do.call(init.method, list(X, qData))
-  
+  yprot <- switch(init.method,
+                  mean = colMeansMat(qData, X),
+                  sum = colSumsMat(qData, X)
+                  )
   conv <- 1
   
   while(conv > 10**(-10)){
@@ -67,10 +57,13 @@ inner.aggregate.iter <- function(qData,
     X.new[is.na(X.new)] <- 0
     
     # l'appel a la fonction ci-dessous depend des parametres choisis par l'utilisateur
-    switch(iter.method,
-           Mean = yprot <- colMeansMat(X.new, qData),
-           onlyN = yprot <- inner.aggregate.topn(qData, X.new, 'Mean', n)
-    )
+   yprot <- switch(iter.method,
+                   mean = colMeansMat(qData, X.new),
+                   topn = {
+                     X.topn <- subAdjMat_topnPeptides(X.new, qData, 'rowMeans', ...)
+                   }
+                   )
+    #yprot <- do.call(iter.method, list(qData, X, ...))
     
     mean.prot.new <- rowMeans(as.matrix(yprot), na.rm = TRUE)
     mean.prot.new[is.na(mean.prot.new)] <- 0
@@ -118,7 +111,7 @@ inner.aggregate.iter <- function(qData,
 #' @import doParallel
 #' @import foreach
 #' 
-#' @rdname DaparToolshed-aggregate
+#' @rdname iterative-aggregation
 #' 
 aggIterParallel <- function(qPepData, X, conditions=NULL, init.method='Sum', method='Mean', n=NULL){
   if (is.null(conditions)){
@@ -167,38 +160,37 @@ aggIterParallel <- function(qPepData, X, conditions=NULL, init.method='Sum', met
 #' @author Samuel Wieczorek
 #' 
 #' @examples
-#' library(QFeatures)
-#' Exp1_R25_pept <- readRDS(system.file("data", 'Exp1_R25_pept.rda', package="DaparToolshedData"))
-#' obj <- Exp1_R25_pept[seq_len(1000),]
-#' obj <- addListAdjacencyMatrices(obj, 2)
-#' X <- as.matrix(GetAdjMat(obj[[2]])$all)
-#' conditions <- colData(obj)$Condition
-#' aggIter(assay(obj,2), X, conditions)
+#' ft <- create_ft_example(with.na = TRUE)
+#' X <- adjacencyMatrix(ft[[1]])
+#' conds <- design(ft)$Condition
+#' aggIterative(assay(ft,1), X, conditions=conds)
 #' 
 #' @export
 #' 
-#' @rdname DaparToolshed-aggregate
+#' @rdname iterative-aggregation
 #'
-aggIterative <- function(x,
-                         MAT, 
+aggIterative <- function(qData,
+                         X, 
                          conditions = NULL, 
-                         init.method = 'Sum', 
-                         iter.method = 'Mean', 
+                         init.method = 'sum', 
+                         iter.method = 'mean', 
                          n = NULL){
   if (is.null(conditions)){
     warning("The parameter 'conditions' is NULL: the aggregation cannot be process.")
     return(NULL)
   }
-  
-  protData <- matrix(rep(0,ncol(x)*ncol(MAT)), nrow=ncol(x))
+  protData <- matrix(rep(0,ncol(qData)*ncol(X)), 
+                     nrow=ncol(X),
+                     dimnames=list(colnames(X), rep("cond", ncol(qData))))
   
   for (cond in unique(conditions)){
     ind <- which(conditions == cond)
-    protData[,ind]  <- inner.aggregate.iter(MAT[,ind],
-                                            x, 
+    protData[,ind]  <- inner.aggregate.iter(qData[,ind],
+                                            X, 
                                             init.method,
                                             iter.method, 
                                             n)
+    colnames(protData)[ind] <- colnames(qData)[ind]
   }
   
   return(protData)

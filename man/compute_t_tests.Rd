@@ -11,10 +11,10 @@ compute_t_tests(obj, sTab, contrast = "OnevsOne", type = "Student")
 
 \item{sTab}{A data.frame which contains the samples data.}
 
-\item{contrast}{Indicates if the test consists of the comparison of each 
-biological condition versus 
-each of the other ones (contrast=1; 
-for example H0:"C1=C2" vs H1:"C1!=C2", etc.) 
+\item{contrast}{Indicates if the test consists of the comparison of each
+biological condition versus
+each of the other ones (contrast=1;
+for example H0:"C1=C2" vs H1:"C1!=C2", etc.)
 or each condition versus all others (contrast=2; e.g.  H0:"C1=(C2+C3)/2" vs
 H1:"C1!=(C2+C3)/2", etc. if there are three conditions).}
 

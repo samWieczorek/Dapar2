@@ -20,7 +20,7 @@
 #'
 #' @importFrom shiny NS tagList
 #'
-#' @import shinyjs
+#' @importFrom shinyjs useShinyjs hidden
 #'
 #' @return NA
 #'
@@ -54,6 +54,7 @@ mod_plots_intensity_ui <- function(id){
 #'
 #' @importFrom SummarizedExperiment rowData
 #' @importFrom grDevices png
+#' @importFrom shinyjs toggle hidden
 #'
 #'@return NA
 #'

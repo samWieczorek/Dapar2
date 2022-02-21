@@ -108,11 +108,11 @@ s.zero: the value of the fudge factor s0.
 alpha.hat: the optimal quantile of the 's' values. If s0=0, 'alpha.hat'
 will not be returned.
 vec.cv: the vector of the coefficients of variations.  Following
-          Tusher et al. (2001), the optimal 'alpha' quantile is given
-          by the quantile that leads to the smallest CV of the modified
-          test statistics.
+Tusher et al. (2001), the optimal 'alpha' quantile is given
+by the quantile that leads to the smallest CV of the modified
+test statistics.
 msg: a character string summarizing the most important information
-          about the fudge factor.
+about the fudge factor.
 
 xxxxxxxxxx..
 
@@ -138,23 +138,25 @@ protein. This number is the same for all proteins within each
 connected component.
 
 A list of the following elements:
-- llr: log likelihood ratio statistic (maximum likelihood version).
-- llr.map: log likelihood ratio statistic (maximum a posteriori version).
-- llr.pv: p-value for llr.
-- llr.map.pv: p-value for llr.map.
-- mse.h0: Mean squared error under H0
-- mse.h1: Mean squared error under H1
-- s: selected regularization hyperparameter for llr.map.
-- wchi2: weight used to make llr.map chi2-distributed under H0.
+\itemize{
+\item llr: log likelihood ratio statistic (maximum likelihood version).
+\item llr.map: log likelihood ratio statistic (maximum a posteriori version).
+\item llr.pv: p-value for llr.
+\item llr.map.pv: p-value for llr.map.
+\item mse.h0: Mean squared error under H0
+\item mse.h1: Mean squared error under H1
+\item s: selected regularization hyperparameter for llr.map.
+\item wchi2: weight used to make llr.map chi2-distributed under H0.
+}
 }
 \description{
 fudge2LRT: heuristic to choose the value of the hyperparameter
 (fudge factor) used to regularize the variance estimator in the
 likelihood ratio statistic (as implemented in samLRT). We follow
-the heuristic described in [1] and adapt the code of the fudge2
+the heuristic described in \link{1} and adapt the code of the fudge2
 function in the siggene R package.
 
-[1] Tusher, Tibshirani and Chu, Significance analysis of
+\link{1} Tusher, Tibshirani and Chu, Significance analysis of
 microarrays applied to the ionizing radiation response, PNAS 2001
 98: 5116-5121, (Apr 24)
 

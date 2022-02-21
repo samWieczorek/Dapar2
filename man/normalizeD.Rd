@@ -15,19 +15,20 @@ An instance of class 'SummerizedExperiment' where the quantitative
 data in the \code{array()} tab has been normalized.
 }
 \description{
-This manual page describes the computation of statistical test using [QFeatures] objects. In the following
-functions, if `object` is of class `QFeatures`, and optional assay
-index or name `i` can be specified to define the assay (by name of
+This manual page describes the computation of statistical test using \link{QFeatures} objects. In the following
+functions, if \code{object} is of class \code{QFeatures}, and optional assay
+index or name \code{i} can be specified to define the assay (by name of
 index) on which to operate.
 
 The following functions are currently available:
-
-- `GlobalQuantileAlignment` xxx
-- `SumByColumns` xxx
-- `QuantileCentering` xxx
-- `MeanCentering` xxxx
-- `LOESS` xxx
-- `vsn` xxx
+\itemize{
+\item \code{GlobalQuantileAlignment} xxx
+\item \code{SumByColumns} xxx
+\item \code{QuantileCentering} xxx
+\item \code{MeanCentering} xxxx
+\item \code{LOESS} xxx
+\item \code{vsn} xxx
+}
 }
 \details{
 #' Provides several methods to normalize quantitative data from a numeric matrix.

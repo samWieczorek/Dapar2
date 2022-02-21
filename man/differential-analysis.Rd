@@ -39,14 +39,14 @@ diffAnaVolcanoplot_rCharts(
 )
 }
 \arguments{
-\item{object}{An object of class `QFeatures` or `SummarizedExperiment`.}
+\item{object}{An object of class \code{QFeatures} or \code{SummarizedExperiment}.}
 
 \item{...}{Additional parameters passed to inner functions.}
 
-\item{i}{A numeric vector or a character vector giving the index or the 
+\item{i}{A numeric vector or a character vector giving the index or the
 name, respectively, of the assay(s) to be processed.}
 
-\item{name}{A `character(1)` naming the new assay name. Default is `ttestAssay`.}
+\item{name}{A \code{character(1)} naming the new assay name. Default is \code{ttestAssay}.}
 
 \item{pval_ll}{A data frame which contains the p-values for the set of comparisons to show.}
 
@@ -54,10 +54,10 @@ name, respectively, of the assay(s) to be processed.}
 
 \item{pi0}{xxx}
 
-\item{logFC}{The result (logFC values) of the differential analysis processed 
+\item{logFC}{The result (logFC values) of the differential analysis processed
 by 'limmaCompleteTest'}
 
-\item{pval}{The result (p-values) of the differential analysis processed 
+\item{pval}{The result (p-values) of the differential analysis processed
 by 'limmaCompleteTest'}
 
 \item{threshold_PVal}{The threshold on p-pvalue to
@@ -66,7 +66,7 @@ distinguish between differential and non-differential data}
 \item{threshold_LogFC}{The threshold on log(Fold Change) to
 distinguish between differential and non-differential data}
 
-\item{pi0Method}{The parameter pi0.method of the method adjust.p 
+\item{pi0Method}{The parameter pi0.method of the method adjust.p
 in the package \code{cp4p}}
 
 \item{obj}{An object of class \code{SUmmarizeExperiment}.}
@@ -81,9 +81,9 @@ in the package \code{cp4p}}
 x : a vector of the log(fold change) values of the differential analysis,
 y : a vector of the p-value values returned by the differential analysis.
 index : a vector of the rownames of the data.
-This dataframe must has been built with the option stringsAsFactors set 
-to FALSE. There may be additional slots which will be used to show 
-informations in the tooltip. The name of these slots must begin with the 
+This dataframe must has been built with the option stringsAsFactors set
+to FALSE. There may be additional slots which will be used to show
+informations in the tooltip. The name of these slots must begin with the
 prefix "tooltip_". It will be automatically removed in the plot.}
 
 \item{threshold_pVal}{A floating number which represents the p-value that
@@ -95,8 +95,8 @@ Fold Change that separates differential and non-differential data.}
 \item{conditions}{A list of the names of condition 1 and 2 used for the
 differential analysis.}
 
-\item{clickFunction}{A string that contains a JavaScript function used to 
-show info from slots in df. The variable this.index refers to the slot 
+\item{clickFunction}{A string that contains a JavaScript function used to
+show info from slots in df. The variable this.index refers to the slot
 named index and allows to retrieve the right row to show in the tooltip.}
 
 \item{palette}{xxx}
@@ -115,10 +115,10 @@ An object of class \code{SummarizedExperiment}
 An interactive volcanoplot
 }
 \description{
-This function is a wrappper to the function adjust.p from the cp4p package. It returns the FDR corresponding to the p-values of the 
+This function is a wrappper to the function adjust.p from the cp4p package. It returns the FDR corresponding to the p-values of the
 differential analysis. The FDR is computed with the function \code{p.adjust}\{stats\}..
 
-This method returns a list of the statistical tests performed with xxx and formatted as a 
+This method returns a list of the statistical tests performed with xxx and formatted as a
 list of two DataFrame: one for the logFC data and one for the p-values data.
 
 This method returns a class \code{QFeatures} object with the results
@@ -129,8 +129,8 @@ Typically, the log of Fold Change is represented on the X-axis and the
 log10 of the p-value is drawn on the Y-axis. When the \code{threshold_pVal}
 and the \code{threshold_logFC} are set, two lines are drawn respectively on
 the y-axis and the X-axis to visually distinguish between differential and
-non differential data. With the use of the package Highcharter, a 
-customizable tooltip appears when the user put the mouse's pointer over 
+non differential data. With the use of the package Highcharter, a
+customizable tooltip appears when the user put the mouse's pointer over
 a point of the scatter plot.
 }
 \examples{

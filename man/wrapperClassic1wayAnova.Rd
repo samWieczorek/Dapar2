@@ -44,7 +44,7 @@ anovatest <- wrapperClassic1wayAnova(obj[[2]], sTab, with_post_hoc=TRUE, post_ho
 
 }
 \seealso{
-[postHocTest()]
+\code{\link[=postHocTest]{postHocTest()}}
 }
 \author{
 Hélène Borges, Samuel Wieczorek

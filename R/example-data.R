@@ -11,7 +11,10 @@
 #' 
 #' @export
 #' @rdname create-example
-create_ft_example <- function(){
+create_ft_example <- function(with.na = FALSE){
+  
+  filename <- if (with.na) "ft-data-na.txt" else"ft-data.txt"
+  
   data.file <- system.file("extdata", "ft-data.txt", package="DaparToolshed")
   data <- read.table(data.file, header=TRUE, sep="\t", as.is=TRUE, stringsAsFactors = FALSE)
   sample.file <- system.file("extdata", "ft-samples.txt", package="DaparToolshed")

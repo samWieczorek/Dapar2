@@ -24,6 +24,8 @@ setGeneric("analysis", function(object, ...) standardGeneric("analysis"))
 setGeneric("analysis<-", function(object, ..., value) standardGeneric("analysis<-"))
 setGeneric("version", function(object, ...) standardGeneric("version"))
 setGeneric("version<-", function(object, ..., value) standardGeneric("version<-"))
+setGeneric("design", function(object, ...) standardGeneric("design"))
+setGeneric("design<-", function(object, ..., value) standardGeneric("design<-"))
 
 
 setGeneric("GetHypoyhesisTest", function(object, ...) standardGeneric("GetHypoyhesisTest"))

@@ -16,6 +16,7 @@ mod_Protein_Normalization_ui <- function(id){
 
 
 #' @export
+#' @importFrom shinyjs disabled
 #'
 mod_Protein_Normalization_server <- function(id,
                                              dataIn = NULL,

@@ -37,6 +37,7 @@ mod_Protein_Description_ui <- function(id){
 #' @author Samuel Wieczorek
 #'
 #' @export
+#' @importFrom shinyjs disabled
 #' 
 #' @return NA
 #' 

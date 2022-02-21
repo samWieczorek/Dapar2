@@ -48,12 +48,12 @@ Partial Observed Values for each replicate in the dataset.
 The colors correspond to the different conditions (Condition in colData of
 the object of class \code{QFeatures}).
 The x-axis represent the mean of intensity for one condition and one
-entity in the dataset (i. e. a protein) 
+entity in the dataset (i. e. a protein)
 whereas the y-axis count the number of observed values for this entity
 and the considered condition.
 
 Plots a heatmap of the quantitative data. Each column represent one of
-the conditions in the object of class \code{MSnSet} and 
+the conditions in the object of class \code{MSnSet} and
 the color is proportional to the mean of intensity for each line of
 the dataset.
 The lines have been sorted in order to vizualize easily the different
