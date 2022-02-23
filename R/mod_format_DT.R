@@ -1,24 +1,21 @@
-# Module UI
-
 #' @title   mod_format_DT_ui and mod_format_DT_server
 #' 
-#' @description  A shiny Module.
-#'
-#' @param id shiny id
-#' @param input internal
-#' @param output internal
-#' @param session internal
-#'
-#' @rdname mod_format_DT
-#'
-#' @keywords internal
+#' @description 
 #' 
-#' @export
-#'  
+#' A shiny Module.
+#'
+#' @name mod_format_DT
+#' 
+NULL
+
+
+#' @param id shiny id
+#' 
 #' @importFrom shiny NS tagList 
 #' @importFrom DT renderDT DTOutput formatStyle %>% styleEqual
 #' 
-#' @return NA
+#' @export
+#' @rdname mod_format_DT
 #' 
 mod_format_DT_ui <- function(id){
   ns <- NS(id)
@@ -31,31 +28,24 @@ mod_format_DT_ui <- function(id){
   )
 }
 
-# Module Server
-
-#' @rdname mod_format_DT
-#' 
-#' @param input internal
-#' @param output internal
-#' @param session internal
-#' @param withBtns xxx
-#' @param showRownames xxxx
+#' @param id internal
+#' @param table2show internal
+#' @param rownames xxxx
 #' @param dom xxx
+#' @param style xxx
 #' 
 #' @export
 #' 
-#' @keywords internal
-#' 
 #' @import DT
 #' @importFrom htmlwidgets JS    
+#' @importFrom DT replaceData dataTableProxy renderDT datatable formatStyle styleEqual
 #' 
 #' @return NA
-#' 
+#' @rdname mod_format_DT
 mod_format_DT_server <- function(id,
-                                 table2show,
-                                 withBtns=NULL,
-                                 showRownames=FALSE,
-                                 dom='Bt',
+                                 df,
+                                 rownames = FALSE,
+                                 dom = 'Bt',
                                  style = NULL){
   
   
@@ -63,25 +53,21 @@ mod_format_DT_server <- function(id,
     ns <- session$ns
     
     observe({
-      req(table2show())
-      #   #warning("The parameter table2show is null.")
-      #   return(NULL)
-      # } else {
-      DT::replaceData(proxy, table2show(), resetPaging = FALSE)  
-      # }
+      req(df())
+      DT::replaceData(proxy, df(), resetPaging = FALSE)  
     })
     
     proxy = DT::dataTableProxy(session$ns('dt'), session)
     
     output$dt <- DT::renderDT({
-      req(table2show())
+      req(df())
       
       isolate({
         if (is.null(style()) || length(style())==0){
-          DT::datatable(table2show(), 
+          DT::datatable(df(), 
                         extensions = c('Scroller', 'Buttons'),
                         escape = FALSE,
-                        rownames= showRownames,
+                        rownames= rownames,
                         option=list(initComplete = initComplete(),
                                     dom = dom,
                                     server = FALSE,
@@ -92,14 +78,14 @@ mod_format_DT_server <- function(id,
           )
         } else {
           
-          DT::datatable(table2show(), 
+          DT::datatable(df(), 
                         extensions = c('Scroller', 'Buttons'),
                         escape = FALSE,
-                        rownames= showRownames,
+                        rownames= rownames,
                         option=list(initComplete = initComplete(),
                                     dom = dom,
                                     server = FALSE,
-                                    autoWidth=TRUE,
+                                    autoWidth = TRUE,
                                     columnDefs = list(list(width='150px',targets= "_all")),
                                     ordering = FALSE
                         )

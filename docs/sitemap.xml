@@ -97,13 +97,25 @@
     <loc>/reference/connected-components.html</loc>
   </url>
   <url>
+    <loc>/reference/connected_components.html</loc>
+  </url>
+  <url>
     <loc>/reference/corrMatrixD_HC.html</loc>
+  </url>
+  <url>
+    <loc>/reference/corrmatrix_plot.html</loc>
   </url>
   <url>
     <loc>/reference/create-example.html</loc>
   </url>
   <url>
     <loc>/reference/createQFeatures.html</loc>
+  </url>
+  <url>
+    <loc>/reference/customChart.html</loc>
+  </url>
+  <url>
+    <loc>/reference/customExportMenu_HC.html</loc>
   </url>
   <url>
     <loc>/reference/CVDistD_HC.html</loc>
@@ -118,6 +130,9 @@
     <loc>/reference/dapar_hc_ExportMenu.html</loc>
   </url>
   <url>
+    <loc>/reference/density-plots.html</loc>
+  </url>
+  <url>
     <loc>/reference/densityPlotD_HC.html</loc>
   </url>
   <url>
@@ -125,6 +140,9 @@
   </url>
   <url>
     <loc>/reference/descriptives-statistics-plots.html</loc>
+  </url>
+  <url>
+    <loc>/reference/descriptive_statistics_plots.html</loc>
   </url>
   <url>
     <loc>/reference/diffAnaComputeFDR.html</loc>
@@ -409,6 +427,9 @@
     <loc>/reference/mod_format_DT.html</loc>
   </url>
   <url>
+    <loc>/reference/mod_graph_pept_prot.html</loc>
+  </url>
+  <url>
     <loc>/reference/mod_legend_colored_exprs.html</loc>
   </url>
   <url>
@@ -487,6 +508,9 @@
     <loc>/reference/MVrowsTagToOne_HB.html</loc>
   </url>
   <url>
+    <loc>/reference/mv_plots.html</loc>
+  </url>
+  <url>
     <loc>/reference/nEmptyLines.html</loc>
   </url>
   <url>
@@ -500,6 +524,9 @@
   </url>
   <url>
     <loc>/reference/normalizeMethods.dapar.html</loc>
+  </url>
+  <url>
+    <loc>/reference/palette.html</loc>
   </url>
   <url>
     <loc>/reference/pepa-imputation.html</loc>

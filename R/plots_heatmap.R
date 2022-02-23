@@ -35,7 +35,7 @@
 #' 
 #' @export
 #' 
-#' @rdname descriptive-statistics-plots
+#' @rdname descriptive_statistics_plots
 #' 
 heatmapD <- function(qData, 
                      conds, 

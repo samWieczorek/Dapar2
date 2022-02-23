@@ -91,6 +91,7 @@ Collate:
     palette.R
     example-data.R
     qMetadata.R
+    plots_mv.R
     DaparToolshed_aggregate.R
     DaparToolshed_filter_Adjmat.R
     DaparToolshed_QFeatures_Addons.R
@@ -116,9 +117,6 @@ Collate:
     plots_CV_dist.R
     plots_density_plot.R
     plots_heatmap.R
-    plots_mv_histo.R
-    plots_mv_PerLinesHisto.R
-    plots_mv_PerLinesHistoPerCondition.R
     plots_pca.R
     plots_violin.R
     plots_volcano.R
@@ -153,7 +151,6 @@ Collate:
     mod_popover_for_help.R
     mod_settings.R
     mod_Normalization.R
-    misc.R
     zzz.R
 RoxygenNote: 7.1.2
 Packaged: 2017-10-13 11:13:04 UTC; sw175264

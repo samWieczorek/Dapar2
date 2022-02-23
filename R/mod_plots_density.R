@@ -1,55 +1,52 @@
-#' @title   Shiny module for density plots.
+#' @title Shiny module for plots.
 #'
 #' @description  
 #' 
 #' A shiny Module.
 #'
-#' @param id shiny id
-#' @param input internal
-#' @param output internal
-#' @param session internal
-#' @param obj xxx
-#' @param conds xxx
-#' @param legend xxx
-#' @param base_palette xxx
-#'
-#' @keywords internal
+#' @name density-plots
 #' 
-#' @return NA
+#' @return A plot
 #' 
 #' @examples 
-#' 
+#' library(QFeatures)
 #' data(ft)
-#' ui <- fluidPage(
-#' mod_plots_density_ui('plot')
-#' )
+#' ui <- mod_plots_density_ui('plot')
 #' 
 #' server <- function(input, output, session) {
 #'  data(ft)
 #'  conds <- design(ft)$Condition
-#'  legend <- design(ft)[["Sample.name"]]
-#'   
+#'  
 #'  mod_plots_density_server('plot',
-#'                            obj = reactive({ft}),
-#'                            conds = reactive({conds}),
-#'                            legend = reactive({legend}),
-#'                            base_palette = reactive({Example_Palette()})
-#'   )
-#' }
-#' 
-#' 
+#'                           obj = reactive({ft}),
+#'                           conds = reactive({conds}),
+#'                           pal = reactive({'Dark1'})
+#'                           )
+#'  }
 #' shinyApp(ui=ui, server=server)
+NULL
+
+#' @param id A `character(1)` which is the id of the shiny module.
+#' 
 #' @export
 #' @importFrom shiny NS tagList
-#' @rdname descriptive-statistics-plots
+#' @rdname density-plots
 mod_plots_density_ui <- function(id){
-  ns <- NS(id)
-  highchartOutput(ns("Densityplot"))
+  fluidPage(
+    ns <- NS(id),
+    highchartOutput(ns("Densityplot"))
+  )
 }
 
 
+#' @param id shiny id
+#' @param obj xxx
+#' @param conds xxx
+#' @param legend xxx
+#' @param base_palette xxx
 #' @export
-#' @rdname descriptive-statistics-plots
+#' @rdname density-plots
+#' 
 mod_plots_density_server <- function(id, 
                                      obj, 
                                      conds, 

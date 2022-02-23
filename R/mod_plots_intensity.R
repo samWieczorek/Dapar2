@@ -12,7 +12,7 @@
 #'
 #' @param session internal
 #'
-#' @rdname descriptives-statistics-plots
+#' @rdname descriptive_statistics_plots
 #'
 #' @keywords internal
 #'
@@ -46,7 +46,7 @@ mod_plots_intensity_ui <- function(id){
 
 # Module Server
 
-#' @rdname descriptives-statistics-plots
+#' @rdname descriptive_statistics_plots
 #'
 #' @export
 #'

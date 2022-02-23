@@ -184,7 +184,10 @@ proteomics data processing pipeline.</p></div>
 <span class="r-in">                                      fcol <span class="op">=</span> <span class="st">'adjacencyMatrix'</span>, </span>
 <span class="r-in">                                      fun <span class="op">=</span> <span class="va">colSumsMat</span>,</span>
 <span class="r-in">                                      fun.qmeta <span class="op">=</span> <span class="va">aggQmeta</span><span class="op">)</span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in aggQmetadata(qMeta = qMetadata(object), X = adjacencyMatrix(object),     level = typeDataset(object), conds = conds):</span> could not find function "aggQmetadata"</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Your quantitative data contain missing values. Please read the relevant</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> section(s) in the aggregateFeatures manual page regarding the effects</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> of missing values on data aggregation.</span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in do.call(FUN, list(x, MAT, ...)):</span> object 'aggQmeta' not found</span>
 <span class="r-in"><span class="va">feat1</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> An instance of class QFeatures containing 1 assays:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  [1] psms: SummarizedExperiment with 10 rows and 2 columns </span>

@@ -1,5 +1,5 @@
 # btn_success_color <- "btn-success"
-# optionsBtnClass <- "info"
+ optionsBtnClass <- "info"
 # redBtnClass <- "btn-danger"
 # PrevNextBtnClass <- "btn-info"
 # actionBtnClass <- "btn-primary"

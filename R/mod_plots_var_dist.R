@@ -4,21 +4,14 @@
 #'
 #' @description  A shiny Module.
 #'
-#' @param id shiny id
-#' @param input internal
-#' @param output internal
-#' @param session internal
-#'
-#' @rdname descriptives-statistics-plots
-#'
-#' @keywords internal
-#'
-#' @export
-#'
-#' @importFrom shiny NS tagList
+#' @examples 
 #' 
-#' @return NA
-#'
+
+
+
+#' @param id shiny id
+#' @importFrom shiny NS tagList
+#' @rdname descriptive_statistics_plots
 mod_plots_var_dist_ui <- function(id){
   ns <- NS(id)
   tagList(
@@ -32,18 +25,13 @@ mod_plots_var_dist_ui <- function(id){
 
 
 
-# Module Server
-
-#' @rdname descriptives-statistics-plots
-#'
-#' @export
-#'
-#' @keywords internal
-#'
-#' @importFrom SummarizedExperiment assay
-#' 
-#' @return NA
-#'
+#' @param id shiny id
+#' @param obj xxx
+#' @param conds A `character()` representings the condition for 
+#' each sample of the [QFeatures] object.
+#' @param base_palette xxx
+#' @importFrom shiny NS tagList
+#' @rdname descriptive_statistics_plots
 mod_plots_var_dist_server <- function(id,
                                       obj,
                                       conds,

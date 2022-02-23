@@ -1,32 +1,49 @@
 
 #' @title Standardize names
 #'
-#' @description Replace some characters in names by 'underscore'
+#' @description 
+#' 
+#' Replace ".", ' ', '-' in `character()` by '_' to be compliant
+#' with functions of [Shinyjs], [Shiny]
 #'
-#' @param x A vector of strings to be processed
+#' @param x A `character()` to be processed
 #'
-#' @return NA
+#' @return A `character()` of the same length as 'x' with modified
+#' names.
 #'
 #' @author Samuel Wieczorek
 #'
 #' @export
+#' 
+#' @examples
+#' 
+#' ReplaceSpecialChars(c('foo.1', 'foo-2', 'foo 3'))
 #'
 ReplaceSpecialChars <- function(x){
   if (is.null(x))
     return(x)
   
-  val <- x
-  for (c in c(".", ' ', '-'))
-    val <- gsub(c, '_', x, fixed=TRUE)
-  val
+  for (char in c('.', ' ', '-'))
+    x <- gsub(char, '_', x, fixed=TRUE)
+  
+  x
 }
 
 
-#' @title Versions of installed packages of Prostar suite
+#' @title Version number of Prostar suite
 #' 
-#' @description Return the versions of Prostar, DaparToolshed and DaparData
+#' @description 
 #' 
-#' @return A list
+#' This function gives the version number of the packages of the 
+#' Prostar suite and which propose data processing. This information
+#' can be useful if the user wants to publish its works or to
+#' rerun a data processing pipeline tin a given set of conditions. 
+#' The packages which are concerned are [Prostar], [DaparToolshed] 
+#' and [DaparToolshedData]
+#' 
+#' @return A `list(3)`
+#' 
+#' @rdname ProstarVersions
 #' 
 #' @author Samuel Wieczorek
 #' 
@@ -37,7 +54,7 @@ ReplaceSpecialChars <- function(x){
 #' 
 ProstarVersions <- function(){
   
-  Prostar <- DaparToolshed <- DaparData <- NA
+  Prostar <- DaparToolshed <- DaparToolshedData <- Magellan <- NA
   
   tryCatch({
     find.package("Prostar")
@@ -54,15 +71,16 @@ ProstarVersions <- function(){
   )
   
   tryCatch({
-    find.package("DaparData")
-    DaparToolshed <- Biobase::package.version('DaparData')
+    find.package("DaparToolshedData")
+    DaparToolshed <- Biobase::package.version('DaparToolshedData')
   },
-  error = function(e) DaparData <- NA
+  error = function(e) DaparToolshedData <- NA
   )
+
   
   list(Prostar = Prostar,
        DaparToolshed = DaparToolshed,
-       DaparData = DaparData)
+       DaparToolshedData = DaparToolshedData)
 }
 
 
@@ -74,26 +92,28 @@ ProstarVersions <- function(){
 
 
 
-#' @title Returns the number of empty lines in the data
+#' @title Number of empty lines in the data
 #' 
-#' @param qData A matrix corresponding to the quantitative data.
+#' @description 
 #' 
-#' @return A list
+#' This function counts the number of empty lines (all elements
+#' are equal to NA).
+#' 
+#' @param df A `data.frame`.
+#' 
+#' @return A `integer(1)`
+#' 
+#' @export
 #' 
 #' @author Samuel Wieczorek
 #' 
 #' @examples
-#' library(QFeatures)
-#' Exp1_R25_pept <- readRDS(system.file("data", 'Exp1_R25_pept.rda', package="DaparToolshedData"))
-#' qData <- assay(Exp1_R25_pept,1)
-#' nEmptyLines(qData)
+#' data(ft)
+#' nEmptyLines(assay(ft, 1))
 #' 
-#' @export
-#' 
-nEmptyLines <- function(qData){
-  n <- sum(apply(is.na(as.matrix(qData)), 1, all))
-  return (n)
-}
+nEmptyLines <- function(df)
+  sum(apply(is.na(as.matrix(df)), 1, all))
+
 
 
 
@@ -235,32 +255,37 @@ getListNbValuesInLines <- function(obj, i, type="WholeMatrix"){
 #' 
 #' @author Samuel Wieczorek
 #' 
+#' @rdname customExportMenu_HC
+#' 
 #' @examples
-#' library("highcharter")
-#' hc <- highchart() 
-#' hc_chart(hc,type = "line") 
-#' hc_add_series(hc,data = c(29, 71, 40))
-#' dapar_hc_ExportMenu(hc,filename='foo')
+#' hc <- highchart() %>%
+#' hc_chart(type = "line") %>%
+#' hc_add_series(data = c(29, 71, 40)) 
+#' customExportMenu(hc, fname='foo')
+#' hc
 #' 
 #' @export
 #' 
 #' @importFrom highcharter hc_exporting
 #' 
-dapar_hc_ExportMenu <- function(hc, filename){
-  hc_exporting(hc, enabled=TRUE,
-               filename = filename,
+customExportMenu <- function(hc, fname){
+  highcharter::hc_exporting(hc, enabled=TRUE,
+               filename = fname,
                buttons= list(
                  contextButton= list(
-                   menuItems= list('downloadPNG', 'downloadSVG','downloadPDF')
+                   menuItems= list('downloadPNG', 
+                                   'downloadSVG',
+                                   'downloadPDF')
                  )
                )
   )
+  hc
 }
 
 
 
 
-#' @title Customised resetZoomButton of highcharts plots
+#' @title Customised resetZoom Button of highcharts plots
 #' 
 #' @param hc A highcharter object
 #' 
@@ -281,13 +306,17 @@ dapar_hc_ExportMenu <- function(hc, filename){
 #' hc <- highchart() 
 #' hc_chart(hc,type = "line") 
 #' hc_add_series(hc,data = c(29, 71, 40))
-#' dapar_hc_ExportMenu(hc,filename='foo')
+#' customChart(hc,filename='foo')
 #' 
 #' @export
 #' 
 #' @importFrom highcharter hc_chart
 #' 
-dapar_hc_chart <- function(hc,  chartType, zoomType="None", width=0, height=0){
+customChart <- function(hc,
+                           chartType, 
+                           zoomType="None", 
+                           width=0, 
+                           height=0){
   hc %>% 
     hc_chart(type = chartType, 
              zoomType=zoomType,
@@ -306,7 +335,9 @@ dapar_hc_chart <- function(hc,  chartType, zoomType="None", width=0, height=0){
 
 #' @title Retrieve the indices of non-zero elements in sparse matrices
 #' 
-#' @description This function retrieves the indices of non-zero elements in sparse matrices
+#' @description 
+#' 
+#' This function retrieves the indices of non-zero elements in sparse matrices
 #' of class dgCMatrix from package Matrix. This function is largely inspired from 
 #' the package \code{RINGO}
 #' 

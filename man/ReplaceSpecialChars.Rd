@@ -7,13 +7,20 @@
 ReplaceSpecialChars(x)
 }
 \arguments{
-\item{x}{A vector of strings to be processed}
+\item{x}{A \code{character()} to be processed}
 }
 \value{
-NA
+A \code{character()} of the same length as 'x' with modified
+names.
 }
 \description{
-Replace some characters in names by 'underscore'
+Replace ".", ' ', '-' in \code{character()} by '_' to be compliant
+with functions of \link{Shinyjs}, \link{Shiny}
+}
+\examples{
+
+ReplaceSpecialChars(c('foo.1', 'foo-2', 'foo 3'))
+
 }
 \author{
 Samuel Wieczorek

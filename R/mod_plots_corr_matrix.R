@@ -1,136 +1,105 @@
-
-#' @title   mod_plots_corr_matrix_ui and mod_plots_corr_matrix_server
+#' @title   mod_plots_group_mv_ui and mod_plots_group_mv_server
 #'
 #' @description  A shiny Module.
+#' 
+#' @name mv_plots
 #'
-#' @param id shiny id
-#'
-#' @param input internal
-#'
-#' @param output internal
-#'
-#' @param session internal
-#'
-#' @rdname descriptives-statistics-plots
-#'
-#' @keywords internal
-#'
+#' @examples 
+#' library(QFeatures)
+#' library(DaparToolshed)
+#' data(ft)
+#' ui <- mod_corrmatrix_plot_ui('plot')
+#' 
+#' server <- function(input, output, session) {
+#'  mod_corrmatrix_plot_server('plot',
+#'                             qData = reactive({assay(ft[[1]])})
+#'                             )
+#'  }
+#' shinyApp(ui=ui, server=server)
+NULL
+
+
+#' @param id xxx
 #' @export
-#'
 #' @importFrom shiny NS tagList
 #' @importFrom shinyWidgets dropdownButton
-#' 
-#' @return NA
-#'
-mod_plots_corr_matrix_ui <- function(id){
+#' @rdname corrmatrix_plot
+mod_corrmatrix_plot_ui <- function(id){
   ns <- NS(id)
   tagList(
-    tags$div(
-      tags$div(style="display:inline-block; vertical-align: middle;",
-               tags$p("Plot options")
-      ),
-
-      tags$div(style="display:inline-block; vertical-align: middle;",
-
-               tags$div(
-                 tags$div(style="display:inline-block; vertical-align: top; material-circle;",
-                          shinyWidgets::dropdownButton(
-                            tags$div(
-                              tags$div(style="display:inline-block; vertical-align: bottom;",
-                                       uiOutput(ns('showValues_ui')),
-                                       uiOutput(ns('gradient_ui')),
-                                       tooltip="Plots parameters"
-
-                              )
-                            ),
-                            tooltip="Plots parameters",
-                            icon = icon("gear"), status = optionsBtnClass
-                          ))
-               )
-
-      )
-    ),
-    #highchartOutput(ns("corrMatrix"),width = plotWidth,height = plotHeight)
-    highchartOutput(ns("corrMatrix"),width = '600px',height = '500px')
+    uiOutput(ns('showValues_ui')),
+    uiOutput(ns('rate_ui')),
+    highchartOutput(ns("corrMatrix"), width = '600px',height = '500px')
   )
 }
-#' @param obj xxx
-#'
-#' @param names xxx
-#'
-#' @param gradientRate xxx. Default value is 0.9
+
+#' @param id xxx
+#' @param qData xxx
+#' @param rate xxx. Default value is 0.9
+#' @param showValues Default is FALSE.
 #'
 #' @export
+#' @rdname corrmatrix_plot
 #'
-#' @keywords internal
-#'
-#' @importFrom SummarizedExperiment assay
-#' 
-#' @return NA
-#' 
-#' @rdname descriptives-statistics-plots
-#'
-mod_plots_corr_matrix_server <- function(id, obj, names=NULL, gradientRate=NULL){
+mod_corrmatrix_plot_server <- function(id,
+                                       qData, 
+                                       rate = reactive({0.5}),
+                                       showValues = reactive({FALSE})){
 
   moduleServer(id, function(input, output, session) {
     ns <- session$ns
-
+    observe({
+      req(qData())
+      stopifnot (inherits(qData(), "matrix"))
+    })
 
     rv.corr <- reactiveValues(
-      gradient = NULL,
+      rate = NULL,
       showValues = FALSE
     )
 
 
-    output$gradient_ui <- renderUI({
-      req(rv.corr$gradient)
-      sliderInput(ns("expGradientRate"),
+    output$rate_ui <- renderUI({
+      req(rv.corr$rate)
+      sliderInput(ns("rate"),
                   "Tune to modify the color gradient",
                   min = 0,
                   max = 1,
-                  value = rv.corr$gradient,
+                  value = rv.corr$rate,
                   step=0.01)
     })
 
 
     output$showValues_ui <- renderUI({
-
-      checkboxInput(ns('showDataLabels'), 'Show labels', value=rv.corr$showValues)
+      checkboxInput(ns('showLabels'), 
+                    'Show labels', 
+                    value = rv.corr$showValues)
 
     })
 
 
-    observeEvent(req(!is.null(input$showDataLabels)),{
-      rv.corr$showValues <- input$showDataLabels
+    observeEvent(req(!is.null(input$showLabels)),{
+      rv.corr$showValues <- input$showLabels
     })
 
-    observeEvent(req(gradientRate()),{
-      rv.corr$gradient <- gradientRate()
+    observeEvent(req(rate()),{
+      rv.corr$rate <- rate()
     })
 
-    observeEvent(req(input$expGradientRate),{
-      rv.corr$gradient <- input$expGradientRate
+    observeEvent(req(input$rate),{
+      rv.corr$rate <- input$rate
     })
-
-    corrMatrix <- reactive({
-      req(obj())
-      rv.corr$gradient
-      rv.corr$showValues
-
-
-      withProgress(message = 'Making plot', value = 100, {
-        tmp <- DaparToolshed::corrMatrixD_HC(obj = obj(),
-                                      names = names(),
-                                      rate = rv.corr$gradient,
-                                      showValues = rv.corr$showValues)
-      })
-
-      tmp
-    })
-
 
     output$corrMatrix <- renderHighchart({
-      corrMatrix()
+      req(qData())
+      
+      withProgress(message = 'Making plot', value = 100, {
+        tmp <- corrMatrixPlot(qData = qData(),
+                              rate = rv.corr$rate,
+                              showValues = rv.corr$showValues)
+      })
+      
+      tmp
     })
 
 

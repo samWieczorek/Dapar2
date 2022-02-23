@@ -3,10 +3,7 @@
 #' @title Displays a correlation matrix of the quantitative data of a
 #' numeric matrix.
 #' 
-#' @param obj.se An object of class 'SummarizedExperiment'
-#' 
-#' @param names A vector of strings which will be used as legend. The length
-#' of 'names' must be equal to the number of samples in the dataset.
+#' @param qData An object of class 'SummarizedExperiment'
 #' 
 #' @param rate The rate parameter to control the exponential law for 
 #' the gradient of colors
@@ -19,50 +16,36 @@
 #' 
 #' @examples
 #' library(QFeatures)
-#' Exp1_R25_pept <- readRDS(system.file("data", 'Exp1_R25_pept.rda', package="DaparToolshedData"))
-#' corrMatrixD_HC(Exp1_R25_pept[[2]])
+#' data(ft)
+#' corrMatrixPlot(assay(ft, 1))
 #' 
 #' @importFrom dplyr mutate left_join
 #' @importFrom tidyr gather
-#' 
 #' @import highcharter
-#' 
 #' @importFrom DT JS
-#' 
 #' @importFrom tibble tibble as_tibble
-#' 
 #' @importFrom stats cor
 #' 
 #' @export
 #' 
-#' @rdname descriptive-statistics-plots
+#' @rdname corrmatrix_plot
 #' 
-corrMatrixD_HC <- function(obj.se, 
-                           names = NULL, 
-                           rate = 0.5, 
-                           showValues=TRUE) {
+corrMatrixPlot <- function(qData,
+                           rate = 0.5,
+                           showValues = FALSE) {
   
 
-    if (class(obj.se) != 'SummarizedExperiment'){
-      warning("'obj.se' is not a SummarizedExperiment object.")
-      return(NULL)
-    }
-  res <- cor(SummarizedExperiment::assay(obj.se),
+    stopifnot(inherits(qData, 'matrix') || inherits(qData, 'array'))
+  
+  if (is.null(colnames(qData)))
+    stop("'qData' must have colnames.")
+              
+  res <- cor(qData,
              use = 'pairwise.complete.obs')
 
-   #df <- as.data.frame(res)
-   df <- tibble::as_tibble(res)
+    df <- tibble::as_tibble(res)
+   colnames(df) <- colnames(qData)
 
-  if (!is.null(names)){
-    if (length(names) != ncol(df)){
-      warning("The length of 'names' must be equal to the number of samples
-      in the dataset")
-      return(NULL)
-    }
-    colnames(df) <- names
-  }
-      
-  
   is.num <- sapply(df, is.numeric)
   df[is.num] <- lapply(df[is.num], round, 2)
   dist <- NULL
@@ -70,14 +53,15 @@ corrMatrixD_HC <- function(obj.se,
   x <- y <- names(df)
 
   df <- tibble::as_tibble(cbind(x = y, df)) %>% 
-     #df <- dplyr::tbl_df(cbind(x = y, df)) %>% 
     tidyr::gather(y, dist, -x) %>% 
     dplyr::mutate(x = as.character(x),
                   y = as.character(y)) %>% 
     dplyr::left_join(tibble::tibble(x = y,
-                                    xid = seq(length(y)) - 1), by = "x") %>% 
+                                    xid = seq(length(y)) - 1), 
+                     by = "x") %>% 
     dplyr::left_join(tibble::tibble(y = y,
-                                    yid = seq(length(y)) - 1), by = "y")
+                                    yid = seq(length(y)) - 1), 
+                     by = "y")
   
   ds <- df %>% 
     dplyr::select("xid", "yid", "dist") %>% 
@@ -95,7 +79,7 @@ corrMatrixD_HC <- function(obj.se,
   
   
   highcharter::highchart() %>% 
-    dapar_hc_chart(chartType = "heatmap") %>% 
+    customChart(chartType = "heatmap") %>% 
     hc_xAxis(categories = y, title = NULL) %>% 
     hc_yAxis(categories = y, title = NULL) %>% 
     hc_add_series(data = ds) %>% 
@@ -108,6 +92,6 @@ corrMatrixD_HC <- function(obj.se,
     hc_tooltip(formatter = fntltp) %>% 
     hc_legend(align = "right", layout = "vertical",
               verticalAlign="middle") %>% 
-    hc_colorAxis(  stops= cor_colr,min=rate,max=1) %>%
-    dapar_hc_ExportMenu(filename = "corrMatrix")
+    hc_colorAxis(  stops= cor_colr, min=rate, max=1) %>%
+    customExportMenu(fname = "corrMatrix")
 }

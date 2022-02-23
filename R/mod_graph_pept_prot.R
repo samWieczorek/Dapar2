@@ -1,18 +1,23 @@
-#' graph_pept_prot UI Function
+#' @title Connected components tools.
 #'
-#' @description A shiny Module.
-#'
-#' @param id,input,output,session Internal parameters for {shiny}.
-#'
-#' @rdname connected-components
-#'
+#' @description 
+#' 
+#' A shiny Module.
+#' 
+#' @name connected_components
+#' 
+#' 
+NULL
+
+#' @param id Internal parameters for {shiny}.
+#' 
 #' @importFrom shiny NS tagList
 #' @import visNetwork
-#' @importFrom DT renderDT DTOutput formatStyle %>% styleEqual
+#' @importFrom DT renderDT DTOutput formatStyle %>% styleEqual datatable
 #' @importFrom shinyjs toggle hidden
 #' 
-#' @return NA
-#' 
+#' @rdname connected_components
+#' @export
 mod_graph_pept_prot_ui <- function(id){
   ns <- NS(id)
   tagList(
@@ -65,15 +70,13 @@ mod_graph_pept_prot_ui <- function(id){
   )
 }
 
-#' graph_pept_prot Server Function
-#'
-#' @rdname connected-components
+
+#' @param cc xxx
+#' @param matAdj xxx
+#' @param dataIn An object of class [QFeatures]
 #' 
-#' @return NA
-#' 
-#' @import visNetwork
-#' @importFrom shinyjs toggle hidden
-#' 
+#' @rdname connected_components
+#' @export
 mod_graph_pept_prot_server <- function(id, cc, matAdj, dataIn){
 
   moduleServer(id, function(input, output, session){
@@ -189,7 +192,7 @@ mod_graph_pept_prot_server <- function(id, cc, matAdj, dataIn){
 
 
 
-    output$CCMultiMulti <- renderDT({
+    output$CCMultiMulti <- DT::renderDT({
       Get_CC_Multi2Any()
       df <- do.call(rbind,lapply(cc()[Get_CC_Multi2Any()],
                                  function(x){
@@ -252,15 +255,15 @@ mod_graph_pept_prot_server <- function(id, cc, matAdj, dataIn){
 
       tagList(
         h4("Proteins"),
-        DTOutput(ns('CCDetailedProt')),
+        DT::DTOutput(ns('CCDetailedProt')),
         h4("Specific peptides"),
-        DTOutput(ns('CCDetailedSpecPep')),
+        DT::DTOutput(ns('CCDetailedSpecPep')),
         h4("Shared peptides"),
-        DTOutput(ns('CCDetailedSharedPep'))
+        DT::DTOutput(ns('CCDetailedSharedPep'))
       )
     })
 
-    output$CCDetailedProt<- renderDT({
+    output$CCDetailedProt<- DT::renderDT({
       req(rv.cc$selectedCC)
       rv.cc$detailedselectedNode
       if(is.null(rv.cc$detailedselectedNode$protLabels)){return(NULL)}
@@ -287,7 +290,7 @@ mod_graph_pept_prot_server <- function(id, cc, matAdj, dataIn){
 
     #######
 
-    output$CCDetailedSharedPep <- renderDT({
+    output$CCDetailedSharedPep <- DT::renderDT({
       rv.cc$detailedselectedNode
       input$pepInfo
 
@@ -334,7 +337,7 @@ mod_graph_pept_prot_server <- function(id, cc, matAdj, dataIn){
 
 
     #####-----------
-    output$CCDetailedSpecPep <- renderDT({
+    output$CCDetailedSpecPep <- DT::renderDT({
       rv.cc$detailedselectedNode
       input$pepInfo
       if(is.null((rv.cc$detailedselectedNode$specPepLabels))){return(NULL)}
@@ -433,7 +436,7 @@ mod_graph_pept_prot_server <- function(id, cc, matAdj, dataIn){
 
 
 
-    output$OneMultiDT <- renderDT({
+    output$OneMultiDT <- DT::renderDT({
       req(cc())
 
       dat <- DT::datatable(BuildOne2MultiTab(),
@@ -459,7 +462,7 @@ mod_graph_pept_prot_server <- function(id, cc, matAdj, dataIn){
 
 
 
-    output$OneMultiDTDetailed <- renderDT({
+    output$OneMultiDTDetailed <- DT::renderDT({
       input$pepInfo
       req(input$OneMultiDT_rows_selected)
 
@@ -505,7 +508,7 @@ mod_graph_pept_prot_server <- function(id, cc, matAdj, dataIn){
 
 
 
-    output$OneOneDT <- renderDT({
+    output$OneOneDT <- DT::renderDT({
       req(cc())
 
       dat <- DT::datatable(BuildOne2OneTab(),
@@ -530,7 +533,7 @@ mod_graph_pept_prot_server <- function(id, cc, matAdj, dataIn){
 
 
 
-    output$OneOneDTDetailed <- renderDT({
+    output$OneOneDTDetailed <- DT::renderDT({
       req(cc())
       req(input$OneOneDT_rows_selected)
       input$pepInfo
@@ -581,4 +584,3 @@ mod_graph_pept_prot_server <- function(id, cc, matAdj, dataIn){
 
 ## To be copied in the server
 # callModule(mod_graph_pept_prot_server, "graph_pept_prot_ui_1")
-

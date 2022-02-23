@@ -11,18 +11,13 @@ list.plots.module <- c(
   )
 
 
-#' @title all_plots UI Function
-#'
-#' @description A shiny Module.
 #' @export
 #'
-#' @param id,input,output,session Internal parameters for {shiny}.
+#' @param id xxx
 #'
 #' @importFrom shiny NS tagList
 #' @importFrom shinyjs useShinyjs 
-#' 
-#' @return NA
-#'
+#' @rdname descriptive_statistics_plots
 mod_all_plots_ui <- function(id){
   ns <- NS(id)
   tagList(
@@ -43,10 +38,6 @@ mod_all_plots_ui <- function(id){
 
 }
 
-#' @title all_plots UI Function
-#'
-#' @description A shiny Module.
-#' 
 #' @export
 #'
 #' @param id xxxx
@@ -58,8 +49,7 @@ mod_all_plots_ui <- function(id){
 #' @importFrom MultiAssayExperiment metadata
 #' @importFrom shinyjs show hide hidden
 #' 
-#' @return NA
-#'
+#' @rdname descriptive-statistics-plots
 mod_all_plots_server <- function(id, dataIn){
 
   moduleServer(id, function(input, output, session) {

@@ -2,24 +2,23 @@
 % Please edit documentation in R/utils.R
 \name{nEmptyLines}
 \alias{nEmptyLines}
-\title{Returns the number of empty lines in the data}
+\title{Number of empty lines in the data}
 \usage{
-nEmptyLines(qData)
+nEmptyLines(df)
 }
 \arguments{
-\item{qData}{A matrix corresponding to the quantitative data.}
+\item{df}{A \code{data.frame}.}
 }
 \value{
-A list
+A \code{integer(1)}
 }
 \description{
-Returns the number of empty lines in the data
+This function counts the number of empty lines (all elements
+are equal to NA).
 }
 \examples{
-library(QFeatures)
-Exp1_R25_pept <- readRDS(system.file("data", 'Exp1_R25_pept.rda', package="DaparToolshedData"))
-qData <- assay(Exp1_R25_pept,1)
-nEmptyLines(qData)
+data(ft)
+nEmptyLines(assay(ft, 1))
 
 }
 \author{

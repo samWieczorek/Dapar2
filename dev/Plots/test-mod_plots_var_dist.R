@@ -3,8 +3,8 @@ library(highcharter)
 library(SummarizedExperiment)
 
 
-source(file.path("../../../R","mod_plots_var_dist.R"), local=TRUE)$value
-source(file.path("../../../R","mod_popover_for_help.R"), local=TRUE)$value
+source(file.path("../../R","mod_plots_var_dist.R"), local=TRUE)$value
+source(file.path("../../R","mod_popover_for_help.R"), local=TRUE)$value
 
 
 ui <- fluidPage(

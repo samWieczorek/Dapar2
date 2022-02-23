@@ -1,39 +1,37 @@
-#' @title Builds a densityplot of the quantitative data
-#' 
 #' @param qData numeric matrix
 #' 
-#' @param conds DataFrame
+#' @param conds A `character()` of condition name for each sample. The 
+#' length of 'conds' must be equal to the number of columns of 'qData'.
 #' 
 #' @param legend A vector of the conditions (one condition per sample).
 #' 
-#' @param palette A vector of HEX Code colors (one color per condition).
+#' @param palette A `character(1)` which is the name of a palette in
+#' the package [RColorBrewer].
 #' 
 #' @return A density plot
 #' 
 #' @author Samuel Wieczorek, Enora Fremy
 #' 
 #' @examples
-#' library(QFeatures)
-#' Exp1_R25_pept <- readRDS(system.file("data", 'Exp1_R25_pept.rda', package="DaparToolshedData"))
-#' qData <- assay(Exp1_R25_pept[[2]])
-#' conds <- colData(Exp1_R25_pept)[["Condition"]]
-#' densityPlotD_HC(qData, conds)
+#' data(ft)
+#' qData <- assay(ft, 1)
+#' conds <- design(ft)$Condition
+#' densityPlot(qData, conds)
 #' 
-#' legend <- colData(Exp1_R25_pept)[["Sample.name"]]
-#' pal <- ExtendPalette(2, 'Dark2')
-#' densityPlotD_HC(qData, conds, legend, palette=pal)
+#' legend <- design(ft)$Sample.name
+#' densityPlot(qData, conds, legend, 'Dark2')
 #' 
 #' @import highcharter
 #' @importFrom stats density
 #' 
 #' @export
 #' 
-#' @rdname descriptive-statistics-plots
+#' @rdname density-plots
 #' 
-densityPlotD_HC <- function(qData, 
-                            conds, 
-                            legend=NULL, 
-                            palette = NULL){
+densityPlot <- function(qData, 
+                        conds, 
+                        legend = NULL, 
+                        pal = NULL){
   
   if(missing(qData))
     stop("'qData' is missing.")
@@ -41,32 +39,29 @@ densityPlotD_HC <- function(qData,
   if(missing(conds))
    stop("'conds' is missing.")
   
+  if (length(conds) != ncol(qData))
+    stop("qData and conds must have the same number of samples.")
+  
   if (is.null(legend))
     legend <- conds
 
-  myColors <- NULL
-  if (is.null(palette)){
+  if (is.null(pal)){
     warning("Color palette set to default.")
-    myColors <-   GetColorsForConditions(conds, ExtendPalette(length(unique(conds))))
-  } else {
-    if (length(palette) != length(unique(conds))){
-      warning("The color palette has not the same dimension as the number of samples")
-      myColors <- GetColorsForConditions(conds, ExtendPalette(length(unique(conds))))
-    } else 
-      myColors <- GetColorsForConditions(conds, palette)
-  }
-  
+    myColors <- SampleColors(conds)
+  } else
+    myColors <- SampleColors(conds, pal)
+
   
   h1 <-  highcharter::highchart() %>% 
     hc_title(text = "Density plot") %>% 
-    dapar_hc_chart(chartType = "spline", zoomType="x") %>%
+    customChart(chartType = "spline", zoomType="x") %>%
     hc_legend(enabled = TRUE) %>%
     hc_xAxis(title = list(text = "log(Intensity)")) %>%
     hc_yAxis(title = list(text = "Density")) %>%
     hc_tooltip(headerFormat= '',
                pointFormat = "<b> {series.name} </b>: {point.y} ",
                valueDecimals = 2) %>%
-    dapar_hc_ExportMenu(filename = "densityplot") %>%
+    customExportMenu(fname = "densityplot") %>%
     hc_plotOptions(
       series=list(
         animation=list(
@@ -88,5 +83,5 @@ densityPlotD_HC <- function(qData,
     h1 <- h1 %>% hc_add_series(data=list_parse(tmp), name=legend[i]) 
   }
 
-  return(h1)
+  h1
 }

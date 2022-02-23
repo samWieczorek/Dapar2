@@ -35,7 +35,7 @@
 #' 
 #' @export
 #' 
-#' @rdname descriptive-statistics-plots
+#' @rdname descriptive_statistics_plots
 #' 
 wrapper.pca <- function(qData, 
                         condition, 
@@ -93,7 +93,7 @@ wrapper.pca <- function(qData,
 #' 
 #' @export
 #' 
-#' @rdname descriptive-statistics-plots
+#' @rdname descriptive_statistics_plots
 #' 
 plotPCA_Var <- function(res.pca = NULL, 
                         chosen.axes = c(1,2)){
@@ -126,7 +126,7 @@ plotPCA_Var <- function(res.pca = NULL,
 #' 
 #' @export
 #' 
-#' @rdname descriptive-statistics-plots
+#' @rdname descriptive_statistics_plots
 #' 
 plotPCA_Ind <- function(res.pca, chosen.axes = c(1,2)){
   if (is.null(res.pca))
@@ -154,7 +154,7 @@ plotPCA_Ind <- function(res.pca, chosen.axes = c(1,2)){
 #' 
 #' @import highcharter
 #' 
-#' @rdname descriptive-statistics-plots
+#' @rdname descriptive_statistics_plots
 #' 
 plotPCA_Eigen_hc <- function(res.pca){
   if (is.null(res.pca)){return(NULL)}

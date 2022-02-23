@@ -1,54 +1,61 @@
-# Module UI
-
 #' @title   mod_plots_group_mv_ui and mod_plots_group_mv_server
 #'
 #' @description  A shiny Module.
+#' 
+#' @name mv_plots
 #'
-#' @param id shiny id
-#'
-#' @param input internal
-#'
-#' @param output internal
-#'
-#' @param session internal
-#'
-#' @keywords internal
-#'
+#' @examples 
+#' library(QFeatures)
+#' library(DaparToolshed)
+#' data(ft)
+#' ui <- mod_mv_plots_ui('plot')
+#' 
+#' server <- function(input, output, session) {
+#'  conds <- design(ft)$Condition
+#'  
+#'  mod_mv_plots_server('plot',
+#'                      obj = reactive({ft[[1]]}),
+#'                      conds = reactive({conds}),
+#'                      pal.name = reactive({'Dark2'})
+#'                      )
+#'  }
+#' shinyApp(ui=ui, server=server)
+NULL
+
+
+#' @param id xxx
 #' @export
-#'
 #' @importFrom shiny NS tagList
 #' @importFrom highcharter highchartOutput
-#' 
-#' @return NA
-#' 
-#' @rdname descriptives-statistics-plots
-#'
-mod_plots_group_mv_ui <- function(id){
+#' @rdname mv_plots
+mod_mv_plots_ui <- function(id){
   ns <- NS(id)
-  tagList(
-    fluidRow(
-      column(width = 4, highchartOutput(ns("histo_MV")), height="600px"),
-      column(width = 4, highchartOutput(ns("histo_MV_per_lines"))),
-      column(width = 4, highchartOutput(ns("histo_MV_per_lines_per_conditions")))
+  fluidPage(
+    tagList(
+      fluidRow(
+        column(width = 4, 
+               highchartOutput(ns("histo_MV")), 
+               height="600px"),
+        column(width = 4, 
+               highchartOutput(ns("histo_MV_per_lines"))),
+        column(width = 4, 
+               highchartOutput(ns("histo_MV_per_lines_per_conditions")))
+        )
+      )
     )
-  )
 }
 
 #' @param id xxx
-#' @param obj xxx
-#' @param conds xxx
-#' @param base_palette xxx
+#' @param obj An instance of the class [SummarizedExperiment]
+#' @param conds A `Character()`
+#' @param pal.name xxx
 #'
 #' @export
-#'
-#' @keywords internal
-#'
-#' @importFrom SummarizedExperiment assay
-#' @import highcharter
+#' @importFrom highcharter renderHighchart
 #' 
-#' @rdname descriptives-statistics-plots
+#' @rdname mv_plots
 #'
-mod_plots_group_mv_server <- function(id, obj, conds, base_palette){
+mod_mv_plots_server <- function(id, obj, conds, pal.name){
 
   moduleServer(id, function(input, output, session){
     ns <- session$ns
@@ -56,7 +63,7 @@ mod_plots_group_mv_server <- function(id, obj, conds, base_palette){
 
     observe({
       req(obj())
-      if (class(obj()) != "SummarizedExperiment") { return(NULL) }
+      stopifnot (inherits(obj(), "SummarizedExperiment"))
     })
 
 
@@ -64,12 +71,12 @@ mod_plots_group_mv_server <- function(id, obj, conds, base_palette){
     output$histo_MV <- renderHighchart({
       req(obj())
       conds()
-      base_palette()
+      pal.name()
 
       withProgress(message = 'Making plot', value = 100, {
-        tmp <- DaparToolshed::mvHisto_HC(SummarizedExperiment::assay(obj()),
-                                         conds = conds(),
-                                         palette = DaparToolshed::Base_Palette(conditions = conds()))
+        tmp <- mvHisto(assay(obj()),
+                       conds = conds(),
+                       pal.name = pal.name())
       })
       tmp
     })
@@ -82,7 +89,7 @@ mod_plots_group_mv_server <- function(id, obj, conds, base_palette){
 
       isolate({
         withProgress(message = 'Making plot', value = 100, {
-          tmp <- DaparToolshed::mvPerLinesHisto_HC(qData = SummarizedExperiment::assay(obj()))
+          tmp <- mvPerLinesHisto(qData = assay(obj()))
         })
       })
       tmp
@@ -94,12 +101,12 @@ mod_plots_group_mv_server <- function(id, obj, conds, base_palette){
     output$histo_MV_per_lines_per_conditions <- renderHighchart({
       req(obj())
       conds()
-      base_palette()
+      pal.name()
 
       withProgress(message = 'Making plot', value = 100, {
-        tmp <- DaparToolshed::mvPerLinesHistoPerCondition_HC(qData = SummarizedExperiment::assay(obj()),
-                                                      conds = conds(),
-                                                      palette = DaparToolshed::Base_Palette(conditions = conds()))
+        tmp <- mvPerLinesHistoPerCondition(qData = assay(obj()),
+                                           conds = conds(),
+                                           pal.name = pal.name())
       })
       tmp
     })

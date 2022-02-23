@@ -10,7 +10,7 @@
 #' @return NA
 #' 
 #' @author Samuel Wieczorek
-#' @rdname descriptives-statistics-plots
+#' @rdname descriptive_statistics_plots
 #'
 #' @keywords internal
 #' @export 
@@ -25,7 +25,7 @@ mod_plots_se_explorer_ui <- function(id){
 
 # Module Server
 
-#' @rdname descriptives-statistics-plots
+#' @rdname descriptive_statistics_plots
 #' 
 #' @export
 #' 
