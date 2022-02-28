@@ -240,12 +240,10 @@ TODO
 }
 
 \examples{
-Exp1_R25_pept <- readRDS(system.file("data", 'Exp1_R25_pept.rda', package="DaparToolshedData"))
-object <- Exp1_R25_pept
-conds <- colData(object)$Condition
-df <- assay(Exp1_R25_pept, 2)
-level <- typeDataset(object, 2)
-df <- Set_POV_MEC_tags(object, 1, level)
+data(ft_na)
+df <- assay(ft_na, 2)
+level <- typeDataset(ft_na, 1)
+df <- Set_POV_MEC_tags(ft_na, 1, level)
 
 file <- system.file("extdata", "Exp1_R25_pept.txt", package="DaparToolshedData")
 data <- read.table(file, header=TRUE, sep="\t",stringsAsFactors = FALSE)

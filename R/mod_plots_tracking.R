@@ -1,296 +1,179 @@
-#' @title   mod_plots_boxplots_ui and mod_plots_boxplots_server
+#' @title  Tracking of entities within plots
 #'
-#' @description  A shiny Module.
+#' @description  This shiny module offers a UI to select a subset of a dataset
+#' and superimpose quantitative values of this selection on the complete plot
+#' Three modes of selection are implemented:
 #'
+#' - 'Protein list': xxx,
+#' - 'Random': xxx,
+#' - 'Specific column': xxx
+#' 
+#' @name tracking
+#' @examples 
+#' if (interactive()){
+#' library(QFeatures)
+#' library(DaparToolshed)
+#' data(ft)
+#' ui <- mod_tracking_ui('track')
+#' 
+#' server <- function(input, output, session) {
+#'  mod_tracking_server(id = 'track',
+#'                      object = reactive({ft[[1]]})
+#'                      )
+#'  }
+#' shinyApp(ui, server)
+#' }
+NULL
+
+ 
 #' @param id shiny id
-#'
-#' @param input internal
-#'
-#' @param output internal
-#'
-#' @param session internal
-#'
-#' @rdname mod_plots_tracking
-#'
-#' @keywords internal
-#'
 #' @export
 #'
 #' @importFrom shiny NS tagList
 #' @importFrom shinyjs useShinyjs hidden
 #' 
-#' @return NA
-#'
-mod_plots_tracking_ui <- function(id){
-  ns <- NS(id)
-  tagList(
-    shinyjs::useShinyjs(),
-    # shinyjs::hidden(actionButton(ns('rst_btn'), 'Reset')),
-    #uiOutput(ns('selectType_UI')),
-    selectInput(ns("typeSelect"), "Type of selection",
-                choices=c("None" = "None",
-                          "Protein list" = "ProteinList",
-                          "Random" = "Random",
-                          "Specific column" = "Column"),
-                width=('130px')),
-    shinyjs::hidden(
-      selectInput(ns("listSelect"),
-                  "Protein for normalization",
-                choices = c('None'),
-                  multiple = TRUE,
-                  width='400px'
-      )
-      ),
-    shinyjs::hidden(
-      textInput(ns("randSelect"),
-                "Random",
-                width = ('120px'))
-      ),
-    shinyjs::hidden(
-      selectInput(ns("colSelect"),
-                  "Column",
-                  choices = c('')
-                )
-    )
-  )
-}
-
-#' plots_tracking Server Function
-#'
-#' @param obj Object SummarizedExperiment
-#'
-#' @param metadata Metadata of Features containing the SummarizedExperiment
-#'
-#' @rdname mod_plots_tracking
-#'
-#' @export
-#'
-#' @keywords internal
-#'
-#' @importFrom shinyjs toggle hidden show hide
+#' @rdname tracking
 #' 
 #' @return NA
 #'
-mod_plots_tracking_server <- function(id,
-                                      obj,
-                                      keyId,
-                                      params = NULL,
-                                      reset = FALSE,
-                                      slave = reactive({FALSE})){
+mod_tracking_ui <- function(id){
+  ns <- NS(id)
+  
+  tagList(
+    useShinyjs(),
+    actionButton(ns('rst_btn'), 'Reset'),
+    uiOutput(ns('typeSelect_ui')),
+    hidden(uiOutput(ns('listeSelect_ui'))),
+    hidden(uiOutput(ns('randSelect_ui'))),
+    hidden(uiOutput(ns('colSelect_ui')))
+  )
+}
+
+#' @param id xxx
+#' @param object A instance of the class `SummarizedExperiment`
+#' @param reset xxx
+#' 
+#' @rdname tracking
+#'
+#' @export
+#'
+#' @importFrom shinyjs toggle hidden show hide
+#' 
+#' @return A `list()` of integers
+#'
+mod_tracking_server <- function(id,
+                                object){
 
   moduleServer(id, function(input, output, session){
     ns <- session$ns
 
     rv.track <- reactiveValues(
-      res = list(typeSelect = "None",
-                 listSelect = NULL,
-                 randSelect = '',
-                 colSelect = NULL,
-                 list.indices = NULL,
-                 rand.indices = NULL,
-                 col.indices = NULL),
-      sync = FALSE
-    )
+      typeSelect = "None",
+      listSelect = NULL,
+      randSelect = '',
+      colSelect = NULL,
+      indices = NULL)
 
-
-    observe({
-      req(obj())
-      if (class(obj()) != "SummarizedExperiment") { return(NULL) }
-
-      rv.track$res <- list(typeSelect = if (is.null(params()$typeSelect)) 'None' else params()$typeSelect,
-                           listSelect = params()$listSelect,
-                           randSelect = params()$randSelect,
-                           colSelect = params()$colSelect,
-                           list.indices = NULL,
-                           rand.indices = '',
-                           col.indices = NULL)
-
-
-      updateSelectInput(session, 'typeSelect',
-                        selected = rv.track$res$typeSelect)
-      updateSelectInput(session, 'listSelect',
-                        choices = SummarizedExperiment::rowData(obj())[[keyId()]],
-                        selected = rv.track$res$listSelect)
-      updateTextInput(session, 'randSelect',
-                      value = rv.track$res$randSelect)
-      updateSelectInput(session, 'colSelect',
-                        selected = rv.track$res$colSelect,
-                        colnames(SummarizedExperiment::rowData(obj()))
-      )
-
-      shinyjs::toggle(id = 'listSelect', condition = input$typeSelect == 'ProteinList')
-      shinyjs::toggle(id = 'randSelect', condition = input$typeSelect == 'Random')
-      shinyjs::toggle(id = 'colSelect', condition = input$typeSelect == 'Column')
-
+    
+    output$typeSelect_ui <- renderUI({
+      tmp <- c("None", "ProteinList", "Random", "Column")
+      nm <- c("None", "Protein list", "Random", "Specific Column")
+      
+      selectInput(ns("typeSelect"), 
+                  "Type of selection",
+                  choices = setNames(tmp, nm),
+                  selected = rv.track$typeSelect,
+                  width = '130px')
     })
 
-
+    
+    output$listSelect_ui <- renderUI({
+      selectInput(ns("listSelect"),
+                  "Select protein",
+                  choices = c('None'),
+                  multiple = TRUE,
+                  selected = rv.track$listSelect,
+                  )
+    })
+    
+    output$colSelect_ui <- renderUI({
+      selectInput(ns("colSelect"),
+                  "Column of rowData",
+                  choices = c(''),
+                  selected = rv.track$colSelect
+                  )
+    })
+    
+    output$randSelect_ui <- renderUI({
+      textInput(ns("randSelect"),  
+                "Random", 
+                value = rv.track$randSelect,
+                width = ('120px'))
+    })
+    
     observeEvent(req(input$typeSelect),{
+      rv.track$typeSelect <- input$typeSelect
+      
+      print(input$typeSelect)
+      
+      shinyjs::toggle(id = ns('listSelect'), 
+                      condition = rv.track$typeSelect == 'ProteinList')
+      shinyjs::toggle(id = 'randSelect', 
+                      condition = rv.track$typeSelect == 'Random')
+      shinyjs::toggle(id = 'colSelect', 
+                      condition = rv.track$typeSelect == 'Column')
 
-      rv.track$res <- list(typeSelect = if (is.null(input$typeSelect)) 'None' else input$typeSelect,
-                           listSelect = NULL,
-                           randSelect = '',
-                           colSelect = NULL,
-                           list.indices = NULL,
-                           rand.indices = '',
-                           col.indices = NULL)
     })
 
 
+    observeEvent(input$rst_btn, {
+      rv.track$typeSelect <- "None"
+      rv.track$listSelect <- NULL
+      rv.track$randSelect <- ''
+      rv.track$colSelect <- NULL
+      rv.track$indices <- NULL
+    })
 
-    observeEvent(slave(),{
-      if(is.null(slave()))
-        rv.track$sync <- FALSE
+    # Catch event on the list selection
+    observeEvent(input$listSelect,{
+      rv.track$listSelect <- input$listSelect
+      rv.track$randSelect <- ''
+      rv.track$colSelect <- ''
+
+      if(is.null(rv.track$listSelect))
+        rv.track$indices <- NULL
       else
-        rv.track$sync <- slave()
+        rv.track$indices <-  match(rv.track$listSelect, rowData(object())[[idcol(object())]])
     })
 
 
 
 
 
-    # output$selectType_UI <- renderUI({
-    #   selectInput(ns("typeSelect"), "Type of selection",
-    #               choices=c("None" = "None",
-    #                         "Protein list" = "ProteinList",
-    #                         "Random" = "Random",
-    #                         "Specific column" = "Column"),
-    #               selected = params()$typeSelect,
-    #               width=('130px'))
-    # })
-
-
-    # output$listSelect_UI <- renderUI({
-    #   selectInput(ns("listSelect"),
-    #               "Protein for normalization",
-    #               choices = SummarizedExperiment::rowData(obj())[[keyId()]],
-    #               selected = params()$listSelect,
-    #               multiple = TRUE,
-    #               width='400px'
-    #   )
-    # })
-    #
-    #
-    # output$randomSelect_UI <- renderUI({
-    #   textInput(ns("randSelect"),
-    #             "Random",
-    #             value = params()$randSelect,
-    #             width = ('120px'))
-    # })
-    #
-    # output$columnSelect_UI <- renderUI({
-    #   selectInput(ns("colSelect"),
-    #               "Column",
-    #               choices = colnames(SummarizedExperiment::rowData(obj())),
-    #               selected = params()$colSelect
-    #               )
-    # })
-
-
-
-
-    observe({
-
-      reset()
-      if (reset() > 0) {
-        updateSelectInput(session, "typeSelect", selected='None')
-        updateSelectInput(session, "listSelect", NULL)
-        updateSelectInput(session, "randSelect", selected='')
-        updateSelectInput(session, "colSelect", selected=NULL)
-        rv.track$res <-list(typeSelect = "None",
-                            listSelect = NULL,
-                            randSelect = '',
-                            colSelect = NULL,
-                            list.indices = NULL,
-                            rand.indices = NULL,
-                            col.indices = NULL)
-      }
-    })
-
-
-
-
-
-
-    observeEvent(rv.track$sync, ignoreNULL = TRUE,{
-
-      if (rv.track$sync == FALSE) {
-        rv.track$res <- list(typeSelect = 'None',
-                             listSelect = NULL,
-                             randSelect = '',
-                             colSelect = NULL,
-                             list.indices = NULL,
-                             rand.indices = '',
-                             col.indices = NULL)
-        shinyjs::show("typeSelect")
-      } else {
-        updateSelectInput(session, "typeSelect", selected='None')
-        updateSelectInput(session, "listSelect", NULL)
-        updateSelectInput(session, "randSelect", selected='')
-        updateSelectInput(session, "colSelect", selected=NULL)
-
-        shinyjs::hide("typeSelect")
-        shinyjs::hide("listSelect_UI")
-        shinyjs::hide("randomSelect_UI")
-        shinyjs::hide("columnSelect_UI")
-      }
+    observeEvent(input$randSelect, {
+      rv.track$randSelect <- input$randSelect
+      rv.track$listSelect  <- NULL
+      rv.track$colSelect <- NULL
+      cond <- is.null(rv.track$randSelect) 
+      cond <- cond || rv.track$randSelect == '' 
+      cond <- cond || (as.numeric(rv.track$randSelect) < 0)
+      if (!cond)
+        rv.track$indices <- sample(seq_len(nrow(object())), 
+                                   as.numeric(rv.track$randSelect), 
+                                   replace = FALSE)
 
     })
 
+    observeEvent(input$colSelect, {
+      rv.track$colSelect <- input$colSelect
+      rv.track$listSelect <- NULL
+      rv.track$randSelect <- ''
 
-
-
-
-
-
-
-
-    observeEvent(input$listSelect, ignoreNULL = FALSE,{
-      rv.track$res$listSelect <- input$listSelect
-      updateSelectInput(session, "randSelect", selected='')
-      updateSelectInput(session, "colSelect", selected=NULL)
-
-      if(is.null(rv.track$res$listSelect))
-        rv.track$res$list.indices <- NULL
-      else
-        rv.track$res$list.indices <-  match(rv.track$res$listSelect, SummarizedExperiment::rowData(obj())[[keyId()]])
-    })
-
-
-
-
-
-    observeEvent(input$randSelect,ignoreNULL = FALSE,{
-      rv.track$res$randSelect <- input$randSelect
-
-      updateSelectInput(session, "listSelect", NULL)
-      updateSelectInput(session, "colSelect", selected=NULL)
-
-      if (is.null(rv.track$res$randSelect) || rv.track$res$randSelect==''
-          || (as.numeric(rv.track$res$randSelect) < 0))
-      {
-        rv.track$res$rand.indices <- NULL
-      } else {
-        rv.track$res$rand.indices <- sample(seq_len(nrow(obj())), as.numeric(rv.track$res$randSelect), replace=FALSE)
-      }
-    })
-
-    observeEvent(input$colSelect, ignoreNULL = FALSE,{
-      req(obj())
-      rv.track$res$colSelect <- input$colSelect
-
-      updateSelectInput(session, "listSelect", NULL)
-      updateSelectInput(session, "randSelect", selected='')
-
-      if (is.null(rv.track$res$colSelect))
-        rv.track$res$col.indices <- NULL
-      else
-        rv.track$res$col.indices <- which(SummarizedExperiment::rowData(obj())[[rv.track$res$colSelect]] == 1)
-
+      if (rv.track$colSelect != '')
+        rv.track$indices <- which(rowData(object())[,rv.track$colSelect] == 1)
      })
 
-    return(reactive({rv.track$res}))
-
+    return(reactive({rv.track$indices}))
 
   })
 

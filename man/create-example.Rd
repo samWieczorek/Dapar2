@@ -12,6 +12,11 @@ An example object of class \link{QFeatures}
 \description{
 xxxxx
 }
+\examples{
+create_ft_example()
+create_ft_example(TRUE)
+
+}
 \author{
 Samuel Wieczorek
 }

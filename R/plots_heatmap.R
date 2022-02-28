@@ -1,54 +1,107 @@
-
-
-#' 
-#'
 #' @title Heatmap of the quantitative proteomics data
 #' 
 #' @description 
-#' This function is a wrapper to 'heatmap.2' that displays a numeric matrix
 #' 
-#' @param qData A dataframe of numeric values
+#' This function is a wrapper to 'heatmap.2' of the package `gplots`
+#' that displays a numeric matrix
 #' 
-#' @param conds A vector of the conditions (one condition per sample).
+#' @section generic plot:
 #' 
-#' @param distance The distance used by the clustering algorithm to compute
-#' the dendrogram. See \code{help(heatmap.2)}
+#' The function [heatmapD()] 
 #' 
-#' @param cluster the clustering algorithm used to build the dendrogram.
-#' See \code{help(heatmap.2)}
+#' @section plot for missingvalues:
+#' 
+#' The function [] is inspired from the function 'heatmap.2' 
+#' that displays a numeric matrix. For more information, please refer to the help 
+#' of the heatmap.2 function.
 #' 
 #' @return A heatmap
 #' 
 #' @author Samuel Wieczorek
 #' 
+#' @name heatmap_plot
+#' 
 #' @examples
-#' \donttest{
+#' 
 #' library(QFeatures)
-#' Exp1_R25_prot <- readRDS(system.file("data", 'Exp1_R25_prot.rda', package="DaparToolshedData"))
-#' conds <- colData(Exp1_R25_prot)[['Condition']]
-#' qData <- assay(Exp1_R25_prot)
-#' heatmapD(qData, conds)
+#' data(ft)
+#' conds <- design(ft)$Condition
+#'
+#' #----------------------------------------------
+#' # Plots a heatmap for generic quantitative data
+#' #----------------------------------------------
+#' 
+#' heatmapD(assay(ft, 1), conds)
+#' 
+#' #----------------------------------------------
+#' # Plots a heatmap for missing values visualization
+#' #----------------------------------------------
+#' 
+#' library(QFeatures)
+#' data(ft)
+#' mv.heatmap(assay(ft, 1))
+#' 
+#' 
+#' #----------------------------------------------
+#' # Launches a shiny module
+#' #----------------------------------------------
+#' 
+#' if(interactive()){
+#'  library(QFeatures)
+#'  library(shiny)
+#'  library(DaparToolshed)
+#'  data(ft)
+#'  ui <- mod_heatmap_plot_ui('plot')
+#' 
+#'  server <- function(input, output, session) {
+#'   conds <- design(ft)$Condition
+#'  
+#'   mod_heatmap_plot_server('plot',
+#'                       obj = reactive({ft[[1]]}),
+#'                       conds = reactive({conds}),
+#'                       pal.name = reactive({'Dark2'})
+#'                       )
+#'   }
+#'  
+#'  shinyApp(ui=ui, server=server)
 #' }
+NULL
+
+
+
+
+
+
+#' @param qData A `matrix` or `array` quantitative values
+#' 
+#' @param conds A `character()` of the conditions (one condition per sample).
+#' 
+#' @param distfun A `character(1)` defining the distance used by the clustering 
+#' algorithm to compute. Default value is 'euclidean'. See \code{help(heatmap.2)}
+#' 
+#' @param hclustfun the clustering algorithm used to build the dendrogram.
+#' Default value is 'complete'. See \code{help(heatmap.2)}
+#' 
 #' 
 #' @importFrom grDevices colorRampPalette
 #' @importFrom gplots heatmap.2
 #' 
 #' @export
 #' 
-#' @rdname descriptive_statistics_plots
+#' @rdname heatmap_plot
 #' 
 heatmapD <- function(qData, 
                      conds, 
-                     distance = "euclidean", 
-                     cluster="complete"){
+                     distfun = "euclidean", 
+                     hclustfun = "complete"){
   #Check parameters
-  if (!(distance %in% c("euclidean", "manhattan"))){
-      stop("'distance' is not correct.")
+  if (!(distfun %in% c("euclidean", "manhattan"))){
+      stop("'distfun' is not correct.")
       return (NULL)
   }
 
-  if (!(cluster %in%  c("complete", "ward.D", "average"))){
-      stop("'cluster' is not correct.")
+  if (!(hclustfun %in%  c("complete", "ward.D", "average"))){
+      stop("'hclustfun' is not correct.")
       return (NULL)
   }
   
@@ -127,11 +180,7 @@ heatmapD <- function(qData,
 
 
 
-#' @title This function is inspired from the function 'heatmap.2' 
-#' that displays a numeric matrix. For more information, please refer to the help 
-#' of the heatmap.2 function.
-#' 
-#' @param x A matrix that contains quantitative data.
+#' @param x A `matrix` or `array` containing the quantitative data.
 #' 
 #' @param col Colors used for the image. Defaults to heat colors (heat.colors).
 #' 
@@ -150,67 +199,50 @@ heatmapD <- function(qData,
 #' 
 #' @param ylab y-axis title; default to none.
 #' 
-#' @return A heatmap
-#' 
-#' @author Samuel Wieczorek, Enora Fremy
-#' 
-#' @examples
-#' library(QFeatures)
-#'Exp1_R25_pept <- readRDS(system.file("data", 'Exp1_R25_pept.rda', package="DaparToolshedData"))
-#' qData <- assay(Exp1_R25_pept[[2]])[1:1000,]
-#' heatmapForMissingValues(qData)
-#' 
 #' @export
 #' 
 #' @importFrom grDevices heat.colors
-#' 
 #' @importFrom graphics image strwidth strheight axis mtext text title layout par plot.new
 #' 
-#' @rdname descriptive-statistics-plots
+#' @rdname heatmap_plot
 #' 
-heatmapForMissingValues <- function (x, 
-                           col = grDevices::heat.colors(100),
-                           srtCol=NULL,
-                           labCol = NULL,
-                           labRow = NULL,
-                           key = TRUE, 
-                           key.title = NULL,
-                           main = NULL,  
-                           ylab = NULL) {
+mv.heatmap <- function (x,
+                        col = grDevices::heat.colors(100),
+                        srtCol=NULL,
+                        labCol = NULL,
+                        labRow = NULL,
+                        key = TRUE, 
+                        key.title = NULL,
+                        main = NULL,  
+                        ylab = NULL) {
   
-  scale01 <- function(x, low = min(x), high = max(x)) {
-    x <- (x - low)/(high - low)
-    x
-  }
+  stopifnot(inherits(x, 'matrix'))
+  
+  scale01 <- function(x, low = min(x), high = max(x))
+    (x - low)/(high - low)
+
   
   offsetCol = 0.5
   offsetRow = 0.5
-  srtRow = NULL
-  colRow = NULL
-  colCol = NULL 
-  xlab = NULL
+  srtRow <- colRow <- colCol <- xlab <- breaks <- na.rm <- NULL
   key.par = list()
   margins = c(5, 5)
-  sepcolor = "white"
-  na.color = "white"
+  sepcolor <- na.color <- "white"
   keysize = 1.5
-  breaks = NULL
-  na.rm = TRUE
   
-  if (length(di <- dim(x)) != 2 || !is.numeric(x)) 
-    stop("`x' must be a numeric matrix")
   
-  nr <- di[1]
-  nc <- di[2]
+  nr <- nrow(x)
+  nc <- ncol(x)
   if (nr <= 1 || nc <= 1) 
     stop("`x' must have at least 2 rows and 2 columns")
-  x <- x[nr:1,]
+  x <- x[seq_len(nr),]
   cellnote <- matrix("", ncol = ncol(x), nrow = nrow(x))
   cexCol = 0.2 + 1/log10(nc)
   cexRow = 0.2 + 1/log10(nr)
-  iy <- 1:nr
+  iy <- seq_len(nr)
   breaks <- length(col) + 1
-  breaks <- seq(min(x, na.rm = na.rm), max(x, na.rm = na.rm), 
+  breaks <- seq(min(x, na.rm = na.rm), 
+                max(x, na.rm = na.rm), 
                 length = breaks)
   
   nbr <- length(breaks)
@@ -233,39 +265,80 @@ heatmapForMissingValues <- function (x,
   x <- t(x)
   
   
-  graphics::image(1:nc, 1:nr, x, xlim = 0.5 + c(0, nc), ylim = 0.5 + c(0, nr),
-                  axes = FALSE, xlab = "", ylab = "", col = col, breaks = breaks)
+  graphics::image(seq_len(nc),
+                  seq_len(nr), 
+                  x, 
+                  xlim = 0.5 + c(0, nc), 
+                  ylim = 0.5 + c(0, nr),
+                  axes = FALSE,
+                  xlab = "", 
+                  ylab = "",
+                  col = col, 
+                  breaks = breaks
+                  )
   
   
   if (!is.null(labCol)) {
-    graphics::axis(1, 1:nc, labels = labCol, las = 2, line = -0.5 + offsetCol,
-                   tick = 0, cex.axis = cexCol, hadj = NA, padj = 0)
+    graphics::axis(1, 
+                   seq_len(nc), 
+                   labels = labCol, 
+                   las = 2, 
+                   line = -0.5 + offsetCol,
+                   tick = 0, 
+                   cex.axis = cexCol, 
+                   hadj = NA, 
+                   padj = 0)
   }
   else {
     adjCol = c(1, NA)
     xpd.orig <- par("xpd")
     par(xpd = NA)
-    xpos <- graphics::axis(1, 1:nc, labels = rep("", nc), las = 2, 
-                           tick = 0)
-    graphics::text(x = xpos, y = par("usr")[3] - (1 + offsetCol) * 
-                     strheight("M"), label = labCol, adj = adjCol, 
-                   cex = cexCol, srt = srtCol, col = colCol)
+    xpos <- graphics::axis(1,
+                           seq_len(nc),
+                           labels = rep("", nc),
+                           las = 2, 
+                           tick = 0
+                           )
+    graphics::text(x = xpos, 
+                   y = par("usr")[3] - (1 + offsetCol) * strheight("M"), 
+                   label = labCol, 
+                   adj = adjCol, 
+                   cex = cexCol, 
+                   srt = srtCol, 
+                   col = colCol)
     graphics::par(xpd = xpd.orig)
   }
   
   
   if (!is.null(labRow) ) {
-    graphics::axis(4, iy, labels = labRow, las = 5, line = -0.5 + offsetRow, 
-                   tick = 0, cex.axis = cexRow, hadj = 0, padj = NA)
+    graphics::axis(4, 
+                   iy, 
+                   labels = labRow, 
+                   las = 5, 
+                   line = -0.5 + offsetRow, 
+                   tick = 0, 
+                   cex.axis = cexRow, 
+                   hadj = 0, 
+                   padj = NA)
   }
   else {
     xpd.orig <- par("xpd")
     par(xpd = NA)
-    ypos <- axis(4, iy, labels = rep("", nr), las = 2, 
-                 line = -0.5, tick = 0)
+    ypos <- axis(4, 
+                 iy, 
+                 labels = rep("", nr), 
+                 las = 2, 
+                 line = -0.5, 
+                 tick = 0
+                 )
     graphics::text(x = par("usr")[2] + (1 + offsetRow) * graphics::strwidth("M"), 
-                   y = ypos, labels = labRow, adj = c(0,NA), cex = cexRow, 
-                   srt = srtRow, col = colRow)
+                   y = ypos, 
+                   labels = labRow, 
+                   adj = c(0,NA), 
+                   cex = cexRow, 
+                   srt = srtRow, 
+                   col = colRow
+                   )
     graphics::par(xpd = xpd.orig)
   }
   
@@ -301,8 +374,12 @@ heatmapForMissingValues <- function (x,
     do.call(axis, xargs)
     key.xlab <- "Intensity value"
     
-    graphics::mtext(side = 1, key.xlab, line = par("mgp")[1], padj = 0.5, 
-                    cex = par("cex") * par("cex.lab"))
+    graphics::mtext(side = 1, 
+                    key.xlab, 
+                    line = par("mgp")[1], 
+                    padj = 0.5, 
+                    cex = par("cex") * par("cex.lab")
+                    )
     
     if (is.null(key.title)) 
       title("Color Key")

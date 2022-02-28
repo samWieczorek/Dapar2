@@ -1,22 +1,10 @@
-# Module UI
-
-#' @title   mod_plots_mv_ui and mod_plots_mv_server
-#' @description  A shiny Module.
-#'
 #' @param id shiny id
-#' @param input internal
-#' @param output internal
-#' @param session internal
-#'
 #' @rdname imputation
-#'
-#' @keywords internal
 #' @export
-#' @importFrom shiny NS tagList
+#' @importFrom shiny NS tagList plotOutput
+#' @importFrom highcharter highchartOutput
 #' 
-#' @return NA
-#' 
-mod_plots_mv_for_imputation_ui <- function(id){
+mod_imputation_plot_ui <- function(id){
   ns <- NS(id)
   tagList(
     tags$div(
@@ -28,51 +16,46 @@ mod_plots_mv_for_imputation_ui <- function(id){
   )
 }
 
-# Module Server
-
+#' @param id A `character(1)` which is the 'id' of the shiny module.
+#' @param object An instance of a class `SummarizedExperiment`.
+#' @param conds A `character()` of the name of conditions (one condition per sample).
+#' @param title A `character(1)` which is
+#' @param pal.name  A `character(1)` which is the name of the palette (from
+#' the package [RColorBrewer] to use.
 #' @rdname imputation
 #' @export
-#' @keywords internal
+#' @importFrom highcharter renderHighchart
 #' 
-#' @return NA
-#' 
-mod_plots_mv_for_imputation_server <- function(id,
-                                               obj,
-                                               ind,
-                                               title = NULL,
-                                               palette = NULL){
+mod_imputation_plot_server <- function(id,
+                                       object = reactive({NULL}),
+                                       conds = reactive({NULL}),
+                                       title = reactive({NULL}),
+                                       pal.name = reactive({NULL})){
 
   moduleServer(id, function(input, output, session){
     ns <- session$ns
 
-
-
-    output$plot_viewNAbyMean <- renderHighchart({
-      req(obj())
+  output$plot_viewNAbyMean <- renderHighchart({
+      req(object())
 
       withProgress(message = 'Making MV Intensity plot', value = 100, {
-        DaparToolshed::hc_mvTypePlot2(obj = obj(),
-                       i = ind(),
-                       title = title(),
-                       palette = palette())
+        mvPlot.2(qData = assay(object()),
+                 conds = conds(),
+                 title = title(),
+                 pal.name = pal.name())
       })
     })
 
 
     output$plot_showImageNA <- renderPlot({
-      req(obj())
-
+      req(object())
       withProgress(message = 'Making MV Heatmap plot', value = 100, {
-        DaparToolshed::mvImage(obj(), ind())
+        mvImage(object = object(), 
+                conds = conds())
       })
 
     })
-
-
   })
-
-
-
 }
 
 ## To be copied in the UI

@@ -1,42 +1,38 @@
-# Module UI
-
 #' @title   mod_plots_intensity_plots_ui and mod_plots_intensity_plots_server
 #'
-#' @description  A shiny Module.
+#' @description  
+#' 
+#' A shiny Module.
 #'
-#' @param id shiny id
+#' @name intensity_plots
 #'
-#' @param input internal
-#'
-#' @param output internal
-#'
-#' @param session internal
-#'
-#' @rdname descriptive_statistics_plots
-#'
-#' @keywords internal
-#'
-#' @export
-#'
+#' @examples 
+#' 
+#' 
+#' 
+NULL
+
+
+#' @param id xxx
+#' 
 #' @importFrom shiny NS tagList
-#'
 #' @importFrom shinyjs useShinyjs hidden
 #'
 #' @return NA
-#'
-mod_plots_intensity_ui <- function(id){
+#' @export
+#' @rdname intensity_plots
+mod_intensity_plots_ui <- function(id){
   ns <- NS(id)
   tagList(
     shinyjs::useShinyjs(),
     tags$div(
       tags$div(style="display:inline-block; vertical-align: middle;",
                highchartOutput(ns("BoxPlot")),
-               shinyjs::hidden(imageOutput(ns("viewViolinPlot")))
+               hidden(imageOutput(ns("violin_ui")))
       ),
       tags$div(style="display:inline-block; vertical-align: middle;",
                selectInput(ns("choosePlot"), "Choose plot",
-                           choices=c( "violinplot"="violinplot",
-                                      "boxplot"="boxplot"),
+                           choices=setNames(nm = c("violinplot", "boxplot")),
                            width='100px'),
                uiOutput(ns('slave_tracking_ui'))
       )
@@ -44,25 +40,30 @@ mod_plots_intensity_ui <- function(id){
   )
 }
 
-# Module Server
-
-#' @rdname descriptive_statistics_plots
+#' @param id xxx
+#' @param object xxx
+#' @param meta xxx
+#' @param conds A `character()` of the names of conditions 
+#' for each sample of the dataset.
+#' @param base_palette xxx
+#' @param params xxx
+#' @param reset xxx
+#' @param slave Default is FALSE.
+#' 
+#' @rdname intensity_plots
 #'
 #' @export
-#'
-#' @keywords internal
-#'
-#' @importFrom SummarizedExperiment rowData
 #' @importFrom grDevices png
 #' @importFrom shinyjs toggle hidden
 #'
 #'@return NA
 #'
-mod_plots_intensity_server <- function(id,
-                                       dataIn,
+mod_intensity_plots_server <- function(id,
+                                       object,
+                                       exp.design,
                                        meta,
                                        conds,
-                                       base_palette = NULL,
+                                       pal.name = NULL,
                                        params = NULL,
                                        reset = NULL,
                                        slave = FALSE){
@@ -70,51 +71,51 @@ mod_plots_intensity_server <- function(id,
   moduleServer(id, function(input, output, session){
     ns <- session$ns
 
-
-    rv.modboxplot <- reactiveValues(
+    rv <- reactiveValues(
       indices = NULL,
       varTrack = NULL
     )
 
 
 
-    rv.modboxplot$varTrack <- mod_plots_tracking_server("slave_tracking",
-                                                        obj = reactive({dataIn()}),
-                                                        keyId = reactive({meta()[['keyId']]}),
-                                                        params = reactive({params()}),
-                                                        reset = reactive({reset()}),
-                                                        slave = reactive({slave()})
+    rv$varTrack <- mod_tracking_server("slave_tracking",
+                                       obj = reactive({object()}),
+                                       keyId = reactive({meta()[['keyId']]}),
+                                       params = reactive({params()}),
+                                       reset = reactive({reset()}),
+                                       slave = reactive({slave()})
     )
 
     output$slave_tracking_ui <- renderUI({
-      slave()
-      dataIn()
-      if ((slave()==FALSE) && typeDataset(dataIn()) == 'protein')
-        mod_plots_tracking_ui(ns('slave_tracking'))
-      else
-        return(NULL)
+      req(!slave())
+      req(typeDataset(object()) == 'protein')
+      
+      mod_tracking_ui(ns('slave_tracking'))
     })
 
 
 
-    observeEvent(c(slave(), rv.modboxplot$varTrack()), ignoreInit = TRUE, ignoreNULL = FALSE, {
+    observeEvent(c(slave(), rv$varTrack()), ignoreInit = TRUE, ignoreNULL = FALSE, {
       if (slave()){
         switch(params()$typeSelect,
-               ProteinList = rv.modboxplot$indices <- params()$list.indices,
-               Random = rv.modboxplot$indices <- params()$rand.indices,
-               Column = rv.modboxplot$indices <- params()$col.indices,
-               None = rv.modboxplot$indices <- NULL
+               ProteinList = rv$indices <- params()$list.indices,
+               Random = rv$indices <- params()$rand.indices,
+               Column = rv$indices <- params()$col.indices,
+               None = rv$indices <- NULL
         )
       } else {
-        tmp <- if (is.null(rv.modboxplot$varTrack()$typeSelect)) 'None'
-        else rv.modboxplot$varTrack()$typeSelect
+        tmp <- if (is.null(rv$varTrack()$typeSelect)) 
+          'None'
+        else 
+          rv$varTrack()$typeSelect
+        
         switch(tmp,
-               ProteinList = rv.modboxplot$indices <- rv.modboxplot$varTrack()$list.indices,
-               Random =  rv.modboxplot$indices <- rv.modboxplot$varTrack()$rand.indices,
-               Column =  rv.modboxplot$indices <- rv.modboxplot$varTrack()$col.indices,
-               None = rv.modboxplot$indices <- NULL
+               ProteinList = rv$indices <- rv$varTrack()$list.indices,
+               Random = rv$indices <- rv$varTrack()$rand.indices,
+               Column = rv$indices <- rv$varTrack()$col.indices,
+               None = rv$indices <- NULL
         )
-      }
+        }
     })
 
 
@@ -122,33 +123,34 @@ mod_plots_intensity_server <- function(id,
 
 
     observeEvent(input$choosePlot, {
-      shinyjs::toggle('viewViolinPlot', condition=input$choosePlot=='violinplot')
-      shinyjs::toggle('BoxPlot', condition=input$choosePlot=='boxplot')
+      shinyjs::toggle('viewViolinPlot', 
+                      condition = input$choosePlot == 'violinplot')
+      shinyjs::toggle('BoxPlot', 
+                      condition = input$choosePlot == 'boxplot')
     })
 
 
 
     output$BoxPlot <- renderHighchart({
-      dataIn()
-      rv.modboxplot$indices
+      object()
+      rv$indices
       tmp <- NULL
 
       pattern <- paste0('test',".boxplot")
       withProgress(message = 'Making plot', value = 100, {
-        tmp <- DaparToolshed::boxPlotD_HC(SummarizedExperiment::assay(dataIn()),
-                                   conds = conds(),
-                                   keyId = SummarizedExperiment::rowData(dataIn())[[ meta()[['keyId']] ]],
-                                   palette = DaparToolshed::Base_Palette(conditions=conds()),
-                                   subset.view = rv.modboxplot$indices)
-        #future(createPNGFromWidget(tmp,pattern))
+        tmp <- boxPlotD(object = object(),
+                        exp.design = exp.design(),
+                        keyId = rowData(object())[[ meta()[['keyId']] ]],
+                        palette = DaparToolshed::Base_Palette(conditions=conds()),
+                        subset.view = rv$indices)
       })
       tmp
     })
 
 
     output$viewViolinPlot<- renderImage({
-      dataIn()
-      rv.modboxplot$indices
+      object()
+      rv$indices
       tmp <- NULL
 
       # A temp file to save the output. It will be deleted after renderImage
@@ -156,14 +158,13 @@ mod_plots_intensity_server <- function(id,
       outfile <- tempfile(fileext='.png')
       # Generate a png
       withProgress(message = 'Making plot', value = 100, {
-        # png(outfile, width = 640, height = 480, units = "px")
         png(outfile)
         pattern <- paste0('test',".violinplot")
-        tmp <- DaparToolshed::violinPlotD(SummarizedExperiment::assay(dataIn()),
-                                   keyId = SummarizedExperiment::rowData(dataIn())[[ meta()[['keyId']] ]],
-                                   conds = conds(),
-                                   palette = DaparToolshed::Base_Palette(conditions=conds()),
-                                   subset.view =  rv.modboxplot$indices)
+        tmp <- violinPlotD(assay(object()),
+                           keyId = rowData(object())[[ meta()[['keyId']] ]],
+                           conds = conds(),
+                           palette = DaparToolshed::Base_Palette(conditions=conds()),
+                           subset.view =  rv$indices)
         #future(createPNGFromWidget(tmp,pattern))
         dev.off()
       })
@@ -175,7 +176,7 @@ mod_plots_intensity_server <- function(id,
     }, deleteFile = TRUE)
 
 
-    return(reactive({rv.modboxplot$varTrack()}))
+    return(reactive({rv$varTrack()}))
 
 
   })

@@ -233,12 +233,12 @@ Please refer to the qMetadata.def vocabulary in <code>qMetadata.def()</code></p>
 <span class="fu">mod_query_metacell_server</span><span class="op">(</span>
   <span class="va">id</span>,
   <span class="va">obj</span>,
-  list_tags <span class="op">=</span> <span class="fu">reactive</span><span class="op">(</span><span class="op">{</span>     <span class="cn">NULL</span> <span class="op">}</span><span class="op">)</span>,
-  keep_vs_remove <span class="op">=</span> <span class="fu">reactive</span><span class="op">(</span><span class="op">{</span>     <span class="cn">NULL</span> <span class="op">}</span><span class="op">)</span>,
-  filters <span class="op">=</span> <span class="fu">reactive</span><span class="op">(</span><span class="op">{</span>     <span class="cn">NULL</span> <span class="op">}</span><span class="op">)</span>,
-  val_vs_percent <span class="op">=</span> <span class="fu">reactive</span><span class="op">(</span><span class="op">{</span>     <span class="cn">NULL</span> <span class="op">}</span><span class="op">)</span>,
-  operator <span class="op">=</span> <span class="fu">reactive</span><span class="op">(</span><span class="op">{</span>     <span class="cn">NULL</span> <span class="op">}</span><span class="op">)</span>,
-  reset <span class="op">=</span> <span class="fu">reactive</span><span class="op">(</span><span class="op">{</span>     <span class="cn">NULL</span> <span class="op">}</span><span class="op">)</span>
+  list_tags <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/shiny/man/reactive.html" class="external-link">reactive</a></span><span class="op">(</span><span class="op">{</span>     <span class="cn">NULL</span> <span class="op">}</span><span class="op">)</span>,
+  keep_vs_remove <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/shiny/man/reactive.html" class="external-link">reactive</a></span><span class="op">(</span><span class="op">{</span>     <span class="cn">NULL</span> <span class="op">}</span><span class="op">)</span>,
+  filters <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/shiny/man/reactive.html" class="external-link">reactive</a></span><span class="op">(</span><span class="op">{</span>     <span class="cn">NULL</span> <span class="op">}</span><span class="op">)</span>,
+  val_vs_percent <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/shiny/man/reactive.html" class="external-link">reactive</a></span><span class="op">(</span><span class="op">{</span>     <span class="cn">NULL</span> <span class="op">}</span><span class="op">)</span>,
+  operator <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/shiny/man/reactive.html" class="external-link">reactive</a></span><span class="op">(</span><span class="op">{</span>     <span class="cn">NULL</span> <span class="op">}</span><span class="op">)</span>,
+  reset <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/shiny/man/reactive.html" class="external-link">reactive</a></span><span class="op">(</span><span class="op">{</span>     <span class="cn">NULL</span> <span class="op">}</span><span class="op">)</span>
 <span class="op">)</span></code></pre></div>
     </div>
 
@@ -338,19 +338,13 @@ TODO</p>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="va">Exp1_R25_pept</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/readRDS.html" class="external-link">readRDS</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"data"</span>, <span class="st">'Exp1_R25_pept.rda'</span>, package<span class="op">=</span><span class="st">"DaparToolshedData"</span><span class="op">)</span><span class="op">)</span></span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>cannot open compressed file '', probable reason 'Invalid argument'</span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in gzfile(file, "rb"):</span> cannot open the connection</span>
-<span class="r-in"><span class="va">object</span> <span class="op">&lt;-</span> <span class="va">Exp1_R25_pept</span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in eval(expr, envir, enclos):</span> object 'Exp1_R25_pept' not found</span>
-<span class="r-in"><span class="va">conds</span> <span class="op">&lt;-</span> <span class="fu">colData</span><span class="op">(</span><span class="va">object</span><span class="op">)</span><span class="op">$</span><span class="va">Condition</span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in h(simpleError(msg, call)):</span> error in evaluating the argument 'x' in selecting a method for function 'colData': object 'object' not found</span>
-<span class="r-in"><span class="va">df</span> <span class="op">&lt;-</span> <span class="fu">assay</span><span class="op">(</span><span class="va">Exp1_R25_pept</span>, <span class="fl">2</span><span class="op">)</span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in h(simpleError(msg, call)):</span> error in evaluating the argument 'x' in selecting a method for function 'assay': object 'Exp1_R25_pept' not found</span>
-<span class="r-in"><span class="va">level</span> <span class="op">&lt;-</span> <span class="fu">typeDataset</span><span class="op">(</span><span class="va">object</span>, <span class="fl">2</span><span class="op">)</span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in h(simpleError(msg, call)):</span> error in evaluating the argument 'object' in selecting a method for function 'typeDataset': object 'object' not found</span>
-<span class="r-in"><span class="va">df</span> <span class="op">&lt;-</span> <span class="fu">Set_POV_MEC_tags</span><span class="op">(</span><span class="va">object</span>, <span class="fl">1</span>, <span class="va">level</span><span class="op">)</span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in unique(conds):</span> object 'object' not found</span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">ft_na</span><span class="op">)</span></span>
+<span class="r-in"><span class="va">df</span> <span class="op">&lt;-</span> <span class="fu">assay</span><span class="op">(</span><span class="va">ft_na</span>, <span class="fl">2</span><span class="op">)</span></span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in value[[3L]](cond):</span> 'assay(&lt;ExperimentList&gt;, i="numeric", ...)' invalid subscript 'i'</span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> error in evaluating the argument 'x' in selecting a method for function 'assay': subscript is out of bounds</span>
+<span class="r-in"><span class="va">level</span> <span class="op">&lt;-</span> <span class="fu">typeDataset</span><span class="op">(</span><span class="va">ft_na</span>, <span class="fl">1</span><span class="op">)</span></span>
+<span class="r-in"><span class="va">df</span> <span class="op">&lt;-</span> <span class="fu">Set_POV_MEC_tags</span><span class="op">(</span><span class="va">ft_na</span>, <span class="fl">1</span>, <span class="va">level</span><span class="op">)</span></span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in unique.default(conds):</span> unique() applies only to vectors</span>
 <span class="r-in"></span>
 <span class="r-in"><span class="va">file</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, <span class="st">"Exp1_R25_pept.txt"</span>, package<span class="op">=</span><span class="st">"DaparToolshedData"</span><span class="op">)</span></span>
 <span class="r-in"><span class="va">data</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/read.table.html" class="external-link">read.table</a></span><span class="op">(</span><span class="va">file</span>, header<span class="op">=</span><span class="cn">TRUE</span>, sep<span class="op">=</span><span class="st">"\t"</span>,stringsAsFactors <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>

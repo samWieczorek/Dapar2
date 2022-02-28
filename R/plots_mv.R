@@ -10,7 +10,8 @@
 #' @param conds A `character()` of condition name for each sample. The 
 #' length of 'conds' must be equal to the number of columns of 'qData'.
 #' 
-#' @param pal.name  xxx
+#' @param pal.name  A `character(1)` which is the name of the palette 
+#' (from the package [RColorBrewer]) to use.
 #' 
 #' @name mv_plots
 #' 
@@ -55,6 +56,30 @@
 #' 
 #' mvPerLinesHistoPerCondition(qData, conds)
 #' mvPerLinesHistoPerCondition(qData, conds, pal.name = pal)
+#' 
+#' #----------------------------------------
+#' # Launch a shiny module
+#' #----------------------------------------
+#' 
+#' if(interactive()){
+#'  library(QFeatures)
+#'  library(shiny)
+#'  library(DaparToolshed)
+#'  data(ft)
+#'  ui <- mod_mv_plots_ui('plot')
+#' 
+#'  server <- function(input, output, session) {
+#'   conds <- design(ft)$Condition
+#'  
+#'   mod_mv_plots_server('plot',
+#'                       obj = reactive({ft[[1]]}),
+#'                       conds = reactive({conds}),
+#'                       pal.name = reactive({'Dark2'})
+#'                       )
+#'   }
+#'  
+#'  shinyApp(ui=ui, server=server)
+#' }
 NULL
 
 

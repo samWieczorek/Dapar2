@@ -1,27 +1,3 @@
-#' @title   mod_plots_group_mv_ui and mod_plots_group_mv_server
-#'
-#' @description  A shiny Module.
-#' 
-#' @name mv_plots
-#'
-#' @examples 
-#' library(QFeatures)
-#' library(DaparToolshed)
-#' data(ft)
-#' ui <- mod_mv_plots_ui('plot')
-#' 
-#' server <- function(input, output, session) {
-#'  conds <- design(ft)$Condition
-#'  
-#'  mod_mv_plots_server('plot',
-#'                      obj = reactive({ft[[1]]}),
-#'                      conds = reactive({conds}),
-#'                      pal.name = reactive({'Dark2'})
-#'                      )
-#'  }
-#' shinyApp(ui=ui, server=server)
-NULL
-
 
 #' @param id xxx
 #' @export

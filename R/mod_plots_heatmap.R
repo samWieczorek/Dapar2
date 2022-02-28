@@ -1,26 +1,9 @@
-#' @title   mod_plots_heatmap_ui and mod_plots_heatmap_server
-#'
-#' @description  A shiny Module.
-#'
 #' @param id shiny id
-#'
-#' @param input internal
-#'
-#' @param output internal
-#'
-#' @param session internal
-#'
-#' @keywords internal
-#'
 #' @export
-#'
 #' @importFrom shiny NS tagList
-#' 
 #' @return NA
-#' 
-#' @rdname descriptive_statistics_plots
-#'
-mod_plots_heatmap_ui <- function(id){
+#' @rdname heatmap_plot
+mod_heatmap_plot_ui <- function(id){
   ns <- NS(id)
   tagList(
     div(
@@ -58,20 +41,25 @@ mod_plots_heatmap_ui <- function(id){
 
 
 
+#' @param id xxx
+#' @param obj xxx
+#' @param conds xxx
+#' @param width xxx
 #' @export
+#' @rdname heatmap_plot
 #'
-#' @keywords internal
-#'
-#' @importFrom SummarizedExperiment assay
-#' 
-#' @return NA
-#' 
-#' @rdname descriptive_statistics_plots
-#'
-mod_plots_heatmap_server <- function(id, obj, conds, width = 900){
+mod_heatmap_plot_server <- function(id, 
+                                    obj, 
+                                    conds, 
+                                    width = 900){
 
   moduleServer(id, function(input, output, session){
     ns <- session$ns
+    
+    observe({
+      req(obj())
+      stopifnot (inherits(obj(), "SummarizedExperiment"))
+    })
 
 
     limitHeatmap <- 20000
@@ -80,8 +68,7 @@ mod_plots_heatmap_server <- function(id, obj, conds, width = 900){
 
     output$DS_PlotHeatmap <- renderUI({
       req(obj())
-      #req(class(obj()) != "SummarizedExperiment")
-      if (nrow(SummarizedExperiment::assay(obj())) > limitHeatmap){
+      if (nrow(assay(obj())) > limitHeatmap){
         tags$p("The dataset is too big to compute the heatmap in a reasonable time.")
       }else {
         tagList(
@@ -93,28 +80,18 @@ mod_plots_heatmap_server <- function(id, obj, conds, width = 900){
 
 
     output$heatmap_ui <- renderPlot({
-      heatmap()
-    })
-
-
-
-    heatmap <- reactive({
-
-     # req(obj())
-      #req(class(obj()) != "SummarizedExperiment")
       req(input$linkage)
       req(input$distance)
-
+      
       isolate({
         withProgress(message = 'Making plot', value = 100, {
-          DaparToolshed::heatmapD(qData = SummarizedExperiment::assay(obj()),
-                                  conds = conds(),
-                                  distance= input$distance,
-                                  cluster = input$linkage)
+          heatmapD(qData = assay(obj()),
+                   conds = conds(),
+                   distance= input$distance,
+                   cluster = input$linkage)
         })
       })
     })
-
 
   })
 

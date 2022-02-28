@@ -1,97 +1,97 @@
-#' Boxplot for quantitative proteomics data using the library \code{highcharter}
+#' @title Intensity family plots
 #' 
-#' @title Builds a boxplot from a dataframe using the library \code{highcharter}
+#' @description 
 #' 
-#' @param qData Numeric matrix 
+#' These functions are plotting different views of quantitative data.
+#' Two plots are available:
 #' 
-#' @param conds xxx
+#' - [boxplotD()] xxxx,
+#' - [violinPlotD()] xxxx.
 #' 
-#' @param keyId xxxx
+#' @author Samuel Wieczorek, Anais Courtier, Enora Fremy
 #' 
-#' @param legend A vector of the conditions (one condition per sample).
+#' @name intensity_plots
 #' 
-#' @param palette xxx
 #' 
-#' @param subset.view A vector of index indicating rows to highlight
+#' @examples
+#' library(QFeatures)
+#' data(ft)
+#' 
+#' #----------------------------------------------
+#' # View violin plot with and without subset view
+#' #----------------------------------------------
+#' 
+#' violinPlotD(ft[[1]], design(ft))
+#' violinPlotD(ft[[1]], design(ft), subset = c(2, 3), pal.name = 'Dark2')
+#' 
+#' #----------------------------------------
+#' # xxxx
+#' #----------------------------------------
+#' 
+#' boxPlotD(ft[[1]], design(ft))
+#' boxPlotD(ft[[1]], design(ft), subset = c(2, 3), pal.name = 'Dark2')
+#' 
+#' 
+#' 
+NULL
+
+
+
+
+
+#' @param object Numeric matrix 
+#' @param exp.design xxx
+#' @param pal.name xxxx
+#' @param subset A `integrer()` vector of index indicating the indices
+#' of rows in the dataset to highlight
 #' 
 #' @return A boxplot
 #' 
 #' @author Samuel Wieczorek, Anais Courtier, Enora Fremy
 #' 
-#' @examples
-#' library(QFeatures)
-#' Exp1_R25_pept <- readRDS(system.file("data", 'Exp1_R25_pept.rda', package="DaparToolshedData"))
-#' qData <- assay(Exp1_R25_pept[[2]])
-#' conds <- colData(Exp1_R25_pept)[["Condition"]]
-#' key <- rowData(Exp1_R25_pept[[2]])[[metadata(Exp1_R25_pept)$keyId]]
-#' boxPlotD_HC(qData, conds, keyId = key, conds, subset.view=seq_len(10))
-#' 
 #' @import highcharter
-#' 
 #' @importFrom grDevices colorRampPalette boxplot.stats
-#' 
 #' @importFrom RColorBrewer brewer.pal
-#' 
 #' @importFrom stats na.exclude
 #' 
 #' @export
 #' 
-#' @rdname descriptive_statistics_plots
+#' @rdname intensity_plots
 #' 
-boxPlotD_HC <- function(qData, 
-                        conds, 
-                        keyId=NULL, 
-                        legend=NULL, 
-                        palette = NULL, 
-                        subset.view=NULL){
+boxPlotD <- function(object,
+                     exp.design,
+                     pal.name = NULL, 
+                     subset = NULL){
+  stopifnot(inherits(object, 'SummarizedExperiment'))
   
-  if (is.null(qData)){
-    warning('The dataset in NULL and cannot be shown')
-    return(NULL)
-  }
+  qData <- assay(object)
+  legend <- exp.design$Sample.name
   
-  if(missing(conds))
-    stop("'conds' is missing.")
+  if(missing(exp.design))
+    stop("'exp.design' is missing.")
   
-  if (is.null(legend)) {
-    legend <- conds
-    for (i in unique(conds))
-      legend[which(conds==i)] <- paste0(i, '_', seq_len(length(which(conds==i))))
-  }
+  # In order to view subset, one need the 'idcol' info
+  if (!is.null(subset))
+    stopifnot(!is.null(idcol(object)))
   
-  if (!is.null(subset.view)) {
-    if (is.null(keyId)|| missing(keyId))
-      stop("'keyId' is missing.")
-    else
-      if (!grep(keyId, colnames(Biobase::fData(obj))))
-        stop("'keyId' does not belong to metadata")
-  }
-  
-
-  myColors <- NULL
-  if (is.null(palette)){
-    warning("Color palette set to default.")
-    myColors <-   GetColorsForConditions(conds, ExtendPalette(length(unique(conds))))
-  } else {
-    if (length(palette) != length(unique(conds))){
-      warning("The color palette has not the same dimension as the number of samples")
-      myColors <- GetColorsForConditions(conds, ExtendPalette(length(unique(conds))))
-    } else 
-      myColors <- GetColorsForConditions(conds, palette)
-  }
+  myColors <- SampleColors(exp.design$Condition, pal.name)
   
   
-  add_variable_to_series_list<- function(x, series_list, key_vector, value_vector){
+  # Internal function
+  add_var_to_series_list <- function(x, 
+                                     series_list, 
+                                     key_vector, 
+                                     value_vector){
     base::stopifnot(length(key_vector) == length(value_vector))
     base::stopifnot(length(series_list) == length(key_vector))
-    series_list[[x]][length(series_list[[x]])+1]<- value_vector[x]
-    names(series_list[[x]])[length(series_list[[x]])]<- key_vector[x]
+    series_list[[x]][length(series_list[[x]])+1] <- value_vector[x]
+    names(series_list[[x]])[length(series_list[[x]])] <- key_vector[x]
     return(series_list[[x]])
   }
   
   
   # From highcharter github pages:
-  hc_add_series_bwpout = function(hc, value, by, ...) {
+  hc_add_series_bwpout <- function(hc, value, by, ...) {
     z = lapply(levels(by), function(x) {
       bpstats = boxplot.stats(value[by == x])$stats
       outliers = c()
@@ -106,12 +106,12 @@ boxPlotD_HC <- function(qData,
   }
   
   
-  gen_key_vector<-function(variable, num_times){
+  gen_key_vector <- function(variable, num_times)
     return(rep(variable, num_times))
-  } 
+   
   
   
-  gen_boxplot_series_from_df<- function(value, by,...){
+  gen_boxplot_series_from_df <- function(value, by, ...){
     value <- base::as.numeric(value)
     by <- base::as.factor(by)
     box_names<- levels(by)
@@ -140,47 +140,56 @@ boxPlotD_HC <- function(qData,
   
   
   ## Boxplot function:
-  make_highchart_boxplot_with_colored_factors<- function(value, by, 
-                                                         chart_title = "Boxplots",
-                                                         chart_x_axis_label = "Values", 
-                                                         show_outliers = FALSE,
-                                                         boxcolors = NULL, 
-                                                         box_line_colors = NULL){
+  make_boxplot<- function(value, 
+                          by, 
+                          chart_title = "Boxplots",
+                          chart_x_axis_label = "Values", 
+                          show_outliers = FALSE,
+                          boxcolors = NULL, 
+                          box_line_colors = NULL){
     by <- as.factor(by)
     box_names_to_use <- levels(by)
     series <- gen_boxplot_series_from_df(value = value, by=by)
     
-    cols<- boxcolors
-    cols2<- box_line_colors
+    cols <- boxcolors
+    cols2 <- box_line_colors
 
     # Injecting value 'fillColor' into series list
     kv<- gen_key_vector(variable = "fillColor", length(series)) 
-    series2<- lapply(seq_along(series), function(x){ add_variable_to_series_list(x = x, series_list = series, key_vector = kv, value_vector = cols) })
+    series2<- lapply(seq_along(series), function(x){ add_var_to_series_list(x = x, series_list = series, key_vector = kv, value_vector = cols) })
     
     if(show_outliers == TRUE){
       hc<- highcharter::highchart() %>%
-        highcharter::hc_chart(type="boxplot", inverted=FALSE) %>%
-        highcharter::hc_title(text=chart_title) %>%
-        highcharter::hc_legend(enabled=FALSE) %>%
-        highcharter::hc_xAxis(type="category", categories=box_names_to_use, title=list(text=chart_x_axis_label)) %>%
+        highcharter::hc_chart(type = "boxplot", 
+                              inverted = FALSE) %>%
+        highcharter::hc_title(text = chart_title) %>%
+        highcharter::hc_legend(enabled = FALSE) %>%
+        highcharter::hc_xAxis(type = "category", 
+                              categories = box_names_to_use, 
+                              title = list(text=chart_x_axis_label)) %>%
         highcharter::hc_yAxis(title = list(text = "Log (intensity)")) %>%
         highcharter::hc_add_series_list(series2) %>%
-        hc_add_series_bwpout(value = value, by=by, name="Outliers", colorByPoint = TRUE) %>%
+        hc_add_series_bwpout(value = value, 
+                             by = by, 
+                             name = "Outliers", 
+                             colorByPoint = TRUE) %>%
         hc_plotOptions(series = list(
           marker = list(
             symbol = "circle"
           ),
-          grouping=FALSE
+          grouping = FALSE
         )) %>%
         highcharter::hc_colors(cols2) %>%
-        highcharter::hc_exporting(enabled=TRUE)
+        highcharter::hc_exporting(enabled = TRUE)
       
     } else{
       hc<- highcharter::highchart() %>%
         highcharter::hc_chart(type="boxplot", inverted=FALSE) %>%
         highcharter::hc_title(text=chart_title) %>%
         highcharter::hc_legend(enabled=FALSE) %>%
-        highcharter::hc_xAxis(type="category", categories=box_names_to_use, title=list(text=chart_x_axis_label)) %>%
+        highcharter::hc_xAxis(type="category", 
+                              categories = box_names_to_use, 
+                              label = list(text = chart_x_axis_label)) %>%
         highcharter::hc_yAxis(title = list(text = "Log (intensity)")) %>%
         highcharter::hc_add_series_list(series2) %>%
         hc_plotOptions(series = list(
@@ -190,7 +199,7 @@ boxPlotD_HC <- function(qData,
           grouping=FALSE
         )) %>%
         highcharter::hc_colors(cols2) %>%
-        highcharter::hc_exporting(enabled=TRUE)
+        highcharter::hc_exporting(enabled = TRUE)
     }
     hc
   }
@@ -199,31 +208,35 @@ boxPlotD_HC <- function(qData,
   df <- data.frame(cbind(categ =rep(colnames(qData),nrow(qData)),
                          value = as.vector(apply(qData, 1, function(x) as.vector(x)))))
   df$value<- base::as.numeric(df$value)
- hc <- make_highchart_boxplot_with_colored_factors(value = df$value, 
-                                                    by=df$categ, 
-                                                    chart_title = "",
-                                                    chart_x_axis_label = "Samples",
-                                                    show_outliers = TRUE, 
-                                                    boxcolors = myColors,
-                                                    box_line_colors = "black")
+  hc <- make_boxplot(value = df$value, 
+                    by = df$categ, 
+                    chart_title = "",
+                    chart_x_axis_label = "Samples",
+                    show_outliers = TRUE, 
+                    boxcolors = myColors,
+                    box_line_colors = "black")
   
   
   
-  # Display of rows to highlight (index of row in subset.view) 
- if(!is.null(subset.view)){
-   idVector <- keyId
-   pal = ExtendPalette(length(subset.view), "Dark2") 
-   n=0
-   for(i in subset.view){
-     n=n+1
-     dfSubset <- data.frame(y = as.vector(qData[i,],mode='numeric'), x = as.numeric(factor(names(qData[i,])))-1, stringsAsFactors = FALSE)
-     hc<-hc %>%
-       highcharter::hc_add_series(type= "line",
-                                  data=dfSubset,
-                                  color=pal[n], 
+  # Display of rows to highlight (index of row in subset) 
+ if(!is.null(subset)){
+   idVector <- rowData(object)[ ,idcol(object)]
+   pal.tracker <- ExtendPalette(length(subset), "Dark2")
+   n = 0
+   for(i in subset){
+     n = n+1
+     dfSubset <- data.frame(y = as.vector(qData[i,],mode='numeric'), 
+                            x = as.numeric(factor(names(qData[i,])))-1, 
+                            stringsAsFactors = FALSE)
+     hc <- hc %>%
+       highcharter::hc_add_series(type = "line",
+                                  data = dfSubset,
+                                  color = pal.tracker[n], 
                                   dashStyle = "shortdot",
-                                  name=Biobase::fData(obj)[i,keyId],
-                                  tooltip=list(enabled=TRUE,headerFormat ="",pointFormat="{point.series.name} : {point.y: .2f} ") )
+                                  name = idVector[i],
+                                  tooltip = list(enabled =TRUE,
+                                               headerFormat = "",
+                                               pointFormat = "{point.series.name} : {point.y: .2f} ") )
      
    }
  }   

@@ -2,9 +2,10 @@
 #'
 #' @description  A shiny Module.
 #' 
-#' @name mv_plots
+#' @name corrmatrix_plot
 #'
 #' @examples 
+#' if (interactive()){
 #' library(QFeatures)
 #' library(DaparToolshed)
 #' data(ft)
@@ -16,6 +17,7 @@
 #'                             )
 #'  }
 #' shinyApp(ui=ui, server=server)
+#' }
 NULL
 
 

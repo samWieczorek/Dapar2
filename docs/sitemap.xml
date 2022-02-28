@@ -52,6 +52,9 @@
     <loc>/reference/aggTopn.html</loc>
   </url>
   <url>
+    <loc>/reference/all_plots.html</loc>
+  </url>
+  <url>
     <loc>/reference/Base_Palette.html</loc>
   </url>
   <url>
@@ -260,6 +263,9 @@
   </url>
   <url>
     <loc>/reference/heatmapForMissingValues.html</loc>
+  </url>
+  <url>
+    <loc>/reference/heatmap_plot.html</loc>
   </url>
   <url>
     <loc>/reference/histPValue_HC.html</loc>
@@ -527,6 +533,9 @@
   </url>
   <url>
     <loc>/reference/palette.html</loc>
+  </url>
+  <url>
+    <loc>/reference/pca_plots.html</loc>
   </url>
   <url>
     <loc>/reference/pepa-imputation.html</loc>

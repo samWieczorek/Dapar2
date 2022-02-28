@@ -10,14 +10,21 @@ list.plots.module <- c(
   'mod_plots_group_mv'
   )
 
-
+#' @title xxx
+#' 
+#' @description 
+#' 
+#' xxxxxx
+#' 
+#' @name all_plots
+#' 
 #' @export
 #'
 #' @param id xxx
 #'
 #' @importFrom shiny NS tagList
 #' @importFrom shinyjs useShinyjs 
-#' @rdname descriptive_statistics_plots
+#' @rdname all_plots
 mod_all_plots_ui <- function(id){
   ns <- NS(id)
   tagList(
@@ -41,15 +48,12 @@ mod_all_plots_ui <- function(id){
 #' @export
 #'
 #' @param id xxxx
-#' 
 #' @param dataIn xxxx
 #' 
 #' @importFrom base64enc dataURI
-#' @importFrom SummarizedExperiment colData
-#' @importFrom MultiAssayExperiment metadata
 #' @importFrom shinyjs show hide hidden
 #' 
-#' @rdname descriptive-statistics-plots
+#' @rdname all_plots
 mod_all_plots_server <- function(id, dataIn){
 
   moduleServer(id, function(input, output, session) {

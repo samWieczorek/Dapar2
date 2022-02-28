@@ -8,22 +8,46 @@
 \usage{
 mod_format_DT_ui(id)
 
-mod_format_DT_server(id, df, rownames = FALSE, dom = "Bt", style = NULL)
+mod_format_DT_server(
+  id,
+  df,
+  rownames = FALSE,
+  dom = "Bt",
+  style = reactive({     NULL })
+)
 }
 \arguments{
 \item{id}{internal}
+
+\item{df}{internal}
 
 \item{rownames}{xxxx}
 
 \item{dom}{xxx}
 
 \item{style}{xxx}
-
-\item{table2show}{internal}
-}
-\value{
-NA
 }
 \description{
 A shiny Module.
+}
+\examples{
+if(interactive()){
+ library(QFeatures)
+ library(shiny)
+ library(DaparToolshed)
+ data(ft)
+ 
+  
+ ui <- mod_format_DT_ui('dt')
+
+ server <- function(input, output, session) {
+  mod_format_DT_server(id = 'dt',
+                       df = reactive({assay(ft,1)})
+                       )
+  }
+ 
+ shinyApp(ui=ui, server=server)
+}
+
+
 }

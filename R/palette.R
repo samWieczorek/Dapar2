@@ -43,7 +43,7 @@ NULL
 #' @export
 #'
 SampleColors <- function(conds, pal.name = 'Set1'){
-if (missing(pal.name))
+if (missing(pal.name) || is.null(pal.name))
   pal.name <- "Set1"
 
   palette.ex <- NULL
@@ -68,7 +68,9 @@ if (missing(pal.name))
 ExtendPalette <- function(n, pal.name = "Set1"){
 
   stopifnot(is.numeric(n))
-  stopifnot(pal.name %in% rownames(brewer.pal.info))
+  
+  if( !(pal.name %in% rownames(brewer.pal.info)))
+    pal.name <- "Set1"
   
   extended.pal <- NULL
   

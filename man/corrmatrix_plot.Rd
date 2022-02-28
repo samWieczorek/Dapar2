@@ -2,6 +2,7 @@
 % Please edit documentation in R/plots_corr_matrix.R, R/mod_plots_corr_matrix.R
 \name{corrMatrixPlot}
 \alias{corrMatrixPlot}
+\alias{corrmatrix_plot}
 \alias{mod_corrmatrix_plot_ui}
 \alias{mod_corrmatrix_plot_server}
 \title{Displays a correlation matrix of the quantitative data of a
@@ -31,14 +32,26 @@ mod_corrmatrix_plot_server(
 A colored correlation matrix
 }
 \description{
-Displays a correlation matrix of the quantitative data of a
-numeric matrix.
+A shiny Module.
 }
 \examples{
 library(QFeatures)
 data(ft)
-corrMatrixPlot(ft[[1]])
+corrMatrixPlot(assay(ft, 1))
 
+if (interactive()){
+library(QFeatures)
+library(DaparToolshed)
+data(ft)
+ui <- mod_corrmatrix_plot_ui('plot')
+
+server <- function(input, output, session) {
+ mod_corrmatrix_plot_server('plot',
+                            qData = reactive({assay(ft[[1]])})
+                            )
+ }
+shinyApp(ui=ui, server=server)
+}
 }
 \author{
 Samuel Wieczorek, Enora Fremy

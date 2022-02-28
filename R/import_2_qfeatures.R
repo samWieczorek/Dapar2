@@ -57,6 +57,7 @@
 #' }
 #'
 #' @importFrom QFeatures readQFeatures
+#' @importFrom PSMatch makeAdjacencyMatrix
 #' @importFrom utils installed.packages
 #'
 #' @export
@@ -151,10 +152,10 @@ createQFeatures <- function(data = NULL,
     rownames(data) <- data[,keyId]
   }
   # Creates the QFeatures object
-  obj <- QFeatures::readQFeatures(data,
-                                  ecol = indQData,
-                                  name = 'original',
-                                  fnames = keyId)
+  obj <- readQFeatures(data,
+                       ecol = indQData,
+                       name = 'original',
+                       fnames = keyId)
   
   ## Encoding the sample data
   sample <- lapply(sample, function(x){ ReplaceSpecialChars(x)})
