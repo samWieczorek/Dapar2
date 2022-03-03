@@ -20,8 +20,8 @@ An integer
 Returns the possible number of values in lines in the data
 }
 \examples{
-Exp1_R25_pept <- readRDS(system.file("data", 'Exp1_R25_pept.rda', package="DaparToolshedData"))
-getListNbValuesInLines(Exp1_R25_pept, 1)
+data(ft)
+getListNbValuesInLines(ft, 1)
 
 }
 \author{

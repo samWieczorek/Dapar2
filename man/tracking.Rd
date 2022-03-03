@@ -34,16 +34,26 @@ Three modes of selection are implemented:
 }
 \examples{
 if (interactive()){
-library(QFeatures)
-library(DaparToolshed)
-data(ft)
-ui <- mod_tracking_ui('track')
+
+ui <- tagList(
+  mod_tracking_ui('track'),
+  uiOutput('show')
+)
 
 server <- function(input, output, session) {
- mod_tracking_server(id = 'track',
-                     object = reactive({ft[[1]]})
-                     )
- }
-shinyApp(ui, server)
+  rv <- reactiveValues(
+    tmp = NULL
+  )
+  
+  rv$tmp <- mod_tracking_server(id = 'track',
+                                object = reactive({ft[[1]]})
+  )
+  
+  output$show <- renderUI({
+    p(paste0(rv$tmp(), collapse = ' '))
+  })
+  
+}
+shinyApp(ui=ui, server=server)
 }
 }

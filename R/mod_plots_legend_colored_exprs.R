@@ -1,59 +1,70 @@
-# Module UI
-  
-#' @title   mod_legend_colored_exprs_ui and mod_legend_colored_exprs_server
-#' @description  A shiny Module.
-#'
-#' @param id shiny id
-#' @param input internal
-#' @param output internal
-#' @param session internal
-#'
-#' @rdname descriptive_statistics_plots
-#'
-#' @keywords internal
-#' @export 
-#' @importFrom shiny NS tagList 
-#' @return NA
+#' @importFrom shinyBS bsCollapse bsCollapsePanel
+#' @importFrom shiny NS tagList
 #' 
-mod_plots_legend_colored_exprs_ui <- function(id){
+#' @rdname q_metadata
+#'
+#' @export 
+mod_LegendColoredExprs_ui <- function(id){
   ns <- NS(id)
-  tagList(
-    tags$p(tags$b("Legend of colors")),
-    
-    fluidRow(
-      column(width=2, HTML(paste0("<div style=\"width:50px;height:20px;border:0px solid #000; background-color: ",
-                                  'lightblue',";\"></div>")) ),
-      column(width=10, tags$p("Partially Observed Value"))
-    ),
-    
-    fluidRow(
-      column(width=2,HTML(paste0("<div style=\"width:50px;height:20px;border:0px solid #000; background-color: ",
-                                 #orangeProstar,";\"></div>"))),
-                                 "#E97D5E",";\"></div>"))),
-      column(width=10, tags$p("Missing in Entire Condition"))
-    )
+  
+  
+  bsCollapse(id = "collapseExample", 
+             open = "",
+             bsCollapsePanel(title = "Legend of colors",
+                             uiOutput(ns('legend')),
+                             style = ""
+             )
   )
+  
 }
-    
-# Module Server
-    
-#' @rdname descriptive_statistics_plots
+
+
+#' @param id The 'id' of the shiny module.
+#' @param object An instance of the class `SummarizedExperiment`
+#' @param hide.white A `logical(1)` that indicate if xxx
+#' 
 #' @export
-#' @keywords internal
-#' @return NA
-    
-mod_plots_legend_colored_exprs_server <- function(id){
+#' 
+#' @rdname q_metadata
+mod_LegendColoredExprs_server <- function(id, 
+                                          object, 
+                                          hide.white = TRUE
+                                          ){
   
-  moduleServer(id, function(input, output, session){
-    ns <- session$ns
-    
-  })
+  moduleServer(
+    id,
+    function(input, output, session) {
+      ns <- session$ns
+      
+      
+      observe({
+        stopifnot(inherits(object(), 'SummarizedExperiment'))
+      })
+      
+      output$legend <- renderUI({
+        mc <- qMetadata.def(typeDataset(object()))
+        
+        tagList(
+          lapply(1:nrow(mc), function(x){
+            if (mc[x, 'color'] != 'white' || (mc[x, 'color'] == 'white' && !isTRUE(hide.white))) {
+              tagList(
+                tags$div(class="color-box",
+                         style = paste0("display:inline-block; 
+                                      vertical-align: middle;
+                                      width:20px; height:20px;
+                                      border:1px solid #000; 
+                                      background-color: ", 
+                                        mc[x, 'color'] , ";"),
+                ),
+                tags$p(style = paste0("display:inline-block; 
+                                       vertical-align: middle;"),
+                       mc[x, 'node']),
+                br()
+              )
+            }
+          })
+        )
+      })
+    })
   
 }
-    
-## To be copied in the UI
-# mod_plots_legend_colored_exprs_ui("legend_colored_exprs_ui_1")
-    
-## To be copied in the server
-# callModule(mod_plots_legend_colored_exprs_server, "legend_colored_exprs_ui_1")
- 

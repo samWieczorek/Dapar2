@@ -131,57 +131,20 @@ nEmptyLines <- function(df)
 #' 
 #' @examples
 #' library(QFeatures)
-#' Exp1_R25_pept <- readRDS(system.file("data", 'Exp1_R25_pept.rda', package="DaparToolshedData"))
-#' obj <- Exp1_R25_pept
-#' data <- rowData(Exp1_R25_pept[['original']])[,metadata(Exp1_R25_pept)$OriginOfValues]
-#' is.OfType(as.data.frame(data@listData), "MEC")
+#' data(ft)
+#' obj <- ft[[1]]
+#' data <- qMetadata(obj)
+#' is.OfType(as.data.frame(data), "MEC")
 #' 
 #' @export
 #' 
 is.OfType <- function(data, type){
-  
-  if (class(data) != 'data.frame'){
-    warning('The parameter param is not a data.frame.')
-    return(NULL)
-  }
+  stopifnot(inherits(data, 'data.frame'))
   return (type == data)
 }
 
 
 
-
-
-
-#' @title Similar to the function \code{is.na} but focused on the equality with the missing 
-#' values in the dataset (type 'POV' and 'MEC')
-#' 
-#' @param data A data.frame
-#' 
-#' @return A boolean dataframe 
-#' 
-#' @author Samuel Wieczorek
-#' 
-#' @examples
-#' library(QFeatures)
-#' Exp1_R25_pept <- readRDS(system.file("data", 'Exp1_R25_pept.rda', package="DaparToolshedData"))
-#' obj <- Exp1_R25_pept
-#' data <- rowData(Exp1_R25_pept[['original']])[,metadata(Exp1_R25_pept)$OriginOfValues]
-#' is.MV(as.data.frame(data@listData))
-#' 
-#' @export
-#' 
-is.MV <- function(data){
-  # if (class(data) != 'data.frame'){
-  #   warning('The parameter param is not a data.frame.')
-  #   return(NULL)
-  # }
-  #POV = is.OfType(data, "POV")
-  #MEC = is.OfType(data, "MEC")
-  isNA = is.na(data)
-  df <- POV | MEC | isNA
-  
-  return (df)
-}
 
 
 
@@ -199,12 +162,10 @@ is.MV <- function(data){
 #' @author Samuel Wieczorek, Enora Fremy
 #' 
 #' @examples
-#' Exp1_R25_pept <- readRDS(system.file("data", 'Exp1_R25_pept.rda', package="DaparToolshedData"))
-#' getListNbValuesInLines(Exp1_R25_pept, 1)
+#' data(ft)
+#' getListNbValuesInLines(ft, 1)
 #' 
 #' @export
-#' 
-#' @importFrom SummarizedExperiment colData rowData 
 #' 
 #' @importFrom S4Vectors sort
 #' 

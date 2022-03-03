@@ -19,10 +19,10 @@ Similar to the function \code{is.na} but focused on the equality with the paramt
 }
 \examples{
 library(QFeatures)
-Exp1_R25_pept <- readRDS(system.file("data", 'Exp1_R25_pept.rda', package="DaparToolshedData"))
-obj <- Exp1_R25_pept
-data <- rowData(Exp1_R25_pept[['original']])[,metadata(Exp1_R25_pept)$OriginOfValues]
-is.OfType(as.data.frame(data@listData), "MEC")
+data(ft)
+obj <- ft[[1]]
+data <- qMetadata(obj)
+is.OfType(as.data.frame(data), "MEC")
 
 }
 \author{

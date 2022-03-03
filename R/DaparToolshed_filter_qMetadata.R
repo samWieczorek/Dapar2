@@ -32,28 +32,30 @@ SymFilteringOperators <- function()
 #' @description
 #' This function looks for the lines that respect the request in either all conditions
 #' or at least one condition.
-#'
-#' @param mask xxx
-#'
-#' @param op  String for operator to use. List of operators is available with SymFilteringOperators().
-#'
+#' 
+#' @param object xxx
+#' @param cmd A `character(1)` xxx
+#' @pattern pattern A `character(1)` xxx
 #' @param percent A boolean to indicate whether the threshold represent an absolute value (percent = FALSE) or
 #' a percentage (percent=TRUE).
-#'
 #' @param th A floating number which is in the interval [0, 1]
+#' @param operator String for operator to use. List of operators is available with SymFilteringOperators().
+#' 
 #'
 #' @return NA
 #'
 #' @examples
-#' Exp1_R25_pept <- readRDS(system.file("data", 'Exp1_R25_pept.rda', package="DaparToolshedData"))
-#' obj <- Exp1_R25_pept[seq_len(10)]
-#' level <- obj@experimentData@other$typeOfData
+#' data(ft)
+#' obj <- ft[[1]]
+#' level <- typeOfData(ft, 1)
 #' pattern <- 'missing'
-#' mask <- match.qMetadata(metadata=Get_qMetadata(obj), pattern=pattern, level=level)
+#' mask <- match.qMetadata(metadata = qMetadata(obj), 
+#'                         pattern = pattern, 
+#'                         level = level)
 #' percent <- FALSE
 #' th <- 3
 #' op <- '>='
-#' ind <- GetIndices_WholeMatrix(mask, op, percent, th)
+#' ind <- qMetadatWholeMatrix(mask, op, percent, th)
 #'
 #' @export
 #' 
@@ -103,14 +105,12 @@ qMetadatWholeMatrix <- function(object, cmd, pattern, percent, th, operator){
   
   
   indices <- NULL
-  if (isTRUE(percent)) {
+  if (isTRUE(percent))
     inter <- rowSums(mask)/ncol(mask)
-    indices <- which(eval(parse(text = paste0("inter", operator, th))))
-  } else {
+  else
     inter <- apply(mask, 1, sum)
-    indices <- which(eval(parse(text = paste0("inter", operator, th))))
-  }
   
+  indices <- which(eval(parse(text = paste0("inter", operator, th))))
   if (length(indices) >0)
     object <- switch(cmd, 
                      keep = object[indices,],
@@ -131,12 +131,13 @@ qMetadatWholeMatrix <- function(object, cmd, pattern, percent, th, operator){
 #' @return NA
 #'
 #' @examples
-#' Exp1_R25_pept <- readRDS(system.file("data", 'Exp1_R25_pept.rda', package="DaparToolshedData"))
-#' obj <- Exp1_R25_pept[20:30]
-#' level <- obj@experimentData@other$typeOfData
-#' pattern <- 'missing POV'
-#' mask <- match.qMetadata(metadata=GetqMetadata(obj), pattern=pattern, level=level)
-#' ind <- GetIndices_WholeLine(mask)
+#' data(ft)
+#' obj <- ft[[1]]
+#' mask <- match.qMetadata(metadata = qMetadata(obj), 
+#'                         pattern = 'missing POV', 
+#'                         level = typeOfData(obj)
+#'                         )
+#' ind <- qMetadataWholeLine(mask)
 #'
 #'@export
 #'
@@ -201,17 +202,18 @@ qMetadataWholeLine <- function(object, cmd, pattern){
 #' @return NA
 #'
 #' #' @examples
-#' Exp1_R25_pept <- readRDS(system.file("data", 'Exp1_R25_pept.rda', package="DaparToolshedData"))
-#' obj <- Exp1_R25_pept[seq_len(10)]
-#' level <- obj@experimentData@other$typeOfData
-#' pattern <- 'missing'
-#' mask <- match.qMetadata(metadata=qMetadata(obj), pattern=pattern, level=level)
+#' data(ft)
+#' obj <- ft[[1]]
+#' mask <- match.qMetadata(metadata = qMetadata(obj), 
+#'                         pattern = 'missing', 
+#'                         level = typeOfData(obj)
+#'                         )
 #' type <- 'AllCond'
-#' conds <- Biobase::pData(obj)$Condition
+#' conds <- design(ft)$Condition
 #' op <- '>='
 #' th <- 2
 #' percent <- FALSE
-#' ind <- GetIndices_BasedOnConditions(mask, type, conds, percent, op, th)
+#' ind <- qMetadataOnConditions(mask, type, conds, percent, op, th)
 #'
 #' @export
 #'

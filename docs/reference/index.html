@@ -63,14 +63,6 @@
         </td>
         <td><p>xxx</p></td>
       </tr><tr><td>
-          <p><code><a href="checkClusterability.html">checkClusterability()</a></code> </p>
-        </td>
-        <td><p>Prepare the data for subsequent clustering</p></td>
-      </tr><tr><td>
-          <p><code><a href="compute_t_tests.html">compute_t_tests()</a></code> </p>
-        </td>
-        <td><p>xxxxxx</p></td>
-      </tr><tr><td>
           <p><code><a href="connected_components.html">mod_graph_pept_prot_ui()</a></code> <code><a href="connected_components.html">mod_graph_pept_prot_server()</a></code> </p>
         </td>
         <td><p>Connected components tools.</p></td>
@@ -92,25 +84,25 @@ numeric matrix.</p></td>
         </td>
         <td><p>Customised contextual menu of highcharts plots</p></td>
       </tr><tr><td>
+          <p><code><a href="cv_plots.html">CVDist()</a></code> <code><a href="cv_plots.html">mod_cv_plot_ui()</a></code> <code><a href="cv_plots.html">mod_cv_plot_server()</a></code> </p>
+        </td>
+        <td><p>mod_var_dist_plot_ui and mod_var_dist_plot_server</p></td>
+      </tr><tr><td>
           <p><code><a href="DaparToolshed-aggregate.html">aggregateFeatures4Prostar(<i>&lt;QFeatures&gt;</i>)</a></code> <code><a href="DaparToolshed-aggregate.html">aggregateFeatures4Prostar(<i>&lt;SummarizedExperiment&gt;</i>)</a></code> <code><a href="DaparToolshed-aggregate.html">aggQmetadata()</a></code> </p>
         </td>
         <td><p>Aggregate an assay of peptides into proteins.</p></td>
+      </tr><tr><td>
+          <p><code><a href="data_explorer.html">mod_explorer_ui()</a></code> <code><a href="data_explorer.html">mod_explorer_server()</a></code> </p>
+        </td>
+        <td><p>Data explorer</p></td>
       </tr><tr><td>
           <p><code><a href="density-plots.html">densityPlot()</a></code> <code><a href="density-plots.html">mod_plots_density_ui()</a></code> <code><a href="density-plots.html">mod_plots_density_server()</a></code> </p>
         </td>
         <td><p>Shiny module for plots.</p></td>
       </tr><tr><td>
-          <p><code><a href="differential-analysis.html">diff_analysis_sam(<i>&lt;SummarizedExperiment&gt;</i>)</a></code> <code><a href="differential-analysis.html">diff_analysis_sam(<i>&lt;QFeatures&gt;</i>)</a></code> <code><a href="differential-analysis.html">histPValue_HC()</a></code> <code><a href="differential-analysis.html">diffAnaComputeFDR()</a></code> <code><a href="differential-analysis.html">Get_AllComparisons()</a></code> <code><a href="differential-analysis.html">diffAnalysis()</a></code> <code><a href="differential-analysis.html">diffAnaVolcanoplot_rCharts()</a></code> </p>
+          <p><code><a href="differential-analysis.html">diffAnaVolcanoplot_rCharts()</a></code> </p>
         </td>
-        <td><p>Plots a histogram of p-values</p></td>
-      </tr><tr><td>
-          <p><code><a href="diff_analysis_sam.html">diff_analysis_sam</a></code> </p>
-        </td>
-        <td><p>Check the validity of the experimental design</p></td>
-      </tr><tr><td>
-          <p><code><a href="formatPHResults.html">formatPHResults()</a></code> </p>
-        </td>
-        <td><p>Extract logFC and raw pvalues from multiple post-hoc models summaries</p></td>
+        <td><p>Volcanoplot of the differential analysis</p></td>
       </tr><tr><td>
           <p><code><a href="getListNbValuesInLines.html">getListNbValuesInLines()</a></code> </p>
         </td>
@@ -125,10 +117,6 @@ peptides w.r.t. the proteins</p></td>
         </td>
         <td><p>Heatmap of the quantitative proteomics data</p></td>
       </tr><tr><td>
-          <p><code><a href="import-export-dataset.html">writeQFeaturesToExcel()</a></code> <code><a href="import-export-dataset.html">readExcel()</a></code> <code><a href="import-export-dataset.html">listSheets()</a></code> </p>
-        </td>
-        <td><p>This function exports a <code>QFeatures</code> object to a Excel file.</p></td>
-      </tr><tr><td>
           <p><code><a href="import-export-QFeatures.html">createQFeatures()</a></code> </p>
         </td>
         <td><p>Creates an object of class <code>QFeatures</code> from text file.</p></td>
@@ -137,29 +125,19 @@ peptides w.r.t. the proteins</p></td>
         </td>
         <td><p>Distribution of Observed values with respect to intensity values</p></td>
       </tr><tr><td>
-          <p><code><a href="is.MV.html">is.MV()</a></code> </p>
+          <p><code><a href="intensity_plots.html">boxPlotD()</a></code> <code><a href="intensity_plots.html">violinPlotD()</a></code> <code><a href="intensity_plots.html">mod_intensity_plots_ui()</a></code> <code><a href="intensity_plots.html">mod_intensity_plots_server()</a></code> </p>
         </td>
-        <td><p>Similar to the function <code>is.na</code> but focused on the equality with the missing
-values in the dataset (type 'POV' and 'MEC')</p></td>
+        <td><p>Intensity family plots</p></td>
       </tr><tr><td>
           <p><code><a href="is.OfType.html">is.OfType()</a></code> </p>
         </td>
         <td><p>Similar to the function <code>is.na</code> but focused on the equality with the paramter 'type'.</p></td>
       </tr><tr><td>
-          <p><code><a href="iterative-aggregation.html">inner.aggregate.iter()</a></code> <code><a href="iterative-aggregation.html">aggIterParallel()</a></code> <code><a href="iterative-aggregation.html">aggIterative()</a></code> </p>
-        </td>
-        <td><p>Method to aggregate peptides into proteins with the iterative approach.</p></td>
-      </tr><tr><td>
           <p><code><a href="Keep_Items_from_Dataset.html">Keep_Items_from_Dataset()</a></code> </p>
         </td>
         <td><p>xxx</p></td>
       </tr><tr><td>
-          <p><code><a href="matAdjStats.html">matAdjStats()</a></code> </p>
-        </td>
-        <td><p>Computes the number of proteins that are only defined by
-specific peptides, shared peptides or a mixture of two.</p></td>
-      </tr><tr><td>
-          <p><code><a href="mod_Agregation.html">mod_Agregation_ui()</a></code> <code><a href="mod_Agregation.html">mod_Agregation_server()</a></code> </p>
+          <p><code><a href="mod_agregation.html">mod_Agregation_ui()</a></code> </p>
         </td>
         <td><p>Module agregation</p></td>
       </tr><tr><td>
@@ -183,14 +161,6 @@ specific peptides, shared peptides or a mixture of two.</p></td>
         </td>
         <td><p>Retrieve the indices of non-zero elements in sparse matrices</p></td>
       </tr><tr><td>
-          <p><code><a href="normalization.html">normalizeMethods.dapar()</a></code> <code><a href="normalization.html">normalizeD(<i>&lt;SummarizedExperiment&gt;</i>)</a></code> <code><a href="normalization.html">normalizeD(<i>&lt;QFeatures&gt;</i>)</a></code> <code><a href="normalization.html">GlobalQuantileAlignment()</a></code> <code><a href="normalization.html">SumByColumns()</a></code> <code><a href="normalization.html">QuantileCentering()</a></code> <code><a href="normalization.html">MeanCentering()</a></code> <code><a href="normalization.html">vsn()</a></code> <code><a href="normalization.html">LOESS()</a></code> <code><a href="normalization.html">compareNormalizationD_HC()</a></code> </p>
-        </td>
-        <td><p>List normalization methods</p></td>
-      </tr><tr><td>
-          <p><code><a href="normalizeD.html">normalizeD</a></code> </p>
-        </td>
-        <td><p>Check the validity of the experimental design.</p></td>
-      </tr><tr><td>
           <p><code><a href="palette.html">SampleColors()</a></code> <code><a href="palette.html">ExtendPalette()</a></code> </p>
         </td>
         <td><p>Palette for samples.</p></td>
@@ -213,10 +183,6 @@ likelihood ratio statistic</p></td>
         </td>
         <td><p>xxx</p></td>
       </tr><tr><td>
-          <p><code><a href="postHocTest.html">postHocTest()</a></code> </p>
-        </td>
-        <td><p>Post-hoc tests for classic 1-way ANOVA</p></td>
-      </tr><tr><td>
           <p><code><a href="ProstarVersions.html">ProstarVersions()</a></code> </p>
         </td>
         <td><p>Version number of Prostar suite</p></td>
@@ -224,6 +190,10 @@ likelihood ratio statistic</p></td>
           <p><code><a href="QFeatures-accessors.html">qMetadata(<i>&lt;QFeatures&gt;</i>)</a></code> <code><a href="QFeatures-accessors.html">qMetadata(<i>&lt;SummarizedExperiment&gt;</i>)</a></code> <code><a href="QFeatures-accessors.html">`qMetadata&lt;-`()</a></code> <code><a href="QFeatures-accessors.html">typeDataset(<i>&lt;QFeatures&gt;</i>)</a></code> <code><a href="QFeatures-accessors.html">typeDataset(<i>&lt;SummarizedExperiment&gt;</i>)</a></code> <code><a href="QFeatures-accessors.html">`typeDataset&lt;-`()</a></code> <code><a href="QFeatures-accessors.html">idcol(<i>&lt;QFeatures&gt;</i>)</a></code> <code><a href="QFeatures-accessors.html">idcol(<i>&lt;SummarizedExperiment&gt;</i>)</a></code> <code><a href="QFeatures-accessors.html">`idcol&lt;-`()</a></code> <code><a href="QFeatures-accessors.html">parentProtId(<i>&lt;QFeatures&gt;</i>)</a></code> <code><a href="QFeatures-accessors.html">`parentProtId&lt;-`()</a></code> <code><a href="QFeatures-accessors.html">analysis(<i>&lt;QFeatures&gt;</i>)</a></code> <code><a href="QFeatures-accessors.html">analysis(<i>&lt;SummarizedExperiment&gt;</i>)</a></code> <code><a href="QFeatures-accessors.html">`analysis&lt;-`()</a></code> <code><a href="QFeatures-accessors.html">version(<i>&lt;QFeatures&gt;</i>)</a></code> <code><a href="QFeatures-accessors.html">`version&lt;-`()</a></code> <code><a href="QFeatures-accessors.html">design(<i>&lt;QFeatures&gt;</i>)</a></code> <code><a href="QFeatures-accessors.html">`design&lt;-`()</a></code> </p>
         </td>
         <td><p>Additional accessors for instances of class <code>Qfeatures</code>.</p></td>
+      </tr><tr><td>
+          <p><code><a href="QFeatures-excel.html">write2excel(<i>&lt;QFeatures&gt;</i>)</a></code> <code><a href="QFeatures-excel.html">write2excel(<i>&lt;SummarizedExperiment&gt;</i>)</a></code> </p>
+        </td>
+        <td><p>This function exports a <code>QFeatures</code> object to a Excel file.</p></td>
       </tr><tr><td>
           <p><code><a href="QFeatures-filtering-oneSE.html">FunctionFilter()</a></code> <code><a href="QFeatures-filtering-oneSE.html">filterFeaturesOneSE(<i>&lt;QFeatures&gt;</i>)</a></code> <code><a href="QFeatures-filtering-oneSE.html">filterFeaturesOneSE(<i>&lt;SummarizedExperiment&gt;</i>)</a></code> </p>
         </td>
@@ -233,7 +203,11 @@ likelihood ratio statistic</p></td>
         </td>
         <td><p>Quantitative cell metadata scopes for filtering</p></td>
       </tr><tr><td>
-          <p><code><a href="quantitative-metadata.html">qMetadata.def()</a></code> <code><a href="quantitative-metadata.html">Set_POV_MEC_tags()</a></code> <code><a href="quantitative-metadata.html">BuildqMetadata()</a></code> <code><a href="quantitative-metadata.html">qMetadata_generic()</a></code> <code><a href="quantitative-metadata.html">qMetadata_proline()</a></code> <code><a href="quantitative-metadata.html">qMetadata_maxquant()</a></code> <code><a href="quantitative-metadata.html">match.qMetadata()</a></code> <code><a href="quantitative-metadata.html">UpdateqMetadata(<i>&lt;SummarizedExperiment&gt;</i>)</a></code> <code><a href="quantitative-metadata.html">search.qMetadata.tags()</a></code> <code><a href="quantitative-metadata.html">qMetadata_combine()</a></code> <code><a href="quantitative-metadata.html">mod_query_metacell_ui()</a></code> <code><a href="quantitative-metadata.html">mod_query_metacell_server()</a></code> </p>
+          <p><code><a href="quantitative-metadata.html">mod_query_metacell_ui()</a></code> <code><a href="quantitative-metadata.html">mod_query_metacell_server()</a></code> </p>
+        </td>
+        <td><p>xxxx</p></td>
+      </tr><tr><td>
+          <p><code><a href="q_metadata.html">qMetadata.def()</a></code> <code><a href="q_metadata.html">Set_POV_MEC_tags()</a></code> <code><a href="q_metadata.html">BuildqMetadata()</a></code> <code><a href="q_metadata.html">qMetadata_generic()</a></code> <code><a href="q_metadata.html">qMetadata_proline()</a></code> <code><a href="q_metadata.html">qMetadata_maxquant()</a></code> <code><a href="q_metadata.html">match.qMetadata()</a></code> <code><a href="q_metadata.html">UpdateqMetadata(<i>&lt;SummarizedExperiment&gt;</i>)</a></code> <code><a href="q_metadata.html">search.qMetadata.tags()</a></code> <code><a href="q_metadata.html">qMetadata_combine()</a></code> <code><a href="q_metadata.html">mod_LegendColoredExprs_ui()</a></code> <code><a href="q_metadata.html">mod_LegendColoredExprs_server()</a></code> </p>
         </td>
         <td><p>Quantitative metadata vocabulary for entities</p></td>
       </tr><tr><td>
@@ -241,25 +215,9 @@ likelihood ratio statistic</p></td>
         </td>
         <td><p>Standardize names</p></td>
       </tr><tr><td>
-          <p><code><a href="standardise.html">standardise()</a></code> </p>
+          <p><code><a href="tracking.html">mod_tracking_ui()</a></code> <code><a href="tracking.html">mod_tracking_server()</a></code> </p>
         </td>
-        <td><p>xxx</p></td>
-      </tr><tr><td>
-          <p><code><a href="standardiseMeanIntensities.html">standardiseMeanIntensities()</a></code> </p>
-        </td>
-        <td><p>Average and standardize protein/peptide abundances for each condition studied</p></td>
-      </tr><tr><td>
-          <p><code><a href="visualizeClusters.html">visualizeClusters()</a></code> </p>
-        </td>
-        <td><p>Visualize the clusters according to pvalue thresholds</p></td>
-      </tr><tr><td>
-          <p><code><a href="wrapperClassic1wayAnova.html">wrapperClassic1wayAnova()</a></code> </p>
-        </td>
-        <td><p>Wrapper for One-way Anova statistical test</p></td>
-      </tr><tr><td>
-          <p><code><a href="wrapperRunClustering.html">wrapperRunClustering()</a></code> </p>
-        </td>
-        <td><p>Run a clustering pipeline of protein/peptide abundance profiles.</p></td>
+        <td><p>Tracking of entities within plots</p></td>
       </tr></tbody></table></div>
 
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

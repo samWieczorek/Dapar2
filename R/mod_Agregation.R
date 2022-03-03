@@ -1,9 +1,25 @@
 
 #' @title Module agregation
 #' 
+#' @description 
+#' 
+#' xxxxxx
+#' 
+#' @name mod_agregation
+#' 
+#' @examples 
+#' if(interactive()){
+#' library(magellan)
+#'  run_workflow('Agregation', verbose = TRUE)
+#' 
+#' 
+#' }
+NULL
+
+
 #' @param id
 #' 
-#' @rdname mod_Agregation
+#' @rdname mod_agregation
 #' 
 #' @export
 #' 
@@ -36,7 +52,7 @@ mod_Agregation_server <- function(id,
                                   steps.status = reactive({NULL}),
                                   current.pos = reactive({1}),
                                   verbose = FALSE
-){
+                                  ){
   
   
   # This list contains the basic configuration of the process

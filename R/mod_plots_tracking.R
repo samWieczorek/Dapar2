@@ -1,6 +1,8 @@
 #' @title  Tracking of entities within plots
 #'
-#' @description  This shiny module offers a UI to select a subset of a dataset
+#' @description 
+#' 
+#' This shiny module offers a UI to select a subset of a dataset
 #' and superimpose quantitative values of this selection on the complete plot
 #' Three modes of selection are implemented:
 #'
@@ -9,19 +11,30 @@
 #' - 'Specific column': xxx
 #' 
 #' @name tracking
+#'
 #' @examples 
 #' if (interactive()){
-#' library(QFeatures)
-#' library(DaparToolshed)
-#' data(ft)
-#' ui <- mod_tracking_ui('track')
+#' 
+#' ui <- tagList(
+#'   mod_tracking_ui('track'),
+#'   uiOutput('show')
+#' )
 #' 
 #' server <- function(input, output, session) {
-#'  mod_tracking_server(id = 'track',
-#'                      object = reactive({ft[[1]]})
-#'                      )
-#'  }
-#' shinyApp(ui, server)
+#'   rv <- reactiveValues(
+#'     tmp = NULL
+#'   )
+#'   
+#'   rv$tmp <- mod_tracking_server(id = 'track',
+#'                                 object = reactive({ft[[1]]})
+#'   )
+#'   
+#'   output$show <- renderUI({
+#'     p(paste0(rv$tmp(), collapse = ' '))
+#'   })
+#'   
+#' }
+#' shinyApp(ui=ui, server=server)
 #' }
 NULL
 
@@ -43,9 +56,9 @@ mod_tracking_ui <- function(id){
     useShinyjs(),
     actionButton(ns('rst_btn'), 'Reset'),
     uiOutput(ns('typeSelect_ui')),
-    hidden(uiOutput(ns('listeSelect_ui'))),
-    hidden(uiOutput(ns('randSelect_ui'))),
-    hidden(uiOutput(ns('colSelect_ui')))
+    uiOutput(ns('listSelect_ui')),
+    uiOutput(ns('randSelect_ui')),
+    uiOutput(ns('colSelect_ui'))
   )
 }
 
@@ -88,41 +101,47 @@ mod_tracking_server <- function(id,
 
     
     output$listSelect_ui <- renderUI({
-      selectInput(ns("listSelect"),
+      widget <- selectInput(ns("listSelect"),
                   "Select protein",
-                  choices = c('None'),
+                  choices = c('None', rowData(object())[, idcol(object())]),
                   multiple = TRUE,
                   selected = rv.track$listSelect,
+                  width='200px',
+                  #size = 10,
+                  selectize = TRUE
                   )
+      
+      if (rv.track$typeSelect == 'ProteinList')
+        widget
+      else
+        hidden(widget)
     })
     
     output$colSelect_ui <- renderUI({
-      selectInput(ns("colSelect"),
+      widget <- selectInput(ns("colSelect"),
                   "Column of rowData",
-                  choices = c(''),
+                  choices = c('', colnames(rowData(object()))),
                   selected = rv.track$colSelect
                   )
+      if (rv.track$typeSelect == 'Column')
+        widget
+      else
+        hidden(widget)
     })
     
     output$randSelect_ui <- renderUI({
-      textInput(ns("randSelect"),  
+      widget <- textInput(ns("randSelect"),  
                 "Random", 
                 value = rv.track$randSelect,
                 width = ('120px'))
+      if (rv.track$typeSelect == 'Random')
+        widget
+      else
+        hidden(widget)
     })
     
     observeEvent(req(input$typeSelect),{
       rv.track$typeSelect <- input$typeSelect
-      
-      print(input$typeSelect)
-      
-      shinyjs::toggle(id = ns('listSelect'), 
-                      condition = rv.track$typeSelect == 'ProteinList')
-      shinyjs::toggle(id = 'randSelect', 
-                      condition = rv.track$typeSelect == 'Random')
-      shinyjs::toggle(id = 'colSelect', 
-                      condition = rv.track$typeSelect == 'Column')
-
     })
 
 
@@ -157,6 +176,7 @@ mod_tracking_server <- function(id,
       cond <- is.null(rv.track$randSelect) 
       cond <- cond || rv.track$randSelect == '' 
       cond <- cond || (as.numeric(rv.track$randSelect) < 0)
+      cond <- cond || (as.numeric(rv.track$randSelect) > nrow(object()))
       if (!cond)
         rv.track$indices <- sample(seq_len(nrow(object())), 
                                    as.numeric(rv.track$randSelect), 

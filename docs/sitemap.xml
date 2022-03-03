@@ -124,6 +124,9 @@
     <loc>/reference/CVDistD_HC.html</loc>
   </url>
   <url>
+    <loc>/reference/cv_plots.html</loc>
+  </url>
+  <url>
     <loc>/reference/DaparToolshed-aggregate.html</loc>
   </url>
   <url>
@@ -131,6 +134,9 @@
   </url>
   <url>
     <loc>/reference/dapar_hc_ExportMenu.html</loc>
+  </url>
+  <url>
+    <loc>/reference/data_explorer.html</loc>
   </url>
   <url>
     <loc>/reference/density-plots.html</loc>
@@ -338,6 +344,9 @@
   </url>
   <url>
     <loc>/reference/inner.sum.html</loc>
+  </url>
+  <url>
+    <loc>/reference/intensity_plots.html</loc>
   </url>
   <url>
     <loc>/reference/is.MV.html</loc>
@@ -589,6 +598,9 @@
     <loc>/reference/QFeatures-accessors.html</loc>
   </url>
   <url>
+    <loc>/reference/QFeatures-excel.html</loc>
+  </url>
+  <url>
     <loc>/reference/QFeatures-filtering-oneSE.html</loc>
   </url>
   <url>
@@ -632,6 +644,9 @@
   </url>
   <url>
     <loc>/reference/quantitative-metadata.html</loc>
+  </url>
+  <url>
+    <loc>/reference/q_metadata.html</loc>
   </url>
   <url>
     <loc>/reference/readExcel.html</loc>
@@ -683,6 +698,9 @@
   </url>
   <url>
     <loc>/reference/test.design.html</loc>
+  </url>
+  <url>
+    <loc>/reference/tracking.html</loc>
   </url>
   <url>
     <loc>/reference/translatedRandomBeta.html</loc>

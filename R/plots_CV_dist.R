@@ -17,26 +17,24 @@
 #' 
 #' @examples
 #' library(QFeatures)
-#' Exp1_R25_pept <- readRDS(system.file("data", 'Exp1_R25_pept.rda', package="DaparToolshedData"))
-#' qData <- assay(Exp1_R25_pept[[2]])[seq_len(10),]
-#' conds <- colData(Exp1_R25_pept)[["Condition"]]
-#' CVDistD_HC(qData, conds)
-#' 
+#' data(ft)
+#' qData <- assay(ft, 1)
+#' conds <- design(ft)$Condition
+#' CVDist(qData, conds)
+NULL
+
 #' @importFrom RColorBrewer brewer.pal
-#' 
 #' @import highcharter
-#' 
 #' @importFrom DT JS
-#' 
 #' @importFrom stats var
 #' 
 #' @export
 #' 
-#' @rdname descriptive_statistics_plots
+#' @rdname cv_plots
 #' 
-CVDistD_HC <- function(qData, 
-                       conds = NULL, 
-                       palette = NULL){
+CVDist <- function(qData,
+                   conds = NULL, 
+                   pal.name = NULL){
   
   if (is.null(conds))
     stop("'conds' is NULL")
@@ -44,32 +42,21 @@ CVDistD_HC <- function(qData,
     stop("'conds' must have the same length as the number of samples in 
          the dataset.")
 
-  conditions <- unique(conds)
-  n <- length(conditions)
+  u_conds <- unique(conds)
   
-  myColors <- NULL
-  if (is.null(palette)){
-    warning("Color palette set to default.")
-    myColors <-   GetColorsForConditions(conds, ExtendPalette(length(unique(conds))))
-  } else {
-    if (length(palette) != length(unique(conds))){
-      warning("The color palette has not the same dimension as the number of samples")
-      myColors <- GetColorsForConditions(conds, ExtendPalette(length(unique(conds))))
-    } else 
-      myColors <- GetColorsForConditions(conds, palette)
-  }
-  
-  
+  myColors <- SampleColors(u_conds)
+
   h1 <-  highcharter::highchart() %>% 
-    dapar_hc_chart(chartType = "spline", zoomType="x") %>%
-    highcharter::hc_colors(unique(myColors)) %>%
-    highcharter::hc_legend(enabled = TRUE) %>%
+    customChart(chartType = "spline", zoomType="x") %>%
+    highcharter::hc_colors(myColors) %>%
+    highcharter::hc_legend(enabled = TRUE,
+                           categories = u_conds) %>%
     highcharter::hc_xAxis(title = list(text = "CV(log(Intensity))")) %>%
     highcharter::hc_yAxis(title = list(text = "Density")) %>%
     highcharter::hc_tooltip(headerFormat= '',
                             pointFormat = "<b>{series.name}</b>: {point.y} ",
                             valueDecimals = 2) %>%
-    dapar_hc_ExportMenu(filename = "logIntensity") %>%
+    customExportMenu(fname = "logIntensity") %>%
     highcharter::hc_plotOptions(
       series=list(
         connectNulls= TRUE,
@@ -80,19 +67,19 @@ CVDistD_HC <- function(qData,
   
   minX <- maxX <- 0
   maxY <- 0
-  for (i in seq_len(n)){
-    if (length(which(conds == conditions[i])) > 1){
-      t <- apply(qData[,which(conds == conditions[i])], 1, 
+  for (i in seq_len(length(u_conds))){
+    if (length(which(conds == u_conds[i])) > 1){
+      t <- apply(qData[,which(conds == u_conds[i])], 1, 
                  function(x) 100*stats::var(x, na.rm=TRUE)/mean(x, na.rm=TRUE))
       tmp <- data.frame(x = density(t, na.rm = TRUE)$x,
                         y = density(t, na.rm = TRUE)$y)
       
       ymaxY <- max(maxY,tmp$y)
-      xmaxY <- tmp$x[which(tmp$y==max(tmp$y))]
+      xmaxY <- tmp$x[which(tmp$y == max(tmp$y))]
       minX <- min(minX, tmp$x)
       maxX <- max(maxX, 10*(xmaxY-minX))
       
-      h1 <- h1 %>% hc_add_series(data=tmp, name=conditions[i]) }
+      h1 <- h1 %>% hc_add_series(data=tmp, name=u_conds[i]) }
   }
   
   h1 <- h1 %>%

@@ -1,43 +1,3 @@
-#' @title Intensity family plots
-#' 
-#' @description 
-#' 
-#' These functions are plotting different views of quantitative data.
-#' Two plots are available:
-#' 
-#' - [boxplotD()] xxxx,
-#' - [violinPlotD()] xxxx.
-#' 
-#' @author Samuel Wieczorek, Anais Courtier, Enora Fremy
-#' 
-#' @name intensity_plots
-#' 
-#' 
-#' @examples
-#' library(QFeatures)
-#' data(ft)
-#' 
-#' #----------------------------------------------
-#' # View violin plot with and without subset view
-#' #----------------------------------------------
-#' 
-#' violinPlotD(ft[[1]], design(ft))
-#' violinPlotD(ft[[1]], design(ft), subset = c(2, 3), pal.name = 'Dark2')
-#' 
-#' #----------------------------------------
-#' # xxxx
-#' #----------------------------------------
-#' 
-#' boxPlotD(ft[[1]], design(ft))
-#' boxPlotD(ft[[1]], design(ft), subset = c(2, 3), pal.name = 'Dark2')
-#' 
-#' 
-#' 
-NULL
-
-
-
-
 
 #' @param object Numeric matrix 
 #' @param exp.design xxx
@@ -60,13 +20,15 @@ NULL
 #' 
 boxPlotD <- function(object,
                      exp.design,
-                     pal.name = NULL, 
-                     subset = NULL){
+                     subset = NULL,
+                     pal.name = NULL
+                     ){
   stopifnot(inherits(object, 'SummarizedExperiment'))
   
   qData <- assay(object)
   legend <- exp.design$Sample.name
   
+  print(subset)
   if(missing(exp.design))
     stop("'exp.design' is missing.")
   

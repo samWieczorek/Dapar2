@@ -4,6 +4,9 @@
 #' @description
 #' This function gives the vocabulary used for the quantitative metadata of each entity in
 #' each condition.
+#' 
+#' @section Glossary:
+#' 
 #' Peptide-level vocabulary
 #' 
 #' |-- 1.0 Quantitative Value
@@ -49,6 +52,41 @@
 #' |-- 4.0 Combined value (color 3bis, light-lightgrey)
 #' 
 #' 
+#' @section Conversion to the glossary:
+#' 
+#' A generic conversion
+#' 
+#' Conversion for Proline datasets
+#' 
+#' Conversion from Maxquant datasets
+#' 
+#' 
+#' @name q_metadata
+#' 
+#' @examples 
+#' 
+#' 
+#' 
+#' #-----------------------------------------------
+#' # A shiny app to view color legends 
+#' #-----------------------------------------------
+#' if(interactive()){
+#' data(ft)
+#' ui <- mod_LegendColoredExprs_ui("legend")
+#' 
+#' server <- function(input, output, session) {
+#'   mod_LegendColoredExprs_server('legend',
+#'                                 object = reactive({ft[[1]]}))
+#'   }
+#'   
+#'  shinyApp(ui = ui, server = server)
+#'   
+#'   
+#' }
+NULL
+
+
+ 
 #' @param level A string designing the type of entity/pipeline. 
 #' Available values are: `peptide`, `protein`
 #' 
@@ -58,9 +96,8 @@
 #' @author Thomas Burger, Samuel Wieczorek
 #'
 #' @export
-#' @name qMetadata.def
 #'
-#' @rdname quantitative-metadata
+#' @rdname q_metadata
 #' 
 qMetadata.def <- function(level){
   if(missing(level))
@@ -155,9 +192,7 @@ qMetadata.def <- function(level){
 #' post processing protein qMetadata after aggregation)
 #' 
 #' @param conds A 1-col dataframe with the condition associated to each sample.
-#' 
 #' @param df An object of class \code{SummarizedExperiment}
-#' 
 #' @param level Type of entity/pipeline
 #' 
 #' @return An instance of class \code{MSnSet}.
@@ -173,7 +208,7 @@ qMetadata.def <- function(level){
 #' @export
 #'
 #' @name Set_POV_MEC_tags
-#' @rdname quantitative-metadata
+#' @rdname q_metadata
 #' 
 #' 
 Set_POV_MEC_tags <- function(conds, df, level){
@@ -198,12 +233,7 @@ Set_POV_MEC_tags <- function(conds, df, level){
 
 
 
-#' @title xxxx
-#' 
-#' @description 
-#' 
-#' xxxxxx
-#' 
+
 #' @param from xxx
 #' 
 #' @param level xxx
@@ -233,8 +263,7 @@ Set_POV_MEC_tags <- function(conds, df, level){
 #' 
 #' @export
 #' 
-#' @name BuildqMetadata
-#' @rdname quantitative-metadata
+#' @rdname q_metadata
 #' 
 #'  
 BuildqMetadata <- function(from = NULL, 
@@ -302,8 +331,7 @@ BuildqMetadata <- function(from = NULL,
 #' 
 #' @export
 #' 
-#' @name qMetadata_generic
-#' @rdname quantitative-metadata
+#' @rdname q_metadata
 #' 
 #'  
 qMetadata_generic <- function(qdata, conds, level){
@@ -381,9 +409,8 @@ qMetadata_generic <- function(qdata, conds, level){
 #' }
 #' 
 #' @export
-#' 
-#' @name qMetadata_proline
-#' @rdname quantitative-metadata
+
+#' @rdname q_metadata
 #' 
 #'  
 qMetadata_proline <- function(qdata, 
@@ -459,8 +486,7 @@ qMetadata_proline <- function(qdata,
 #' df2 <- qMetadata_maxquant(qdata, conds, df, 'peptide')
 #' 
 #' @export
-#' @name qMetadata_maxquant
-#' @rdname quantitative-metadata
+#' @rdname q_metadata
 #' 
 #' 
 qMetadata_maxquant <- function(qdata, 
@@ -525,15 +551,14 @@ qMetadata_maxquant <- function(qdata,
 #' @author Samuel Wieczorek
 #'
 #' @examples
-#' Exp1_R25_pept <- readRDS(system.file("data", 'Exp1_R25_pept.rda', package="DaparToolshedData"))
-#' obj <- Exp1_R25_pept[seq_len(10),]
+#' data(ft)
+#' obj <- ft[[1]]
 #' metadata <- qMetadata(obj)
 #' m <- match.qMetadata(metadata, "missing", 'peptide')
 #'
 #' @export
 #' 
-#' @name match.qMetadata
-#' @rdname quantitative-metadata
+#' @rdname q_metadata
 #' 
 #'
 match.qMetadata <- function(df, pattern, level){
@@ -586,8 +611,7 @@ match.qMetadata <- function(df, pattern, level){
 #' 
 #' @return NA
 #' 
-#' @name UpdateqMetadata
-#' @rdname quantitative-metadata
+#' @rdname q_metadata
 #' 
 setMethod("UpdateqMetadata", "SummarizedExperiment",
           function(object,
@@ -639,8 +663,7 @@ setMethod("UpdateqMetadata", "SummarizedExperiment",
 #' @export
 #' @return NA
 #' 
-#' @name search.qMetadata.tags
-#' @rdname quantitative-metadata
+#' @rdname q_metadata
 #' 
 #' 
 search.qMetadata.tags <- function(pattern, level, depth = '1'){
@@ -733,8 +756,7 @@ search.qMetadata.tags <- function(pattern, level, depth = '1'){
 #' }
 #' 
 #' @export
-#' @name qMetadata_combine
-#' @rdname quantitative-metadata
+#' @rdname q_metadata
 #' 
 #' 
 qMetadata_combine <- function(met, level) {

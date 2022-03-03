@@ -12,6 +12,10 @@ setGeneric("aggregateFeatures4Prostar", function(object, ...) standardGeneric("a
 setGeneric("FinalizeAggregation", function(object, ...) standardGeneric("FinalizeAggregation"))
 setGeneric("filterFeaturesOneSE", function(object, ...) standardGeneric("filterFeaturesOneSE"))
 
+setGeneric("write2excel", function(object, ...) standardGeneric("write2excel"))
+
+
+
 setGeneric("qMetadata", function(object, ...) standardGeneric("qMetadata"))
 setGeneric("qMetadata<-", function(object, ..., value) standardGeneric("qMetadata<-"))
 setGeneric("typeDataset", function(object, ...) standardGeneric("typeDataset"))

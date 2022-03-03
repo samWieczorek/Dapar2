@@ -19,9 +19,15 @@ qMetadataWholeLine(object, cmd, pattern)
 qMetadataOnConditions(object, cmd, mode, pattern, conds, percent, operator, th)
 }
 \arguments{
+\item{object}{xxx}
+
+\item{cmd}{A \code{character(1)} xxx}
+
 \item{percent}{xxx}
 
 \item{th}{The theshold to apply}
+
+\item{operator}{String for operator to use. List of operators is available with SymFilteringOperators().}
 
 \item{conds}{xxx}
 
@@ -47,17 +53,18 @@ NA
 NA
 
 #' @examples
-Exp1_R25_pept <- readRDS(system.file("data", 'Exp1_R25_pept.rda', package="DaparToolshedData"))
-obj <- Exp1_R25_pept\link{seq_len(10)}
-level <- obj@experimentData@other$typeOfData
-pattern <- 'missing'
-mask <- match.qMetadata(metadata=qMetadata(obj), pattern=pattern, level=level)
+data(ft)
+obj <- ft[\link{1}]
+mask <- match.qMetadata(metadata = qMetadata(obj),
+pattern = 'missing',
+level = typeOfData(obj)
+)
 type <- 'AllCond'
-conds <- Biobase::pData(obj)$Condition
+conds <- design(ft)$Condition
 op <- '>='
 th <- 2
 percent <- FALSE
-ind <- GetIndices_BasedOnConditions(mask, type, conds, percent, op, th)
+ind <- qMetadataOnConditions(mask, type, conds, percent, op, th)
 }
 \description{
 This function looks for the lines that respect the request in either all conditions
@@ -69,21 +76,24 @@ This function looks for the lines that respect the request in either all conditi
 or at least one condition.
 }
 \examples{
-Exp1_R25_pept <- readRDS(system.file("data", 'Exp1_R25_pept.rda', package="DaparToolshedData"))
-obj <- Exp1_R25_pept[seq_len(10)]
-level <- obj@experimentData@other$typeOfData
+data(ft)
+obj <- ft[[1]]
+level <- typeOfData(ft, 1)
 pattern <- 'missing'
-mask <- match.qMetadata(metadata=Get_qMetadata(obj), pattern=pattern, level=level)
+mask <- match.qMetadata(metadata = qMetadata(obj), 
+                        pattern = pattern, 
+                        level = level)
 percent <- FALSE
 th <- 3
 op <- '>='
-ind <- GetIndices_WholeMatrix(mask, op, percent, th)
+ind <- qMetadatWholeMatrix(mask, op, percent, th)
 
-Exp1_R25_pept <- readRDS(system.file("data", 'Exp1_R25_pept.rda', package="DaparToolshedData"))
-obj <- Exp1_R25_pept[20:30]
-level <- obj@experimentData@other$typeOfData
-pattern <- 'missing POV'
-mask <- match.qMetadata(metadata=GetqMetadata(obj), pattern=pattern, level=level)
-ind <- GetIndices_WholeLine(mask)
+data(ft)
+obj <- ft[[1]]
+mask <- match.qMetadata(metadata = qMetadata(obj), 
+                        pattern = 'missing POV', 
+                        level = typeOfData(obj)
+                        )
+ind <- qMetadataWholeLine(mask)
 
 }

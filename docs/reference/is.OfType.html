@@ -75,15 +75,24 @@
     <div id="ref-examples">
     <h2>Examples</h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/RforMassSpectrometry/QFeatures" class="external-link">QFeatures</a></span><span class="op">)</span></span>
-<span class="r-in"><span class="va">Exp1_R25_pept</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/readRDS.html" class="external-link">readRDS</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"data"</span>, <span class="st">'Exp1_R25_pept.rda'</span>, package<span class="op">=</span><span class="st">"DaparToolshedData"</span><span class="op">)</span><span class="op">)</span></span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>cannot open compressed file '', probable reason 'Invalid argument'</span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in gzfile(file, "rb"):</span> cannot open the connection</span>
-<span class="r-in"><span class="va">obj</span> <span class="op">&lt;-</span> <span class="va">Exp1_R25_pept</span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in eval(expr, envir, enclos):</span> object 'Exp1_R25_pept' not found</span>
-<span class="r-in"><span class="va">data</span> <span class="op">&lt;-</span> <span class="fu">rowData</span><span class="op">(</span><span class="va">Exp1_R25_pept</span><span class="op">[[</span><span class="st">'original'</span><span class="op">]</span><span class="op">]</span><span class="op">)</span><span class="op">[</span>,<span class="fu">metadata</span><span class="op">(</span><span class="va">Exp1_R25_pept</span><span class="op">)</span><span class="op">$</span><span class="va">OriginOfValues</span><span class="op">]</span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in h(simpleError(msg, call)):</span> error in evaluating the argument 'x' in selecting a method for function 'rowData': object 'Exp1_R25_pept' not found</span>
-<span class="r-in"><span class="fu">is.OfType</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="va">data</span><span class="op">@</span><span class="va">listData</span><span class="op">)</span>, <span class="st">"MEC"</span><span class="op">)</span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in h(simpleError(msg, call)):</span> error in evaluating the argument 'x' in selecting a method for function 'as.data.frame': trying to get slot "listData" from an object of a basic class ("function") with no slots</span>
+<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">ft</span><span class="op">)</span></span>
+<span class="r-in"><span class="va">obj</span> <span class="op">&lt;-</span> <span class="va">ft</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span></span>
+<span class="r-in"><span class="va">data</span> <span class="op">&lt;-</span> <span class="fu">qMetadata</span><span class="op">(</span><span class="va">obj</span><span class="op">)</span></span>
+<span class="r-in"><span class="fu">is.OfType</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="va">data</span><span class="op">)</span>, <span class="st">"MEC"</span><span class="op">)</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   qMetadata_Sample_A_R1 qMetadata_Sample_A_R2 qMetadata_Sample_A_R3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1                 FALSE                 FALSE                 FALSE</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2                 FALSE                 FALSE                 FALSE</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3                 FALSE                 FALSE                 FALSE</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4                 FALSE                 FALSE                 FALSE</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5                 FALSE                 FALSE                 FALSE</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6                 FALSE                 FALSE                 FALSE</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   qMetadata_Sample_B_R1 qMetadata_Sample_B_R2 qMetadata_Sample_B_R3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1                 FALSE                 FALSE                 FALSE</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2                 FALSE                 FALSE                 FALSE</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3                 FALSE                 FALSE                 FALSE</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4                 FALSE                 FALSE                 FALSE</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5                 FALSE                 FALSE                 FALSE</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6                 FALSE                 FALSE                 FALSE</span>
 <span class="r-in"></span>
 </code></pre></div>
     </div>

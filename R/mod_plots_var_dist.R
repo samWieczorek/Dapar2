@@ -3,22 +3,51 @@
 #' @title   mod_var_dist_plot_ui and mod_var_dist_plot_server
 #'
 #' @description  A shiny Module.
-#'
-#' @examples 
 #' 
-
+#' @name cv_plots
+#'
+#' @examples
+#'
+#' #------------------------------
+#' # plot a single plot
+#' #------------------------------
+#' 
+#' CVDist(qData, conds)
+#'
+#' #------------------------------
+#' # A shiny module
+#' #------------------------------
+#' 
+#' if(interactive()){
+#' library(QFeatures)
+#' data(ft)
+#' ui <- mod_cv_plot_ui('plot')
+#' 
+#' server <- function(input, output, session) {
+#'  data(ft)
+#'  conds <- design(ft)$Condition
+#'  
+#'  mod_cv_plot_server('plot',
+#'                     obj = reactive({ft[[1]]}),
+#'                     conds = reactive({conds}),
+#'                     pal.name = reactive({'Dark2'})
+#'                     )
+#'  }
+#' shinyApp(ui=ui, server=server)
+#' }
+NULL
 
 
 #' @param id shiny id
 #' @importFrom shiny NS tagList
-#' @rdname descriptive_statistics_plots
-mod_plots_var_dist_ui <- function(id){
+#' @rdname cv_plots
+#' @export
+mod_cv_plot_ui <- function(id){
   ns <- NS(id)
   tagList(
     helpText("Display the condition-wise distributions of the log-intensity CV (Coefficient of Variation)
                of the protein/peptides."),
     helpText("For better visualization, it is possible to zoom in by click-and-drag."),
-    #highchartOutput(ns("viewDistCV"),width = plotWidth, height = plotHeight) %>% shinycssloaders::withSpinner(type=spinnerType)
     highchartOutput(ns("viewDistCV"),width = 600, height = 600)
   )
 }
@@ -30,12 +59,14 @@ mod_plots_var_dist_ui <- function(id){
 #' @param conds A `character()` representings the condition for 
 #' each sample of the [QFeatures] object.
 #' @param base_palette xxx
+#' 
 #' @importFrom shiny NS tagList
-#' @rdname descriptive_statistics_plots
-mod_plots_var_dist_server <- function(id,
-                                      obj,
-                                      conds,
-                                      base_palette=NULL){
+#' @rdname cv_plots
+#' @export
+mod_cv_plot_server <- function(id,
+                               obj,
+                               conds,
+                               pal.name = NULL){
 
 
   moduleServer(id, function(input, output, session){
@@ -43,8 +74,7 @@ mod_plots_var_dist_server <- function(id,
 
     observe({
       req(obj())
-
-      if (class(obj()) != "Summarizedexperiment") { return(NULL) }
+      stopifnot(inherits(obj(), "SummarizedExperiment"))
     })
 
 
@@ -53,9 +83,7 @@ mod_plots_var_dist_server <- function(id,
       req(obj())
 
       isolate({
-        varDist <- DaparToolshed::CVDistD_HC(SummarizedExperiment::assay(obj()),
-                                      conds(),
-                                      palette = DaparToolshed::Base_Palette(conditions = conds()))
+        varDist <- CVDist(assay(obj()), conds(), pal.name)
       })
       varDist
     })
@@ -71,11 +99,3 @@ mod_plots_var_dist_server <- function(id,
 
 
 }
-
-
-## To be copied in the UI
-# mod_plots_var_dist_ui("var_dist_plot_ui_1")
-
-## To be copied in the server
-# callModule(mod_plots_var_dist_server, "var_dist_plot_ui_1")
-
