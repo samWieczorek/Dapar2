@@ -100,10 +100,11 @@ mod_all_plots_server <- function(id, object){
       conditions = NULL
     )
 
+    list.plots.module <- listPlotModules()
     
-    observeEvent(input$rb, {
-      tmp.list <- list.plots.module[-which(list.plots.module==input$rb)]
-        shinyjs::show(paste0('div_', input$rb,'_large'))
+    observeEvent(input$vignettes_rb, {
+      tmp.list <- list.plots.module[-which(list.plots.module==input$vignettes_rb)]
+        shinyjs::show(paste0('div_', input$vignettes_rb,'_large'))
         lapply(tmp.list, function(y){
           shinyjs::hide(paste0('div_', y,'_large'))
         })
@@ -139,10 +140,12 @@ mod_all_plots_server <- function(id, object){
                 margin-left: 10px;
             }
         ")),
-        radioButtons(ns("rb"), "",
+        radioButtons(ns("vignettes_rb"), "",
                      inline = TRUE,
                      choiceNames = lapply(list.plots.module, function(x){
-                       img(src = dataURI(file = system.file('images', paste0(x, '.png'), package="MSPipelines"), mime="image/png"),
+                       img(src = dataURI(file = system.file('images', paste0(x, '.png'), 
+                                                            package="DaparToolshed"), 
+                                         mime="image/png"),
                            width='30px')
                      }),
                      choiceValues = list.plots.module,
@@ -154,26 +157,26 @@ mod_all_plots_server <- function(id, object){
 
 
     observeEvent(object(), {
-      rv$colData <- SummarizedExperiment::colData(object())
-      rv$metadata <- MultiAssayExperiment::metadata(object())
-      rv$conditions <- SummarizedExperiment::colData(object())[['Condition']]
+      rv$colData <- design(object())
+      rv$metadata <- metadata(object())
+      rv$conditions <- design(object())$Condition
     })
 
     observeEvent(input$chooseDataset, {
-      rv$current.indice <- which(names(object())==input$chooseDataset)
-      rv$current.obj <- object()[[rv$current.indice]]
+      #rv$current.indice <- which(names(object())==input$chooseDataset)
+      rv$current.obj <- object()[[input$chooseDataset]]
       })
 
-    output$chooseDataset_UI <- renderUI({
+    output$chooseDataset_ui <- renderUI({
       if (length(names(object())) == 0){
-        choices <- list(' '=character(0))
+        choices <- list(' ' = character(0))
       } else {
         choices <- names(object())
       }
       selectInput(ns('chooseDataset'), 'Dataset',
                   choices = choices,
                   selected = names(object())[length(object())],
-                  width=200)
+                  width = 200)
     })
 
 
@@ -203,26 +206,18 @@ mod_all_plots_server <- function(id, object){
 
 
     mod_plots_pca_server('mod_plots_pca_large',
-                         obj=reactive({rv$current.obj}),
-                         coldata = reactive({ rv$colData })
+                         obj = reactive({rv$current.obj}),
+                         conds = reactive({ rv$conditions })
     )
 
 
     mod_plots_var_dist_server('mod_plots_var_dist_large',
-                              obj=reactive({rv$current.obj}),
-                              conds = reactive({ rv$conditions}),
-                              base_palette = reactive({
-                                DaparToolshed::Example_Palette(
-                                rv$conditions,
-                                DaparToolshed::Base_Palette(conditions = rv$conditions)
-                              )
-                                })
+                              obj = reactive({rv$current.obj}),
+                              conds = reactive({ rv$conditions})
                               )
 
     mod_plots_corr_matrix_server('mod_plots_corr_matrix_large',
-                                 obj = reactive({rv$current.obj}),
-                                 names = reactive({NULL}),
-                                 gradientRate = reactive({0.9})
+                                 qData = reactive({rv$current.obj})
                                  )
 
 
@@ -233,15 +228,9 @@ mod_all_plots_server <- function(id, object){
     )
 
 
-    mod_plots_group_mv_server("mod_plots_group_mv_large",
+    mod_mv_plots_server("mod_plots_group_mv_large",
                               obj = reactive({rv$current.obj}),
-                              conds = reactive({ rv$colData }),
-                              base_palette = reactive({
-                                DaparToolshed::Example_Palette(
-                                  rv$conditions,
-                                  DaparToolshed::Base_Palette(conditions = rv$conditions)
-                                )
-                              })
+                              conds = reactive({ rv$conditions })
     )
 
   })
