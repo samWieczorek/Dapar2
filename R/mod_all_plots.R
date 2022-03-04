@@ -1,30 +1,59 @@
 
 
-list.plots.module <- c(
-  'mod_plots_se_explorer',
-  'mod_plots_intensity',
-  'mod_plots_pca',
-  'mod_plots_var_dist',
-  'mod_plots_corr_matrix',
-  'mod_plots_heatmap',
-  'mod_plots_group_mv'
-  )
 
-#' @title xxx
+#' @title View all plots for descriptive statistics.
 #' 
 #' @description 
+#' 
+#' This shiny module proposes an interface to choose and view the
+#' module plots.
+#' The list of these modules is available with the function [listPlotsModules()]
 #' 
 #' xxxxxx
 #' 
 #' @name all_plots
 #' 
+#' @examples 
+#' if(interactive()){
+#' library(QFeatures)
+#' data(ft_na)
+#' ui <- mod_all_plots_ui('allPlot')
+#' 
+#' server <- function(input, output, session) {
+#'  data(ft_na)
+#'  
+#'  mod_all_plots_server('allPlot',
+#'                       object = reactive({ft_na})
+#'                       )
+#'  }
+#' shinyApp(ui=ui, server=server)
+#' }
+NULL
+
+
+
+
+#' @rdname all_plots
 #' @export
-#'
-#' @param id xxx
+listPlotModules <- function(){
+  ll <- ls('package:DaparToolshed')
+  ll <- ll[grep('mod_plots_', ll)]
+  ll <- gsub('_server', '', ll)
+  ll <- gsub('_ui', '', ll)
+  ll <- unique(ll)
+  ll
+}
+
+
+
+
+#' @param id A `character(1)` for the 'id' of the shiny module. It must be 
+#' the same as for the server function.
 #'
 #' @importFrom shiny NS tagList
 #' @importFrom shinyjs useShinyjs 
 #' @rdname all_plots
+#' @export
 mod_all_plots_ui <- function(id){
   ns <- NS(id)
   tagList(
@@ -32,29 +61,31 @@ mod_all_plots_ui <- function(id){
     fluidPage(
 
       div( style="display:inline-block; vertical-align: middle; padding: 7px",
-           uiOutput(ns('chooseDataset_UI'))
+           uiOutput(ns('chooseDataset_ui'))
       ),
       div( style="display:inline-block; vertical-align: middle; padding: 7px",
-           uiOutput(ns('ShowVignettes'))
+           uiOutput(ns('ShowVignettes_ui'))
       ),
 
       br(),br(),br(),
-      uiOutput(ns('ShowPlots'))
+      uiOutput(ns('ShowPlots_ui'))
   )
   )
 
 }
 
-#' @export
+#' @param id A `character(1)` for the 'id' of the shiny module. It must be 
+#' the same as for the '*_ui' function.
 #'
-#' @param id xxxx
-#' @param dataIn xxxx
+#' @param object A instance of the class `QFeatures`.
 #' 
 #' @importFrom base64enc dataURI
 #' @importFrom shinyjs show hide hidden
 #' 
 #' @rdname all_plots
-mod_all_plots_server <- function(id, dataIn){
+#' @export
+#'
+mod_all_plots_server <- function(id, object){
 
   moduleServer(id, function(input, output, session) {
     ns <- session$ns
@@ -69,7 +100,7 @@ mod_all_plots_server <- function(id, dataIn){
       conditions = NULL
     )
 
-
+    
     observeEvent(input$rb, {
       tmp.list <- list.plots.module[-which(list.plots.module==input$rb)]
         shinyjs::show(paste0('div_', input$rb,'_large'))
@@ -80,7 +111,7 @@ mod_all_plots_server <- function(id, dataIn){
 
 
 
-    output$ShowPlots <- renderUI({
+    output$ShowPlots_ui <- renderUI({
       lapply(list.plots.module, function(x){
         shinyjs::hidden(
           div(id=ns(paste0('div_', x, '_large')),
@@ -93,7 +124,7 @@ mod_all_plots_server <- function(id, dataIn){
     })
 
 
-    output$ShowVignettes <- renderUI({
+    output$ShowVignettes_ui <- renderUI({
 
       tagList(
         tags$style(HTML("
@@ -111,7 +142,7 @@ mod_all_plots_server <- function(id, dataIn){
         radioButtons(ns("rb"), "",
                      inline = TRUE,
                      choiceNames = lapply(list.plots.module, function(x){
-                       img(src = base64enc::dataURI(file=system.file('images', paste0(x, '.png'), package="MSPipelines"), mime="image/png"),
+                       img(src = dataURI(file = system.file('images', paste0(x, '.png'), package="MSPipelines"), mime="image/png"),
                            width='30px')
                      }),
                      choiceValues = list.plots.module,
@@ -122,26 +153,26 @@ mod_all_plots_server <- function(id, dataIn){
 
 
 
-    observeEvent(dataIn(), {
-      rv$colData <- SummarizedExperiment::colData(dataIn())
-      rv$metadata <- MultiAssayExperiment::metadata(dataIn())
-      rv$conditions <- SummarizedExperiment::colData(dataIn())[['Condition']]
+    observeEvent(object(), {
+      rv$colData <- SummarizedExperiment::colData(object())
+      rv$metadata <- MultiAssayExperiment::metadata(object())
+      rv$conditions <- SummarizedExperiment::colData(object())[['Condition']]
     })
 
     observeEvent(input$chooseDataset, {
-      rv$current.indice <- which(names(dataIn())==input$chooseDataset)
-      rv$current.obj <- dataIn()[[rv$current.indice]]
+      rv$current.indice <- which(names(object())==input$chooseDataset)
+      rv$current.obj <- object()[[rv$current.indice]]
       })
 
     output$chooseDataset_UI <- renderUI({
-      if (length(names(dataIn())) == 0){
+      if (length(names(object())) == 0){
         choices <- list(' '=character(0))
       } else {
-        choices <- names(dataIn())
+        choices <- names(object())
       }
       selectInput(ns('chooseDataset'), 'Dataset',
                   choices = choices,
-                  selected = names(dataIn())[length(dataIn())],
+                  selected = names(object())[length(object())],
                   width=200)
     })
 
@@ -156,7 +187,7 @@ mod_all_plots_server <- function(id, dataIn){
 
 
     mod_plots_intensity_server('mod_plots_intensity_large',
-                               dataIn=reactive({rv$current.obj}),
+                               object=reactive({rv$current.obj}),
                                meta = reactive({ rv$metadata }),
                                conds = reactive({ rv$conditions }),
                                params = reactive({NULL}),
