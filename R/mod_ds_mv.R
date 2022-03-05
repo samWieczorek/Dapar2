@@ -3,8 +3,8 @@
 #' @export
 #' @importFrom shiny NS tagList
 #' @importFrom highcharter highchartOutput
-#' @rdname mv_plots
-mod_mv_plots_ui <- function(id){
+#' @rdname descriptive-statistics
+mod_ds_mv_ui <- function(id){
   ns <- NS(id)
   fluidPage(
     tagList(
@@ -22,35 +22,38 @@ mod_mv_plots_ui <- function(id){
 }
 
 #' @param id xxx
-#' @param obj An instance of the class [SummarizedExperiment]
+#' @param object An instance of the class [SummarizedExperiment]
 #' @param conds A `Character()`
 #' @param pal.name xxx
 #'
 #' @export
 #' @importFrom highcharter renderHighchart
 #' 
-#' @rdname mv_plots
+#' @rdname descriptive-statistics
 #'
-mod_mv_plots_server <- function(id, obj, conds, pal.name){
+mod_ds_mv_server <- function(id,
+                             object, 
+                             conds, 
+                             pal.name){
 
   moduleServer(id, function(input, output, session){
     ns <- session$ns
 
 
     observe({
-      req(obj())
-      stopifnot (inherits(obj(), "SummarizedExperiment"))
+      req(object())
+      stopifnot (inherits(object(), "SummarizedExperiment"))
     })
 
 
 
     output$histo_MV <- renderHighchart({
-      req(obj())
+      req(object())
       conds()
       pal.name()
 
       withProgress(message = 'Making plot', value = 100, {
-        tmp <- mvHisto(assay(obj()),
+        tmp <- mvHisto(assay(object()),
                        conds = conds(),
                        pal.name = pal.name())
       })
@@ -60,12 +63,12 @@ mod_mv_plots_server <- function(id, obj, conds, pal.name){
 
 
     output$histo_MV_per_lines <- renderHighchart({
-      req(obj())
+      req(object())
       conds()
 
       isolate({
         withProgress(message = 'Making plot', value = 100, {
-          tmp <- mvPerLinesHisto(qData = assay(obj()))
+          tmp <- mvPerLinesHisto(qData = assay(object()))
         })
       })
       tmp
@@ -75,12 +78,12 @@ mod_mv_plots_server <- function(id, obj, conds, pal.name){
 
 
     output$histo_MV_per_lines_per_conditions <- renderHighchart({
-      req(obj())
+      req(object())
       conds()
       pal.name()
 
       withProgress(message = 'Making plot', value = 100, {
-        tmp <- mvPerLinesHistoPerCondition(qData = assay(obj()),
+        tmp <- mvPerLinesHistoPerCondition(qData = assay(object()),
                                            conds = conds(),
                                            pal.name = pal.name())
       })

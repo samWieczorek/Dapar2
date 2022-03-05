@@ -1,66 +1,5 @@
 
-
-
-#' @title Compute the PCA
-#' 
-#' @description 
-#' 
-#' xxxx
-#' 
-#' @section xxx:
-#' 
-#' @section xxx:
-#' 
-#' @section xxx:
-#' 
-#' @section xxx:
-#' 
-#' 
-#' @return A list including eigenvalues of obj
-#' 
-#' @name pca_plots
-#' 
-#' @author Samuel Wieczorek, Enora Fremy
-#' 
-#' @examples
-#' library(QFeatures)
-#' data(ft)
-#' qData <- assay(ft, 1)
-#' conds <- design(ft)$Condition
-#' 
-#' res.pca <- wrapper_pca(qData, conds)
-#' 
-#' plotPCA_Eigen(res.pca)
-#' 
-#' #-----------------------------------
-#' # Launch the shiny module
-#' #-----------------------------------
-#' 
-#' if(interactive()){
-#'  library(QFeatures)
-#'  library(shiny)
-#'  library(DaparToolshed)
-#'  library(highcharter)
-#'  data(ft)
-#'  conds <- design(ft)$Condition
-#'  
-#'   
-#'  ui <- mod_plots_pca_ui('plot')
-#' 
-#'  server <- function(input, output, session) {
-#'   mod_plots_pca_server(id = 'plot',
-#'                        object = reactive({ft[[1]]}),
-#'                        conds = reactive({conds})
-#'                        )
-#'   }
-#'  
-#'  shinyApp(ui, server)
-#' }
-NULL
-
-
-
-#' @param qData numeric matrix
+#' @param object An instance of the class `SummarizedExperiment`
 #' @param conds xxx
 #' @param var.scaling The dimensions to plot
 #' @param ncp A `integer(1)` which represents the umber of dimensions kept in the results.
@@ -70,17 +9,21 @@ NULL
 #' 
 #' @export
 #' 
-#' @rdname pca_plots
+#' @rdname descriptive-statistics
 #' 
-wrapper_pca <- function(qData, 
+wrapper_pca <- function(object, 
                         conds, 
                         var.scaling = TRUE, 
                         ncp = NULL){
   
-  if(missing(qData))
-    stop("'qData' is missing.")
+  if(missing(object))
+    stop("'object' is missing.")
   if(missing(conds))
     stop("'conds' is missing.")
+  
+  stopifnot(inherits(object, 'SummarizedExperiment'))
+  
+  qData <- assay(object)
   
   if (is.null(var.scaling))
     var.scaling <- TRUE

@@ -1,73 +1,3 @@
-#' @title Intensity family plots
-#' 
-#' @description 
-#' 
-#' These functions are plotting different views of quantitative data.
-#' Two plots are available:
-#' 
-#' - [boxplotD()] xxxx,
-#' - [violinPlotD()] xxxx.
-#' 
-#' @author Samuel Wieczorek, Anais Courtier, Enora Fremy
-#' 
-#' @name intensity_plots
-#' 
-#' 
-#' @examples
-#' library(QFeatures)
-#' data(ft)
-#' 
-#' #----------------------------------------------
-#' # View violin plot with and without subset view
-#' #----------------------------------------------
-#' 
-#' violinPlotD(ft[[1]], design(ft))
-#' violinPlotD(ft[[1]], design(ft), subset = c(3,4,6), pal.name = 'Dark2')
-#' 
-#' #----------------------------------------
-#' # xxxx
-#' #----------------------------------------
-#' 
-#' boxPlotD(ft[[1]], design(ft))
-#' boxPlotD(ft[[1]], design(ft), subset = c(2, 3), pal.name = 'Dark2')
-#' 
-#' # ----------------------------------------------------
-#' # A shiny module which can track entities on the plots
-#' # ----------------------------------------------------
-#' 
-#' if (interactive()){
-#' library(QFeatures)
-#' library(shiny)
-#' library(shinyjs)
-#' library(highcharter)
-#' library(DaparToolshed)
-#' 
-#' data(ft)
-#' 
-#' 
-#' ui <- tagList(
-#'   mod_intensity_plots_ui('iplots'),
-#'   uiOutput('show')
-#' )
-#' 
-#' server <- function(input, output, session) {
-#'   rv <- reactiveValues(
-#'     tmp = NULL
-#'   )
-#'   
-#'   mod_intensity_plots_server(id = 'iplots',
-#'                              object = reactive({ft[[1]]}),
-#'                              exp.design = reactive({design(ft)}),
-#'                              pal.name = 'Dark2'
-#'                              )
-#'   
-#' }
-#' shinyApp(ui = ui, server = server)
-#' }
-#' 
-NULL
-
-
 #' @param id xxx
 #' 
 #' @importFrom shiny NS tagList
@@ -75,8 +5,8 @@ NULL
 #'
 #' @return NA
 #' @export
-#' @rdname intensity_plots
-mod_intensity_plots_ui <- function(id){
+#' @rdname descriptive-statistics
+mod_ds_intensity_ui <- function(id){
   ns <- NS(id)
   tagList(
     shinyjs::useShinyjs(),
@@ -90,7 +20,7 @@ mod_intensity_plots_ui <- function(id){
                            "Choose plot",
                            choices = setNames(nm = c("violin", "box")),
                            width = '100px'),
-               mod_tracking_ui(ns('tracker'))
+               mod_tracker_ui(ns('tracker'))
       )
     )
   )
@@ -103,7 +33,7 @@ mod_intensity_plots_ui <- function(id){
 #' @param exp.design xxx
 #' @param ... xxx
 #' 
-#' @rdname intensity_plots
+#' @rdname descriptive-statistics
 #'
 #' @export
 #' @importFrom grDevices png
@@ -111,10 +41,10 @@ mod_intensity_plots_ui <- function(id){
 #'
 #'@return NA
 #'
-mod_intensity_plots_server <- function(id,
-                                       object,
-                                       exp.design,
-                                       ...){
+mod_ds_intensity_server <- function(id,
+                                    object,
+                                    exp.design,
+                                    ...){
 
   moduleServer(id, function(input, output, session){
     ns <- session$ns
@@ -123,8 +53,8 @@ mod_intensity_plots_server <- function(id,
       indices = NULL
       )
 
-    rv$indices <- mod_tracking_server("tracker",
-                                       obj = reactive({object()})
+    rv$indices <- mod_tracker_server("tracker",
+                                       object = reactive({object()})
                                        )
 
     output$box_ui <- renderUI({

@@ -1,10 +1,10 @@
 #' @param id shiny id
-#' @rdname imputation
+#' @rdname plot_mv
 #' @export
 #' @importFrom shiny NS tagList plotOutput
 #' @importFrom highcharter highchartOutput
 #' 
-mod_imputation_plot_ui <- function(id){
+mod_plot_mvImputation_ui <- function(id){
   ns <- NS(id)
   tagList(
     tags$div(
@@ -22,11 +22,11 @@ mod_imputation_plot_ui <- function(id){
 #' @param title A `character(1)` which is
 #' @param pal.name  A `character(1)` which is the name of the palette (from
 #' the package [RColorBrewer] to use.
-#' @rdname imputation
+#' @rdname plot_mv
 #' @export
 #' @importFrom highcharter renderHighchart
 #' 
-mod_imputation_plot_server <- function(id,
+mod_plot_mvImputation_server <- function(id,
                                        object = reactive({NULL}),
                                        conds = reactive({NULL}),
                                        title = reactive({NULL}),

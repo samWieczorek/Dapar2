@@ -25,6 +25,19 @@ colData and rowData are respectively integrated into separate sheets in
 the Excel file). The colored cells in the experimental data correspond to the
 original missing values which have been imputed.
 }
+\examples{
+\donttest{
+data(ft)
+
+#---------------------------------------
+# Export the whole dataset
+#---------------------------------------
+
+write2excel(ft, filename = 'foo')
+write2excel(ft, 1, 'foo')
+}
+
+}
 \author{
 Samuel Wieczorek
 }

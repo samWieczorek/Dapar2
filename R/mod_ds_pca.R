@@ -1,12 +1,12 @@
 #' @param id xxx.
 #'
-#' @rdname pca_plots
+#' @rdname descriptive-statistics
 #'
 #' @importFrom shiny NS tagList uiOutput
 #' 
 #' @export
 #'
-mod_plots_pca_ui <- function(id){
+mod_ds_pca_ui <- function(id){
   ns <- NS(id)
   tagList(
     uiOutput(ns("WarningNA_PCA")),
@@ -18,17 +18,16 @@ mod_plots_pca_ui <- function(id){
 #' @param id xxx.
 #' @param object xxx
 #' @param conds xxx
-
-#' @rdname pca_plots
+#' @rdname descriptive-statistics
 #'
 #' @importFrom factoextra fviz_pca_ind fviz_pca_var
 #' @importFrom RColorBrewer brewer.pal
 #' @importFrom highcharter renderHighchart
 #'
 #' @export
-mod_plots_pca_server <- function(id,
-                                 object,
-                                 conds) {
+mod_ds_pca_server <- function(id,
+                              object,
+                              conds) {
 
   moduleServer(id, function(input, output, session){
     ns <- session$ns
@@ -96,7 +95,7 @@ mod_plots_pca_server <- function(id,
 
     observeEvent(input$varScale_PCA,{
       rv.pca$PCA_varScale <- input$varScale_PCA
-      rv.pca$res.pca <- wrapper_pca(assay(object()),
+      rv.pca$res.pca <- wrapper_pca(object(),
                                     conds(),
                                     rv.pca$PCA_varScale,
                                     ncp = Compute_PCA_dim()
@@ -105,7 +104,7 @@ mod_plots_pca_server <- function(id,
 
     observeEvent(object(), {
       if (length(which(is.na(assay(object())))) == 0) {
-        rv.pca$res.pca <- wrapper_pca(assay(object()),
+        rv.pca$res.pca <- wrapper_pca(object(),
                                       conds(),
                                       rv.pca$PCA_varScale,
                                       ncp = Compute_PCA_dim()
@@ -117,7 +116,7 @@ mod_plots_pca_server <- function(id,
     output$pcaPlots <- renderUI({
       req(object())
       req(length(which(is.na(assay(object())))) == 0)
-      req(rv.pca$res.pca)
+      req(rv.pca$res.pca$var$coord)
       
       tagList(
         plotOutput(ns("pcaPlotVar")),
@@ -126,9 +125,8 @@ mod_plots_pca_server <- function(id,
         highchartOutput(ns("pcaPlotEigen"))
         )
     })
-    
     mod_format_DT_server("PCAvarCoord",
-                         df = reactive({ as.data.frame(round(rv.pca$res.pca$var$coord, digits=7)) }),
+                         df = reactive({ round(as.data.frame(rv.pca$res.pca$var$coord, digits=7)) }),
                          rownames = TRUE,
                          style = reactive({ list(cols = colnames(rv.pca$res.pca$var$coord),
                                                  vals = colnames(rv.pca$res.pca$var$coord),

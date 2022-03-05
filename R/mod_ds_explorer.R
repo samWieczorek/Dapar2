@@ -1,36 +1,8 @@
-
-#' @title  Data explorer
-#' 
-#' @description  
-#' 
-#' A shiny Module.
-#'
-#' 
-#' @author Samuel Wieczorek
-#'
-#' @name data_explorer
-#'
-#' @examples 
-#' data(ft_na)
-#' 
-#' ui <- tagList(
-#'   mod_explorer_ui('explore')
-#' )
-#' 
-#' server <- function(input, output, session) {
-#'   mod_explorer_server(id = 'explore',
-#'                       object = reactive({ft_na})
-#'   )
-#' }
-#' shinyApp(ui=ui, server=server)
-NULL
-
-
 #' @param id xxx
 #' @export 
 #' @importFrom shiny NS tagList 
-#' @rdname data_explorer
-mod_explorer_ui <- function(id){
+#' @rdname descriptive-statistics
+mod_ds_explorer_ui <- function(id){
   ns <- NS(id)
   tagList(
     uiOutput(ns('assay_ui')),
@@ -49,11 +21,11 @@ mod_explorer_ui <- function(id){
 #' @return NA
 #' @import DT
 #' @importFrom tibble as_tibble
-#' @rdname data_explorer
-mod_explorer_server <- function(id,
-                                object, 
-                                digits = reactive({3})
-                                ){ 
+#' @rdname descriptive-statistics
+mod_ds_explorer_server <- function(id,
+                                  object, 
+                                  digits = reactive({3})
+                                  ){ 
   
   
   moduleServer(id, function(input, output, session){
@@ -96,12 +68,12 @@ mod_explorer_server <- function(id,
     
     
     
-    mod_LegendColoredExprs_server('legend_colored_exprs')
+    mod_qMetadataLegend_server('legend_colored_exprs')
     
     output$legendForExprsData <- renderUI({
       req(input$DS_TabsChoice == "tabExprs")
       
-      mod_LegendColoredExprs_ui("legend_colored_exprs")
+      mod_qMetadataLegend_ui("legend_colored_exprs")
       
     })
     

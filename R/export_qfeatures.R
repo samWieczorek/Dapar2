@@ -14,6 +14,8 @@
 #' 
 #' @return A Excel file (.xlsx)
 #' 
+#' @name QFeatures-excel
+#' 
 #' @author Samuel Wieczorek
 #' 
 #' @examples
@@ -26,16 +28,13 @@
 #' 
 #' write2excel(ft, filename = 'foo')
 #' write2excel(ft, 1, 'foo')
-#' 
-#' @export
-#' 
-#' @name QFeatures-excel
+#' }
 #'
 NULL
 
 
-##' @exportMethod write2excel
-##' @rdname QFeatures-excel
+#' @exportMethod write2excel
+#' @rdname QFeatures-excel
 setMethod("write2excel", "QFeatures",
           function(object, 
                    i = NULL,
@@ -60,8 +59,8 @@ setMethod("write2excel", "QFeatures",
           })
 
 
-##' @exportMethod write2excel
-##' @rdname QFeatures-excel
+#' @exportMethod write2excel
+#' @rdname QFeatures-excel
 setMethod("write2excel", "SummarizedExperiment",
           function(object, filename, exp.design, ...)
             .write2excel(object, filename, exp.design, ...))
@@ -71,7 +70,7 @@ setMethod("write2excel", "SummarizedExperiment",
 
 
 
-
+#' @noRd
 #' @importFrom openxlsx createStyle createWorkbook addWorksheet writeData addStyle writeData
 .write2excel <- function(object, exp.design, fname) {
   name <- paste0(fname, ".xlsx", sep="")

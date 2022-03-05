@@ -13,7 +13,7 @@
 #' @param pal.name  A `character(1)` which is the name of the palette 
 #' (from the package [RColorBrewer]) to use.
 #' 
-#' @name mv_plots
+#' @name plot_ds_mv
 #' 
 #' @details 
 #' 
@@ -66,12 +66,12 @@
 #'  library(shiny)
 #'  library(DaparToolshed)
 #'  data(ft)
-#'  ui <- mod_mv_plots_ui('plot')
+#'  ui <- mod_plot_ds_mv_ui('plot')
 #' 
 #'  server <- function(input, output, session) {
 #'   conds <- design(ft)$Condition
 #'  
-#'   mod_mv_plots_server('plot',
+#'   mod_plot_ds_mv_server('plot',
 #'                       obj = reactive({ft[[1]]}),
 #'                       conds = reactive({conds}),
 #'                       pal.name = reactive({'Dark2'})
@@ -85,7 +85,7 @@ NULL
 
 #' @export 
 #' @import highcharter
-#' @rdname mv_plots
+#' @rdname plot_mv
 mvPerLinesHisto <- function(qData){
    
   coeffMax <- .1
@@ -130,7 +130,7 @@ mvPerLinesHisto <- function(qData){
 #' @export
 #' 
 #' @import highcharter
-#' @rdname mv_plots
+#' @rdname plot_mv
 mvPerLinesHistoPerCondition <- function(qData, 
                                         conds, 
                                         pal.name){
@@ -185,7 +185,7 @@ mvPerLinesHistoPerCondition <- function(qData,
 
 #' @export
 #' @import highcharter
-#' @rdname mv_plots
+#' @rdname plot_mv
 mvHisto <- function(qData, 
                        conds, 
                        showValues = FALSE, 

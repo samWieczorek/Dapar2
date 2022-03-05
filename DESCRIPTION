@@ -91,7 +91,6 @@ Collate:
     palette.R
     example-data.R
     qMetadata.R
-    plots_mv.R
     DaparToolshed_aggregate.R
     DaparToolshed_filter_Adjmat.R
     DaparToolshed_QFeatures_Addons.R
@@ -108,17 +107,9 @@ Collate:
     export_qfeatures.R
     import_2_qfeatures.R
     limmaAnalysis.R
-    plots_mv_for_impute.R
     ConnectedComps.R
     normalize.R
-    plots_boxplot.R
     plots_compare_normalization_plots.R
-    plots_corr_matrix.R
-    plots_CV_dist.R
-    plots_density_plot.R
-    plots_heatmap.R
-    plots_pca.R
-    plots_violin.R
     plots_volcano.R
     utils.R
     missingValuesImputation_PeptideLevel.R
@@ -136,22 +127,31 @@ Collate:
     mod_convert.R
     mod_format_DT.R
     mod_graph_pept_prot.R
-    mod_plots_cc.R
-    mod_plots_corr_matrix.R
-    mod_plots_density.R
-    mod_plots_group_mv.R
-    mod_plots_heatmap.R
-    mod_plots_intensity.R
-    mod_plots_legend_colored_exprs.R
-    mod_plots_mv_for_imputation.R
-    mod_plots_pca.R
-    mod_plots_se_explorer.R
-    mod_plots_tracking.R
-    mod_plots_var_dist.R
     mod_popover_for_help.R
     mod_settings.R
     mod_Normalization.R
     zzz.R
+    mod_ds_corrmatrix.R
+    mod_ds_density.R
+    mod_ds_explorer.R
+    mod_ds_heatmap.R
+    mod_ds_intensity.R
+    mod_ds_mv.R
+    mod_plot_mvImputation.R
+    mod_ds_pca.R
+    mod_ds_cc.R
+    mod_ds_variance.R
+    mod_qMetadataLegend.R
+    mod_tracker.R
+    plot_ds_boxplot.R
+    plot_ds_corrmatrix.R
+    plot_ds_variance.R
+    plot_ds_density.R
+    plot_ds_heatmap.R
+    plots_mv_for_impute.R
+    plot_ds_pca.R
+    plot_ds_violin.R
+    plot_ds_mv.R
 RoxygenNote: 7.1.2
 Packaged: 2017-10-13 11:13:04 UTC; sw175264
 Encoding: UTF-8

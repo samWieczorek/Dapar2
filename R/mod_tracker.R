@@ -16,7 +16,7 @@
 #' if (interactive()){
 #' 
 #' ui <- tagList(
-#'   mod_tracking_ui('track'),
+#'   mod_tracker_ui('track'),
 #'   uiOutput('show')
 #' )
 #' 
@@ -25,7 +25,7 @@
 #'     tmp = NULL
 #'   )
 #'   
-#'   rv$tmp <- mod_tracking_server(id = 'track',
+#'   rv$tmp <- mod_tracker_server(id = 'track',
 #'                                 object = reactive({ft[[1]]})
 #'   )
 #'   
@@ -49,7 +49,7 @@ NULL
 #' 
 #' @return NA
 #'
-mod_tracking_ui <- function(id){
+mod_tracker_ui <- function(id){
   ns <- NS(id)
   
   tagList(
@@ -74,7 +74,7 @@ mod_tracking_ui <- function(id){
 #' 
 #' @return A `list()` of integers
 #'
-mod_tracking_server <- function(id,
+mod_tracker_server <- function(id,
                                 object){
 
   moduleServer(id, function(input, output, session){

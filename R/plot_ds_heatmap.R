@@ -18,9 +18,6 @@
 #' @return A heatmap
 #' 
 #' @author Samuel Wieczorek
-#' 
-#' @name heatmap_plot
-#' 
 #' @examples
 #' 
 #' library(QFeatures)
@@ -51,12 +48,12 @@
 #'  library(shiny)
 #'  library(DaparToolshed)
 #'  data(ft)
-#'  ui <- mod_heatmap_plot_ui('plot')
+#'  ui <- mod_plot_ds_heatmap_ui('plot')
 #' 
 #'  server <- function(input, output, session) {
 #'   conds <- design(ft)$Condition
 #'  
-#'   mod_heatmap_plot_server('plot',
+#'   mod_plot_heatmap_ds_server('plot',
 #'                       obj = reactive({ft[[1]]}),
 #'                       conds = reactive({conds}),
 #'                       pal.name = reactive({'Dark2'})
@@ -88,7 +85,7 @@ NULL
 #' 
 #' @export
 #' 
-#' @rdname heatmap_plot
+#' @rdname plot_ds_heatmap
 #' 
 heatmapD <- function(qData, 
                      conds, 
@@ -204,7 +201,7 @@ heatmapD <- function(qData,
 #' @importFrom grDevices heat.colors
 #' @importFrom graphics image strwidth strheight axis mtext text title layout par plot.new
 #' 
-#' @rdname heatmap_plot
+#' @rdname plot_ds_heatmap
 #' 
 mv.heatmap <- function (x,
                         col = grDevices::heat.colors(100),

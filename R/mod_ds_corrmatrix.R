@@ -1,32 +1,9 @@
-#' @title   mod_plots_group_mv_ui and mod_plots_group_mv_server
-#'
-#' @description  A shiny Module.
-#' 
-#' @name corrmatrix_plot
-#'
-#' @examples 
-#' if (interactive()){
-#' library(QFeatures)
-#' library(DaparToolshed)
-#' data(ft)
-#' ui <- mod_corrmatrix_plot_ui('plot')
-#' 
-#' server <- function(input, output, session) {
-#'  mod_corrmatrix_plot_server('plot',
-#'                             qData = reactive({assay(ft[[1]])})
-#'                             )
-#'  }
-#' shinyApp(ui=ui, server=server)
-#' }
-NULL
-
-
 #' @param id xxx
 #' @export
 #' @importFrom shiny NS tagList
 #' @importFrom shinyWidgets dropdownButton
-#' @rdname corrmatrix_plot
-mod_corrmatrix_plot_ui <- function(id){
+#' @rdname descriptive-statistics
+mod_ds_corrmatrix_ui <- function(id){
   ns <- NS(id)
   tagList(
     uiOutput(ns('showValues_ui')),
@@ -41,18 +18,18 @@ mod_corrmatrix_plot_ui <- function(id){
 #' @param showValues Default is FALSE.
 #'
 #' @export
-#' @rdname corrmatrix_plot
+#' @rdname descriptive-statistics
 #'
-mod_corrmatrix_plot_server <- function(id,
-                                       qData, 
+mod_ds_corrmatrix_server <- function(id,
+                                       object, 
                                        rate = reactive({0.5}),
                                        showValues = reactive({FALSE})){
 
   moduleServer(id, function(input, output, session) {
     ns <- session$ns
     observe({
-      req(qData())
-      stopifnot (inherits(qData(), "matrix"))
+      req(object())
+      stopifnot (inherits(object(), "SummarizedExperiment"))
     })
 
     rv.corr <- reactiveValues(
@@ -93,10 +70,10 @@ mod_corrmatrix_plot_server <- function(id,
     })
 
     output$corrMatrix <- renderHighchart({
-      req(qData())
+      req(object())
       
       withProgress(message = 'Making plot', value = 100, {
-        tmp <- corrMatrixPlot(qData = qData(),
+        tmp <- corrMatrixPlot(object = object(),
                               rate = rv.corr$rate,
                               showValues = rv.corr$showValues)
       })

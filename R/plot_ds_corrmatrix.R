@@ -3,7 +3,7 @@
 #' @title Displays a correlation matrix of the quantitative data of a
 #' numeric matrix.
 #' 
-#' @param qData An object of class 'SummarizedExperiment'
+#' @param object An object of class 'SummarizedExperiment'
 #' 
 #' @param rate The rate parameter to control the exponential law for 
 #' the gradient of colors
@@ -28,14 +28,16 @@
 #' 
 #' @export
 #' 
-#' @rdname corrmatrix_plot
+#' @rdname descriptive-statistics
 #' 
-corrMatrixPlot <- function(qData,
+corrMatrixPlot <- function(object,
                            rate = 0.5,
                            showValues = FALSE) {
   
 
-    stopifnot(inherits(qData, 'matrix') || inherits(qData, 'array'))
+    stopifnot(inherits(object, 'SummarizedExperiment'))
+  
+  qData <- assay(object)
   
   if (is.null(colnames(qData)))
     stop("'qData' must have colnames.")

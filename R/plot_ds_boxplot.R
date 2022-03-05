@@ -16,7 +16,7 @@
 #' 
 #' @export
 #' 
-#' @rdname intensity_plots
+#' @rdname plot_ds
 #' 
 boxPlotD <- function(object,
                      exp.design,

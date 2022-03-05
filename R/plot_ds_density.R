@@ -5,33 +5,19 @@
 #' 
 #' @param legend A vector of the conditions (one condition per sample).
 #' 
-#' @param palette A `character(1)` which is the name of a palette in
+#' @param pal.name A `character(1)` which is the name of a palette in
 #' the package [RColorBrewer].
-#' 
-#' @return A density plot
-#' 
-#' @author Samuel Wieczorek, Enora Fremy
-#' 
-#' @examples
-#' data(ft)
-#' qData <- assay(ft, 1)
-#' conds <- design(ft)$Condition
-#' densityPlot(qData, conds)
-#' 
-#' legend <- design(ft)$Sample.name
-#' densityPlot(qData, conds, legend, 'Dark2')
 #' 
 #' @import highcharter
 #' @importFrom stats density
 #' 
 #' @export
 #' 
-#' @rdname density-plots
+#' @rdname descriptive-statistics
 #' 
 densityPlot <- function(qData, 
                         conds, 
-                        legend = NULL, 
-                        pal = NULL){
+                        pal.name = NULL){
   
   if(missing(qData))
     stop("'qData' is missing.")
@@ -42,16 +28,13 @@ densityPlot <- function(qData,
   if (length(conds) != ncol(qData))
     stop("qData and conds must have the same number of samples.")
   
-  if (is.null(legend))
-    legend <- conds
-
-  if (is.null(pal)){
+  if (is.null(pal.name)){
     warning("Color palette set to default.")
     myColors <- SampleColors(conds)
   } else
-    myColors <- SampleColors(conds, pal)
+    myColors <- SampleColors(conds, pal.name)
 
-  
+ 
   h1 <-  highcharter::highchart() %>% 
     hc_title(text = "Density plot") %>% 
     customChart(chartType = "spline", zoomType="x") %>%
@@ -80,7 +63,9 @@ densityPlot <- function(qData,
     tmp <- data.frame(x = stats::density(qData[,i], na.rm = TRUE)$x, 
                       y = stats::density(qData[,i], na.rm = TRUE)$y)
     
-    h1 <- h1 %>% hc_add_series(data=list_parse(tmp), name=legend[i]) 
+    h1 <- h1 %>% 
+      hc_add_series(data=list_parse(tmp), 
+                    name = colnames(qData)[i]) 
   }
 
   h1

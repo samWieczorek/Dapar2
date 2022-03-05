@@ -1,9 +1,9 @@
-#' @param id shiny id
+#' @param id A `character(1)` which is the id of the shiny module.
+#' 
 #' @export
 #' @importFrom shiny NS tagList
-#' @return NA
-#' @rdname heatmap_plot
-mod_heatmap_plot_ui <- function(id){
+#' @rdname descriptive-statistics
+mod_ds_heatmap_ui <- function(id){
   ns <- NS(id)
   tagList(
     div(
@@ -46,33 +46,36 @@ mod_heatmap_plot_ui <- function(id){
 #' @param conds xxx
 #' @param width xxx
 #' @export
-#' @rdname heatmap_plot
+#' @rdname descriptive-statistics
 #'
-mod_heatmap_plot_server <- function(id, 
-                                    obj, 
-                                    conds, 
-                                    width = 900){
+mod_ds_heatmap_server <- function(id, 
+                                  object,
+                                  conds,
+                                  width = 900){
 
   moduleServer(id, function(input, output, session){
     ns <- session$ns
     
     observe({
-      req(obj())
-      stopifnot (inherits(obj(), "SummarizedExperiment"))
+      req(object())
+      stopifnot (inherits(object(), "SummarizedExperiment"))
     })
 
 
     limitHeatmap <- 20000
-    height <- paste0(2*width/3,"px")
-    width <- paste0(width,"px")
+    height <- paste0(2 * width / 3, "px")
+    width <- paste0(width, "px")
 
     output$DS_PlotHeatmap <- renderUI({
-      req(obj())
-      if (nrow(assay(obj())) > limitHeatmap){
+      req(object())
+      if (nrow(assay(object())) > limitHeatmap){
         tags$p("The dataset is too big to compute the heatmap in a reasonable time.")
       }else {
         tagList(
-          plotOutput(ns('heatmap_ui'), width = width, height = height)
+          plotOutput(ns('heatmap_ui'), 
+                     width = width, 
+                     height = height
+                     )
         )
       }
     })
@@ -85,7 +88,7 @@ mod_heatmap_plot_server <- function(id,
       
       isolate({
         withProgress(message = 'Making plot', value = 100, {
-          heatmapD(qData = assay(obj()),
+          heatmapD(qData = assay(object()),
                    conds = conds(),
                    distance= input$distance,
                    cluster = input$linkage)
@@ -96,10 +99,4 @@ mod_heatmap_plot_server <- function(id,
   })
 
 }
-
-## To be copied in the UI
-# mod_plots_heatmap_ui("plots_heatmap_ui_1")
-
-## To be copied in the server
-# callModule(mod_plots_heatmap_server, "plots_heatmap_ui_1")
 

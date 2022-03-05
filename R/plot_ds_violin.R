@@ -1,4 +1,4 @@
-#' @param object Numeric matrix
+#' @param object An instance of the class `SummarizedExperiment`
 #' 
 #' @param exp.design xxx
 #' 
@@ -16,7 +16,7 @@
 #' 
 #' @export
 #' 
-#' @rdname intensity_plots
+#' @rdname descriptive-statistics
 #' 
 violinPlotD <- function(object, 
                         exp.design, 

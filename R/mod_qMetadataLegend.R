@@ -1,10 +1,12 @@
+#' @param id xxx
+#'
 #' @importFrom shinyBS bsCollapse bsCollapsePanel
 #' @importFrom shiny NS tagList
 #' 
 #' @rdname q_metadata
 #'
 #' @export 
-mod_LegendColoredExprs_ui <- function(id){
+mod_qMetadataLegend_ui <- function(id){
   ns <- NS(id)
   
   
@@ -20,29 +22,24 @@ mod_LegendColoredExprs_ui <- function(id){
 
 
 #' @param id The 'id' of the shiny module.
-#' @param object An instance of the class `SummarizedExperiment`
 #' @param hide.white A `logical(1)` that indicate if xxx
 #' 
 #' @export
 #' 
 #' @rdname q_metadata
-mod_LegendColoredExprs_server <- function(id, 
-                                          object, 
-                                          hide.white = TRUE
-                                          ){
+mod_qMetadataLegend_server <- function(id, 
+                                       hide.white = TRUE
+                                       ){
   
   moduleServer(
     id,
     function(input, output, session) {
       ns <- session$ns
-      
-      
-      observe({
-        stopifnot(inherits(object(), 'SummarizedExperiment'))
-      })
-      
+       
       output$legend <- renderUI({
-        mc <- qMetadata.def(typeDataset(object()))
+        mc <- combine(qMetadata.def(level = 'peptide'),
+                      qMetadata.def(level = 'protein')
+        )
         
         tagList(
           lapply(1:nrow(mc), function(x){

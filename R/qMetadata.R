@@ -72,10 +72,10 @@
 #' #-----------------------------------------------
 #' if(interactive()){
 #' data(ft)
-#' ui <- mod_LegendColoredExprs_ui("legend")
+#' ui <- mod_qMetadataLegend_ui("legend")
 #' 
 #' server <- function(input, output, session) {
-#'   mod_LegendColoredExprs_server('legend',
+#'   mod_qMetadataLegend_server('legend',
 #'                                 object = reactive({ft[[1]]}))
 #'   }
 #'   
@@ -86,7 +86,7 @@
 NULL
 
 
- 
+
 #' @param level A string designing the type of entity/pipeline. 
 #' Available values are: `peptide`, `protein`
 #' 
@@ -176,6 +176,11 @@ qMetadata.def <- function(level){
   
   for(n in seq_len(nrow(def)))
     def[n, 'color'] <- colors[[def[n, 'node']]]
+  
+
+  if (level == 'all')
+    def = union(qMetadata.def('peptide'), 
+                qMetadata.Def('protein'))
   
   return(def)
 
