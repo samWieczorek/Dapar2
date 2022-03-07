@@ -48,19 +48,22 @@
 #' 
 #' #----------------------------------------
 #' # Launch a single shiny module
+#' The list of all plots module is avaiable
+#' # with the function [listPlotModules()].
+#' # In the example, replace 'FOO' by the name of the module
+#' # and add the necessaray parameters
 #' #----------------------------------------
 #' 
 #' if(interactive()){
 #'  data(ft)
-#'  ui <- mod_ds_density_ui('plot')
+#'  ui <- FOO_ui('plot')
 #' 
 #'  server <- function(input, output, session) {
 #'   conds <- design(ft)$Condition
 #'  
-#'   mod_ds_density_server('plot',
-#'                         qData = reactive({assay(ft, 1)}),
-#'                         conds = reactive({conds})
-#'                         )
+#'   FOO_server('plot',
+#'              # Add appropriate parameters
+#'              )
 #'   }
 #'  
 #'  shinyApp(ui=ui, server=server)

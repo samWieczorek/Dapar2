@@ -3,7 +3,7 @@
 %   R/mod_ds_density.R, R/mod_ds_explorer.R, R/mod_ds_heatmap.R,
 %   R/mod_ds_intensity.R, R/mod_ds_mv.R, R/mod_ds_pca.R, R/mod_ds_variance.R,
 %   R/plot_ds_corrmatrix.R, R/plot_ds_variance.R, R/plot_ds_density.R,
-%   R/plot_ds_violin.R
+%   R/plot_ds_pca.R, R/plot_ds_violin.R
 \name{listPlotModules}
 \alias{listPlotModules}
 \alias{mod_all_plots_ui}
@@ -27,6 +27,7 @@
 \alias{corrMatrixPlot}
 \alias{CVDist}
 \alias{densityPlot}
+\alias{wrapper_pca}
 \alias{violinPlotD}
 \title{Displays a correlation matrix of the quantitative data of a
 numeric matrix.}
@@ -54,7 +55,7 @@ mod_ds_density_server(id, object, conds, pal.name = reactive({
 
 mod_ds_explorer_ui(id)
 
-mod_ds_explorer_server(id, object, digits = reactive({
+mod_ds_explorer_server(id, object, which.assay, digits = reactive({
     3
 }))
 
@@ -68,7 +69,9 @@ mod_ds_intensity_server(id, object, exp.design, ...)
 
 mod_ds_mv_ui(id)
 
-mod_ds_mv_server(id, object, conds, pal.name)
+mod_ds_mv_server(id, object, conds, pal.name = reactive({
+    NULL
+}))
 
 mod_ds_pca_ui(id)
 
@@ -84,6 +87,8 @@ CVDist(object, conds = NULL, pal.name = NULL)
 
 densityPlot(qData, conds, pal.name = NULL)
 
+wrapper_pca(object, conds, var.scaling = TRUE, ncp = NULL)
+
 violinPlotD(object, exp.design, subset = NULL, pal.name)
 }
 \arguments{
@@ -96,10 +101,11 @@ the gradient of colors}
 
 \item{showValues}{xxx}
 
-\item{conds}{A \code{character()} of condition name for each sample. The
-length of 'conds' must be equal to the number of columns of 'qData'.}
+\item{conds}{xxx}
 
 \item{pal.name}{xxx}
+
+\item{which.assay}{A}
 
 \item{digits}{xxx}
 
@@ -110,6 +116,10 @@ length of 'conds' must be equal to the number of columns of 'qData'.}
 \item{...}{xxx}
 
 \item{qData}{numeric matrix}
+
+\item{var.scaling}{The dimensions to plot}
+
+\item{ncp}{A \code{integer(1)} which represents the umber of dimensions kept in the results.}
 
 \item{subset}{A vector of index indicating rows to highlight}
 
