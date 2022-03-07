@@ -126,7 +126,7 @@ mod_ds_pca_server <- function(id,
         )
     })
     mod_format_DT_server("PCAvarCoord",
-                         df = reactive({ round(as.data.frame(rv.pca$res.pca$var$coord, digits=7)) }),
+                         df = reactive({ as.data.frame(rv.pca$res.pca$var$coord) }),
                          rownames = TRUE,
                          style = reactive({ list(cols = colnames(rv.pca$res.pca$var$coord),
                                                  vals = colnames(rv.pca$res.pca$var$coord),

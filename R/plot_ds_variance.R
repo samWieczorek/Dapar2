@@ -36,14 +36,16 @@ CVDist <- function(object,
                    conds = NULL, 
                    pal.name = NULL){
   
+  stopifnot(inherits(object, 'SummarizedExperiment'))
+  qData <- assay(object)
+  
+  
   if (is.null(conds))
     stop("'conds' is NULL")
   else if (length(conds) != ncol(qData))
     stop("'conds' must have the same length as the number of samples in 
          the dataset.")
 
-  stopifnot(inherits(object, 'SummarizedExperiment'))
-  qData <- assay(object)
   u_conds <- unique(conds)
   
   myColors <- SampleColors(u_conds)

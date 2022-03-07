@@ -151,30 +151,31 @@ mod_all_plots_server <- function(id, object){
     
     .width <- .height <- 40
     
-    rv <- reactiveValues(
-      current.plot = NULL,
-      current.se = NULL,
-      current.indice = NULL,
-      colData = NULL,
-      conditions = NULL
-    )
+    ll.mods <- listPlotModules()
     
-    list.plots.module <- listPlotModules()
+    current.se <- reactiveVal()
+    btns.history <- reactiveVal(rep(0, length(ll.mods)))
     
-    observeEvent(input$vignettes_rb, {
-      tmp.list <- list.plots.module[-which(list.plots.module == input$vignettes_rb)]
-      shinyjs::show(paste0('div_', input$vignettes_rb,'_large'))
-      lapply(tmp.list, function(y){
-        shinyjs::hide(paste0('div_', y,'_large'))
-      })
+    observeEvent(GetVignettesBtns(), {
+      clicked <- which(btns.history() != GetVignettesBtns())
+      shinyjs::show(paste0('div_', ll.mods[clicked],'_large'))
+      lapply(ll.mods[-clicked], function(y){
+         shinyjs::hide(paste0('div_', y,'_large'))
+       })
+      btns.history(GetVignettesBtns())
+      
+    })
+  
+    GetVignettesBtns <- reactive({
+      unlist(lapply(ll.mods, 
+                    function(x) input[[x]])
+      )
     })
     
-    
-    
     output$ShowPlots_ui <- renderUI({
-      lapply(list.plots.module, function(x){
+      lapply(ll.mods, function(x){
         shinyjs::hidden(
-          div(id=ns(paste0('div_', x, '_large')),
+          div(id = ns(paste0('div_', x, '_large')),
               do.call(paste0(x, '_ui'),
                       list(ns(paste0(x, '_large')))
               )
@@ -185,51 +186,34 @@ mod_all_plots_server <- function(id, object){
     
     
     output$ShowVignettes_ui <- renderUI({
+      lapply(ll.mods, function(x){
+        actionButton(ns(x), 
+                     label = tagList(
+                       p(gsub('mod_ds_', '', x)),
+                       tags$img(src = base64enc::dataURI(
+                             file = system.file('images',
+                                                paste0(gsub('mod_', '', x), '.png'),
+                                                package='DaparToolshed'),
+                             mime='image/png'),
+                             height = "50px")
+                       ),
+                      style = 'padding: 0px;
+                      border: none;
+                      background-size: cover;
+                           background-position: center;'
+                         )
+      }
+                       )
+        })
       
-      tagList(
-        tags$style(HTML("
-            .shiny-input-radiogroup label {
-                display: inline-block;
-                text-align: center;
-                margin-bottom: 20px;
-            }
-            .shiny-input-radiogroup label input[type='radio'] {
-                display: inline-block;
-                margin: 3em auto;
-                margin-left: 10px;
-            }
-        ")),
-        radioButtons(ns("vignettes_rb"), "",
-                     inline = TRUE,
-                     choiceNames = lapply(list.plots.module, function(x){
-                       fname <- gsub('mod_', '', x)
-                       img(src = base64enc::dataURI(
-                         file = system.file('images', 
-                                            paste0(fname, '.png'),
-                                            package="DaparToolshed"),
-                         mime="image/png"),
-                           width='30px')
-                     }),
-                     choiceValues = list.plots.module,
-                     selected = character(0)
-        )
-      )
-    })
-    
-    
-    
-    observeEvent(object(), {
-      rv$colData <- design(object())
-      rv$metadata <- metadata(object())
-      rv$conditions <- design(object())$Condition
-    })
+
     
     observeEvent(input$chooseDataset, {
-      #rv$current.indice <- which(names(object())==input$chooseDataset)
-      rv$current.se <- object()[[input$chooseDataset]]
+      current.se(object()[[input$chooseDataset]])
     })
-    
+
     output$chooseDataset_ui <- renderUI({
+      req(object())
       if (length(names(object())) == 0){
         choices <- list(' ' = character(0))
       } else {
@@ -243,53 +227,49 @@ mod_all_plots_server <- function(id, object){
     
     
     
-    #Calls to server modules
+    #
+    # Calls to server modules
+    #
     mod_ds_explorer_server('mod_ds_explorer_large',
-                           object = reactive({object()})
+                           object = reactive({object()}),
+                           which.assay = reactive({input$chooseDataset})
                            )
     
     
     mod_ds_intensity_server('mod_ds_intensity_large',
-                            object = reactive({rv$current.se}),
+                            object = reactive({current.se()}),
                             exp.design = reactive({design(object()) })
                             )
     
     
     mod_ds_pca_server('mod_ds_pca_large',
-                      object = reactive({rv$current.se}),
+                      object = reactive({current.se()}),
                       conds = reactive({design(object())$Condition})
                       )
     
     
     mod_ds_variance_server('mod_ds_variance_large',
-                            object = reactive({rv$current.se}),
+                            object = reactive({current.se()}),
                             conds = reactive({design(object())$Condition})
                            )
     
     mod_ds_corrmatrix_server(id = 'mod_ds_corrmatrix_large',
-                             object = reactive({rv$current.se})
+                             object = reactive({current.se()})
                              )
     
     
     
     mod_ds_heatmap_server("mod_plots_heatmap_large",
-                             object = reactive({rv$current.se}),
+                             object = reactive({current.se()}),
                              conds = reactive({design(object())$Condition})
     )
     
     
     mod_ds_mv_server("mod_ds_mv_large",
-                        object = reactive({rv$current.se}),
-                        conds = reactive({design(object())$Condition})
+                     object = reactive({current.se()}),
+                     conds = reactive({design(object())$Condition})
     )
     
   })
   
 }
-
-## To be copied in the UI
-# mod_all_plots_ui("all_plots_ui_1")
-
-## To be copied in the server
-# callModule(mod_all_plots_server, "all_plots_ui_1")
-

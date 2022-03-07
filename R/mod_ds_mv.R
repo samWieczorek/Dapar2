@@ -34,7 +34,7 @@ mod_ds_mv_ui <- function(id){
 mod_ds_mv_server <- function(id,
                              object, 
                              conds, 
-                             pal.name){
+                             pal.name = reactive({NULL})){
 
   moduleServer(id, function(input, output, session){
     ns <- session$ns

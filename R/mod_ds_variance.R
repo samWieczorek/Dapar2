@@ -43,7 +43,7 @@ mod_ds_variance_server <- function(id,
       req(object())
 
       isolate({
-        varDist <- CVDist(assay(object()), 
+        varDist <- CVDist(object(), 
                           conds(), 
                           pal.name)
       })

@@ -5,14 +5,14 @@
 mod_ds_explorer_ui <- function(id){
   ns <- NS(id)
   tagList(
-    uiOutput(ns('assay_ui')),
     uiOutput(ns("DS_sidebarPanel_tab")),
     uiOutput(ns("tabToShow"))
   )
 }
 
 #' @param id xxx
-#' @param object xxx
+#' @param object An instance of the class `QFeatures`
+#' @param which.assay A
 #' @param digits xxx
 #' 
 #' 
@@ -23,7 +23,8 @@ mod_ds_explorer_ui <- function(id){
 #' @importFrom tibble as_tibble
 #' @rdname descriptive-statistics
 mod_ds_explorer_server <- function(id,
-                                  object, 
+                                  object,
+                                  which.assay,
                                   digits = reactive({3})
                                   ){ 
   
@@ -37,13 +38,7 @@ mod_ds_explorer_server <- function(id,
     })
     
     
-    output$assay_ui <- renderUI({
-      selectInput(ns('chooseAssay'),
-                  'Choose assay',
-                  choices = names(object()))
-    })
-    
-    output$DS_sidebarPanel_tab <- renderUI({
+        output$DS_sidebarPanel_tab <- renderUI({
       
       .choices <- list( "Quantitative data" = "tabExprs",
                        "Proteins metadata" = "tabfData",
@@ -59,8 +54,9 @@ mod_ds_explorer_server <- function(id,
                                  selected = character(0))
           ),
           tags$div( style="display:inline-block; vertical-align: middle;",
-                    uiOutput(ns("legendForExprsData"))
+                    uiOutput(ns("legend_ui"))
           )
+          
         )
       )
     })
@@ -68,27 +64,23 @@ mod_ds_explorer_server <- function(id,
     
     
     
-    mod_qMetadataLegend_server('legend_colored_exprs')
+    mod_qMetadataLegend_server('legend')
     
-    output$legendForExprsData <- renderUI({
+    output$legend_ui <- renderUI({
       req(input$DS_TabsChoice == "tabExprs")
-      
-      mod_qMetadataLegend_ui("legend_colored_exprs")
-      
+      mod_qMetadataLegend_ui(ns('legend'))
     })
     
     
     #----------------------------------------------
     output$tabToShow <- renderUI({
       req(input$DS_TabsChoice)
-      
       switch(input$DS_TabsChoice,
              None = {return(NULL)},
              tabExprs = DT::DTOutput(ns("table")),
              tabfData = DT::DTOutput(ns("viewfData")),
              tabpData = DT::DTOutput(ns("viewDesign"))
-      )
-      
+             )
     })
     
     
@@ -129,7 +121,7 @@ mod_ds_explorer_server <- function(id,
     output$viewfData <- DT::renderDT({
       req(object())
       
-      rdata <- rowData(object()[[input$chooseAssay]])
+      rdata <- rowData(object()[[which.assay()]])
       # Delete columns that are not one-dimensional
       rdata <- rdata[, - which(colnames(rdata) == 'adjacencyMatrix')]
       rdata <- rdata[, - which(colnames(rdata) == 'qMetadata')]
@@ -172,7 +164,7 @@ mod_ds_explorer_server <- function(id,
     
     output$table <- DT::renderDataTable(server=TRUE,{
       req(data())
-      data <- object()[[input$chooseAssay]]
+      data <- object()[[which.assay()]]
       df <- cbind(keyId = rowData(data)[, idcol(data)],
                   round(assay(data), digits = digits()), 
                   qMetadata(data)
@@ -251,7 +243,7 @@ mod_ds_explorer_server <- function(id,
     getDataForExprs <- reactive({
       req(object())
       browser()
-      test.table <- round(assay(object(), input$chooseAssay), digits=10)
+      test.table <- round(assay(object(), which.assay()), digits=10)
       test.table <- tibble::as_tibble(test.table)
       
       addon.table <- matrix(rep(NA,
@@ -279,10 +271,3 @@ mod_ds_explorer_server <- function(id,
   
   
 }
-
-## To be copied in the UI
-# mod_plots_se_explorer_ui("se_explorer_ui_1")
-
-## To be copied in the server
-# callModule(mod_plots_se_explorer_server, "se_explorer_ui_1")
-

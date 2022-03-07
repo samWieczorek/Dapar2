@@ -8,14 +8,14 @@
 #' @export 
 mod_qMetadataLegend_ui <- function(id){
   ns <- NS(id)
-  
-  
-  bsCollapse(id = "collapseExample", 
+  fluidPage(
+    bsCollapse(id = "collapseExample", 
              open = "",
              bsCollapsePanel(title = "Legend of colors",
                              uiOutput(ns('legend')),
-                             style = ""
+                             style = "info"
              )
+  )
   )
   
 }
@@ -36,24 +36,31 @@ mod_qMetadataLegend_server <- function(id,
     function(input, output, session) {
       ns <- session$ns
        
+      
+      output$genericPlot <- renderPlot(plot(rnorm(100)))
+      
       output$legend <- renderUI({
         mc <- combine(qMetadata.def(level = 'peptide'),
                       qMetadata.def(level = 'protein')
         )
         
+        mc <- qMetadata.def(level = 'peptide')
         tagList(
           lapply(1:nrow(mc), function(x){
-            if (mc[x, 'color'] != 'white' || (mc[x, 'color'] == 'white' && !isTRUE(hide.white))) {
+            cond <- mc[x, 'color'] == 'white' && hide.white
+            cond <- cond || mc[x, 'color'] != 'white'
+            if (cond) {
               tagList(
                 tags$div(class="color-box",
-                         style = paste0("display:inline-block; 
+                         style = paste0("display: inline-block; 
                                       vertical-align: middle;
-                                      width:20px; height:20px;
-                                      border:1px solid #000; 
+                                      width: 20px; 
+                                      height: 20px;
+                                      border: 1px solid #000; 
                                       background-color: ", 
                                         mc[x, 'color'] , ";"),
                 ),
-                tags$p(style = paste0("display:inline-block; 
+                tags$p(style = paste0("display: inline-block; 
                                        vertical-align: middle;"),
                        mc[x, 'node']),
                 br()
