@@ -51,7 +51,7 @@ and the considered condition."><!-- mathjax --><script src="https://cdnjs.cloudf
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Distribution of Observed values with respect to intensity values</h1>
-    <small class="dont-index">Source: <a href="https://github.com/samWieczorek/DaparToolshed/blob/HEAD/R/plots_mv_for_impute.R" class="external-link"><code>R/plots_mv_for_impute.R</code></a>, <a href="https://github.com/samWieczorek/DaparToolshed/blob/HEAD/R/mod_plots_mv_for_imputation.R" class="external-link"><code>R/mod_plots_mv_for_imputation.R</code></a></small>
+    <small class="dont-index">Source: <a href="https://github.com/samWieczorek/DaparToolshed/blob/HEAD/R/plots_mv_for_impute.R" class="external-link"><code>R/plots_mv_for_impute.R</code></a></small>
     <div class="hidden name"><code>imputation.Rd</code></div>
     </div>
 
@@ -69,17 +69,7 @@ and the considered condition.</p>
     <div id="ref-usage">
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">mvPlot.2</span><span class="op">(</span><span class="va">qData</span>, <span class="va">conds</span>, title <span class="op">=</span> <span class="cn">NULL</span>, <span class="va">pal.name</span><span class="op">)</span>
 
-<span class="fu">mvImage</span><span class="op">(</span><span class="va">object</span>, <span class="va">conds</span><span class="op">)</span>
-
-<span class="fu">mod_imputation_plot_ui</span><span class="op">(</span><span class="va">id</span><span class="op">)</span>
-
-<span class="fu">mod_imputation_plot_server</span><span class="op">(</span>
-  <span class="va">id</span>,
-  object <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/shiny/man/reactive.html" class="external-link">reactive</a></span><span class="op">(</span><span class="op">{</span>     <span class="cn">NULL</span> <span class="op">}</span><span class="op">)</span>,
-  conds <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/shiny/man/reactive.html" class="external-link">reactive</a></span><span class="op">(</span><span class="op">{</span>     <span class="cn">NULL</span> <span class="op">}</span><span class="op">)</span>,
-  title <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/shiny/man/reactive.html" class="external-link">reactive</a></span><span class="op">(</span><span class="op">{</span>     <span class="cn">NULL</span> <span class="op">}</span><span class="op">)</span>,
-  pal.name <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/shiny/man/reactive.html" class="external-link">reactive</a></span><span class="op">(</span><span class="op">{</span>     <span class="cn">NULL</span> <span class="op">}</span><span class="op">)</span>
-<span class="op">)</span></code></pre></div>
+<span class="fu">mvImage</span><span class="op">(</span><span class="va">object</span>, <span class="va">conds</span><span class="op">)</span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -89,14 +79,12 @@ and the considered condition.</p>
 <dt>conds</dt>
 <dd><p>A <code><a href="https://rdrr.io/r/base/character.html" class="external-link">character()</a></code> of the name of conditions (one condition per sample).</p></dd>
 <dt>title</dt>
-<dd><p>A <code>character(1)</code> which is</p></dd>
+<dd><p>The title of the plot</p></dd>
 <dt>pal.name</dt>
 <dd><p>A <code>character(1)</code> which is the name of the palette (from
 the package RColorBrewer to use.</p></dd>
 <dt>object</dt>
 <dd><p>An instance of a class <code>SummarizedExperiment</code>.</p></dd>
-<dt>id</dt>
-<dd><p>A <code>character(1)</code> which is the 'id' of the shiny module.</p></dd>
 </dl></div>
     <div id="value">
     <h2>Value</h2>

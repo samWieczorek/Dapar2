@@ -184,38 +184,31 @@ proteomics data processing pipeline.</p></div>
 <span class="r-in">                                      fcol <span class="op">=</span> <span class="st">'adjacencyMatrix'</span>, </span>
 <span class="r-in">                                      fun <span class="op">=</span> <span class="va">colSumsMat</span>,</span>
 <span class="r-in">                                      fun.qmeta <span class="op">=</span> <span class="va">aggQmeta</span><span class="op">)</span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in do.call(FUN, list(x, MAT, ...)):</span> object 'aggQmeta' not found</span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in isEmpty(object):</span> could not find function "isEmpty"</span>
 <span class="r-in"><span class="va">feat1</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> An instance of class QFeatures containing 1 assays:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [1] psms: SummarizedExperiment with 10 rows and 2 columns </span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in eval(expr, envir, enclos):</span> object 'feat1' not found</span>
 <span class="r-in"></span>
 <span class="r-in"><span class="fu">assay</span><span class="op">(</span><span class="va">feat1</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>       S1 S2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> PSM1   1 11</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> PSM2   2 12</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> PSM3   3 13</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> PSM4   4 14</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> PSM5   5 15</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> PSM6   6 16</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> PSM7   7 17</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> PSM8   8 18</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> PSM9   9 19</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> PSM10 10 20</span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in assay(feat1[[1]]):</span> could not find function "assay"</span>
 <span class="r-in"><span class="fu">assay</span><span class="op">(</span><span class="va">feat1</span><span class="op">[[</span><span class="fl">2</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in h(simpleError(msg, call)):</span> error in evaluating the argument 'x' in selecting a method for function 'assay': subscript is out of bounds</span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/pkg/QFeatures/man/QFeatures-aggregate.html" class="external-link">aggcounts</a></span><span class="op">(</span><span class="va">feat1</span><span class="op">[[</span><span class="fl">2</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in h(simpleError(msg, call)):</span> error in evaluating the argument 'object' in selecting a method for function 'aggcounts': subscript is out of bounds</span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in assay(feat1[[2]]):</span> could not find function "assay"</span>
+<span class="r-in"><span class="fu">aggcounts</span><span class="op">(</span><span class="va">feat1</span><span class="op">[[</span><span class="fl">2</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in aggcounts(feat1[[2]]):</span> could not find function "aggcounts"</span>
 <span class="r-in"><span class="fu">assay</span><span class="op">(</span><span class="va">feat1</span><span class="op">[[</span><span class="fl">3</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in h(simpleError(msg, call)):</span> error in evaluating the argument 'x' in selecting a method for function 'assay': subscript is out of bounds</span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/pkg/QFeatures/man/QFeatures-aggregate.html" class="external-link">aggcounts</a></span><span class="op">(</span><span class="va">feat1</span><span class="op">[[</span><span class="fl">3</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in h(simpleError(msg, call)):</span> error in evaluating the argument 'object' in selecting a method for function 'aggcounts': subscript is out of bounds</span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in assay(feat1[[3]]):</span> could not find function "assay"</span>
+<span class="r-in"><span class="fu">aggcounts</span><span class="op">(</span><span class="va">feat1</span><span class="op">[[</span><span class="fl">3</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in aggcounts(feat1[[3]]):</span> could not find function "aggcounts"</span>
 <span class="r-in"><span class="fu">rowData</span><span class="op">(</span><span class="va">ft</span><span class="op">[[</span><span class="fl">2</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in h(simpleError(msg, call)):</span> error in evaluating the argument 'x' in selecting a method for function 'rowData': subscript is out of bounds</span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in rowData(ft[[2]]):</span> could not find function "rowData"</span>
 <span class="r-in"><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">ft</span><span class="op">)</span></span>
 <span class="r-in"><span class="va">qMeta</span> <span class="op">&lt;-</span> <span class="fu">qMetadata</span><span class="op">(</span><span class="va">ft</span>, <span class="fl">1</span><span class="op">)</span></span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in List(lapply(experiments(object)[i], function(x) .GetRowdataSlot(x,     slotName = slotName))):</span> could not find function "List"</span>
 <span class="r-in"><span class="va">X</span> <span class="op">&lt;-</span> <span class="fu">adjacencyMatrix</span><span class="op">(</span><span class="va">ft</span>, <span class="fl">1</span><span class="op">)</span></span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in adjacencyMatrix(ft, 1):</span> could not find function "adjacencyMatrix"</span>
 <span class="r-in"><span class="va">level</span> <span class="op">&lt;-</span> <span class="fu">typeDataset</span><span class="op">(</span><span class="va">ft</span>, <span class="fl">1</span><span class="op">)</span></span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in List(lapply(experiments(object)[i], .GetMetadataSlot, slotName = slotName)):</span> could not find function "List"</span>
 <span class="r-in"><span class="va">conds</span> <span class="op">&lt;-</span> <span class="fu">colData</span><span class="op">(</span><span class="va">ft</span><span class="op">)</span><span class="op">$</span><span class="va">Condition</span></span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in colData(ft):</span> could not find function "colData"</span>
 <span class="r-in"><span class="va">aggQmeta</span> <span class="op">&lt;-</span> <span class="fu">aggQmetadata</span><span class="op">(</span><span class="va">qMeta</span>, <span class="va">X</span>, <span class="va">level</span>, <span class="va">conds</span><span class="op">)</span></span>
 <span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in aggQmetadata(qMeta, X, level, conds):</span> could not find function "aggQmetadata"</span>
 <span class="r-in"></span>

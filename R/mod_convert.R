@@ -40,6 +40,7 @@ mod_Convert_ui <- function(id){
 #' @import QFeatures
 #' @importFrom shinyalert shinyalert
 #' @importFrom shinyjs disabled
+#' @importFrom openxlsx getSheetNames
 #'
 #' @export
 #'
@@ -242,7 +243,7 @@ mod_Convert_server <- function(id,
       req(input$file2convert)
 
       if ( GetExtension(input$file2convert$name) %in% c("xls", "xlsx")){
-        sheets <- listSheets(input$file2convert$datapath)
+        sheets <- openxlsx::getSheetNames((input$file2convert$datapath)
         if (rv$steps.enabled['selectFile'])
           selectInput(ns("selectFile_XLSsheets"), "sheets",
                       choices = as.list(sheets),
