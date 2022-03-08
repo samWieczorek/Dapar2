@@ -61,10 +61,10 @@ mod_Agregation_server <- function(id,
     mode = 'process',
     
     # List of all steps of the process
-    steps = c('Description', 'Agregation', 'Save'),
+    steps = c('Description', 'Filter peptides', 'Agregation', 'Save'),
     
     # A vector of boolean indicating if the steps are mandatory or not.
-    mandatory = c(TRUE, TRUE, TRUE),
+    mandatory = c(TRUE, FALSE, TRUE, TRUE),
     
     path_to_md_dir =  system.file('md/', package='DaparToolshed')
   )
@@ -73,14 +73,17 @@ mod_Agregation_server <- function(id,
   # Define default selected values for widgets
   # This is only for simple workflows
   widgets.default.values <- list(
-    Agregation_ProteinId = NULL,
-    Agregation_useOfShared = NULL,
-    Agregation_consider = NULL,
-    Agregation_nTopn = NULL,
-    Agregation_operator = NULL,
-    nbPeptides = 0,
+    Filterpeptides_ProteinId = NULL,
+    Filterpeptides_useOfShared = NULL,
+    Filterpeptides_consider = NULL,
+    Filterpeptides_nTopn = NULL,
+    Filterpeptides_barplotType = 'all',
+    
+    Agregation_method = NULL,
     Agregation_filterProtAfterAgregation = FALSE,
-    Agregation_barplotType = 'all',
+    
+    nbPeptides = 0,
+    
     AddMetadata_columnsForProteinDatasetBox = NULL
   )
   
@@ -158,9 +161,11 @@ mod_Agregation_server <- function(id,
     })
     
     
+    #--------------------------------------------------------------
+    # Filter peptides step UI
+    #--------------------------------------------------------------
     
-    
-    output$Agregation <- renderUI({
+    output$Filterpeptides <- renderUI({
       wellPanel(
         # uiOutput for all widgets in this UI
         # This part is mandatory
@@ -171,52 +176,51 @@ mod_Agregation_server <- function(id,
         # For more details, please refer to the dev document.
         uiOutput(ns("warningAgregationMethod")),
         
-        uiOutput(ns("Agregation_ProteinId_ui")),
-        uiOutput(ns('Agregation_useOfShared_ui')),
-        uiOutput(ns('Agregation_consider_ui')),
-        uiOutput(ns('Agregation_nTopn_ui')),
-        uiOutput(ns("Agregation_0perator_ui")),
+        #uiOutput(ns("Filterpeptides_ProteinId_ui")),
+        uiOutput(ns('Filterpeptides_consider_ui')),
+        uiOutput(ns('Filterpeptides_nTopn_ui')),
         
         # Insert validation button
-        uiOutput(ns('Agregation_btn_validate_ui')),
+        uiOutput(ns('Filterpeptides_btn_validate_ui')),
         
         # Insert additional code
-        uiOutput(ns("ObserverAggregationDone")),
-        shinyjs::hidden(downloadButton(ns('downloadAggregationIssues'),
-                                       'Download issues', 
-                                       class = actionBtnClass)),
         
-        hr(),
-        uiOutput(ns('Agregation_barplotType_ui')),
-        highchartOutput(ns("peptideBarplot"), width="400px"),
-        DT::DTOutput(ns("aggregationStats"))
+        uiOutput(ns('Filterpeptides_barplotType_ui')),
+        highchartOutput(ns("peptideBarplot"), width="400px")
       )
+      
+      
+    })
+    
+    output$Filterpeptides_btn_validate_ui <- renderUI({
+      widget <- actionButton(ns("Filterpeptides_btn_validate"),
+                             "Run",
+                             class = btn_success_color)
+      toggleWidget(rv$steps.enabled['Filterpeptides'], widget)
     })
     
     
-    output$Agregation_useOfShared_ui <- renderUI({
-      mod_popover_for_help_server("modulePopover_useOfShared",
-                                  data = list(title="Include shared peptides",
-                                              content= HTML(paste0("<ul><li><strong>No:</strong> only protein-specific peptides</li><li><strong>Yes 1:</strong> shared peptides processed as protein specific</li><li><strong>Yes 2</strong>: proportional redistribution of shared peptides</li></ul>")
-                                              )
-                                  )
-      )
+    observeEvent(input$Filterpeptides_btn_validate, {
       
-      widget <- radioButtons(ns("Agregation_useOfShared"), 
-                             NULL, 
-                             choices = c("No" = "No",
-                                         "As protein specific"= "asSpec" ,
-                                         "For redistribution" = "forDistrib" ),
-                             selected = rv.widgets$Agregation_useOfShared)
+      f <- switch(rv.widgets$Filterpeptides_consider,
+                  allPeptides = FunctionFilter('allPeptides', list()),
+                  topnPeptides = FunctionFilter('topnPeptides', fun = 'rowSums', top = 2),
+                  specPeptides =  FunctionFilter('specPeptides', list())
+                  )
       
-      tagList(
-        mod_popover_for_help_ui(ns("modulePopover_useOfShared")),
-        toggleWidget(rv$steps.enabled['Agregation'], widget )
-      )
-
+      ll.filters <- list()
+      rv$dataIn <- filterFeaturesOneSE(object = rv$dataIn,
+                                       i = length(rv$dataIn),
+                                       name = 'adjMatfiltered',
+                                       filters = list(f)
+                                       )
+      # DO NOT MODIFY THE THREE FOLLOWINF LINES
+      dataOut$trigger <- Magellan::Timestamp()
+      dataOut$value <- rv$dataIn
+      rv$steps.status['Filterpeptides'] <- global$VALIDATED
     })
-
-    output$Agregation_ProteinId_ui <- renderUI({
+    
+    output$Filterpeptides_ProteinId_ui <- renderUI({
       # req (is.null(GetProteinId(rv$dataIn))
       # 
       # widget <- selectInput(ns("Agregation_ProteinId"), 
@@ -228,42 +232,122 @@ mod_Agregation_server <- function(id,
     
     
     
-    output$Agregation_consider_ui <- renderUI({
+    output$Filterpeptides_consider_ui <- renderUI({
       
-      widget <- radioButtons(ns("Agregation_consider"), "Consider",
-                             choices=c('all peptides' = "allPeptides", 
-                                       "N most abundant" = "onlyN"),
-                             selected = rv.widgets$Agregation_consider)
-      toggleWidget(rv$steps.enabled['Agregation'], widget )
+      widget <- radioButtons(ns("Filterpeptides_consider"), "Consider",
+                             choices = AdjMatFilters(),
+                             selected = rv.widgets$Filterpeptides_consider)
+      toggleWidget(rv$steps.enabled['Filterpeptides'], widget )
     })
     
     
     
     
-    output$Agregation_nTopn_ui <- renderUI({
-      req (rv.widgets$Agregation_consider == 'onlyN')
+    output$Filterpeptides_nTopn_ui <- renderUI({
+      req (rv.widgets$Filterpeptides_consider == 'topnPeptides')
       
-      widget <- numericInput(ns("Agregation_nTopn"), "N",
-                             value = rv.widgets$Agregation_nTopn, 
+      widget <- numericInput(ns("Filterpeptides_nTopn"), "N",
+                             value = rv.widgets$Filterpeptides_nTopn, 
                              min = 0, 
                              step = 1, 
                              width = '100px')
-      toggleWidget(rv$steps.enabled['Agregation'], widget )
+      toggleWidget(rv$steps.enabled['Filterpeptides'], widget )
     })
     
     
-    output$Agregation_operator_ui <- renderUI({
-      req(rv.widgets$Agregation_useOfShared)
+    
+    
+    
+    
+    output$Filterpeptides_barplotType_ui <- renderUI({
       
-      widget <- radioButtons(ns("Agregation_operator"), "Operator", 
-                             choices = if (rv.widgets$Agregation_useOfShared %in% c("No", "asSpec")){
-                               choice <- c("Mean"="Mean","Sum"="Sum")
-                             } else {choice <- c("Mean"="Mean")}, 
-                             selected = rv.widgets$Agregation_operator)
-      toggleWidget(rv$steps.enabled['Agregation'], widget )
+      widget <- selectInput(ns("Filterpeptides_barplotType"), "Barplot type",
+                            choices=c('All peptides' = "all"
+                                      #"Only specific peptides" = "onlySpec",
+                                      #"Only shared peptides" = "onlyShared"
+                                      ),
+                            selected = rv.widgets$Filterpeptides_barplotType,
+                            width = '200')
+      toggleWidget(rv$steps.enabled['Filterpeptides'], widget )
+    })
+    
+    output$peptideBarplot <- renderHighchart({
+       req(adjacencyMatrix(last_assay(rv$dataIn)))
+      withProgress(message = 'Rendering plot, pleast wait...',detail = '', value = 1, {
+        X <- adjacencyMatrix(last_assay(rv$dataIn))
+        if (is.null(X)){
+          X <- makeAdjacencyMatrix(rowData(last_assay(rv$dataIn))[,'Protein_group_IDs'])
+          rownames(X) <- rownames(last_assay(rv$dataIn))
+        }
+        
+        # Modify the adjacencymatrix to reflect the filter parameters
+        #X <- updateAdjacencyMatrix(X, mode = rv.widgets$Filterpeptides_barplotType)
+        
+        GraphPepProt_hc(X)
+      })
     })
     
     
+    #--------------------------------------------------------------
+    # Agregation step UI
+    #--------------------------------------------------------------
+    
+    output$Agregation <- renderUI({
+      wellPanel(
+        # uiOutput for all widgets in this UI
+        # This part is mandatory
+        # The renderUI() function of each widget is managed by Magellan
+        # The dev only have to define a reactive() function for each
+        # widget he want to insert
+        # Be aware of the naming convention for ids in uiOutput()
+        # For more details, please refer to the dev document.
+        uiOutput(ns("Agregation_method_ui")),
+        
+        # Insert validation button
+        uiOutput(ns('Agregation_btn_validate_ui')),
+        
+        # Insert additional code
+        uiOutput(ns("ObserverAggregationDone")),
+        shinyjs::hidden(downloadButton(ns('downloadAggregationIssues'),
+                                       'Download issues', 
+                                       class = actionBtnClass)),
+        
+        hr(),
+        DT::DTOutput(ns("aggregationStats"))
+      )
+    })
+    
+    
+    output$Agregation_method_ui <- renderUI({
+      
+      widget <- radioButtons(ns("Agregation_method"), "method", 
+                             choices = aggregateMethods(), 
+                             selected = rv.widgets$Filterpeptides_method)
+      toggleWidget(rv$steps.enabled['Agregation'], widget )
+    })
+    
+    # output$Agregation_useOfShared_ui <- renderUI({
+    #   mod_popover_for_help_server("modulePopover_useOfShared",
+    #                               data = list(title="Include shared peptides",
+    #                                           content= HTML(paste0("<ul><li><strong>No:</strong> only protein-specific peptides</li><li><strong>Yes 1:</strong> shared peptides processed as protein specific</li><li><strong>Yes 2</strong>: proportional redistribution of shared peptides</li></ul>")
+    #                                           )
+    #                               )
+    #   )
+    #   
+    #   widget <- radioButtons(ns("Agregation_useOfShared"), 
+    #                          NULL, 
+    #                          choices = c("No" = "No",
+    #                                      "As protein specific"= "asSpec" ,
+    #                                      "For redistribution" = "forDistrib" ),
+    #                          selected = rv.widgets$Agregation_useOfShared)
+    #   
+    #   tagList(
+    #     mod_popover_for_help_ui(ns("modulePopover_useOfShared")),
+    #     toggleWidget(rv$steps.enabled['Agregation'], widget )
+    #   )
+    # 
+    # })
+
     
     output$warningAgregationMethod <- renderUI({
       req(rv$dataIn)
@@ -287,29 +371,6 @@ mod_Agregation_server <- function(id,
     
     
     
-    output$Agregation_barplotType_ui <- renderUI({
-      
-      widget <- selectInput(ns("Agregation_barplotType"), "Barplot type",
-                             choices=c('All peptides' = "all", 
-                                       "Only specific peptides" = "onlySpec",
-                                       "Only shared peptides" = "onlyShared"),
-                             selected = rv.widgets$Agregation_barplotType,
-                            width = '200')
-      toggleWidget(rv$steps.enabled['Agregation'], widget )
-    })
-
-    output$peptideBarplot <- renderHighchart({
-      req(adjacencyMatrix(rv$dataIn[[length(rv$dataIn)]]))
-     withProgress(message = 'Rendering plot, pleast wait...',detail = '', value = 1, {
-       X <- adjacencyMatrix(GetCurrentSE())
-       if (is.null(X)){
-         X <- makeAdjacencyMatrix(rowData(GetCurrentSE())[,'Protein_group_IDs'])
-          rownames(X) <- rownames(GetCurrentSE())
-       }
-       X <- updateAdjacencyMatrix(X, mode = rv.widgets$Agregation_barplotType)
-      GraphPepProt_hc(X)
-       })
-    })
 
     
     output$Agregation_nbPeptides_ui <- renderUI({
@@ -354,104 +415,31 @@ mod_Agregation_server <- function(id,
     #   )
     # })
     
-    
-    GetCurrentSE <- reactive({
-      rv$dataIn[[length(rv$dataIn)]]
-    })
-    
-    ########################################################
-    RunAggregation <- reactive({
-      
-      # By default, save the whole adjacency matrix
-      fcol <- 'Protein_group_IDs'
-      X.all <- makeAdjacencyMatrix(rowData(GetCurrentSE())[,fcol])
-      rownames(X.all) <- rownames(GetCurrentSE())
-      browser()
-      rowData(GetCurrentSE())['adjacencyMatrix'] <- NULL
-      adjacencyMatrix(GetCurrentSE()) <- X.all
-      
-      
-      
-      # withProgress(message = '',detail = '', value = 0, {
-      #   incProgress(0.2, detail = 'loading foreach package')
-      #   require(foreach)
-      #   
-      #   incProgress(0.5, detail = 'Aggregation in progress')
-      #   
-         ll.agg <- NULL
-         
-         if(rv.widgets$Agregation_useOfShared == "forDistrib"){
-           if (rv.widgets$Agregation_consider == 'allPeptides'){
-             # aggIterative agregation method
-             ll.agg <- aggregateFeatures4Prostar(object = rv$dataIn,
-                                                 i = length(rv$dataIn), 
-                                                 name = 'aggregated',
-                                                 fcol = "adjacencyMatrix", 
-                                                 fun = aggIterative,
-                                                 conditions = colData(object)$Condition, 
-                                                 init.method = 'rowSums',
-                                                 iter.method = 'Mean')
-           } else if (rv.widgets$Agregation_consider == 'onlyN'){
-             ll.agg <- aggregateFeatures4Prostar(object = rv$dataIn,
-                                                 i = length(rv$dataIn), 
-                                                 name = 'aggregated',
-                                                 fcol = "adjacencyMatrix", 
-                                                 fun = aggIterative,
-                                                 conditions = colData(object)$Condition, 
-                                                 init.method = 'rowSums',
-                                                 iter.method = 'onlyN',
-                                                 n = 10)
-             }
-         } else if (rv.widgets$Agregation_useOfShared == "asSpec") {
-           if (rv.widgets$Agregation_consider == 'allPeptides') {
-             X.all <- X.all
-           } else if (rv.widgets$Agregation_consider == 'onlyN') {
-             rowData(GetCurrentSE())[['adjacencyMatrix']] <- NULL
-             X.n <- updateAdjacencyMatrix(X,
-                                          mode = 'topn',
-                                          qData = assay(GetCurrentSE()),
-                                          fun = 'rowMeans',
-                                          n = rv.widgets$Agregation_topn)
-             adjacencyMatrix(GetCurrentSE()) <- X.n
-             }
-           ll.agg <- aggregateFeatures4Prostar(object = rv$dataIn,
-                                               i = length(rv$dataIn), 
-                                               name = 'aggregated',
-                                               fcol = "adjacencyMatrix", 
-                                               fun = rv.widgets$Agregation_operator)
-           
-           
-         } else if (rv.widgets$Agregation_useOfShared == "no") {
-           
-           # Extract only specific peptides for adjacency matrix
-           rowData(GetCurrentSE())[['adjacencyMatrix']] <- NULL
-           X.spec <- updateAdjacencyMatrix(adjacencyMatrix(GetCurrentSE()),
-                                        mode = 'onlySpec',
-                                        qData = assay(GetCurrentSE())
-                                        )
-           adjacencyMatrix(GetCurrentSE()) <- X.spec
-           
-           if (rv.widgets$Agregation_consider == 'onlyN') {
-             # Extract only n best peptides for adjacency matrix
-             rowData(GetCurrentSE())[['adjacencyMatrix']] <- NULL
-             X.best.n <- updateAdjacencyMatrix(adjacencyMatrix(GetCurrentSE()),
-                                          mode = 'topn',
-                                          qData = assay(GetCurrentSE()),
-                                          fun = 'rowMeans',
-                                          n = rv.widgets$Agregation_topn)
-             adjacencyMatrix(GetCurrentSE()) <- X.best.n
-           }
-           ll.agg <- aggregateFeatures4Prostar(object = rv$dataIn,
-                                               i = length(rv$dataIn), 
-                                               name = 'aggregated',
-                                               fcol = "adjacencyMatrix", 
-                                               fun = rv.widgets$Agregation_operator)
-         }
-      return(ll.agg)
-      
-    })
 
-    
+    ########################################################
+    # RunAggregation <- reactive({
+    #   
+    #   
+    #   # withProgress(message = '',detail = '', value = 0, {
+    #   #   incProgress(0.2, detail = 'loading foreach package')
+    #   #   require(foreach)
+    #   #   
+    #   #   incProgress(0.5, detail = 'Aggregation in progress')
+    #   #   
+    #   
+    #   browser()
+    #      ll.agg <- aggregateFeatures4Prostar(object = ft, 
+    #                                          i = length(rv$dataIn), 
+    #                                          name = 'aggregated', 
+    #                                          fcol = 'adjacencyMatrix',
+    #                                          fun = rv.widgets$Agregation_method)
+    #      
+    #      
+    #   return(ll.agg)
+    #   
+    # })
+    # 
+    # 
     
     output$displayNbPeptides <- renderUI({
       req(rv$widgets$aggregation$filterProtAfterAgregation)
@@ -472,19 +460,19 @@ mod_Agregation_server <- function(id,
     
     
     observeEvent(input$Agregation_btn_validate, {
-      print('Perform')
-     # rv$dataIn <- RunAggregation()
+       rv.custom$temp.agregate <- aggregateFeatures4Prostar(object = rv$dataIn, 
+                                                           i = length(rv$dataIn), 
+                                                           name = 'aggregated', 
+                                                           fcol = 'adjacencyMatrix',
+                                                           fun = rv.widgets$Agregation_method)
       
-      
-      
-      rv.custom$temp.agregate <- RunAggregation()
-      
+   
       if(is.null(rv.custom$temp.agregate$issues)){
+        rv$dataIn <- rv.custom$temp.agregate
         dataOut$trigger <- Magellan::Timestamp()
         dataOut$value <- rv$dataIn
         rv$steps.status['Agregation'] <- global$VALIDATED
       } else {
-        print("error")
         shinyjs::toggle('downloadAggregationIssues', 
                         condition = !rvModProcess$moduleAggregationDone[1] && length(rv.custom$temp.agregate$issues) > 0
         )
@@ -515,11 +503,11 @@ mod_Agregation_server <- function(id,
     #--------------------------------------------------------
     output$Save <- renderUI({
       wellPanel(
-        uiOutput(ns('AddMetadata_btn_validate_ui'))
+        uiOutput(ns('Save_btn_validate_ui'))
       )
     })
     
-    output$AddMetadata_btn_validate_ui <- renderUI({
+    output$Save_btn_validate_ui <- renderUI({
       widget <- actionButton(ns("Save_btn_validate"),
                              "Perform",
                              class = btn_success_color)
@@ -528,11 +516,8 @@ mod_Agregation_server <- function(id,
     
     
     observeEvent(input$Save_btn_validate, {
-      
-      
-      
-      #dataOut$trigger <- Magellan::Timestamp()
-      #dataOut$value <- rv$dataIn
+      dataOut$trigger <- Magellan::Timestamp()
+      dataOut$value <- rv$dataIn
       rv$steps.status['Save'] <- global$VALIDATED
     })
     

@@ -151,7 +151,7 @@ setMethod("filterFeaturesOneSE", "QFeatures",
             if (name %in% names(object))
               stop("There's already an assay named '", name, "'.")
             if (missing(i))
-              i <- main_assay(object)
+              i <- length(object)
             
             if (missing(filters))
               return(object)
@@ -193,7 +193,8 @@ setMethod("filterFeaturesOneSE", "QFeatures",
 ##' @rdname QFeatures-filtering-oneSE
 setMethod("filterFeaturesOneSE", "SummarizedExperiment",
           function(object, filters){
-            for (f in filters){
+            lapply(filters, 
+                   function(f){
               if (inherits(f, "AnnotationFilter")){
                 x <- rowData(object)
                 sel <- if (field(f) %in% names(x)){
@@ -207,9 +208,13 @@ setMethod("filterFeaturesOneSE", "SummarizedExperiment",
                 object <- object[sel]
               }
               else if (inherits(f, "FunctionFilter"))
-                object <- do.call(f@name, 
-                                  append(list(object=object), f@params))
-            }
+               
+              object <- do.call(f@name, 
+                                  append(list(object = object), 
+                                         f@params))
+                   }
+            )
+            
             return(object)
           }
 )

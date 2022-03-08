@@ -1,18 +1,29 @@
-#' @title This function exports a \code{QFeatures} object to a Excel file.
+#' @title Exports a \code{QFeatures} object to a Excel file.
 #' 
 #' @description 
 #' 
-#' This function exports a \code{QFeatures} data object to a Excel file.
-#' Each of the three data.frames in the \code{QFeatures} object (ie expression data,
-#' colData and rowData are respectively integrated into separate sheets in
-#' the Excel file). The colored cells in the experimental data correspond to the 
-#' original missing values which have been imputed.
+#' This function exports an instance of the class `QFeatures` to a Excel file.
+#' The resulting file is composed of four sheets:
+#' 
+#' - `quantitative data` which contains the content of [assay()] object whith a 
+#' color code for each cell w.r.t. to cell quantitative metadata.
+#' 
+#' - `metadata` which is the content of [rowData()] with only one-dimensionnal
+#' data (i.e. the adjacencyMatrix and the qMetadata slots are not part of
+#' the sheet),
+#' 
+#' - `exp. design` which is the content of [colData()]. Each condition in the table
+#' is colored with a different color,
+#' 
+#' - `quantitative metadata` which is the content of [qMetadata()]. There is a color
+#' code for the different tags.
+#' 
 #' 
 #' @param obj An object of class \code{QFeatures}.
 #' 
 #' @param filename A character string for the name of the Excel file.
 #' 
-#' @return A Excel file (.xlsx)
+#' @return A Excel file.
 #' 
 #' @name QFeatures-excel
 #' 
@@ -163,10 +174,11 @@ setMethod("write2excel", "SummarizedExperiment",
 }
 
 
-#' @param wb xxx
-#' @param n xxx
+#' @param wb A workbook
+#' @param n A `integer(1)` which is the number of sheet in the workbook.
 #' @param tags xxx
-#' @param colors xxx
+#' @param colors A `character()` which contains the HEX code for colors. The size
+#' of this vector must be the same as the number of tags.
 #' 
 #' @noRd
 #' 

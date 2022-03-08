@@ -2,15 +2,20 @@
 % Please edit documentation in R/example-data.R
 \name{create_ft_example}
 \alias{create_ft_example}
-\title{Creates an object of class \link{QFeatures} as example}
+\title{Creates an example dataset}
 \usage{
 create_ft_example(with.na = FALSE)
 }
+\arguments{
+\item{with.na}{A \code{logical(1)} which indicates whether the
+example dataset contains missing values or not. Default is FALSE.}
+}
 \value{
-An example object of class \link{QFeatures}
+An instance of class \link{QFeatures}
 }
 \description{
-xxxxx
+This function builds a dataset which is an instance of
+the class \link{QFeatures}.
 }
 \examples{
 create_ft_example()

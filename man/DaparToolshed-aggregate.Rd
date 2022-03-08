@@ -5,6 +5,7 @@
 \alias{aggregateFeatures4Prostar,QFeatures-method}
 \alias{aggregateFeatures4Prostar,SummarizedExperiment-method}
 \alias{aggQmetadata}
+\alias{aggregateMethods}
 \title{Aggregate an assay of peptides into proteins.}
 \usage{
 \S4method{aggregateFeatures4Prostar}{QFeatures}(
@@ -25,6 +26,8 @@
 )
 
 aggQmetadata(qMeta, X, level, conds)
+
+aggregateMethods()
 }
 \arguments{
 \item{object}{An object of class 'SummarizedExperiment'}
@@ -76,6 +79,9 @@ either be a vector (we then refer to an \emph{aggregation by vector})
 or an adjacency matrix (\emph{aggregation by matrix}).
 
 The quantitative metadata are aggregated with a function (\code{fun.qmeta}).
+
+The list of agregation methods can be obtained with \code{\link[=aggregateMethods]{aggregateMethods()}}. This function
+compiles both methods from the packages \code{DaparToolshed} and \code{QFeatures}.
 
 xxx
 }

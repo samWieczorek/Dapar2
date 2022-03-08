@@ -297,3 +297,14 @@ setMethod("design", "QFeatures",
   return(object)
 }
 
+
+
+#' @param object An instance of the class `QFeatures`
+#' @export
+last_assay <- function(object)
+  object[[length(object)]]
+
+#' @param object An instance of the class `QFeatures`
+#' @export
+n_assays_in_qf <- function(object)
+  length(object)

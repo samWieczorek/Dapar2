@@ -4,7 +4,7 @@
 \alias{QFeatures-excel}
 \alias{write2excel,QFeatures-method}
 \alias{write2excel,SummarizedExperiment-method}
-\title{This function exports a \code{QFeatures} object to a Excel file.}
+\title{Exports a \code{QFeatures} object to a Excel file.}
 \usage{
 \S4method{write2excel}{QFeatures}(object, i = NULL, filename = "newFile", ...)
 
@@ -16,14 +16,22 @@
 \item{obj}{An object of class \code{QFeatures}.}
 }
 \value{
-A Excel file (.xlsx)
+A Excel file.
 }
 \description{
-This function exports a \code{QFeatures} data object to a Excel file.
-Each of the three data.frames in the \code{QFeatures} object (ie expression data,
-colData and rowData are respectively integrated into separate sheets in
-the Excel file). The colored cells in the experimental data correspond to the
-original missing values which have been imputed.
+This function exports an instance of the class \code{QFeatures} to a Excel file.
+The resulting file is composed of four sheets:
+\itemize{
+\item \verb{quantitative data} which contains the content of \code{\link[=assay]{assay()}} object whith a
+color code for each cell w.r.t. to cell quantitative metadata.
+\item \code{metadata} which is the content of \code{\link[=rowData]{rowData()}} with only one-dimensionnal
+data (i.e. the adjacencyMatrix and the qMetadata slots are not part of
+the sheet),
+\item \verb{exp. design} which is the content of \code{\link[=colData]{colData()}}. Each condition in the table
+is colored with a different color,
+\item \verb{quantitative metadata} which is the content of \code{\link[=qMetadata]{qMetadata()}}. There is a color
+code for the different tags.
+}
 }
 \examples{
 \donttest{

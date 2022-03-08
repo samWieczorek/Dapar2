@@ -3,6 +3,7 @@
 \docType{data}
 \name{AdjMatFilters}
 \alias{AdjMatFilters}
+\alias{allPeptides}
 \alias{specPeptides}
 \alias{subAdjMat_specificPeptides}
 \alias{sharedPeptides}
@@ -19,11 +20,13 @@ AdjMatFilters
 
 AdjMatFilters()
 
-specPeptides(object)
+allPeptides(object, ...)
+
+specPeptides(object, ...)
 
 subAdjMat_specificPeptides(X)
 
-sharedPeptides(object)
+sharedPeptides(object, ...)
 
 subAdjMat_sharedPeptides(X)
 
@@ -73,13 +76,13 @@ of these functions is given by \code{\link[=topnFunctions]{topnFunctions()}}:
 # This function will keep only specific peptides
 #------------------------------------------------
 
-FunctionFilter('specPeptides', list()))
+f1 <- FunctionFilter('specPeptides', list())
 
 #------------------------------------------------
 # This function will keep only shared peptides
 #------------------------------------------------
 
-FunctionFilter('sharedPeptides', list()))
+f2 <- FunctionFilter('sharedPeptides', list())
 
 #------------------------------------------------
 # This function will keep only the 'n' best peptides
@@ -87,7 +90,24 @@ FunctionFilter('sharedPeptides', list()))
 # all samples
 #------------------------------------------------
 
-FunctionFilter('topnPeptides', fun = 'rowSums', top = 2)
+f3 <- FunctionFilter('topnPeptides', fun = 'rowSums', top = 2)
+
+#------------------------------------------------------
+# To run the filter(s) on the dataset, use [xxx()]
+# IF several filters must be used, store them in a list
+#------------------------------------------------------
+
+data(ft)
+lst.filters <- list()
+lst.filters <- append(lst.filters, f1)
+lst.filters <- append(lst.filters, f3)
+ 
+ft <- filterFeaturesOneSE(object = ft,
+                          i = 1,
+                          name = 'filtered', 
+                          filters = lst.filters
+                          )
+                          
 
 }
 \seealso{

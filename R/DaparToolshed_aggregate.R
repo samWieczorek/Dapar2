@@ -19,6 +19,9 @@
 ##' or an adjacency matrix (*aggregation by matrix*).
 ##' 
 ##' The quantitative metadata are aggregated with a function (`fun.qmeta`).
+##' 
+##' The list of agregation methods can be obtained with [aggregateMethods()]. This function 
+##' compiles both methods from the packages `DaparToolshed` and `QFeatures`.
 ##'
 ##' @param object An instance of class [QFeatures] or [SummarizedExperiment].
 ##'
@@ -105,17 +108,16 @@ setMethod("aggregateFeatures4Prostar", "QFeatures",
             if (name %in% names(object))
               stop("There's already an assay named '", name, "'.")
             if (missing(i))
-              i <- main_assay(object)
-            
+              i <- length(object)
             
             
             # Add stats on agregation
-            aggAssay <- aggregateFeatures4Prostar(object[[i]], 
-                                                  design(object)$Condition,
-                                                  fcol, 
-                                                  fun, 
+            aggAssay <- aggregateFeatures4Prostar(object = object[[i]], 
+                                                  fcol = fcol, 
+                                                  fun = fun, 
+                                                  conds  = design(object)$Condition,
                                                   ...)
-            
+            #browser()
             ## Add the assay to the QFeatures object
             object <- addAssay(object,
                                aggAssay,
@@ -132,14 +134,13 @@ setMethod("aggregateFeatures4Prostar", "QFeatures",
 ##' @exportMethod aggregateFeatures4Prostar
 ##' @rdname DaparToolshed-aggregate
 setMethod("aggregateFeatures4Prostar", "SummarizedExperiment",
-          function(object, conds, fcol, fun = MsCoreUtils::robustSummary, ...)
-            .aggregateFeatures4Prostar(object, conds, fcol, fun, ...))
+          function(object, fcol, fun = MsCoreUtils::robustSummary, conds, ...)
+            .aggregateFeatures4Prostar(object, fcol, fun, conds, ...))
 
 
-.aggregateFeatures4Prostar <- function(object, conds, fcol, fun, ...) {
+.aggregateFeatures4Prostar <- function(object, fcol, fun, conds, ...) {
   
   
-  #browser()
   X <- adjacencyMatrix(object)
   
   # add agregation of qMetadata
@@ -159,11 +160,13 @@ setMethod("aggregateFeatures4Prostar", "SummarizedExperiment",
   ## Add the qMetadata to the new assay
   qMetadata(aggAssay) <- aggQ
   X.spec <- X.shared <- X
-  X.spec[which(rowSums(X.spec) > 1),] <- 0
-  X.shared[which(rowSums(X.shared) == 1),] <- 0
-  rowData(aggAssay)[['allPeptidesUsed']] <- t(X) %*% !is.na(assay(object))
-  rowData(aggAssay)[['specPeptidesUsed']] <- t(X.spec) %*% !is.na(assay(object))
-  rowData(aggAssay)[['sharedPeptidesUsed']] <- t(X.shared) %*% !is.na(assay(object))
+  #browser()
+  
+  X.spec[which(rowSums(as.matrix(X.spec)) > 1),] <- 0
+  X.shared[which(rowSums(as.matrix(X.shared)) == 1),] <- 0
+  rowData(aggAssay)[['allPeptidesUsed']] <- t(as.matrix(X)) %*% !is.na(assay(object))
+  rowData(aggAssay)[['specPeptidesUsed']] <- t(as.matrix(X.spec)) %*% !is.na(assay(object))
+  rowData(aggAssay)[['sharedPeptidesUsed']] <- t(as.matrix(X.shared)) %*% !is.na(assay(object))
   
   
   ## Enrich the new assay
@@ -220,3 +223,16 @@ aggQmetadata <- function(qMeta, X, level, conds) {
   df
 }
 
+
+#' @export
+#' @rdname DaparToolshed-aggregate
+aggregateMethods <- function()
+  setNames(c('medianPolish', 
+             'robustSummary', 
+             'colMeansMat', 
+             'colSumsMat'),
+           nm = c('median Polish', 
+                  'robust Summary', 
+                  'col Means Mat',
+                  'col Sums Mat')
+  )

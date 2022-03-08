@@ -54,13 +54,13 @@
 #' # This function will keep only specific peptides
 #' #------------------------------------------------
 #' 
-#' FunctionFilter('specPeptides', list()))
+#' f1 <- FunctionFilter('specPeptides', list())
 #' 
 #' #------------------------------------------------
 #' # This function will keep only shared peptides
 #' #------------------------------------------------
 #' 
-#' FunctionFilter('sharedPeptides', list()))
+#' f2 <- FunctionFilter('sharedPeptides', list())
 #' 
 #' #------------------------------------------------
 #' # This function will keep only the 'n' best peptides
@@ -68,7 +68,24 @@
 #' # all samples
 #' #------------------------------------------------
 #' 
-#' FunctionFilter('topnPeptides', fun = 'rowSums', top = 2)
+#' f3 <- FunctionFilter('topnPeptides', fun = 'rowSums', top = 2)
+#' 
+#' #------------------------------------------------------
+#' # To run the filter(s) on the dataset, use [xxx()]
+#' # IF several filters must be used, store them in a list
+#' #------------------------------------------------------
+#' 
+#' data(ft)
+#' lst.filters <- list()
+#' lst.filters <- append(lst.filters, f1)
+#' lst.filters <- append(lst.filters, f3)
+#'  
+#' ft <- filterFeaturesOneSE(object = ft,
+#'                           i = 1,
+#'                           name = 'filtered', 
+#'                           filters = lst.filters
+#'                           )
+#'                           
 #'
 'AdjMatFilters'
 
@@ -76,19 +93,35 @@
 #' @export
 #' @rdname adjacency-matrix-filter
 AdjMatFilters <- function()
-  c('specPeptides', 'sharedPeptides', 'topnPeptides')
+  setNames(c('allPeptides', 
+             'specPeptides', 
+             'sharedPeptides', 
+             'topnPeptides'),
+           nm = c('all peptides', 
+                  'Only specific peptides', 
+                  'Only shared peptides',
+                  'N most abundant')
+           )
 
 
 #' @export
-#' @name specPeptides
 #' @rdname adjacency-matrix-filter
-specPeptides <- function(object){
+allPeptides <- function(object, ...){
   stopifnot(inherits(object, 'SummarizedExperiment'))
   stopifnot('adjacencyMatrix' %in% names(rowData(object)))
-  stopifnot(!is.null(metadata(object)$fcol))
+  
+  return(object)
+}
+
+
+#' @export
+#' @rdname adjacency-matrix-filter
+specPeptides <- function(object, ...){
+  stopifnot(inherits(object, 'SummarizedExperiment'))
+  stopifnot('adjacencyMatrix' %in% names(rowData(object)))
   
   X <- adjacencyMatrix(object)
-  X.specific <- subAdjMat_specificPeptides
+  X.specific <- subAdjMat_specificPeptides(X)
   object <- .UpdateSEBasedOnAdjmat(object, X.specific)
   
   return(object)
@@ -97,7 +130,6 @@ specPeptides <- function(object){
 
 
 #' @export
-#' @name subAdjMat_specificPeptides
 #' @rdname adjacency-matrix-filter
 subAdjMat_specificPeptides <- function(X){
   # Mask for only shared peptides
@@ -110,21 +142,18 @@ subAdjMat_specificPeptides <- function(X){
 
 
 #' @export
-#' @name sharedPeptides
 #' @rdname adjacency-matrix-filter
-sharedPeptides <- function(object){
+sharedPeptides <- function(object, ...){
   stopifnot(inherits(object, 'SummarizedExperiment'))
   stopifnot('adjacencyMatrix' %in% names(rowData(object)))
-  stopifnot(!is.null(metadata(object)$fcol))
   
   X <- adjacencyMatrix(object)
-  X.shared <- subAdjMat_sharedPeptides
+  X.shared <- subAdjMat_sharedPeptides(X)
   object <- .UpdateSEBasedOnAdjmat(object, X.shared)
   return(object)
 }
 
 #' @export
-#' @name subAdjMat_sharedPeptides
 #' @rdname adjacency-matrix-filter
 subAdjMat_sharedPeptides <- function(X){
   # Mask for only shared peptides
@@ -136,7 +165,7 @@ subAdjMat_sharedPeptides <- function(X){
 }
 
 #' 
-#' @name .updateSEBasedOnAdjMat
+#' @importFrom PSMatch makePeptideProteinVector
 #' @noRd
 .UpdateSEBasedOnAdjmat <- function(object, X){
   rowData(object)$adjacencyMatrix <- X
@@ -153,7 +182,8 @@ subAdjMat_sharedPeptides <- function(X){
   if (length(emptyCols) > 0){
     X <- X[, -emptyCols]
     rowData(object)$adjacencyMatrix <- X
-    rowData(object)[,metadata(object)$fcol] <- makePeptideProteinVector(X)
+    idcol <- metadata(object)$parentProtId
+    rowData(object)[ , idcol] <- makePeptideProteinVector(X)
   }
 
 return(object)
@@ -161,14 +191,12 @@ return(object)
 
 
 #' @export
-#' @name topnFunctions
 #' @rdname adjacency-matrix-filter
 topnFunctions <- function()
   c('rowMedians', 'rowMeans', 'rowSums')
 
 
 #' @export
-#' @name topnPeptides
 #' @rdname adjacency-matrix-filter
 topnPeptides <- function(object, fun, top){
   stopifnot(inherits(object, 'SummarizedExperiment'))
@@ -184,7 +212,6 @@ topnPeptides <- function(object, fun, top){
 
 
 #' @export
-#' @name subAdjMat_topnPeptides
 #' @rdname adjacency-matrix-filter
 subAdjMat_topnPeptides <- function(X, qData, fun, top){
   if(!(fun %in% topnFunctions())){
