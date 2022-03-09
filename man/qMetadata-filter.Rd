@@ -23,6 +23,8 @@ qMetadataOnConditions(object, cmd, mode, pattern, conds, percent, operator, th)
 
 \item{cmd}{A \code{character(1)} xxx}
 
+\item{pattern}{A \code{character(1)} xxx}
+
 \item{percent}{xxx}
 
 \item{th}{The theshold to apply}

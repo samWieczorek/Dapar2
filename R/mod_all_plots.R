@@ -24,6 +24,32 @@
 #' - Histogram of missing values.
 #' 
 #' 
+#' - Variance : Builds a densityplot of the CV of entities in numeric matrix.
+#' The CV is calculated for each condition present in the dataset
+#' (see the slot \code{'Condition'} in the \code{colData()} DataFrame)
+#' 
+#' - Heatmap:
+#' 
+#' 
+#' The function [heatmapD()] 
+#' 
+#' 
+#' The function [] is inspired from the function 'heatmap.2' 
+#' that displays a numeric matrix. For more information, please refer to the help 
+#' of the heatmap.2 function.
+#' 
+#' 
+#' @section Missing values:
+#' 
+#' #' - distribution of the missing values per line,
+#' 
+#' - a bar plot which represents the distribution of the 
+#' number of missing values (NA) per lines (ie proteins) and per conditions,
+#' 
+#' - Histogram of missing values.
+#' 
+#' @name descriptive-statistics
+#' 
 #' @return A plot
 #' 
 #' @author Samuel Wieczorek, Enora Fremy
@@ -45,6 +71,41 @@
 #' 
 #' legend <- design(ft)$Sample.name
 #' densityPlot(qData, conds, pal.name = 'Dark2')
+#' 
+#' CVDist(qData, conds)
+#' 
+#' #----------------------------------------------
+#' # Plots a heatmap for generic quantitative data
+#' #----------------------------------------------
+#' 
+#' heatmapD(assay(ft, 1), conds)
+#' 
+#' #----------------------------------------------
+#' # Plots a heatmap for missing values visualization
+#' #----------------------------------------------
+#' 
+#' 
+#' #' #----------------------------------------
+#' # Plots a histogram of missing values
+#' #----------------------------------------
+#' 
+#' mvPerLinesHisto(qData)
+#' 
+#' #----------------------------------------
+#' # Plots a histogram of missing values
+#' #----------------------------------------
+#' 
+#' mvHisto(qData, conds, pal.name = pal)
+#' 
+#' #----------------------------------------
+#' # Plots a histogram of missing values
+#' #----------------------------------------
+#' 
+#' 
+#' 
+#' library(QFeatures)
+#' data(ft)
+#' mv.heatmap(assay(ft, 1))
 #' 
 #' #----------------------------------------
 #' # Launch a single shiny module

@@ -16,7 +16,7 @@
 #' 
 #' @export
 #' 
-#' @rdname plot_ds
+#' @rdname descriptive-statistics
 #' 
 boxPlotD <- function(object,
                      exp.design,

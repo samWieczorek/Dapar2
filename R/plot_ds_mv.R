@@ -1,91 +1,6 @@
-#' @title Bar plot of missing values per lines using highcharter.
-#' 
-#' @description 
-#' 
-#' This method plots a bar plot which represents the distribution of the 
-#' number of missing values (NA) per lines (ie proteins).
-#' 
-#' @param qData A `data.frame` or `matrix` that contains the quantitative data.
-#' 
-#' @param conds A `character()` of condition name for each sample. The 
-#' length of 'conds' must be equal to the number of columns of 'qData'.
-#' 
-#' @param pal.name  A `character(1)` which is the name of the palette 
-#' (from the package [RColorBrewer]) to use.
-#' 
-#' @name plot_ds_mv
-#' 
-#' @details 
-#' 
-#' - distribution of the missing values per line,
-#' 
-#' - a bar plot which represents the distribution of the 
-#' number of missing values (NA) per lines (ie proteins) and per conditions,
-#' 
-#' - Histogram of missing values.
-#' 
-#' 
-#' @return A plot
-#' 
-#' @author Samuel Wieczorek, Enora Fremy
-#' 
-#' @examples
-#' library(QFeatures)
-#' library(DaparToolshed)
-#' data(ft)
-#' 
-#' qData <- assay(ft, 1)
-#' conds <- design(ft)$Condition
-#' pal <- 'Dark2'
-#' 
-#' #----------------------------------------
-#' # Plots a histogram of missing values
-#' #----------------------------------------
-#' 
-#' mvPerLinesHisto(qData)
-#' 
-#' #----------------------------------------
-#' # Plots a histogram of missing values
-#' #----------------------------------------
-#' 
-#' mvHisto(qData, conds, pal.name = pal)
-#' 
-#' #----------------------------------------
-#' # Plots a histogram of missing values
-#' #----------------------------------------
-#' 
-#' mvPerLinesHistoPerCondition(qData, conds)
-#' mvPerLinesHistoPerCondition(qData, conds, pal.name = pal)
-#' 
-#' #----------------------------------------
-#' # Launch a shiny module
-#' #----------------------------------------
-#' 
-#' if(interactive()){
-#'  library(QFeatures)
-#'  library(shiny)
-#'  library(DaparToolshed)
-#'  data(ft)
-#'  ui <- mod_plot_ds_mv_ui('plot')
-#' 
-#'  server <- function(input, output, session) {
-#'   conds <- design(ft)$Condition
-#'  
-#'   mod_plot_ds_mv_server('plot',
-#'                       obj = reactive({ft[[1]]}),
-#'                       conds = reactive({conds}),
-#'                       pal.name = reactive({'Dark2'})
-#'                       )
-#'   }
-#'  
-#'  shinyApp(ui=ui, server=server)
-#' }
-NULL
-
-
 #' @export 
 #' @import highcharter
-#' @rdname plot_mv
+#' @rdname descriptive-statistics
 mvPerLinesHisto <- function(qData){
    
   coeffMax <- .1
@@ -130,7 +45,7 @@ mvPerLinesHisto <- function(qData){
 #' @export
 #' 
 #' @import highcharter
-#' @rdname plot_mv
+#' @rdname descriptive-statistics
 mvPerLinesHistoPerCondition <- function(qData, 
                                         conds, 
                                         pal.name){
@@ -185,7 +100,7 @@ mvPerLinesHistoPerCondition <- function(qData,
 
 #' @export
 #' @import highcharter
-#' @rdname plot_mv
+#' @rdname descriptive-statistics
 mvHisto <- function(qData, 
                        conds, 
                        showValues = FALSE, 

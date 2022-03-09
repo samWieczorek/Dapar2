@@ -19,9 +19,9 @@
 
 \S4method{aggregateFeatures4Prostar}{SummarizedExperiment}(
   object,
-  conds,
   fcol,
   fun = MsCoreUtils::robustSummary,
+  conds,
   ...
 )
 

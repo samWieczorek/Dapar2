@@ -1,74 +1,3 @@
-#' @title Heatmap of the quantitative proteomics data
-#' 
-#' @description 
-#' 
-#' This function is a wrapper to 'heatmap.2' of the package `gplots`
-#' that displays a numeric matrix
-#' 
-#' @section generic plot:
-#' 
-#' The function [heatmapD()] 
-#' 
-#' @section plot for missingvalues:
-#' 
-#' The function [] is inspired from the function 'heatmap.2' 
-#' that displays a numeric matrix. For more information, please refer to the help 
-#' of the heatmap.2 function.
-#' 
-#' @return A heatmap
-#' 
-#' @author Samuel Wieczorek
-#' @examples
-#' 
-#' library(QFeatures)
-#' data(ft)
-#' conds <- design(ft)$Condition
-#'
-#' #----------------------------------------------
-#' # Plots a heatmap for generic quantitative data
-#' #----------------------------------------------
-#' 
-#' heatmapD(assay(ft, 1), conds)
-#' 
-#' #----------------------------------------------
-#' # Plots a heatmap for missing values visualization
-#' #----------------------------------------------
-#' 
-#' library(QFeatures)
-#' data(ft)
-#' mv.heatmap(assay(ft, 1))
-#' 
-#' 
-#' #----------------------------------------------
-#' # Launches a shiny module
-#' #----------------------------------------------
-#' 
-#' if(interactive()){
-#'  library(QFeatures)
-#'  library(shiny)
-#'  library(DaparToolshed)
-#'  data(ft)
-#'  ui <- mod_plot_ds_heatmap_ui('plot')
-#' 
-#'  server <- function(input, output, session) {
-#'   conds <- design(ft)$Condition
-#'  
-#'   mod_plot_heatmap_ds_server('plot',
-#'                       obj = reactive({ft[[1]]}),
-#'                       conds = reactive({conds}),
-#'                       pal.name = reactive({'Dark2'})
-#'                       )
-#'   }
-#'  
-#'  shinyApp(ui=ui, server=server)
-#' }
-NULL
-
-
-
-
-
-
 #' @param qData A `matrix` or `array` quantitative values
 #' 
 #' @param conds A `character()` of the conditions (one condition per sample).
@@ -85,7 +14,7 @@ NULL
 #' 
 #' @export
 #' 
-#' @rdname plot_ds_heatmap
+#' @rdname descriptive-statistics
 #' 
 heatmapD <- function(qData, 
                      conds, 
@@ -201,7 +130,7 @@ heatmapD <- function(qData,
 #' @importFrom grDevices heat.colors
 #' @importFrom graphics image strwidth strheight axis mtext text title layout par plot.new
 #' 
-#' @rdname plot_ds_heatmap
+#' @rdname descriptive-statistics
 #' 
 mv.heatmap <- function (x,
                         col = grDevices::heat.colors(100),

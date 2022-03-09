@@ -1,28 +1,3 @@
-#' @title Distribution of CV of entities
-#' 
-#' @description 
-#' Builds a densityplot of the CV of entities in numeric matrix.
-#' The CV is calculated for each condition present in the dataset
-#' (see the slot \code{'Condition'} in the \code{colData()} DataFrame)
-#' 
-#' @param qData A numeric matrix of quantitative data.
-#' 
-#' @param conds A vector of the conditions (one condition per sample).
-#' 
-#' @param palette A vector of HEX Code colors (one color per condition).
-#' 
-#' @return A density plot
-#' 
-#' @author Samuel Wieczorek, Enora Fremy
-#' 
-#' @examples
-#' library(QFeatures)
-#' data(ft)
-#' qData <- assay(ft, 1)
-#' conds <- design(ft)$Condition
-#' CVDist(qData, conds)
-NULL
-
 #' @importFrom RColorBrewer brewer.pal
 #' @import highcharter
 #' @importFrom DT JS

@@ -3,7 +3,24 @@
 #' 
 #' @description 
 #' 
+#' @section Step 'Description':
+#' 
+#' xxxxxxx
+#' 
+#' @section Step 'Filter peptides':
+#' 
 #' xxxxxx
+#' 
+#' @section Step 'Agregation':
+#' 
+#' xxxxx
+#' 
+#' @section Step 'Save':
+#' 
+#' xxxxxx
+#' 
+#' @seealso The user manual of the package `Magellan`.
+#'
 #' 
 #' @name mod_agregation
 #' 
@@ -28,18 +45,24 @@ mod_Agregation_ui <- function(id){
 }
 
 
-#' @param id xxx
-#' @param dataIn xxx
-#' @param steps.enabled xxx
-#' @param remoteReset xxx
-#' @param steps.status xxx
-#' @param current.pos xxx
-#' @param verbose xxx
+#' @param id A `character(1)` which is the 'id' of the module.
+#' @param dataIn An instance of the class `QFeatures`
+#' @param steps.enabled A `logical()` which indicates whether each step is
+#' enabled or disabled in the UI.
+#' @param remoteReset A `logical(1)` which acts asa a remote command to reset
+#' the module to its default values. Default is FALSE.
+#' @param steps.status A `logical()` which indicates the status of each step
+#' which can be either 'validated', 'undone' or 'skipped'.
+#' enabled or disabled in the UI.
+#' @param current.pos A `interger(1)` which acts as a remote command to make
+#'  a step active in the timeline. Default is 1.
+#' @param verbose A `logical(1)` to indicates whether run and debug infos must
+#' be printed in the console. Default is FALSE.
 #' 
 #' 
 #' 
 #' 
-#' @rdname mod_Agregation
+#' @rdname mod_agregation
 #' @importFrom shinyjs toggle hidden
 #' @importFrom DT renderDataTable DTOutput datatable
 #' 

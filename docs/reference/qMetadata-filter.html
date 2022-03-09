@@ -78,6 +78,8 @@ or at least one condition.</p>
 <dd><p>xxx</p></dd>
 <dt>cmd</dt>
 <dd><p>A <code>character(1)</code> xxx</p></dd>
+<dt>pattern</dt>
+<dd><p>A <code>character(1)</code> xxx</p></dd>
 <dt>percent</dt>
 <dd><p>xxx</p></dd>
 <dt>th</dt>
@@ -120,7 +122,9 @@ ind &lt;- qMetadataOnConditions(mask, type, conds, percent, op, th)</p>
     <div id="ref-examples">
     <h2>Examples</h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">ft</span><span class="op">)</span></span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>data set 'ft' not found</span>
 <span class="r-in"><span class="va">obj</span> <span class="op">&lt;-</span> <span class="va">ft</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span></span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in eval(expr, envir, enclos):</span> object 'ft' not found</span>
 <span class="r-in"><span class="va">level</span> <span class="op">&lt;-</span> <span class="fu">typeOfData</span><span class="op">(</span><span class="va">ft</span>, <span class="fl">1</span><span class="op">)</span></span>
 <span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in typeOfData(ft, 1):</span> could not find function "typeOfData"</span>
 <span class="r-in"><span class="va">pattern</span> <span class="op">&lt;-</span> <span class="st">'missing'</span></span>
@@ -135,7 +139,9 @@ ind &lt;- qMetadataOnConditions(mask, type, conds, percent, op, th)</p>
 <span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in qMetadatWholeMatrix(mask, op, percent, th):</span> object 'mask' not found</span>
 <span class="r-in"></span>
 <span class="r-in"><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">ft</span><span class="op">)</span></span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>data set 'ft' not found</span>
 <span class="r-in"><span class="va">obj</span> <span class="op">&lt;-</span> <span class="va">ft</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span></span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in eval(expr, envir, enclos):</span> object 'ft' not found</span>
 <span class="r-in"><span class="va">mask</span> <span class="op">&lt;-</span> <span class="fu"><a href="q_metadata.html">match.qMetadata</a></span><span class="op">(</span>metadata <span class="op">=</span> <span class="fu">qMetadata</span><span class="op">(</span><span class="va">obj</span><span class="op">)</span>, </span>
 <span class="r-in">                        pattern <span class="op">=</span> <span class="st">'missing POV'</span>, </span>
 <span class="r-in">                        level <span class="op">=</span> <span class="fu">typeOfData</span><span class="op">(</span><span class="va">obj</span><span class="op">)</span></span>

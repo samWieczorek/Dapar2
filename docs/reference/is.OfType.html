@@ -76,23 +76,14 @@
     <h2>Examples</h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/RforMassSpectrometry/QFeatures" class="external-link">QFeatures</a></span><span class="op">)</span></span>
 <span class="r-in"><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">ft</span><span class="op">)</span></span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>data set 'ft' not found</span>
 <span class="r-in"><span class="va">obj</span> <span class="op">&lt;-</span> <span class="va">ft</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span></span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in eval(expr, envir, enclos):</span> object 'ft' not found</span>
 <span class="r-in"><span class="va">data</span> <span class="op">&lt;-</span> <span class="fu">qMetadata</span><span class="op">(</span><span class="va">obj</span><span class="op">)</span></span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in h(simpleError(msg, call)):</span> error in evaluating the argument 'object' in selecting a method for function 'qMetadata': object 'obj' not found</span>
 <span class="r-in"><span class="fu">is.OfType</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="va">data</span><span class="op">)</span>, <span class="st">"MEC"</span><span class="op">)</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   qMetadata_Sample_A_R1 qMetadata_Sample_A_R2 qMetadata_Sample_A_R3</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1                 FALSE                 FALSE                 FALSE</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2                 FALSE                 FALSE                 FALSE</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3                 FALSE                 FALSE                 FALSE</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4                 FALSE                 FALSE                 FALSE</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5                 FALSE                 FALSE                 FALSE</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 6                 FALSE                 FALSE                 FALSE</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   qMetadata_Sample_B_R1 qMetadata_Sample_B_R2 qMetadata_Sample_B_R3</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1                 FALSE                 FALSE                 FALSE</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2                 FALSE                 FALSE                 FALSE</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3                 FALSE                 FALSE                 FALSE</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4                 FALSE                 FALSE                 FALSE</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5                 FALSE                 FALSE                 FALSE</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 6                 FALSE                 FALSE                 FALSE</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>The parameter param is not a data.frame.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> NULL</span>
 <span class="r-in"></span>
 </code></pre></div>
     </div>

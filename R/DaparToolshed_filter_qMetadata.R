@@ -35,7 +35,7 @@ SymFilteringOperators <- function()
 #' 
 #' @param object xxx
 #' @param cmd A `character(1)` xxx
-#' @pattern pattern A `character(1)` xxx
+#' @param pattern A `character(1)` xxx
 #' @param percent A boolean to indicate whether the threshold represent an absolute value (percent = FALSE) or
 #' a percentage (percent=TRUE).
 #' @param th A floating number which is in the interval [0, 1]

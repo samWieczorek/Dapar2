@@ -1,5 +1,5 @@
 #' @param id shiny id
-#' @rdname plot_mv
+#' @rdname descriptive-statistics
 #' @export
 #' @importFrom shiny NS tagList plotOutput
 #' @importFrom highcharter highchartOutput
@@ -22,15 +22,16 @@ mod_plot_mvImputation_ui <- function(id){
 #' @param title A `character(1)` which is
 #' @param pal.name  A `character(1)` which is the name of the palette (from
 #' the package [RColorBrewer] to use.
-#' @rdname plot_mv
+#' 
+#' @rdname descriptive-statistics
 #' @export
 #' @importFrom highcharter renderHighchart
 #' 
 mod_plot_mvImputation_server <- function(id,
-                                       object = reactive({NULL}),
-                                       conds = reactive({NULL}),
-                                       title = reactive({NULL}),
-                                       pal.name = reactive({NULL})){
+                                         object = reactive({NULL}),
+                                         conds = reactive({NULL}),
+                                         title = reactive({NULL}),
+                                         pal.name = reactive({NULL})){
 
   moduleServer(id, function(input, output, session){
     ns <- session$ns

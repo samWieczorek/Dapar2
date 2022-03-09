@@ -75,8 +75,9 @@ are equal to NA).</p>
     <div id="ref-examples">
     <h2>Examples</h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">ft</span><span class="op">)</span></span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>data set 'ft' not found</span>
 <span class="r-in"><span class="fu">nEmptyLines</span><span class="op">(</span><span class="fu">assay</span><span class="op">(</span><span class="va">ft</span>, <span class="fl">1</span><span class="op">)</span><span class="op">)</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0</span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in h(simpleError(msg, call)):</span> error in evaluating the argument 'x' in selecting a method for function 'assay': object 'ft' not found</span>
 <span class="r-in"></span>
 </code></pre></div>
     </div>
