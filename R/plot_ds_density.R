@@ -15,7 +15,7 @@
 #' 
 #' @rdname descriptive-statistics
 #' 
-densityPlot <- function(qData, 
+densityPlot <- function(object, 
                         conds, 
                         pal.name = NULL){
   

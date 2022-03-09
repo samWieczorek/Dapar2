@@ -92,6 +92,7 @@
 
 #' @export
 #' @rdname adjacency-matrix-filter
+#' @importFrom stats setNames
 AdjMatFilters <- function()
   setNames(c('allPeptides', 
              'specPeptides', 
@@ -182,7 +183,7 @@ subAdjMat_sharedPeptides <- function(X){
   if (length(emptyCols) > 0){
     X <- X[, -emptyCols]
     rowData(object)$adjacencyMatrix <- X
-    idcol <- metadata(object)$parentProtId
+    idcol <- S4Vectors::metadata(object)$parentProtId
     rowData(object)[ , idcol] <- makePeptideProteinVector(X)
   }
 
@@ -213,6 +214,7 @@ topnPeptides <- function(object, fun, top){
 
 #' @export
 #' @rdname adjacency-matrix-filter
+#' @importFrom methods as
 subAdjMat_topnPeptides <- function(X, qData, fun, top){
   if(!(fun %in% topnFunctions())){
     warning("'fun' must be one of the following: 'rowMedians', 'rowMeans', 'rowSums'")

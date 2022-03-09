@@ -22,13 +22,16 @@ License: Artistic-2.0
 Depends: R (>= 4.1.0)
 Imports:
     Biobase,
+    Magellan,
+    grDevices,
     S4Vectors,
+    BiocGenerics,
+    PSMatch,
     QFeatures,
     methods,
     apcluster,
     diptest,
     cluster,
-    base64enc,
     MsCoreUtils,
     SummarizedExperiment,
     MultiAssayExperiment,
@@ -38,7 +41,6 @@ Imports:
     lme4,
     vsn, 
     stringr,
-    base64enc,
     RColorBrewer,
     graph,
     FactoMineR, 
@@ -53,7 +55,6 @@ Imports:
     visNetwork, 
     Matrix,
     cp4p,
-    grDevices,
     limma,
     vioplot,
     imp4p (>= 0.9),
@@ -72,8 +73,8 @@ Imports:
     shinyjs,
     DT,
     colourpicker,
+    base64enc,
     sos,
-    grDevices,
     graphics,
     stats,
     utils
@@ -88,6 +89,7 @@ biocViews:
 NeedsCompilation: no
 Collate:
     AllGenerics.R
+    DaparToolshed.R
     QFeatures_utils.R
     palette.R
     example-data.R

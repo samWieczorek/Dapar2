@@ -494,10 +494,9 @@ samLRT <- function(lmm.res.h0, lmm.res.h1, cc, n, p, s1){
 #' @export
 #' 
 #' @importFrom stats pchisq quantile residuals
-#' 
 #' @importFrom utils de
-#' 
 #' @importFrom graph nodes graphAM connComp
+#' @importFrom methods as
 #' 
 #' @rdname pepa-imputation
 #' 

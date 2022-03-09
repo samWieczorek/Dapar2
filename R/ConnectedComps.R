@@ -17,9 +17,10 @@
 #' #' @export
 #' #' 
 #' #' @rdname connected-components
+#' #' @importFrom S4Vectors metadata
 #' #' 
 #' ComputeConnectedComposants <- function(obj.se){
-#'   if (length(metadata(obj.se)$ll.AdjMat) == 0)
+#'   if (length(S4Vectors::metadata(obj.se)$ll.AdjMat) == 0)
 #'   {
 #'     warning("Any adjacency matrix is present in the dataset.")
 #'     return(obj.se)

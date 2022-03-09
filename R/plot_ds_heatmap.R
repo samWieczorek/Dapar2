@@ -11,6 +11,7 @@
 #' 
 #' @importFrom grDevices colorRampPalette
 #' @importFrom gplots heatmap.2
+#' @importFrom stats heatmap
 #' 
 #' @export
 #' 

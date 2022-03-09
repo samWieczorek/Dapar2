@@ -54,9 +54,9 @@ NULL
 ##' @rdname QFeatures-accessors
 setMethod("qMetadata", "QFeatures",
           function(object, i, slotName = "qMetadata")
-            List(lapply(experiments(object)[i],
+            lapply(object[[i]],
                         function(x)
-                          .GetRowdataSlot(x, slotName = slotName)))
+                          .GetRowdataSlot(x, slotName = slotName))
 )
 
 
@@ -72,7 +72,10 @@ setMethod("qMetadata", "SummarizedExperiment",
 
 ##' @export
 ##' @rdname QFeatures-accessors
-"qMetadata<-" <- function(object,i,slotName = "qMetadata", value) {
+"qMetadata<-" <- function(object,
+                          i,
+                          slotName = "qMetadata", 
+                          value) {
   if (is.null(colnames(value)) | is.null(rownames(value)))
     stop("The DataFrame must have row and column names.")
   ## Coerse to a data.frame
@@ -98,17 +101,24 @@ setMethod("qMetadata", "SummarizedExperiment",
 }
 
 ##' @title .GetMetadataSlot
+##' 
+##' @param x xxx
+##' @param slotName xxx
+##' 
+##' @importFrom S4Vectors metadata
+##' @return xxx
 ##' @noRd
 .GetMetadataSlot <- function(x, slotName = NULL) {
-  ans <- metadata(x)[[slotName]]
-  ans
+  S4Vectors::metadata(x)[[slotName]]
 }
 
-##' @title .GetMetadataSlot
+##' @title .GetRowdataSlot
+##' @param x xxx
+##' @param slotName xxx
+##' @return xxx
 ##' @noRd
 .GetRowdataSlot <- function(x, slotName = NULL) {
-  ans <- rowData(x)[[slotName]]
-  ans
+  rowData(x)[[slotName]]
 }
 
 
@@ -116,9 +126,9 @@ setMethod("qMetadata", "SummarizedExperiment",
 ##' @rdname QFeatures-accessors
 setMethod("typeDataset", "QFeatures",
           function(object, i, slotName = "typeDataset")
-            List(lapply(experiments(object)[i],
+            lapply(object[[i]],
                         .GetMetadataSlot,
-                        slotName = slotName)))
+                        slotName = slotName))
 ##' @export
 ##' @rdname QFeatures-accessors
 setMethod("typeDataset", "SummarizedExperiment",
@@ -130,7 +140,7 @@ setMethod("typeDataset", "SummarizedExperiment",
 ##' @rdname QFeatures-accessors
 "typeDataset<-" <- function(object, i, slotName = "typeDataset", value) {
   if (inherits(object, "SummarizedExperiment")) {
-    metadata(object)[[slotName]] <- value
+    S4Vectors::metadata(object)[[slotName]] <- value
     return(object)
   }
   stopifnot(inherits(object, "QFeatures"))
@@ -141,7 +151,7 @@ setMethod("typeDataset", "SummarizedExperiment",
   if (is.character(i) && !(i %in% names(object)))
     stop("Assay '", i, "' not found.")
   se <- object[[i]]
-  metadata(object[[i]])[[slotName]] <- value
+  S4Vectors::metadata(object[[i]])[[slotName]] <- value
   return(object)
 }
 
@@ -151,9 +161,9 @@ setMethod("typeDataset", "SummarizedExperiment",
 ##' @rdname QFeatures-accessors
 setMethod("idcol", "QFeatures",
           function(object, i, slotName = "idcol")
-            List(lapply(experiments(object)[i],
+            lapply(object[[i]],
                         .GetMetadataSlot,
-                        slotName = slotName)))
+                        slotName = slotName))
 ##' @export
 ##' @rdname QFeatures-accessors
 setMethod("idcol", "SummarizedExperiment",
@@ -165,7 +175,7 @@ setMethod("idcol", "SummarizedExperiment",
 ##' @rdname QFeatures-accessors
 "idcol<-" <- function(object, i, slotName = "idcol", value) {
   if (inherits(object, "SummarizedExperiment")) {
-    metadata(object)[[slotName]] <- value
+    S4Vectors::metadata(object)[[slotName]] <- value
     return(object)
   }
   stopifnot(inherits(object, "QFeatures"))
@@ -176,7 +186,7 @@ setMethod("idcol", "SummarizedExperiment",
   if (is.character(i) && !(i %in% names(object)))
     stop("Assay '", i, "' not found.")
   se <- object[[i]]
-  metadata(object[[i]])[[slotName]] <- value
+  S4Vectors::metadata(object[[i]])[[slotName]] <- value
   return(object)
 }
 
@@ -187,9 +197,9 @@ setMethod("idcol", "SummarizedExperiment",
 ##' @rdname QFeatures-accessors
 setMethod("parentProtId", "QFeatures",
           function(object, i, slotName = "parentProtId")
-            List(lapply(experiments(object)[i],
-                        .parentProtId,
-                        slotName = slotName)))
+            lapply(object[[i]],
+                        parentProtId,
+                        slotName = slotName))
 
 setMethod("parentProtId", "SummarizedExperiment",
           function(object, slotName = "parentProtId")
@@ -203,7 +213,7 @@ setMethod("parentProtId", "SummarizedExperiment",
   if (inherits(object, "SummarizedExperiment")) {
     if (typeDataset(object) != 'peptide')
       stop("The dataset must contain peptides.")
-    metadata(object)[[slotName]] <- value
+    S4Vectors::metadata(object)[[slotName]] <- value
     return(object)
   }
   stopifnot(inherits(object, "QFeatures"))
@@ -216,7 +226,7 @@ setMethod("parentProtId", "SummarizedExperiment",
   if (is.character(i) && !(i %in% names(object)))
     stop("Assay '", i, "' not found.")
   se <- object[[i]]
-  metadata(object[[i]])[[slotName]] <- value
+  S4Vectors::metadata(object[[i]])[[slotName]] <- value
   return(object)
 }
 
@@ -228,10 +238,11 @@ setMethod("parentProtId", "SummarizedExperiment",
 ##' @rdname QFeatures-accessors
 setMethod("analysis", "QFeatures",
           function(object, i, slotName = "analysis")
-            List(lapply(experiments(object)[i],
+            lapply(object[[i]],
                         .GetMetadataSlot,
                         slotName = slotName)
-            ))
+            )
+
 ##' @export
 ##' @rdname QFeatures-accessors
 setMethod("analysis", "SummarizedExperiment",
@@ -243,7 +254,7 @@ setMethod("analysis", "SummarizedExperiment",
 ##' @rdname QFeatures-accessors
 "analysis<-" <- function(object, i, slotName = "analysis", value) {
   if (inherits(object, "SummarizedExperiment")) {
-    metadata(object)[[slotName]] <- value
+    S4Vectors::metadata(object)[[slotName]] <- value
     return(object)
   }
   stopifnot(inherits(object, "QFeatures"))
@@ -254,7 +265,7 @@ setMethod("analysis", "SummarizedExperiment",
   if (is.character(i) && !(i %in% names(object)))
     stop("Assay '", i, "' not found.")
   se <- object[[i]]
-  metadata(object[[i]])[[slotName]] <- value
+  S4Vectors::metadata(object[[i]])[[slotName]] <- value
   return(object)
 }
 
@@ -275,7 +286,7 @@ setMethod("version", "QFeatures",
 ##' @rdname QFeatures-accessors
 "version<-" <- function(object, slotName = "version", value) {
   stopifnot (inherits(object, "QFeatures"))
-  metadata(object)[[slotName]] <- value
+  S4Vectors::metadata(object)[[slotName]] <- value
   return(object)
 }
 
@@ -284,7 +295,7 @@ setMethod("version", "QFeatures",
 ##' @rdname QFeatures-accessors
 setMethod("design", "QFeatures",
           function(object, slotName = "design")
-            colData(object)
+            SummarizedExperiment::colData(object)
 )
 
 
@@ -293,7 +304,7 @@ setMethod("design", "QFeatures",
 ##' @rdname QFeatures-accessors
 "design<-" <- function(object, slotName = "design", value) {
   stopifnot (inherits(object, "QFeatures"))
-  colData(object)@listData <- value
+  SummarizedExperiment::colData(object)@listData <- value
   return(object)
 }
 

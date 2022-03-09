@@ -180,7 +180,7 @@ qMetadata.def <- function(level){
 
   if (level == 'all')
     def = union(qMetadata.def('peptide'), 
-                qMetadata.Def('protein'))
+                qMetadata.def('protein'))
   
   return(def)
 
@@ -762,6 +762,7 @@ search.qMetadata.tags <- function(pattern, level, depth = '1'){
 #' 
 #' @export
 #' @rdname q_metadata
+#' @importFrom utils combn
 #' 
 #' 
 qMetadata_combine <- function(met, level) {

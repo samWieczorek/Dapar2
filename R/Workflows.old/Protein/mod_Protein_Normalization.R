@@ -17,6 +17,7 @@ mod_Protein_Normalization_ui <- function(id){
 
 #' @export
 #' @importFrom shinyjs disabled
+#' @importFrom stats setNames
 #'
 mod_Protein_Normalization_server <- function(id,
                                              dataIn = NULL,
@@ -87,7 +88,7 @@ mod_Protein_Normalization_server <- function(id,
     # Initialization of the module
     observeEvent(steps.enabled(), ignoreNULL = TRUE, {
       if (is.null(steps.enabled()))
-        rv$steps.enabled <- setNames(rep(FALSE, rv.process$length), rv.process$config$steps)
+        rv$steps.enabled <- setNames(rep(FALSE, length(config$steps)), config$steps)
       else
         rv$steps.enabled <- steps.enabled()
     })
@@ -129,8 +130,9 @@ output$Description <- renderUI({
 
   observeEvent(input$btn_validate_Description, ignoreInit = TRUE, ignoreNULL = TRUE, {
     rv$dataIn <- dataIn()
-    dataOut$trigger <- Send_Result_to_Caller(rv$dataIn)$trigger
-    dataOut$value <- Send_Result_to_Caller(rv$dataIn)$value
+    dataOut$trigger <- Magellan::Timestamp()
+    dataOut$value <- rv$dataIn
+    
     #rv$status['Description'] <- global$VALIDATED
 
   })
@@ -243,8 +245,9 @@ output$Step1 <- renderUI({
 
   observeEvent(input$btn_validate_Step1, ignoreInit = TRUE, {
     # Add your stuff code here
-    dataOut$trigger <- Send_Result_to_Caller(rv$dataIn)$trigger
-    dataOut$value <- Send_Result_to_Caller(rv$dataIn)$value
+    dataOut$trigger <- Magellan::Timestamp()
+    dataOut$value <- rv$dataIn
+    
     #rv$status['Step1'] <- global$VALIDATED
   })
 })
@@ -318,8 +321,9 @@ output$Step2 <- renderUI({
 
   observeEvent(input$btn_validate_Step2, ignoreInit = TRUE, {
     # Add your stuff code here
-    dataOut$trigger <- Send_Result_to_Caller(rv$dataIn)$trigger
-    dataOut$value <- Send_Result_to_Caller(rv$dataIn)$value
+    dataOut$trigger <- Magellan::Timestamp()
+    dataOut$value <- rv$dataIn
+    
     #rv$status['Step2'] <- global$VALIDATED
   })
 
@@ -349,8 +353,9 @@ output$Step3 <- renderUI({
   observeEvent(input$btn_validate_Step3, ignoreInit = TRUE, {
     # Add your stuff code here
     rv$dataIn <- AddItemToDataset(rv$dataIn, config$name)
-    dataOut$trigger <- Send_Result_to_Caller(rv$dataIn)$trigger
-    dataOut$value <- Send_Result_to_Caller(rv$dataIn)$value
+    dataOut$trigger <- Magellan::Timestamp()
+    dataOut$value <- rv$dataIn
+    
     #print(names(dataOut))
     # rv$status['Step3'] <- global$VALIDATED
   })

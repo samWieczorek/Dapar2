@@ -74,10 +74,15 @@ mod_graph_pept_prot_ui <- function(id){
 #' @param cc xxx
 #' @param matAdj xxx
 #' @param dataIn An object of class [QFeatures]
+#' @param settings xxx
 #' 
 #' @rdname connected_components
 #' @export
-mod_graph_pept_prot_server <- function(id, cc, matAdj, dataIn){
+mod_graph_pept_prot_server <- function(id, 
+                                       cc, 
+                                       matAdj, 
+                                       dataIn,
+                                       settings){
 
   moduleServer(id, function(input, output, session){
     ns <- session$ns
@@ -327,7 +332,7 @@ mod_graph_pept_prot_server <- function(id, cc, matAdj, dataIn){
         DT::formatStyle(
           colnames(data)[1:((ncol(data)-offset)/2)],
           colnames(data)[(((ncol(data)-offset)/2)+1):(ncol(data)-offset)],
-          backgroundColor = DT::styleEqual(c("POV", "MEC"), c(rv.prostar$settings()$colorsTypeMV$POV, rv.prostar$settings()$colorsTypeMV$MEC)))
+          backgroundColor = DT::styleEqual(c("POV", "MEC"), c(settings()$colorsTypeMV$POV, settings()$colorsTypeMV$MEC)))
 
       dt
     })
@@ -374,7 +379,7 @@ mod_graph_pept_prot_server <- function(id, cc, matAdj, dataIn){
         DT::formatStyle(
           colnames(data)[1:((ncol(data)-offset)/2)],
           colnames(data)[(((ncol(data)-offset)/2)+1):(ncol(data)-offset)],
-          backgroundColor = DT::styleEqual(c("POV", "MEC"), c(rv.prostar$settings()$colorsTypeMV$POV, rv.prostar$settings()$colorsTypeMV$MEC)))
+          backgroundColor = DT::styleEqual(c("POV", "MEC"), c(settings()$colorsTypeMV$POV, settings()$colorsTypeMV$MEC)))
 
       dt
     })
@@ -500,7 +505,7 @@ mod_graph_pept_prot_server <- function(id, cc, matAdj, dataIn){
         DT::formatStyle(
           colnames(data)[1:((ncol(data)-offset)/2)],
           colnames(data)[(((ncol(data)-offset)/2)+1):(ncol(data)-offset)],
-          backgroundColor = DT::styleEqual(c("POV", "MEC"), c(rv.prostar$settings()$colorsTypeMV$POV, rv.prostar$settings()$colorsTypeMV$MEC)))
+          backgroundColor = DT::styleEqual(c("POV", "MEC"), c(settings()$colorsTypeMV$POV, settings()$colorsTypeMV$MEC)))
 
       dt
     })
@@ -569,7 +574,7 @@ mod_graph_pept_prot_server <- function(id, cc, matAdj, dataIn){
         DT::formatStyle(
           colnames(data)[1:((ncol(data)-offset)/2)],
           colnames(data)[(((ncol(data)-offset)/2)+1):(ncol(data)-offset)],
-          backgroundColor = DT::styleEqual(c("POV", "MEC"), c(rv.prostar$settings()$colorsTypeMV$POV, rv.prostar$settings()$colorsTypeMV$MEC)))
+          backgroundColor = DT::styleEqual(c("POV", "MEC"), c(settings()$colorsTypeMV$POV, settings()$colorsTypeMV$MEC)))
 
       dt
     })

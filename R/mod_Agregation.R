@@ -65,6 +65,8 @@ mod_Agregation_ui <- function(id){
 #' @rdname mod_agregation
 #' @importFrom shinyjs toggle hidden
 #' @importFrom DT renderDataTable DTOutput datatable
+#' @importFrom utils write.table
+#' @importFrom Magellan Timestamp toggleWidget actionBtnClass Get_Worflow_Core_Code
 #' 
 #' @export
 #' 
@@ -172,7 +174,7 @@ mod_Agregation_server <- function(id,
       widget <- actionButton(ns("Description_btn_validate"),
                              "Start",
                              class = btn_success_color)
-      toggleWidget(rv$steps.enabled['Description'], widget)
+      Magellan::toggleWidget(rv$steps.enabled['Description'], widget)
     })
     
     
@@ -219,7 +221,7 @@ mod_Agregation_server <- function(id,
       widget <- actionButton(ns("Filterpeptides_btn_validate"),
                              "Run",
                              class = btn_success_color)
-      toggleWidget(rv$steps.enabled['Filterpeptides'], widget)
+      Magellan::toggleWidget(rv$steps.enabled['Filterpeptides'], widget)
     })
     
     
@@ -260,7 +262,7 @@ mod_Agregation_server <- function(id,
       widget <- radioButtons(ns("Filterpeptides_consider"), "Consider",
                              choices = AdjMatFilters(),
                              selected = rv.widgets$Filterpeptides_consider)
-      toggleWidget(rv$steps.enabled['Filterpeptides'], widget )
+      Magellan::toggleWidget(rv$steps.enabled['Filterpeptides'], widget )
     })
     
     
@@ -274,7 +276,7 @@ mod_Agregation_server <- function(id,
                              min = 0, 
                              step = 1, 
                              width = '100px')
-      toggleWidget(rv$steps.enabled['Filterpeptides'], widget )
+      Magellan::toggleWidget(rv$steps.enabled['Filterpeptides'], widget )
     })
     
     
@@ -291,7 +293,7 @@ mod_Agregation_server <- function(id,
                                       ),
                             selected = rv.widgets$Filterpeptides_barplotType,
                             width = '200')
-      toggleWidget(rv$steps.enabled['Filterpeptides'], widget )
+      Magellan::toggleWidget(rv$steps.enabled['Filterpeptides'], widget )
     })
     
     output$peptideBarplot <- renderHighchart({
@@ -346,7 +348,7 @@ mod_Agregation_server <- function(id,
       widget <- radioButtons(ns("Agregation_method"), "method", 
                              choices = aggregateMethods(), 
                              selected = rv.widgets$Filterpeptides_method)
-      toggleWidget(rv$steps.enabled['Agregation'], widget )
+      Magellan::toggleWidget(rv$steps.enabled['Agregation'], widget )
     })
     
     # output$Agregation_useOfShared_ui <- renderUI({
@@ -403,66 +405,10 @@ mod_Agregation_server <- function(id,
                              "Nb of peptides defining a protein", 
                              value = 0, min =0, step=1,
                              width = "250px")
-      toggleWidget(rv$steps.enabled['Agregation'], widget )
+      Magellan::toggleWidget(rv$steps.enabled['Agregation'], widget )
     })
     
     
-    
-    # output$aggregationStats <- DT::renderDataTable (server=TRUE,{
-    #   req(DAPAR::GetMatAdj(rv$current.obj))
-    #   req(rv$widgets$aggregation$proteinId != "None")
-    #   
-    #   res <- getProteinsStats(DAPAR::GetMatAdj(rv$current.obj)$matWithSharedPeptides)
-    #   
-    #   rv$AggregProtStats$nb <- c(res$nbPeptides,
-    #                              res$nbSpecificPeptides,
-    #                              res$nbSharedPeptides,
-    #                              res$nbProt,
-    #                              length(res$protOnlyUniquePep),
-    #                              length(res$protOnlySharedPep),
-    #                              length(res$protMixPep))
-    #   
-    #   df <- as.data.frame(rv$AggregProtStats)
-    #   names(df) <- c('Description', 'Value')
-    #   DT::datatable(df, 
-    #                 escape = FALSE,
-    #                 rownames= FALSE,
-    #                 extensions = c('Scroller'),
-    #                 option=list(initComplete = initComplete(),
-    #                             dom = 'rt',
-    #                             autoWidth = TRUE,
-    #                             ordering = F,
-    #                             columnDefs = list(list(width='150px', targets= 0),
-    #                                               list(width='100px', targets= 1))
-    #                 )
-    #   )
-    # })
-    
-
-    ########################################################
-    # RunAggregation <- reactive({
-    #   
-    #   
-    #   # withProgress(message = '',detail = '', value = 0, {
-    #   #   incProgress(0.2, detail = 'loading foreach package')
-    #   #   require(foreach)
-    #   #   
-    #   #   incProgress(0.5, detail = 'Aggregation in progress')
-    #   #   
-    #   
-    #   browser()
-    #      ll.agg <- aggregateFeatures4Prostar(object = ft, 
-    #                                          i = length(rv$dataIn), 
-    #                                          name = 'aggregated', 
-    #                                          fcol = 'adjacencyMatrix',
-    #                                          fun = rv.widgets$Agregation_method)
-    #      
-    #      
-    #   return(ll.agg)
-    #   
-    # })
-    # 
-    # 
     
     output$displayNbPeptides <- renderUI({
       req(rv$widgets$aggregation$filterProtAfterAgregation)
@@ -478,7 +424,7 @@ mod_Agregation_server <- function(id,
       widget <- actionButton(ns("Agregation_btn_validate"),
                              "Perform",
                              class = btn_success_color)
-      toggleWidget(rv$steps.enabled['Agregation'], widget)
+      Magellan::toggleWidget(rv$steps.enabled['Agregation'], widget)
     })
     
     
@@ -497,7 +443,7 @@ mod_Agregation_server <- function(id,
         rv$steps.status['Agregation'] <- global$VALIDATED
       } else {
         shinyjs::toggle('downloadAggregationIssues', 
-                        condition = !rvModProcess$moduleAggregationDone[1] && length(rv.custom$temp.agregate$issues) > 0
+                        condition = length(rv.custom$temp.agregate$issues) > 0
         )
       }
       
@@ -534,7 +480,7 @@ mod_Agregation_server <- function(id,
       widget <- actionButton(ns("Save_btn_validate"),
                              "Perform",
                              class = btn_success_color)
-      toggleWidget(rv$steps.enabled['Save'], widget)
+      Magellan::toggleWidget(rv$steps.enabled['Save'], widget)
     })
     
     

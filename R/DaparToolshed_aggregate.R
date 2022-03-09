@@ -103,7 +103,7 @@ NULL
 setMethod("aggregateFeatures4Prostar", "QFeatures",
           function(object, i, fcol, name = "newAssay",
                    fun = MsCoreUtils::robustSummary, ...) {
-            if (isEmpty(object))
+            if (length(object)==0)
               return(object)
             if (name %in% names(object))
               stop("There's already an assay named '", name, "'.")
@@ -226,6 +226,7 @@ aggQmetadata <- function(qMeta, X, level, conds) {
 
 #' @export
 #' @rdname DaparToolshed-aggregate
+#' @importFrom stats setNames
 aggregateMethods <- function()
   setNames(c('medianPolish', 
              'robustSummary', 

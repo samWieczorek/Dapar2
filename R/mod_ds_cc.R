@@ -94,8 +94,11 @@ mod_plots_cc_ui <- function(id) {
 #' @export
 #' @name mod_plots_cc_server
 #' @rdname connected-components
-mod_plots_cc_server <- function(input, output, session,
-                                cc, matAdj, obj){
+mod_plots_cc_server <- function(input, output, 
+                                session,
+                                cc, 
+                                matAdj, 
+                                obj){
   
   ns <- session$ns
   
@@ -218,8 +221,6 @@ mod_plots_cc_server <- function(input, output, session,
                                  data.frame(rbind(x),
                                             nPep = length(x$peptides),
                                             nProt = length(x$proteins))}))
-    print(head(df))
-    print(class(df))
     df <- cbind(df,id = 1:nrow(df))
     df <- df[c('id', 'nProt', 'nPep', 'proteins', 'peptides')]
     
@@ -481,8 +482,8 @@ mod_plots_cc_server <- function(input, output, session,
   #   
   #   return(dat)
   # })
-  mod_format_DT_server('OneMultiDT',
-                       table2show=reactive({BuildOne2MultiTab()}),
+  mod_format_DT_server(id = 'OneMultiDT',
+                       df = reactive({BuildOne2MultiTab()}),
                        style = reactive({NULL}))
   
   
@@ -550,8 +551,8 @@ mod_plots_cc_server <- function(input, output, session,
     }
   })
   
-  mod_format_DT_server('OneMultiDTDetailed',
-                       table2show=reactive({BuildOne2MultiDetailedTab()}),
+  mod_format_DT_server(id = 'OneMultiDTDetailed',
+                       df = reactive({BuildOne2MultiDetailedTab()}),
                        style = reactive({NULL}))
   
   
@@ -578,8 +579,8 @@ mod_plots_cc_server <- function(input, output, session,
   #   return(dat)
   # })
   
-  mod_format_DT_server('OneOneDT',
-                       table2show=reactive({BuildOne2OneTab()}),
+  mod_format_DT_server(id = 'OneOneDT',
+                       df = reactive({BuildOne2OneTab()}),
                        style = reactive({NULL}))
   
   
@@ -648,8 +649,8 @@ mod_plots_cc_server <- function(input, output, session,
     
   })
   
-  mod_format_DT_server('OneOneDTDetailed',
-                       table2show=reactive({BuildOne2OneDetailedTab()}),
+  mod_format_DT_server(id = 'OneOneDTDetailed',
+                       df = reactive({BuildOne2OneDetailedTab()}),
                        style = reactive({NULL}))
   
   

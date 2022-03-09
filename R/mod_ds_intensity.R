@@ -2,6 +2,7 @@
 #' 
 #' @importFrom shiny NS tagList
 #' @importFrom shinyjs useShinyjs hidden
+#' @importFrom stats setNames
 #'
 #' @return NA
 #' @export
@@ -36,7 +37,7 @@ mod_ds_intensity_ui <- function(id){
 #' @rdname descriptive-statistics
 #'
 #' @export
-#' @importFrom grDevices png
+#' @importFrom grDevices png dev.off
 #' @importFrom shinyjs toggle hidden
 #'
 #'@return NA

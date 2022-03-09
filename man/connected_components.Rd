@@ -8,7 +8,7 @@
 \usage{
 mod_graph_pept_prot_ui(id)
 
-mod_graph_pept_prot_server(id, cc, matAdj, dataIn)
+mod_graph_pept_prot_server(id, cc, matAdj, dataIn, settings)
 }
 \arguments{
 \item{id}{Internal parameters for {shiny}.}
@@ -18,6 +18,8 @@ mod_graph_pept_prot_server(id, cc, matAdj, dataIn)
 \item{matAdj}{xxx}
 
 \item{dataIn}{An object of class \link{QFeatures}}
+
+\item{settings}{xxx}
 }
 \description{
 A shiny Module.

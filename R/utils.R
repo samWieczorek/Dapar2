@@ -163,11 +163,12 @@ is.OfType <- function(data, type){
 #' 
 #' @examples
 #' data(ft)
-#' getListNbValuesInLines(ft, 1)
+#' res <- getListNbValuesInLines(ft, 1)
 #' 
 #' @export
 #' 
 #' @importFrom S4Vectors sort
+#' @importFrom SummarizedExperiment colData
 #' 
 getListNbValuesInLines <- function(obj, i, type="WholeMatrix"){
   
@@ -178,22 +179,22 @@ getListNbValuesInLines <- function(obj, i, type="WholeMatrix"){
     stop("'type' is not one of: 'None', 'WholeMatrix', 'AtLeastOneCond', 'AllCond'")
   
   data <- as.data.frame(assay(obj[[i]]))
-  
+  conds <- colData(obj)[['Condition']]
   switch(type,
          WholeMatrix= {
            ll <- unique(ncol(data) - apply(is.na(data), 1, sum))
          },
          AllCond = {
            tmp <- NULL
-           for (cond in unique(colData(obj)[['Condition']])){
-             tmp <- c(tmp, length(which(colData(obj)[['Condition']] == cond)))
+           for (cond in unique(conds)){
+             tmp <- c(tmp, length(which(conds == cond)))
            }
            ll <- seq(0,min(tmp))
          },
          AtLeastOneCond = {
            tmp <- NULL
-           for (cond in unique(colData(obj)[['Condition']])){
-             tmp <- c(tmp, length(which(colData(obj)[['Condition']] == cond)))
+           for (cond in unique()){
+             tmp <- c(tmp, length(which(conds == cond)))
            }
            ll <- seq(0,max(tmp))
          }
@@ -329,3 +330,9 @@ nonzero <- function(x){
   return(res)
 }
 
+
+
+#' @param fname xxx
+#' @export
+GetExtension <- function(fname)
+  strsplit(fname, '.', TRUE)[[1]][2]

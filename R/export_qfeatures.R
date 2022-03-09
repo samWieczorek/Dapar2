@@ -19,9 +19,10 @@
 #' code for the different tags.
 #' 
 #' 
-#' @param obj An object of class \code{QFeatures}.
-#' 
+#' @param object An object of class \code{QFeatures}.
+#' @param i xxx
 #' @param filename A character string for the name of the Excel file.
+#' @param exp.design xxx
 #' 
 #' @return A Excel file.
 #' 
@@ -50,7 +51,7 @@ setMethod("write2excel", "QFeatures",
           function(object, 
                    i = NULL,
                    filename = "newFile", ...) {
-            if (isEmpty(object))
+            if (length(object)==0)
               return(NULL)
             
             
@@ -83,8 +84,9 @@ setMethod("write2excel", "SummarizedExperiment",
 
 #' @noRd
 #' @importFrom openxlsx createStyle createWorkbook addWorksheet writeData addStyle writeData
-.write2excel <- function(object, exp.design, fname) {
-  name <- paste0(fname, ".xlsx", sep="")
+#' @importFrom stats setNames
+.write2excel <- function(object, filename, exp.design) {
+  name <- paste0(filename, ".xlsx", sep="")
   wb <- openxlsx::createWorkbook(name)
   # Write the assay data to the first sheet
   i.sheet <- 1

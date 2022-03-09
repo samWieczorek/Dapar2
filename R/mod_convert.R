@@ -40,6 +40,8 @@ mod_Convert_ui <- function(id){
 #' @import QFeatures
 #' @importFrom shinyalert shinyalert
 #' @importFrom shinyjs disabled
+#' @importFrom stats setNames
+#' @importFrom openxlsx getSheetNames
 #'
 #' @export
 #'
@@ -108,7 +110,7 @@ mod_Convert_server <- function(id,
     #
     observeEvent(steps.enabled(), ignoreNULL = TRUE, {
       if (is.null(steps.enabled()))
-        rv$steps.enabled <- setNames(rep(FALSE, rv.process$length), rv.process$config$steps)
+        rv$steps.enabled <- setNames(rep(FALSE, length(config$steps)), config$steps)
       else
         rv$steps.enabled <- steps.enabled()
     })
@@ -144,9 +146,8 @@ mod_Convert_server <- function(id,
 
       observeEvent(input$btn_validate_Description, ignoreInit = TRUE, ignoreNULL=TRUE, {
         rv$dataIn <- dataIn()
-        #browser()
-        dataOut$trigger <- Send_Result_to_Caller(rv$dataIn)$trigger
-        dataOut$value <- Send_Result_to_Caller(rv$dataIn)$value
+        dataOut$trigger <- Magellan::Timestamp()
+        dataOut$value <- rv$dataIn
       })
 
 
@@ -168,7 +169,7 @@ mod_Convert_server <- function(id,
       req(rv.widgets$selectFile_software)
       rv.widgets$selectFile_file2convert
       fluidRow(
-        column(width=2, modulePopoverUI("modulePopover_convertChooseDatafile")),
+        column(width=2, mod_popover_for_help_ui("modulePopover_convertChooseDatafile")),
         column(width = 10, if (rv$steps.enabled['selectFile'])
           fileInput(ns("file2convert"), "",
                     multiple=FALSE,
@@ -242,7 +243,7 @@ mod_Convert_server <- function(id,
       req(input$file2convert)
 
       if ( GetExtension(input$file2convert$name) %in% c("xls", "xlsx")){
-        sheets <- listSheets(input$file2convert$datapath)
+        sheets <- getSheetNames(input$file2convert$datapath)
         if (rv$steps.enabled['selectFile'])
           selectInput(ns("selectFile_XLSsheets"), "sheets",
                       choices = as.list(sheets),
@@ -306,8 +307,8 @@ mod_Convert_server <- function(id,
 
     observeEvent(input$btn_validate_SelectFile, ignoreInit = TRUE, {
       # Add your stuff code here
-      dataOut$trigger <- Send_Result_to_Caller(rv$dataIn)$trigger
-      dataOut$value <- Send_Result_to_Caller(rv$dataIn)$value
+      dataOut$trigger <- Magellan::Timestamp()
+      dataOut$value <- rv$dataIn
     })
 
     ###### ------------------- Code for step 2: DataID -------------------------    #####
@@ -333,8 +334,8 @@ mod_Convert_server <- function(id,
 
       observeEvent(input$btn_validate_DataID, ignoreInit = TRUE, {
         # Add your stuff code here
-        dataOut$trigger <- Send_Result_to_Caller(rv$dataIn)$trigger
-        dataOut$value <- Send_Result_to_Caller(rv$dataIn)$value
+        dataOut$trigger <- Magellan::Timestamp()
+        dataOut$value <- rv$dataIn
       })
 
     })
@@ -363,8 +364,8 @@ mod_Convert_server <- function(id,
 
       observeEvent(input$btn_validate_ExpFeatData, ignoreInit = TRUE, {
         # Add your stuff code here
-        dataOut$trigger <- Send_Result_to_Caller(rv$dataIn)$trigger
-        dataOut$value <- Send_Result_to_Caller(rv$dataIn)$value
+        dataOut$trigger <- Magellan::Timestamp()
+        dataOut$value <- rv$dataIn
       })
 
     })
@@ -393,8 +394,8 @@ mod_Convert_server <- function(id,
 
       observeEvent(input$btn_validate_SamplesMetadata, ignoreInit = TRUE, {
         # Add your stuff code here
-        dataOut$trigger <- Send_Result_to_Caller(rv$dataIn)$trigger
-        dataOut$value <- Send_Result_to_Caller(rv$dataIn)$value
+        dataOut$trigger <- Magellan::Timestamp()
+        dataOut$value <- rv$dataIn
       })
 
     })
@@ -423,8 +424,8 @@ mod_Convert_server <- function(id,
       observeEvent(input$btn_validate_Save, ignoreInit = TRUE, {
         # Add your stuff code here
         rv$dataIn <- AddItemToDataset(rv$dataIn, config$name)
-        dataOut$trigger <- Send_Result_to_Caller(rv$dataIn)$trigger
-        dataOut$value <- Send_Result_to_Caller(rv$dataIn)$value
+        dataOut$trigger <- Magellan::Timestamp()
+        dataOut$value <- rv$dataIn
       })
 
 

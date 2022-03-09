@@ -2,6 +2,7 @@
 #' @import highcharter
 #' @importFrom DT JS
 #' @importFrom stats var
+#' @importFrom SummarizedExperiment assay
 #' 
 #' @export
 #' 

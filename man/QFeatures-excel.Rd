@@ -11,9 +11,13 @@
 \S4method{write2excel}{SummarizedExperiment}(object, filename, exp.design, ...)
 }
 \arguments{
+\item{object}{An object of class \code{QFeatures}.}
+
+\item{i}{xxx}
+
 \item{filename}{A character string for the name of the Excel file.}
 
-\item{obj}{An object of class \code{QFeatures}.}
+\item{exp.design}{xxx}
 }
 \value{
 A Excel file.

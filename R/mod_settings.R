@@ -77,6 +77,8 @@ mod_settings_ui <- function(id){
 #' @import highcharter
 #' @importFrom colourpicker colourInput
 #' @importFrom shinyjs onclick toggle
+#' @importFrom stats rnorm
+#' @importFrom SummarizedExperiment colData
 #'
 #'
 mod_settings_server <- function(id, obj){

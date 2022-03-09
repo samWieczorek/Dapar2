@@ -205,7 +205,7 @@ mvPlot.2 <- function(qData,
 #' 
 #' @rdname imputation
 #' @export
-#' 
+#' @importFrom stats setNames
 mvImage <- function(object,
                     conds
                     ){

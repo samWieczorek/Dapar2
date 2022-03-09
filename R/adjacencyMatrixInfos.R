@@ -83,6 +83,7 @@
 #' GraphPepProt_hc(X)
 #' 
 #' @import highcharter
+#' @importFrom methods as
 #' 
 #' @export
 #' 

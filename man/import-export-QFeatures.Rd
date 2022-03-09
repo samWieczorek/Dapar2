@@ -72,7 +72,8 @@ data.file <- system.file("extdata", "Exp1_R25_pept.txt", package="DaparToolshedD
 data <- read.table(data.file, header=TRUE, sep="\t", as.is=TRUE, stringsAsFactors = FALSE)
 sample.file <- system.file("extdata", "samples_Exp1_R25.txt", package="DaparToolshedData")
 sample <- read.table(sample.file, header=TRUE, sep="\t", as.is=TRUE, stringsAsFactors = FALSE)
-ft <- createQFeatures(data = data, sample = sample, indQData = 56:61, keyId = 'Sequence', analysis = 'test',
+ft <- createQFeatures(data = data, sample = sample, indQData = 56:61, 
+keyId = 'Sequence', analysis = 'test',
 indQMetadata = 43:48, typeDataset = 'peptide',
 parentProtId = 'Protein_group_IDs', forceNA = TRUE, software = 'maxquant')
 }

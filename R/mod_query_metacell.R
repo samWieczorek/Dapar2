@@ -68,12 +68,12 @@ mod_query_metacell_server <- function(id,
                function(input, output, session) {
                  ns <- session$ns
                  
-                 callModule(modulePopover,"metacellTag_help", 
+                 mod_popover_for_help_server("metacellTag_help", 
                             data = reactive(list(title = "Nature of data to filter", 
                                                  content="Define xxx")))
                  
                  
-                 callModule(modulePopover,"filterScope_help", 
+                 mod_popover_for_help_server("filterScope_help", 
                             data = reactive(list(title = "Scope", 
                                                  content=HTML(paste0("To filter the missing values, the choice of the lines to be kept is made by different options:"),
                                                               ("<ul>"),
@@ -123,7 +123,7 @@ mod_query_metacell_server <- function(id,
                  
                  output$chooseMetacellTag_ui <- renderUI({
                    selectInput(ns("chooseMetacellTag"),
-                               modulePopoverUI(ns("metacellTag_help")),
+                               mod_popover_for_help_ui(ns("metacellTag_help")),
                                choices = list_tags(),
                                selected = rv.widgets$MetacellTag,
                                width='200px')
@@ -141,7 +141,7 @@ mod_query_metacell_server <- function(id,
                  output$choose_metacellFilters_ui <- renderUI({
                    req(rv.widgets$MetacellTag != 'None')
                    selectInput(ns("ChooseMetacellFilters"),
-                               modulePopoverUI(ns("filterScope_help")),
+                               mod_popover_for_help_ui(ns("filterScope_help")),
                                choices = filters(),
                                selected = rv.widgets$MetacellFilters,
                                width='200px')
@@ -166,7 +166,7 @@ mod_query_metacell_server <- function(id,
                  output$MetacellFilters_widgets_set2_ui <- renderUI({
                    req(!(rv.widgets$MetacellFilters %in% c("None", "WholeLine")))
                    
-                   callModule(modulePopover,"choose_val_vs_percent_help", 
+                   mod_popover_for_help_server("choose_val_vs_percent_help", 
                               data = reactive(list(title = paste("#/% of values to ", rv.widgets$KeepRemove),
                                                    content="Define xxx")))
                    
@@ -174,7 +174,7 @@ mod_query_metacell_server <- function(id,
                      fluidRow(
                        column(4,
                               radioButtons(ns('choose_val_vs_percent'),
-                                           modulePopoverUI(ns("choose_val_vs_percent_help")),
+                                           mod_popover_for_help_ui(ns("choose_val_vs_percent_help")),
                                            choices = val_vs_percent(),
                                            selected = rv.widgets$val_vs_percent
                               )
@@ -202,14 +202,14 @@ mod_query_metacell_server <- function(id,
                    req(rv.widgets$val_vs_percent == 'Count')
                    req(!(rv.widgets$MetacellFilters %in% c("None", "WholeLine")))
                    
-                   callModule(modulePopover,"metacell_value_th_help", 
+                   mod_popover_for_help_server("metacell_value_th_help", 
                               data = reactive(list(title = "Count threshold", 
                                                    content="Define xxx")))
                    
                    tagList(
-                     modulePopoverUI(ns("modulePopover_keepVal")),
+                     mod_popover_for_help_ui(ns("modulePopover_keepVal")),
                      selectInput(ns("choose_metacell_value_th"),
-                                 modulePopoverUI(ns("metacell_value_th_help")),
+                                 mod_popover_for_help_ui(ns("metacell_value_th_help")),
                                  choices = getListNbValuesInLines(obj(), 
                                                                   type = rv.widgets$MetacellFilters),
                                  selected = rv.widgets$metacell_value_th,
@@ -223,13 +223,13 @@ mod_query_metacell_server <- function(id,
                    req(rv.widgets$val_vs_percent == 'Percentage')
                    req(!(rv.widgets$MetacellFilters %in% c("None", "WholeLine")))
                    
-                   callModule(modulePopover,"metacell_percent_th_help", 
+                   mod_popover_for_help_server("metacell_percent_th_help", 
                               data = reactive(list(title = "Percentage threshold", 
                                                    content="Define xxx")))
                    tagList(
-                     modulePopoverUI(ns("modulePopover_keepVal_percent")),
+                     mod_popover_for_help_ui(ns("modulePopover_keepVal_percent")),
                      sliderInput(ns("choose_metacell_percent_th"), 
-                                 modulePopoverUI(ns("metacell_percent_th_help")),
+                                 mod_popover_for_help_ui(ns("metacell_percent_th_help")),
                                  min = 0,
                                  max = 100,
                                  step = 1,
@@ -288,45 +288,6 @@ mod_query_metacell_server <- function(id,
                  
                  
                  
-                 #   observe({
-                 #     req(obj())
-                 #     req(rv.widgets$MetacellTag != 'None')
-                 #     req(rv.widgets$MetacellFilters != 'None')
-                 #     
-                 #     
-                 #     browser()
-                 #     th <- 0
-                 #     if (rv.widgets$val_vs_percent == 'Percentage') {
-                 #       th <- rv.widgets$metacell_percent_th / 100
-                 #     } else  if (rv.widgets$val_vs_percent == 'Count'){
-                 #       th <- as.integer(rv.widgets$metacell_value_th)
-                 #     }
-                 #     
-                 #     
-                 #     rv$indices <- DAPAR::GetIndices_MetacellFiltering(obj = obj(),
-                 #                                         level = DAPAR::GetTypeofData(obj()),
-                 #                                         pattern = rv.widgets$MetacellTag,
-                 #                                         type = rv.widgets$MetacellFilters,
-                 #                                         percent = rv.widgets$val_vs_percent == 'Percentage',
-                 #                                         op = rv.widgets$metacellFilter_operator,
-                 #                                         th = th)
-                 # 
-                 #     rv$trigger = as.numeric(Sys.time())
-                 #     rv$params <- list(MetacellTag = rv.widgets$MetacellTag,
-                 #                       KeepRemove = rv.widgets$KeepRemove,
-                 #                       MetacellFilters = rv.widgets$MetacellFilters,
-                 #                       metacell_percent_th = rv.widgets$metacell_percent_th,
-                 #                       metacell_value_th = rv.widgets$metacell_value_th,
-                 #                       val_vs_percent = rv.widgets$val_vs_percent,
-                 #                       metacellFilter_operator = rv.widgets$metacellFilter_operator)
-                 #     
-                 #     rv$query <- WriteQuery()
-                 #   })
-                 #   
-                 #   
-                 #  
-                 # })
-                 
                  CompileIndices <- reactive({
                    req(obj())
                    req(rv.widgets$MetacellTag != 'None')
@@ -337,8 +298,8 @@ mod_query_metacell_server <- function(id,
                                 Count = as.integer(rv.widgets$metacell_value_th)
                    )
                    
-                   DAPAR::GetIndices_MetacellFiltering(obj = obj(),
-                                                       level = DAPAR::GetTypeofData(obj()),
+                   GetIndices_MetacellFiltering(obj = obj(),
+                                                       level = typeDataset(obj()),
                                                        pattern = rv.widgets$MetacellTag,
                                                        type = rv.widgets$MetacellFilters,
                                                        percent = rv.widgets$val_vs_percent == 'Percentage',

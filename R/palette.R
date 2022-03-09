@@ -62,6 +62,7 @@ if (missing(pal.name) || is.null(pal.name))
 #'
 #' @importFrom RColorBrewer brewer.pal brewer.pal.info
 #' @importFrom grDevices colorRampPalette
+#' @importFrom utils combn
 #' 
 #' @rdname palette
 #'

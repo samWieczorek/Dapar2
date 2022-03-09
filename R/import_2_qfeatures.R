@@ -51,14 +51,16 @@
 #' data <- read.table(data.file, header=TRUE, sep="\t", as.is=TRUE, stringsAsFactors = FALSE)
 #' sample.file <- system.file("extdata", "samples_Exp1_R25.txt", package="DaparToolshedData")
 #' sample <- read.table(sample.file, header=TRUE, sep="\t", as.is=TRUE, stringsAsFactors = FALSE)
-#' ft <- createQFeatures(data = data, sample = sample, indQData = 56:61, keyId = 'Sequence', analysis = 'test',
+#' ft <- createQFeatures(data = data, sample = sample, indQData = 56:61, 
+#' keyId = 'Sequence', analysis = 'test',
 #' indQMetadata = 43:48, typeDataset = 'peptide',
 #' parentProtId = 'Protein_group_IDs', forceNA = TRUE, software = 'maxquant')
 #' }
 #'
 #' @importFrom QFeatures readQFeatures
 #' @importFrom PSMatch makeAdjacencyMatrix
-#' @importFrom utils installed.packages
+#' @importFrom utils installed.packages read.table
+#' @importFrom SummarizedExperiment colData
 #'
 #' @export
 #' 
@@ -198,8 +200,8 @@ createQFeatures <- function(data = NULL,
 
 
   # Enrich the metadata for whole QFeatures object
-  metadata(obj)$versions <- ProstarVersions()
-  metadata(obj)$analysis <- list(analysis = analysis,
+  S4Vectors::metadata(obj)$versions <- ProstarVersions()
+  S4Vectors::metadata(obj)$analysis <- list(analysis = analysis,
                                  typePipeline = typePipeline,
                                  processes = c('original', processes)
   )

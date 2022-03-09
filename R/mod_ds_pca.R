@@ -95,18 +95,18 @@ mod_ds_pca_server <- function(id,
 
     observeEvent(input$varScale_PCA,{
       rv.pca$PCA_varScale <- input$varScale_PCA
-      rv.pca$res.pca <- wrapper_pca(object(),
-                                    conds(),
-                                    rv.pca$PCA_varScale,
+      rv.pca$res.pca <- wrapper_pca(object = object(),
+                                    conds = conds(),
+                                    var.scaling = rv.pca$PCA_varScale,
                                     ncp = Compute_PCA_dim()
                                     )
     })
 
     observeEvent(object(), {
       if (length(which(is.na(assay(object())))) == 0) {
-        rv.pca$res.pca <- wrapper_pca(object(),
-                                      conds(),
-                                      rv.pca$PCA_varScale,
+        rv.pca$res.pca <- wrapper_pca(object = object(),
+                                      conds = conds(),
+                                      var.scaling = rv.pca$PCA_varScale,
                                       ncp = Compute_PCA_dim()
                                       )
       }

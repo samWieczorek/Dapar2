@@ -20,6 +20,12 @@
 #' @importFrom shiny NS tagList 
 #' @importFrom shinyjs inlineCSS useShinyjs
 #' 
+#' @examples 
+#' if (interactive()){
+#' 
+#' 
+#' }
+#' 
 mod_popover_for_help_ui <- function(id){
   ns <- NS(id)
   tagList(

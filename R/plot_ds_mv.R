@@ -1,8 +1,10 @@
 #' @export 
 #' @import highcharter
 #' @rdname descriptive-statistics
-mvPerLinesHisto <- function(qData){
-   
+mvPerLinesHisto <- function(object){
+  stopifnot(inherits(object, 'SummarizedExperiment'))
+  qData <- assay(object)
+  
   coeffMax <- .1
   
   NbNAPerCol <- colSums(is.na(qData))
@@ -46,10 +48,12 @@ mvPerLinesHisto <- function(qData){
 #' 
 #' @import highcharter
 #' @rdname descriptive-statistics
-mvPerLinesHistoPerCondition <- function(qData, 
+mvPerLinesHistoPerCondition <- function(object, 
                                         conds, 
                                         pal.name){
   
+  stopifnot(inherits(object, 'SummarizedExperiment'))
+  qData <- assay(object)
   
   myColors <-  SampleColors(conds, pal.name)
   
@@ -101,10 +105,12 @@ mvPerLinesHistoPerCondition <- function(qData,
 #' @export
 #' @import highcharter
 #' @rdname descriptive-statistics
-mvHisto <- function(qData, 
+mvHisto <- function(object, 
                        conds, 
                        showValues = FALSE, 
                        pal.name = NULL){
+  stopifnot(inherits(object, 'SummarizedExperiment'))
+  qData <- assay(object)
   
   myColors <-  SampleColors(conds, pal.name)
   NbNAPerCol <- colSums(is.na(qData))

@@ -48,6 +48,7 @@
 #' #' @rdname example_module_Normalization
 #' #' 
 #' #' @importFrom stats setNames rnorm
+#' #' @importFrom Magellan Timestamp Get_Worflow_Core_Code
 #' #' 
 #' #' @export
 #' #' 

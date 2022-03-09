@@ -30,6 +30,8 @@ mod_Protein_ui <- function(id){
 #' @param status xxx
 #'
 #' @author Samuel Wieczorek
+#' 
+#' @importFrom stats setNames
 #'
 #' @export
 #'
@@ -77,7 +79,7 @@ mod_Protein_server <- function(id,
     # Initialization of the module
     observeEvent(steps.enabled(), ignoreNULL = TRUE, {
       if (is.null(steps.enabled()))
-        rv$steps.enabled <- setNames(rep(FALSE, rv.process$length), rv.process$config$steps)
+        rv$steps.enabled <- setNames(rep(FALSE, length(config$steps)), config$steps)
       else
         rv$steps.enabled <- steps.enabled()
     })

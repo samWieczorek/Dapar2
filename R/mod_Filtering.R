@@ -23,6 +23,8 @@ mod_Filtering_ui <- function(id){
 #' @rdname mod_Filtering
 #' @importFrom shinyjs toggle hidden
 #' @importFrom DT dataTableOutput
+#' @importFrom stats setNames
+#' @importFrom Magellan Timestamp toggleWidget Get_Worflow_Core_Code
 #' 
 #' @export
 #' 
@@ -144,7 +146,7 @@ mod_Filtering_server <- function(id,
       widget <- actionButton(ns("Description_btn_validate"),
                              "Start",
                              class = btn_success_color)
-      toggleWidget(rv$steps.enabled['Description'], widget)
+      Magellan::toggleWidget(rv$steps.enabled['Description'], widget)
     })
     
     
@@ -198,7 +200,7 @@ mod_Filtering_server <- function(id,
     indices <- mod_query_metacell_server(id = 'query',
                                          obj = reactive({rv$dataIn}),
                                          list_tags = reactive({c('None' = 'None',
-                                                                 DAPAR::metacell.def(GetTypeofData(rv$current.obj))$node
+                                                                 qMetadata.def(typeDataset(rv$current.obj))$node
                                          )}),
                                          keep_vs_remove = reactive({setNames(nm = c("delete", "keep"))}),
                                          filters = reactive({c("None" = "None",
@@ -207,7 +209,7 @@ mod_Filtering_server <- function(id,
                                                                "For every condition" = "AllCond",
                                                                "At least one condition" = "AtLeastOneCond")}),
                                          val_vs_percent = reactive({setNames(nm=c('Count', 'Percentage'))}),
-                                         operator = reactive({setNames(nm=DAPAR::SymFilteringOperators())})
+                                         operator = reactive({setNames(nm = SymFilteringOperators())})
     )
     
     
@@ -219,7 +221,7 @@ mod_Filtering_server <- function(id,
       widget <- actionButton(ns("Quantimetadatafiltering_btn_validate"),
                              "Perform metacell filtering",
                              class = btn_success_color)
-      toggleWidget(rv$steps.enabled['Quantimetadatafiltering'], widget)
+      Magellan::toggleWidget(rv$steps.enabled['Quantimetadatafiltering'], widget)
     })
     
     
@@ -262,7 +264,7 @@ mod_Filtering_server <- function(id,
       widget <- actionButton(ns("StringBasedFiltering_btn_validate"),
                              "Perform",
                              class = btn_success_color)
-      toggleWidget(rv$steps.enabled['StringBasedFiltering'], widget)
+      Magellan::toggleWidget(rv$steps.enabled['StringBasedFiltering'], widget)
     })
     
     
@@ -289,7 +291,7 @@ mod_Filtering_server <- function(id,
       widget <- actionButton(ns("NumericalFiltering_btn_validate"),
                              "Perform",
                              class = btn_success_color)
-      toggleWidget(rv$steps.enabled['NumericalFiltering'], widget)
+      Magellan::toggleWidget(rv$steps.enabled['NumericalFiltering'], widget)
     })
     
     
@@ -317,7 +319,7 @@ mod_Filtering_server <- function(id,
       widget <- actionButton(ns("Save_btn_validate"),
                              "Perform",
                              class = btn_success_color)
-      toggleWidget(rv$steps.enabled['Save'], widget)
+      Magellan::toggleWidget(rv$steps.enabled['Save'], widget)
     })
     
     

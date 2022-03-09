@@ -26,6 +26,9 @@ mod_qMetadataLegend_ui <- function(id){
 #' 
 #' @export
 #' 
+#' @importFrom stats rnorm
+#' @importFrom BiocGenerics combine
+#' 
 #' @rdname q_metadata
 mod_qMetadataLegend_server <- function(id, 
                                        hide.white = TRUE

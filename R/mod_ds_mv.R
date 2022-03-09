@@ -53,7 +53,7 @@ mod_ds_mv_server <- function(id,
       pal.name()
 
       withProgress(message = 'Making plot', value = 100, {
-        tmp <- mvHisto(assay(object()),
+        tmp <- mvHisto(qData = assay(object()),
                        conds = conds(),
                        pal.name = pal.name())
       })

@@ -41,6 +41,9 @@ mod_Protein_Normalization_ui <- function(id){
 #' @author Samuel Wieczorek
 #'
 #' @importFrom shinyjs disabled
+#' @importFrom stats setNames
+#' @importFrom Magellan Timestamp actionBtnClass
+#' 
 #' @export
 #' 
 #' @rdname pipeline-protein
@@ -112,8 +115,8 @@ mod_Protein_Normalization_server <- function(id,
     # Initialization of the module
     observeEvent(steps.enabled(), ignoreNULL = TRUE, {
       if (is.null(steps.enabled()))
-        rv$steps.enabled <- setNames(rep(FALSE, rv.process$length), 
-                                     nm = rv.process$config$steps)
+        rv$steps.enabled <- setNames(rep(FALSE, length(config$steps)), 
+                                     nm = config$steps)
       else
         rv$steps.enabled <- steps.enabled()
     })
@@ -294,7 +297,7 @@ mod_Protein_Normalization_server <- function(id,
       req(rv.widgets$norm_method == "QuantileCentering")
       if (rv$steps.enabled['Normalization'])
         tagList(
-          modulePopoverUI("modulePopover_normQuanti"),
+          mod_popover_for_help_ui("modulePopover_normQuanti"),
           textInput(ns("normalization.quantile"), NULL,
                     value = rv.widgets$norm_quantile,
                     width='150px'),
@@ -303,7 +306,7 @@ mod_Protein_Normalization_server <- function(id,
       else
         shinyjs::disabled(
           tagList(
-            modulePopoverUI(ns("modulePopover_normQuanti")),
+            mod_popover_for_help_ui(ns("modulePopover_normQuanti")),
             textInput(ns("normalization.quantile"), NULL,
                       value = rv.widgets$norm_quantile,
                       width='150px'),
@@ -364,7 +367,7 @@ mod_Protein_Normalization_server <- function(id,
         shinyjs::disabled(
           actionButton(ns("perform.normalization"),
                        "Perform normalization", 
-                       class = Magellan::actionBtnClass, 
+                       class = actionBtnClass, 
                        width="170px")
         )
     })

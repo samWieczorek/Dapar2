@@ -123,6 +123,8 @@ setClass("FunctionFilter",
 ##'
 ##' @export FunctionFilter
 ##' @rdname QFeatures-filtering-oneSE
+##' 
+##' @importFrom methods new
 FunctionFilter <- function(name, ...) {
   new("FunctionFilter",
       name = name,
@@ -143,10 +145,11 @@ FunctionFilter <- function(name, ...) {
 ##'     [FunctionFilter]
 ##'     
 ##' @exportMethod filterFeaturesOneSE
+##' @importFrom S4Vectors metadata
 ##' @rdname QFeatures-filtering-oneSE
 setMethod("filterFeaturesOneSE", "QFeatures",
           function(object, i, name = "newAssay", filters) {
-            if (isEmpty(object))
+            if (length(object)==0)
               return(object)
             if (name %in% names(object))
               stop("There's already an assay named '", name, "'.")
@@ -165,10 +168,10 @@ setMethod("filterFeaturesOneSE", "QFeatures",
                                name = name)
             
             if (nrow(new.se) > 0){
-              idcol <- metadata(object[[i]])$idcol
+              idcol <- S4Vectors::metadata(object[[i]])$idcol
               if (is.null(idcol)){
                 warning('xxx')
-                metadata(object[[i]])$idcol <- '_temp_ID_'
+                S4Vectors::metadata(object[[i]])$idcol <- '_temp_ID_'
                 idcol <- '_temp_ID_'
               }
                 
@@ -189,6 +192,7 @@ setMethod("filterFeaturesOneSE", "QFeatures",
 
 
 ##' @importFrom BiocGenerics do.call
+##' @importFrom AnnotationFilter field
 ##' @exportMethod filterFeaturesOneSE
 ##' @rdname QFeatures-filtering-oneSE
 setMethod("filterFeaturesOneSE", "SummarizedExperiment",

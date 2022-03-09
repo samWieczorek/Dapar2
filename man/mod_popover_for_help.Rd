@@ -32,4 +32,11 @@ NA
 \description{
 A shiny Module.
 }
+\examples{
+if (interactive()){
+
+
+}
+
+}
 \keyword{internal}

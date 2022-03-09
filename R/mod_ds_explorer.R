@@ -21,6 +21,9 @@ mod_ds_explorer_ui <- function(id){
 #' @return NA
 #' @import DT
 #' @importFrom tibble as_tibble
+#' @importFrom stats setNames
+#' @importFrom SummarizedExperiment colData
+#' 
 #' @rdname descriptive-statistics
 mod_ds_explorer_server <- function(id,
                                   object,

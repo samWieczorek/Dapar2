@@ -35,6 +35,7 @@ mod_Protein_Filtering_ui <- function(id){
 #' 
 #' 
 #' @importFrom shinyjs disabled
+#' @importFrom stats setNames
 #' @export
 #'
 #' @return NA
@@ -110,7 +111,7 @@ mod_Protein_Filtering_server <- function(id,
     # Initialization of the module
     observeEvent(steps.enabled(), ignoreNULL = TRUE, {
       if (is.null(steps.enabled()))
-        rv$steps.enabled <- setNames(rep(FALSE, rv.process$length), rv.process$config$steps)
+        rv$steps.enabled <- setNames(rep(FALSE, length(config$steps)), config$steps)
       else
         rv$steps.enabled <- steps.enabled()
     })
@@ -261,8 +262,9 @@ mod_Protein_Filtering_server <- function(id,
 
     observeEvent(input$btn_validate_Step1, ignoreInit = TRUE, {
       # Add your stuff code here
-      dataOut$trigger <- Send_Result_to_Caller(rv$dataIn)$trigger
-      dataOut$value <- Send_Result_to_Caller(rv$dataIn)$value
+      dataOut$trigger <- Magellan::Timestamp()
+      dataOut$value <- rv$dataIn
+      
       #rv$status['Step1'] <- global$VALIDATED
     })
 
@@ -329,8 +331,9 @@ mod_Protein_Filtering_server <- function(id,
 
     observeEvent(input$btn_validate_Step2, ignoreInit = TRUE, {
       # Add your stuff code here
-      dataOut$trigger <- Send_Result_to_Caller(rv$dataIn)$trigger
-      dataOut$value <- Send_Result_to_Caller(rv$dataIn)$value
+      dataOut$trigger <- Magellan::Timestamp()
+      dataOut$value <- rv$dataIn
+      
       #rv$status['Step2'] <- global$VALIDATED
     })
 
@@ -358,9 +361,9 @@ mod_Protein_Filtering_server <- function(id,
     observeEvent(input$btn_validate_Step3, ignoreInit = TRUE, {
       # Add your stuff code here
       rv$dataIn <- AddItemToDataset(rv$dataIn, config$name)
-      dataOut$trigger <- Send_Result_to_Caller(rv$dataIn)$trigger
-      dataOut$value <- Send_Result_to_Caller(rv$dataIn)$value
-      #print(names(dataOut))
+      dataOut$trigger <- Magellan::Timestamp()
+      dataOut$value <- rv$dataIn
+      
       # rv$status['Step3'] <- global$VALIDATED
     })
 

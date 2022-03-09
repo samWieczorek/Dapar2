@@ -107,7 +107,7 @@
 #' #' object <- addListAdjacencyMatrices(object, 3)
 #' #' sTab <- colData(object)
 #' #' se <- t_test_sam(object[[3]], sTab, FUN = compute.t.test)
-#' #' pval <- metadata(se)$t_test[['25fmol_vs_10fmol_pval']]
+#' #' pval <- S4Vectors::metadata(se)$t_test[['25fmol_vs_10fmol_pval']]
 #' #' histPValue_HC(pval)
 #' #' 
 #' #' @export
@@ -212,11 +212,11 @@
 #' #' obj <- Exp1_R25_pept[seq_len(1000)]
 #' #' obj <- addAssay(obj, QFeatures::filterNA(obj[[2]],  pNA = 0), name='filtered')
 #' #' se <- t_test_sam(obj[[3]], colData(obj), FUN = compute.t.test)
-#' #' ind_logFC <- grep('_logFC', colnames(metadata(se)$t_test))
-#' #' logFC <- setNames(as.data.frame(metadata(se)$t_test[,ind_logFC]), 
-#' #' colnames(metadata(se)$t_test)[ind_logFC])
-#' #' ind_pval <- grep('_pval', colnames(metadata(se)$t_test))
-#' #' pval <- setNames(as.data.frame(metadata(se)$t_test[,ind_pval]), 
+#' #' ind_logFC <- grep('_logFC', colnames(S4Vectors::metadata(se)$t_test))
+#' #' logFC <- setNames(as.data.frame(S4Vectors::metadata(se)$t_test[,ind_logFC]), 
+#' #' colnames(S4Vectors::metadata(se)$t_test)[ind_logFC])
+#' #' ind_pval <- grep('_pval', colnames(S4Vectors::metadata(se)$t_test))
+#' #' pval <- setNames(as.data.frame(S4Vectors::metadata(se)$t_test[,ind_pval]), 
 #' #' colnames(metadata(se)$t_test)[ind_pval])
 #' #' diffAnaComputeFDR(logFC[,1], pval[,1])
 #' #' 

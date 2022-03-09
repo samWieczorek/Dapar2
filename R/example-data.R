@@ -19,6 +19,8 @@
 #' create_ft_example()
 #' create_ft_example(TRUE)
 #' 
+#' @importFrom utils read.table
+#' 
 create_ft_example <- function(with.na = FALSE){
   
   filename <- if (with.na) "ft-data-na.txt" else "ft-data.txt"

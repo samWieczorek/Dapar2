@@ -71,6 +71,7 @@ mod_tracker_ui <- function(id){
 #' @export
 #'
 #' @importFrom shinyjs toggle hidden show hide
+#' @importFrom stats setNames
 #' 
 #' @return A `list()` of integers
 #'
