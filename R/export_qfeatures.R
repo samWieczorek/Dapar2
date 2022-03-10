@@ -50,7 +50,7 @@ NULL
 setMethod("write2excel", "QFeatures",
           function(object, 
                    i = NULL,
-                   filename = "newFile", ...) {
+                   filename = "newFile") {
             if (length(object)==0)
               return(NULL)
             
@@ -62,8 +62,7 @@ setMethod("write2excel", "QFeatures",
               # One exports only one SE
               write2excel(object[[i]],
                           filename, 
-                          design(object),
-                          ...)
+                          design(object))
               
               
             }
@@ -74,8 +73,8 @@ setMethod("write2excel", "QFeatures",
 #' @exportMethod write2excel
 #' @rdname QFeatures-excel
 setMethod("write2excel", "SummarizedExperiment",
-          function(object, filename, exp.design, ...)
-            .write2excel(object, filename, exp.design, ...))
+          function(object, filename, exp.design)
+            .write2excel(object, filename, exp.design))
 
 
 

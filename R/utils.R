@@ -13,6 +13,7 @@
 #'
 #' @author Samuel Wieczorek
 #'
+#' @rdname utils
 #' @export
 #' 
 #' @examples
