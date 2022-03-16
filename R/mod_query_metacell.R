@@ -2,28 +2,63 @@
 #' 
 #' @description xxx
 #' 
+#' @name query_qMetadata
+#'
+#' @examples 
+#' if (interactive()){
+#' data(ft_na)
+#'  ui <- mod_query_qMetadata_ui('query')
+#' 
+#'  server <- function(input, output, session) {
+#'  ll.tags <- c('None' = 'None', qMetadata.def(typeDataset(ft_na[[1]]))$node)
+#'   mod_query_qMetadata_server('query', 
+#'                              obj = reactive({ft[[1]]}),
+#'                              list_tags = reactive({ll.tags}),
+#'                              keep_vs_remove = reactive({setNames(nm = c("delete", "keep"))}),
+#'                              filters = reactive({c("None" = "None",
+#'                              "Whole Line" = "WholeLine",
+#'                              "Whole matrix" = "WholeMatrix",
+#'                              "For every condition" = "AllCond",
+#'                              "At least one condition" = "AtLeastOneCond")}),
+#'                              val_vs_percent = reactive({setNames(nm=c('Count', 'Percentage'))}),
+#'                              operator = reactive({setNames(nm = SymFilteringOperators())})
+#'                              )
+#'                              }
+#'  
+#'  shinyApp(ui=ui, server=server)
+#' }
+NULL
+
+
+
+
+
+
+
+
+
 #' @param id xxx
 #' 
 #' @export
-#' @name mod_query_metacell_ui
-#' @rdname quantitative-metadata
 #' 
-mod_query_metacell_ui <- function(id){
+#' @rdname query_qMetadata
+#' 
+mod_query_qMetadata_ui <- function(id){
   
   ns <- NS(id)
   tagList(
     div(
       fluidRow(
-        column(2, uiOutput(ns('chooseMetacellTag_ui'))),
-        column(2, uiOutput(ns("Choose_keepOrRemove_ui"))),
-        column(2, uiOutput(ns('choose_metacellFilters_ui'))),
+        column(2, uiOutput(ns('chooseTag_ui'))),
+        column(2, uiOutput(ns("ChoosekeepRemove_ui"))),
+        column(2, uiOutput(ns('chooseFilters_ui'))),
         column(6, tagList(
-          uiOutput(ns("show_example_ui")),
-          uiOutput(ns("MetacellFilters_widgets_set2_ui")))
+          uiOutput(ns("example_ui")),
+          uiOutput(ns("qMetadataFilters_widgets_set2_ui")))
         )
       ),
       div( style="display:inline-block; vertical-align: middle; align: center;",
-           uiOutput(ns('metacellFilter_request_ui'))
+           uiOutput(ns('qMetadataFilter_request_ui'))
       )
     )
   )
@@ -42,12 +77,12 @@ mod_query_metacell_ui <- function(id){
 #' @param operator xxx
 #' @param reset xxx
 #' 
-#' @name mod_query_metacell_server
+#' @name mod_query_qMetadata_server
 #' @rdname quantitative-metadata
 #' 
 #' @export
 #' 
-mod_query_metacell_server <- function(id,
+mod_query_qMetadata_server <- function(id,
                                       obj,
                                       list_tags = reactive({NULL}),
                                       keep_vs_remove = reactive({NULL}),
@@ -64,16 +99,13 @@ mod_query_metacell_server <- function(id,
     query = NULL
   )
   
-  moduleServer(id,
-               function(input, output, session) {
-                 ns <- session$ns
-                 
-                 mod_popover_for_help_server("metacellTag_help", 
+  moduleServer(id,function(input, output, session) {
+    ns <- session$ns
+    mod_popover_for_help_server("tag_help", 
                             data = reactive(list(title = "Nature of data to filter", 
                                                  content="Define xxx")))
                  
-                 
-                 mod_popover_for_help_server("filterScope_help", 
+    mod_popover_for_help_server("filterScope_help", 
                             data = reactive(list(title = "Scope", 
                                                  content=HTML(paste0("To filter the missing values, the choice of the lines to be kept is made by different options:"),
                                                               ("<ul>"),
@@ -85,244 +117,224 @@ mod_query_metacell_server <- function(id,
                                                               ("</ul>")
                                                  )
                             )))
+    rv.widgets <- reactiveValues(
+      tag = "None",
+      filters = "None",
+      KeepRemove = 'delete',
+      value_th = 0,
+      percent_th = 0,
+      val_vs_percent = 'Count',
+      operator = '<='
+      )
+    
+    observeEvent(reset(),{
+      rv.widgets$tag <- "None"
+      rv.widgets$filters <- "None"
+      rv.widgets$keepRemove <- 'delete'
+      rv.widgets$valueTh <- 0
+      rv.widgets$percentTh <- 0
+      rv.widgets$valPercent <- 'Count'
+      rv.widgets$operator <- '<='
+      updateSelectInput(session, "chooseTag", selected = "None")
+      })
+    
+    observeEvent(input$chooseTag, { rv.widgets$tag <- input$chooseTag})
+    observeEvent(input$chooseKeepRemove, {  rv.widgets$keepRemove <- input$chooseKeepRemove})
+    observeEvent(input$chooseFilters, {  rv.widgets$filters <- input$chooseFilters})
+    observeEvent(input$chooseValPercent, {rv.widgets$valPercent <- input$chooseValPercent})
+    observeEvent(input$chooseValueTh, { rv.widgets$alueTh <- input$chooseValueTh})
+    observeEvent(input$choosePercentTh, {rv.widgets$percentTh <- input$choosePercentTh})
+    observeEvent(input$chooseOperator, {  rv.widgets$operator <- input$chooseOperator})
                  
-                 
-                 
-                 
-                 rv.widgets <- reactiveValues(
-                   MetacellTag = "None",
-                   MetacellFilters = "None",
-                   KeepRemove = 'delete',
-                   metacell_value_th = 0,
-                   metacell_percent_th = 0,
-                   val_vs_percent = 'Count',
-                   metacellFilter_operator = '<='
-                 )
-                 
-                 observeEvent(reset(),{
-                   
-                   print("toto")
-                   rv.widgets$MetacellTag <- "None"
-                   rv.widgets$MetacellFilters <- "None"
-                   rv.widgets$KeepRemove <- 'delete'
-                   rv.widgets$metacell_value_th <- 0
-                   rv.widgets$metacell_percent_th <- 0
-                   rv.widgets$val_vs_percent <- 'Count'
-                   rv.widgets$metacellFilter_operator <- '<='
-                   updateSelectInput(session, "chooseMetacellTag", selected = "None")
-                   
-                 })
-                 
-                 observeEvent(input$chooseMetacellTag, { rv.widgets$MetacellTag <- input$chooseMetacellTag})
-                 observeEvent(input$ChooseKeepRemove, {  rv.widgets$KeepRemove <- input$ChooseKeepRemove})
-                 observeEvent(input$ChooseMetacellFilters, {  rv.widgets$MetacellFilters <- input$ChooseMetacellFilters})
-                 observeEvent(input$choose_val_vs_percent, {rv.widgets$val_vs_percent <- input$choose_val_vs_percent})
-                 observeEvent(input$choose_metacell_value_th, { rv.widgets$metacell_value_th <- input$choose_metacell_value_th})
-                 observeEvent(input$choose_metacell_percent_th, {rv.widgets$metacell_percent_th <- input$choose_metacell_percent_th})
-                 observeEvent(input$choose_metacellFilter_operator, {  rv.widgets$metacellFilter_operator <- input$choose_metacellFilter_operator})
-                 
-                 output$chooseMetacellTag_ui <- renderUI({
-                   selectInput(ns("chooseMetacellTag"),
-                               mod_popover_for_help_ui(ns("metacellTag_help")),
-                               choices = list_tags(),
-                               selected = rv.widgets$MetacellTag,
-                               width='200px')
-                 })
-                 
-                 output$Choose_keepOrRemove_ui <- renderUI({
-                   req(rv.widgets$MetacellTag != 'None')
-                   radioButtons(ns("ChooseKeepRemove"),
-                                "Type of filter operation",
-                                choices = keep_vs_remove(),
-                                selected = rv.widgets$KeepRemove)
-                 })
-                 
-                 
-                 output$choose_metacellFilters_ui <- renderUI({
-                   req(rv.widgets$MetacellTag != 'None')
-                   selectInput(ns("ChooseMetacellFilters"),
-                               mod_popover_for_help_ui(ns("filterScope_help")),
-                               choices = filters(),
-                               selected = rv.widgets$MetacellFilters,
-                               width='200px')
-                 })
-                 
-                 
-                 
-                 output$show_example_ui <- renderUI({
-                   req(rv.widgets$MetacellFilters != "None")
-                   
-                   mod_filtering_example_server(id = 'filteringExample',
-                                                obj = reactive({obj()}),
-                                                indices = reactive({CompileIndices()}),
-                                                params = reactive({rv.widgets}),
-                                                txt = reactive({WriteQuery()})
-                   )
-                   
-                   mod_filtering_example_ui(ns('filteringExample'))
-                 })
-                 
-                 
-                 output$MetacellFilters_widgets_set2_ui <- renderUI({
-                   req(!(rv.widgets$MetacellFilters %in% c("None", "WholeLine")))
-                   
-                   mod_popover_for_help_server("choose_val_vs_percent_help", 
-                              data = reactive(list(title = paste("#/% of values to ", rv.widgets$KeepRemove),
+    
+    output$chooseTag_ui <- renderUI({
+      selectInput(ns("chooseTag"),
+                  mod_popover_for_help_ui(ns("tag_help")),
+                  choices = list_tags(),
+                  selected = rv.widgets$tag,
+                  width='200px')
+      })
+    
+    output$chooseKeepRemove_ui <- renderUI({
+      req(rv.widgets$tag != 'None')
+      radioButtons(ns("ChooseKeepRemove"),
+                   "Type of filter operation",
+                   choices = keep_vs_remove(),
+                   selected = rv.widgets$keepRemove)
+      })
+    
+    output$chooseFilters_ui <- renderUI({
+      req(rv.widgets$tag != 'None')
+      selectInput(ns("chooseFilters"),
+                  mod_popover_for_help_ui(ns("filterScope_help")),
+                  choices = filters(),
+                  selected = rv.widgets$filters,
+                  width='200px')
+      })
+    
+    output$example_ui <- renderUI({
+      req(rv.widgets$filters != "None")
+      mod_filtering_example_server(id = 'filteringExample',
+                                   obj = reactive({obj()}),
+                                   indices = reactive({CompileIndices()}),
+                                   params = reactive({rv.widgets}),
+                                   txt = reactive({WriteQuery()})
+                                   )
+      
+      mod_filtering_example_ui(ns('filteringExample'))
+      })
+    
+    output$qMetadataFilters_widgets_set2_ui <- renderUI({
+      req(!(rv.widgets$filters %in% c("None", "WholeLine")))
+      mod_popover_for_help_server("choose_val_vs_percent_help", 
+                                  data = reactive(list(title = paste("#/% of values to ", rv.widgets$KeepRemove),
                                                    content="Define xxx")))
-                   
-                   tagList(
-                     fluidRow(
-                       column(4,
-                              radioButtons(ns('choose_val_vs_percent'),
-                                           mod_popover_for_help_ui(ns("choose_val_vs_percent_help")),
-                                           choices = val_vs_percent(),
-                                           selected = rv.widgets$val_vs_percent
+      
+      tagList(
+        fluidRow(
+          column(4,
+                 radioButtons(ns('chooseValPercent'),
+                              mod_popover_for_help_ui(ns("chooseValPercent_help")),
+                              choices = val_vs_percent(),
+                              selected = rv.widgets$valPercent
                               )
-                       ),
-                       column(8,
-                              selectInput(ns("choose_metacellFilter_operator"),
-                                          "Choose operator",
-                                          choices = operator(),
-                                          selected = rv.widgets$metacellFilter_operator,
-                                          width='100px'),
-                              uiOutput(ns('choose_value_ui')),
-                              uiOutput(ns('choose_percentage_ui'))
-                              
-                       )
-                       # column(5,
-                       #        uiOutput(ns('choose_value_ui')),
-                       #        uiOutput(ns('choose_percentage_ui'))
-                       # )
-                     )
-                   )
-                   
-                 })
-                 
-                 output$choose_value_ui <- renderUI({
-                   req(rv.widgets$val_vs_percent == 'Count')
-                   req(!(rv.widgets$MetacellFilters %in% c("None", "WholeLine")))
-                   
-                   mod_popover_for_help_server("metacell_value_th_help", 
+                 ),
+          column(8,
+                 selectInput(ns("chooseOperator"),
+                             "Choose operator",
+                             choices = operator(),
+                             selected = rv.widgets$operator,
+                             width='100px'),
+                 uiOutput(ns('choose_value_ui')),
+                 uiOutput(ns('choose_percentage_ui'))
+                 )
+          )
+        )
+      })
+    output$choose_value_ui <- renderUI({
+      req(rv.widgets$val_vs_percent == 'Count')
+      req(!(rv.widgets$qMetadataFilters %in% c("None", "WholeLine")))
+      mod_popover_for_help_server("value_th_help", 
                               data = reactive(list(title = "Count threshold", 
                                                    content="Define xxx")))
-                   
-                   tagList(
-                     mod_popover_for_help_ui(ns("modulePopover_keepVal")),
-                     selectInput(ns("choose_metacell_value_th"),
-                                 mod_popover_for_help_ui(ns("metacell_value_th_help")),
-                                 choices = getListNbValuesInLines(obj(), 
-                                                                  type = rv.widgets$MetacellFilters),
-                                 selected = rv.widgets$metacell_value_th,
-                                 width='150px')
-                   )
-                 })
-                 
-                 
-                 
-                 output$choose_percentage_ui <- renderUI({
-                   req(rv.widgets$val_vs_percent == 'Percentage')
-                   req(!(rv.widgets$MetacellFilters %in% c("None", "WholeLine")))
-                   
-                   mod_popover_for_help_server("metacell_percent_th_help", 
+      
+      tagList(
+        mod_popover_for_help_ui(ns("keepVal_help")),
+        selectInput(ns("chooseValueTh"),
+                    mod_popover_for_help_ui(ns("value_th_help")),
+                    choices = getListNbValuesInLines(obj(), 
+                                                     type = rv.widgets$filters),
+                    selected = rv.widgets$valueTh,
+                    width='150px')
+        )
+      })
+    
+    output$choosePercentage_ui <- renderUI({
+      req(rv.widgets$valPercent == 'Percentage')
+      req(!(rv.widgets$filters %in% c("None", "WholeLine")))
+      
+      mod_popover_for_help_server("percentTh_help", 
                               data = reactive(list(title = "Percentage threshold", 
                                                    content="Define xxx")))
-                   tagList(
-                     mod_popover_for_help_ui(ns("modulePopover_keepVal_percent")),
-                     sliderInput(ns("choose_metacell_percent_th"), 
-                                 mod_popover_for_help_ui(ns("metacell_percent_th_help")),
-                                 min = 0,
-                                 max = 100,
-                                 step = 1,
-                                 value = rv.widgets$metacell_percent_th,
-                                 width='250px')
-                   )
-                 })
-                 
-                 
-                 WriteQuery <- reactive({
-                   if (rv.widgets$MetacellFilters == "None"){
-                     txt_summary <- "No filtering is processed."
-                   } else if (rv.widgets$MetacellFilters == "WholeLine") {
-                     txt_summary <- paste(rv.widgets$KeepRemove,
-                                          "lines that contain only",
-                                          rv.widgets$MetacellTag)
-                   } else {
-                     
-                     switch(rv.widgets$MetacellFilters,
-                            "WholeMatrix" = text_method <- "the whole matrix.",
-                            "AllCond" = text_method <- "each condition.",
-                            "AtLeastOneCond" = text_method <- "at least one condition.")
-                     
-                     if(rv.widgets$val_vs_percent == 'Count'){
-                       text_threshold <- rv.widgets$metacell_value_th
-                     } else {
-                       text_threshold <- paste(as.character(rv.widgets$metacell_percent_th),
+      
+      tagList(
+        mod_popover_for_help_ui(ns("keepVal_percent_help")),
+        sliderInput(ns("choosePercentTh"), 
+                    mod_popover_for_help_ui(ns("percentTh_help")),
+                    min = 0,
+                    max = 100,
+                    step = 1,
+                    value = rv.widgets$percentTh,
+                    width='250px')
+        )
+      })
+    
+    
+    ## ---------------------------------------------------------------------
+    ##
+    ## This function xxx
+    ##
+    ## ---------------------------------------------------------------------
+    WriteQuery <- reactive({
+      if (rv.widgets$filters == "None"){
+        txt_summary <- "No filtering is processed."
+        } else if (rv.widgets$filters == "WholeLine") {
+          txt_summary <- paste(rv.widgets$keepRemove,
+                               "lines that contain only",
+                               rv.widgets$tag)
+          } else {
+            text_method <-  switch(rv.widgets$filters,
+                                   WholeMatrix = "the whole matrix.",
+                                   AllCond = "each condition.",
+                                   AtLeastOneCond = "at least one condition.")
+            
+            if(rv.widgets$valPercent == 'Count'){
+              text_threshold <- rv.widgets$valueTh
+              } else {
+                text_threshold <- paste(as.character(rv.widgets$percentTh),
                                                " %", sep="")
-                     }
-                     
-                     txt_summary <- paste(rv.widgets$KeepRemove,
-                                          " lines where number of ",
-                                          rv.widgets$MetacellTag,
-                                          " data ",
-                                          rv.widgets$metacellFilter_operator,
-                                          " ",
-                                          text_threshold,
-                                          " in ",
-                                          text_method)
-                   }
-                   txt_summary
-                 })
-                 
-                 output$metacellFilter_request_ui <- renderUI({
-                   txt_summary <- paste("You are going to ", WriteQuery())
-                   tags$p(txt_summary, style = "font-size: small; text-align : center; color: purple;")
-                 })
-                 
-                 #Set useless widgets to default values
-                 observeEvent(rv.widgets$MetacellFilters == 'WholeLine',{
-                   rv.widgets$metacell_percent_th <- 0
-                   rv.widgets$metacell_value_th <- 0
-                   rv.widgets$val_vs_percent <- 'Percentage'
-                 },
-                 priority = 1000)
-                 
-                 
-                 
-                 CompileIndices <- reactive({
-                   req(obj())
-                   req(rv.widgets$MetacellTag != 'None')
-                   req(rv.widgets$MetacellFilters != 'None')
-                   
-                   th <- switch(rv.widgets$val_vs_percent,
-                                Percentage =  rv.widgets$metacell_percent_th / 100,
-                                Count = as.integer(rv.widgets$metacell_value_th)
+                }
+            
+            txt_summary <- paste(rv.widgets$keepRemove,
+                                 " lines where number of ",
+                                 rv.widgets$tag,
+                                 " data ",
+                                 rv.widgets$operator,
+                                 " ",
+                                 text_threshold,
+                                 " in ",
+                                 text_method)
+            }
+      txt_summary
+      })
+    
+    
+    output$qMetadataFilter_request_ui <- renderUI({
+      txt_summary <- paste("You are going to ", WriteQuery())
+      tags$p(txt_summary, style = "font-size: small; text-align : center; color: purple;")
+      })
+    
+    
+    #Set useless widgets to default values
+    observeEvent(rv.widgets$filters == 'WholeLine',{
+      rv.widgets$percentThh <- 0
+      rv.widgets$valueTh <- 0
+      rv.widgets$valPercent <- 'Percentage'
+      },
+      priority = 1000)
+    
+    
+    CompileIndices <- reactive({
+      req(obj())
+      req(rv.widgets$tag != 'None')
+      req(rv.widgets$filters != 'None')
+      
+      th <- switch(rv.widgets$valPercent,
+                   Percentage =  rv.widgets$percentTh / 100,
+                   Count = as.integer(rv.widgets$valueTh)
                    )
-                   
-                   GetIndices_MetacellFiltering(obj = obj(),
-                                                       level = typeDataset(obj()),
-                                                       pattern = rv.widgets$MetacellTag,
-                                                       type = rv.widgets$MetacellFilters,
-                                                       percent = rv.widgets$val_vs_percent == 'Percentage',
-                                                       op = rv.widgets$metacellFilter_operator,
-                                                       th = th)
-                   
-                 })
-                 
-                 
-                 
-                 reactive({list(trigger = as.numeric(Sys.time()),
-                                indices = CompileIndices(),
-                                params = list(MetacellTag = rv.widgets$MetacellTag,
-                                              KeepRemove = rv.widgets$KeepRemove,
-                                              MetacellFilters = rv.widgets$MetacellFilters,
-                                              metacell_percent_th = rv.widgets$metacell_percent_th,
-                                              metacell_value_th = rv.widgets$metacell_value_th,
-                                              val_vs_percent = rv.widgets$val_vs_percent,
-                                              metacellFilter_operator = rv.widgets$metacellFilter_operator),
-                                query = WriteQuery()
-                 )
-                 })
-                 
-               })
+      
+      GetIndices_filtering(obj = obj(),
+                           level = typeDataset(obj()),
+                           pattern = rv.widgets$tag,
+                           type = rv.widgets$filters,
+                           percent = rv.widgets$valPercent == 'Percentage',
+                           op = rv.widgets$operator,
+                           th = th)
+      })
+    
+    reactive({list(trigger = as.numeric(Sys.time()),
+                   indices = CompileIndices(),
+                   params = list(tag = rv.widgets$tag,
+                                 keepRemove = rv.widgets$keepRemove,
+                                 filters = rv.widgets$filters,
+                                 percentTh = rv.widgets$percentTh,
+                                 valueTh = rv.widgets$valueTh,
+                                 valPercent = rv.widgets$valPercent,
+                                 operator = rv.widgets$operator),
+                   query = WriteQuery()
+                   )
+      })
+    })
 }
 

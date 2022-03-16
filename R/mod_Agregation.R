@@ -26,10 +26,7 @@
 #' 
 #' @examples 
 #' if(interactive()){
-#' library(magellan)
 #'  run_workflow('Agregation', verbose = TRUE)
-#' 
-#' 
 #' }
 NULL
 
@@ -174,7 +171,7 @@ mod_Agregation_server <- function(id,
       widget <- actionButton(ns("Description_btn_validate"),
                              "Start",
                              class = btn_success_color)
-      Magellan::toggleWidget(rv$steps.enabled['Description'], widget)
+      Magellan::toggleWidget(widget, rv$steps.enabled['Description'])
     })
     
     
@@ -221,7 +218,7 @@ mod_Agregation_server <- function(id,
       widget <- actionButton(ns("Filterpeptides_btn_validate"),
                              "Run",
                              class = btn_success_color)
-      Magellan::toggleWidget(rv$steps.enabled['Filterpeptides'], widget)
+      Magellan::toggleWidget(widget, rv$steps.enabled['Filterpeptides'])
     })
     
     
@@ -262,7 +259,7 @@ mod_Agregation_server <- function(id,
       widget <- radioButtons(ns("Filterpeptides_consider"), "Consider",
                              choices = AdjMatFilters(),
                              selected = rv.widgets$Filterpeptides_consider)
-      Magellan::toggleWidget(rv$steps.enabled['Filterpeptides'], widget )
+      Magellan::toggleWidget(widget, rv$steps.enabled['Filterpeptides'] )
     })
     
     
@@ -276,7 +273,7 @@ mod_Agregation_server <- function(id,
                              min = 0, 
                              step = 1, 
                              width = '100px')
-      Magellan::toggleWidget(rv$steps.enabled['Filterpeptides'], widget )
+      Magellan::toggleWidget(widget, rv$steps.enabled['Filterpeptides'])
     })
     
     
@@ -293,7 +290,7 @@ mod_Agregation_server <- function(id,
                                       ),
                             selected = rv.widgets$Filterpeptides_barplotType,
                             width = '200')
-      Magellan::toggleWidget(rv$steps.enabled['Filterpeptides'], widget )
+      Magellan::toggleWidget(widget, rv$steps.enabled['Filterpeptides'])
     })
     
     output$peptideBarplot <- renderHighchart({
@@ -348,7 +345,7 @@ mod_Agregation_server <- function(id,
       widget <- radioButtons(ns("Agregation_method"), "method", 
                              choices = aggregateMethods(), 
                              selected = rv.widgets$Filterpeptides_method)
-      Magellan::toggleWidget(rv$steps.enabled['Agregation'], widget )
+      Magellan::toggleWidget(widget, rv$steps.enabled['Agregation'] )
     })
     
     # output$Agregation_useOfShared_ui <- renderUI({
@@ -405,7 +402,7 @@ mod_Agregation_server <- function(id,
                              "Nb of peptides defining a protein", 
                              value = 0, min =0, step=1,
                              width = "250px")
-      Magellan::toggleWidget(rv$steps.enabled['Agregation'], widget )
+      Magellan::toggleWidget(widget, rv$steps.enabled['Agregation'])
     })
     
     
@@ -424,7 +421,7 @@ mod_Agregation_server <- function(id,
       widget <- actionButton(ns("Agregation_btn_validate"),
                              "Perform",
                              class = btn_success_color)
-      Magellan::toggleWidget(rv$steps.enabled['Agregation'], widget)
+      Magellan::toggleWidget(widget, rv$steps.enabled['Agregation'])
     })
     
     
@@ -480,7 +477,7 @@ mod_Agregation_server <- function(id,
       widget <- actionButton(ns("Save_btn_validate"),
                              "Perform",
                              class = btn_success_color)
-      Magellan::toggleWidget(rv$steps.enabled['Save'], widget)
+      Magellan::toggleWidget(widget, rv$steps.enabled['Save'])
     })
     
     

@@ -68,10 +68,7 @@ xxxxxx
 
 \examples{
 if(interactive()){
-library(magellan)
  run_workflow('Agregation', verbose = TRUE)
-
-
 }
 }
 \seealso{

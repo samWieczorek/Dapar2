@@ -50,7 +50,7 @@
 #'     #     stop("'sTab' is not of class data.frame.")
 #'     # }
 #'     
-#'     qData <- assay(obj)
+#'     qData <- SummarizedExperiment::assay(obj)
 #'     .type <- type == 'Student'
 #'     sTab <- as.data.frame(sTab)
 #'     
@@ -165,7 +165,7 @@
 #' #' #' Exp1_R25_pept <- addAssay(Exp1_R25_pept, 
 #' #' #' QFeatures::filterNA(Exp1_R25_pept[['original_log']],  pNA = 0), name='filtered')
 #' #' #' sTab <- as.data.frame(colData(Exp1_R25_pept)@listData)
-#' #' #' qData <- assay(Exp1_R25_pept[['filtered']])
+#' #' #' qData <- SummarizedExperiment::assay(Exp1_R25_pept[['filtered']])
 #' #' #' ttest <- compute.t.tests2(qData,sTab ,"OnevsOne")
 #' #' #' @importFrom utils combn
 #' #' #' @importFrom stats t.test

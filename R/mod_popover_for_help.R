@@ -54,11 +54,11 @@ mod_popover_for_help_ui <- function(id){
 #' 
 #' @keywords internal
 #' 
-#' @importFrom shinyBS bsPopover addPopover bsTooltip
-#' 
 mod_popover_for_help_server <- function(id, data){
   
-  require(shinyBS)
+  if (! requireNamespace("shinyBS", quietly = TRUE)) {
+    stop("Please install shinyBS: BiocManager::install('shinyBS')")
+  }
   moduleServer(id, function(input, output, session){
     ns <- session$ns
     

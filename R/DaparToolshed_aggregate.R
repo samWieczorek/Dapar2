@@ -68,9 +68,7 @@
 ##'     the *Aggregation* vignette, for a complete quantitative
 ##'     proteomics data processing pipeline. 
 ##'
-##' @name aggregateFeatures4Prostar
-##'
-##' @rdname DaparToolshed-aggregate
+##' @name DaparToolshed-aggregate
 ##'
 ##' @examples
 ##'

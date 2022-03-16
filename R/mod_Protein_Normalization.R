@@ -42,7 +42,7 @@ mod_Protein_Normalization_ui <- function(id){
 #'
 #' @importFrom shinyjs disabled
 #' @importFrom stats setNames
-#' @importFrom Magellan Timestamp actionBtnClass
+#' @importFrom Magellan Timestamp actionBtnClass btn_success_color
 #' 
 #' @export
 #' 
@@ -627,7 +627,7 @@ mod_Protein_Normalization_server <- function(id,
                     shinyjs::disabled(
                       actionButton(ns(paste0('valid.normalization', name)),
                                    'Save normalization',
-                                   class = magellan::btn_success_color,
+                                   class = Magellan::btn_success_color,
                                    width="170px")
                     )
               )

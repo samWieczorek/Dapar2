@@ -75,7 +75,6 @@ mod_settings_ui <- function(id){
 #' @import shiny
 #'
 #' @import highcharter
-#' @importFrom colourpicker colourInput
 #' @importFrom shinyjs onclick toggle
 #' @importFrom stats rnorm
 #' @importFrom SummarizedExperiment colData
@@ -83,6 +82,13 @@ mod_settings_ui <- function(id){
 #'
 mod_settings_server <- function(id, obj){
 
+  if (! requireNamespace("colourpicker", quietly = TRUE)) {
+    stop("Please install colourpicker: BiocManager::install('colourpicker')")
+  }
+  
+  if (! requireNamespace("shinyBS", quietly = TRUE)) {
+    stop("Please install shinyBS: BiocManager::install('shinyBS')")
+  }
   moduleServer(id, function(input, output, session) {
     ns <- session$ns
 

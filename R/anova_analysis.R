@@ -65,7 +65,7 @@
 #'   }
 #'   
 #'   
-#'   qData <- as.data.frame(assay(obj))
+#'   qData <- as.data.frame(SummarizedExperiment::assay(obj))
 #'   
 #'   if (!(with_post_hoc %in% c(TRUE, FALSE)))
 #'     stop("Wrong with_post_hoc parameter. Please choose between FALSE or TRUE")

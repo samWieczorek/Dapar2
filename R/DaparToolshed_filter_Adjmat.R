@@ -169,7 +169,7 @@ subAdjMat_sharedPeptides <- function(X){
 #' @importFrom PSMatch makePeptideProteinVector
 #' @noRd
 .UpdateSEBasedOnAdjmat <- function(object, X){
-  rowData(object)$adjacencyMatrix <- X
+  SummarizedExperiment::rowData(object)$adjacencyMatrix <- X
   # Identify and delete the empty lines in the dataset
   emptyLines <- which(rowSums(as.matrix(X)) == 0)
   if (length(emptyLines) > 0)
@@ -182,9 +182,9 @@ subAdjMat_sharedPeptides <- function(X){
 
   if (length(emptyCols) > 0){
     X <- X[, -emptyCols]
-    rowData(object)$adjacencyMatrix <- X
+    SummarizedExperiment::rowData(object)$adjacencyMatrix <- X
     idcol <- S4Vectors::metadata(object)$parentProtId
-    rowData(object)[ , idcol] <- makePeptideProteinVector(X)
+    SummarizedExperiment::rowData(object)[ , idcol] <- makePeptideProteinVector(X)
   }
 
 return(object)
@@ -201,10 +201,10 @@ topnFunctions <- function()
 #' @rdname adjacency-matrix-filter
 topnPeptides <- function(object, fun, top){
   stopifnot(inherits(object, 'SummarizedExperiment'))
-  stopifnot('adjacencyMatrix' %in% names(rowData(object)))
+  stopifnot('adjacencyMatrix' %in% names(SummarizedExperiment::rowData(object)))
   
-  X <- adjacencyMatrix(object)
-  qData <- assay(object)
+  X <- QFeatures::adjacencyMatrix(object)
+  qData <- SummarizedExperiment::assay(object)
   X.topn <- subAdjMat_topnPeptides(X, qData, fun, top)
   object <- .UpdateSEBasedOnAdjmat(object, X.topn)
   return(object)

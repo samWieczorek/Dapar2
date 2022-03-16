@@ -41,7 +41,6 @@ mod_Convert_ui <- function(id){
 #' @importFrom shinyalert shinyalert
 #' @importFrom shinyjs disabled
 #' @importFrom stats setNames
-#' @importFrom openxlsx getSheetNames
 #'
 #' @export
 #'
@@ -55,6 +54,10 @@ mod_Convert_server <- function(id,
                                remoteReset = reactive({FALSE})
 ){
 
+  if (! requireNamespace("openxlsx", quietly = TRUE)) {
+    stop("Please install openxlsx: BiocManager::install('openxlsx')")
+  }
+  
   global <- list(
     VALIDATED = 1,
     UNDONE = 0,
@@ -92,8 +95,8 @@ mod_Convert_server <- function(id,
 
     config <- list(
       name = 'Convert',
-      steps = c('Description','SelectFile','DataID','ExpFeatData','SamplesMetadata','Save'),
-      mandatory = c(TRUE,TRUE,TRUE,TRUE,TRUE,TRUE)
+      steps = c('Description', 'SelectFile', 'DataID', 'ExpFeatData', 'SamplesMetadata', 'Save'),
+      mandatory = c(TRUE, TRUE, TRUE, TRUE, TRUE, TRUE)
     )
 
     rv.widgets <- reactiveValues(
@@ -126,21 +129,16 @@ mod_Convert_server <- function(id,
     ###### ------------------- Code for Description (step 0) -------------------------    #####
     output$Description <- renderUI({
       rv$steps.enabled
-      #browser()
+      
+      widget <- actionButton(ns('btn_validate_Description'),
+                             paste0('Start ', config$name),
+                             class = btn_success_color)
       wellPanel(
         tagList(
-          includeMarkdown( system.file('app/md', paste0(config$name, '.md'), package='Prostar')),
+          includeMarkdown( system.file('app/md', paste0(config$name, '.md'), 
+                                       package = 'DaparToolshed')),
           uiOutput(ns('datasetDescription')),
-          if (isTRUE(rv$steps.enabled['Description'])  )
-            actionButton(ns('btn_validate_Description'),
-                         paste0('Start ', config$name),
-                         class = btn_success_color)
-          else
-            shinyjs::disabled(
-              actionButton(ns('btn_validate_Description'),
-                           paste0('Start ', config$name),
-                           class = btn_success_color)
-            )
+          Magellan::toggleWidget(widget, rv$steps.enabled['Description'])
         )
       )
 
@@ -168,16 +166,16 @@ mod_Convert_server <- function(id,
     output$choose_file_to_import_ui <- renderUI({
       req(rv.widgets$selectFile_software)
       rv.widgets$selectFile_file2convert
+      
+      widget <- fileInput(ns("file2convert"), "",
+                          multiple=FALSE,
+                          accept=c(".txt", ".tsv", ".csv",".xls", ".xlsx"))
+      
       fluidRow(
-        column(width=2, mod_popover_for_help_ui("modulePopover_convertChooseDatafile")),
-        column(width = 10, if (rv$steps.enabled['selectFile'])
-          fileInput(ns("file2convert"), "",
-                    multiple=FALSE,
-                    accept=c(".txt", ".tsv", ".csv",".xls", ".xlsx"))
-          else
-            shinyjs::disabled(fileInput(ns("file2convert"), "",
-                                        multiple=FALSE,
-                                        accept=c(".txt", ".tsv", ".csv",".xls", ".xlsx")))
+        column(width=2, 
+               mod_popover_for_help_ui("modulePopover_convertChooseDatafile")),
+        column(width = 10,
+               Magellan::toggleWidget(widget, rv$steps.enabled['SelectFile'])
         ))
     })
 
@@ -189,46 +187,29 @@ mod_Convert_server <- function(id,
       rv.widgets$selectFile_checkDataLogged
       rv.widgets$selectFile_replaceAllZeros
 
+      widget1 <- radioButtons(ns("typeOfData"),
+                              "Is it a peptide or protein dataset ?",
+                              choices=c("peptide dataset" = "peptide",
+                                        "protein dataset" = "protein"),
+                              selected = rv.widgets$selectFile_typeOfData
+                              )
+      
+      widget2 <- radioButtons(ns("checkDataLogged"),
+                              "Are your data already log-transformed ?",
+                              choices=c("yes (they stay unchanged)" = "yes",
+                                        "no (they will be automatically transformed)"="no"),
+                              selected = rv.widgets$selectFile_checkDataLogged)
+      
+      widget3 <- checkboxInput(ns("replaceAllZeros"),
+                               "Replace all 0 and NaN by NA",
+                               value = rv.widgets$selectFile_replaceAllZeros)
+      
+      
       tagList(
-        if (rv$steps.enabled['selectFile'])
-          radioButtons(ns("typeOfData"),
-                       "Is it a peptide or protein dataset ?",
-                       choices=c("peptide dataset" = "peptide",
-                                 "protein dataset" = "protein"),
-                       selected = rv.widgets$selectFile_typeOfData
-          )
-        else
-          shinyjs::disabled(radioButtons(ns("typeOfData"),
-                                         "Is it a peptide or protein dataset ?",
-                                         choices=c("peptide dataset" = "peptide",
-                                                   "protein dataset" = "protein"),
-                                         selected = rv.widgets$selectFile_typeOfData
-          )
-          )
-
-        , if (rv$steps.enabled['selectFile'])
-          radioButtons(ns("checkDataLogged"),
-                       "Are your data already log-transformed ?",
-                       choices=c("yes (they stay unchanged)" = "yes",
-                                 "no (they will be automatically transformed)"="no"),
-                       selected = rv.widgets$selectFile_checkDataLogged)
-        else
-          shinyjs::disabled(radioButtons(ns("checkDataLogged"),
-                                         "Are your data already log-transformed ?",
-                                         choices=c("yes (they stay unchanged)" = "yes",
-                                                   "no (they will be automatically transformed)"="no"),
-                                         selected = rv.widgets$selectFile_checkDataLogged)
-          )
-        ,br()
-        ,if (rv$steps.enabled['selectFile'])
-          checkboxInput(ns("replaceAllZeros"),
-                        "Replace all 0 and NaN by NA",
-                        value = rv.widgets$selectFile_replaceAllZeros)
-        else
-          shinyjs::disabled(checkboxInput(ns("replaceAllZeros"),
-                                          "Replace all 0 and NaN by NA",
-                                          value = rv.widgets$selectFile_replaceAllZeros)
-          )
+        Magellan::toggleWidget(widget1, rv$steps.enabled['SelectFile']),
+        Magellan::toggleWidget(widget2, rv$steps.enabled['SelectFile']),
+        br(),
+        Magellan::toggleWidget(widget2, rv$steps.enabled['SelectFile'])
       )
 
       observeEvent(input$selectFile_typeOfData,{rv.widgets$selectFile_typeOfData <- input$selectFile_typeOfData})
@@ -243,22 +224,17 @@ mod_Convert_server <- function(id,
       req(input$file2convert)
 
       if ( GetExtension(input$file2convert$name) %in% c("xls", "xlsx")){
-        sheets <- getSheetNames(input$file2convert$datapath)
-        if (rv$steps.enabled['selectFile'])
-          selectInput(ns("selectFile_XLSsheets"), "sheets",
-                      choices = as.list(sheets),
-                      selected = rv.widgets$selectFile_XLSsheets,
-                      width='200px')
-        else
-          shinyjs::disabled(
-            selectInput(ns("selectFile_XLSsheets"), "sheets",
-                        choices = as.list(sheets),
-                        selected = rv.widgets$selectFile_XLSsheets,
-                        width='200px')
-          )
+        sheets <- openxlsx::getSheetNames(input$file2convert$datapath)
+        widget <- selectInput(ns("selectFile_XLSsheets"), "sheets",
+                              choices = as.list(sheets),
+                              selected = rv.widgets$selectFile_XLSsheets,
+                              width='200px')
+        Magellan::toggleWidget(widget2, rv$steps.enabled['SelectFile'])
       }
 
-      observeEvent(input$selectFile_XLSsheets,{rv.widgets$selectFile_XLSsheets <- input$selectFile_XLSsheets})
+      observeEvent(input$selectFile_XLSsheets,{
+        rv.widgets$selectFile_XLSsheets <- input$selectFile_XLSsheets
+        })
 
     })
 
@@ -270,40 +246,34 @@ mod_Convert_server <- function(id,
     ##
     output$SelectFile <- renderUI({
       name <- 'SelectFile'
+      
+      widget1 <- div(
+        radioButtons(ns("choose_software"), "Software to import from",
+                     choices = setNames(nm = c('maxquant', 'proline')),
+                     selected = rv.widgets$selectFile_software
+        )
+      )
+      
+      widget2 <- div(
+        actionButton(ns('btn_validate_SelectFile'),
+                     'Perform SelectFile',
+                     class = Magellan::btn_success_color)
+      )
+      
+      
       tagList(
-        div(style="display:inline-block; vertical-align: middle; padding-right: 40px;",
-            if (rv$steps.enabled['SelectFile'])
-              radioButtons(ns("choose_software"), "Software to import from",
-                           choices = setNames(nm = c('maxquant', 'proline')),
-                           selected = rv.widgets$selectFile_software
-              )
-            else
-              shinyjs::disabled(radioButtons(ns("choose_software"), "Software to import from",
-                                             choices = setNames(nm = c('maxquant', 'proline')),
-                                             selected =  rv.widgets$selectFile_software
-              )
-              )
-        ),
+        Magellan::toggleWidget(widget1, rv$steps.enabled['SelectFile']),
         uiOutput(ns('choose_file_to_import_ui')),
         uiOutput(ns("ManageXlsFiles_ui")),
         uiOutput(ns("ConvertOptions_ui")),
-        div(
-          if (rv$steps.enabled['SelectFile'])
-            actionButton(ns('btn_validate_SelectFile'),
-                         'Perform SelectFile',
-                         class = btn_success_color)
-          else
-            shinyjs::disabled(
-              actionButton(ns('btn_validate_SelectFile'),
-                           'Perform SelectFile',
-                           class = btn_success_color)
-            )
-        )
+        Magellan::toggleWidget(widget2, rv$steps.enabled['SelectFile'])
       )
     })
 
 
-    observeEvent(input$selectFile_software,{rv.widgets$selectFile_software <- input$selectFile_software})
+    observeEvent(input$selectFile_software,{
+      rv.widgets$selectFile_software <- input$selectFile_software
+      })
 
     observeEvent(input$btn_validate_SelectFile, ignoreInit = TRUE, {
       # Add your stuff code here
@@ -316,22 +286,10 @@ mod_Convert_server <- function(id,
 
     output$DataID <- renderUI({
       name <- 'DataID'
-      tagList(
-
-        div(
-          if (rv$steps.enabled['DataID'])
-            actionButton(ns(paste0('btn_validate_', DataID)),
-                         'Perform DataID',
-                         class = btn_success_color)
-          else
-            shinyjs::disabled(
-              actionButton(ns(paste0('btn_validate_', DataID)),
+      widget <- actionButton(ns(paste0('btn_validate_', DataID)),
                            'Perform DataID',
-                           class = btn_success_color)
-            )
-        )
-      )
-
+                           class = Magellan::btn_success_color)
+     Magellan::toggleWidget(widget, rv$steps.enabled['DataID'])
       observeEvent(input$btn_validate_DataID, ignoreInit = TRUE, {
         # Add your stuff code here
         dataOut$trigger <- Magellan::Timestamp()
@@ -346,21 +304,11 @@ mod_Convert_server <- function(id,
 
     output$ExpFeatData <- renderUI({
       name <- 'ExpFeatData'
-      tagList(
-
-        div(
-          if (rv$steps.enabled['ExpFeatData'])
-            actionButton(ns(paste0('btn_validate_', ExpFeatData)),
-                         'Perform ExpFeatData',
-                         class = btn_success_color)
-          else
-            shinyjs::disabled(
-              actionButton(ns(paste0('btn_validate_', ExpFeatData)),
-                           'Perform ExpFeatData',
-                           class = btn_success_color)
-            )
-        )
-      )
+      widget <- actionButton(ns(paste0('btn_validate_', ExpFeatData)),
+                             'Perform ExpFeatData',
+                             class = Magellan::btn_success_color)
+      
+        Magellan::toggleWidget(widget, rv$steps.enabled['ExpFeatData'])
 
       observeEvent(input$btn_validate_ExpFeatData, ignoreInit = TRUE, {
         # Add your stuff code here
@@ -376,21 +324,12 @@ mod_Convert_server <- function(id,
 
     output$SamplesMetadata <- renderUI({
       name <- 'SamplesMetadata'
-      tagList(
-
-        div(
-          if (rv$steps.enabled['SamplesMetadata'])
-            actionButton(ns(paste0('btn_validate_', SamplesMetadata)),
-                         'Perform SamplesMetadata',
-                         class = btn_success_color)
-          else
-            shinyjs::disabled(
-              actionButton(ns(paste0('btn_validate_', SamplesMetadata)),
-                           'Perform SamplesMetadata',
-                           class = btn_success_color)
-            )
-        )
-      )
+      widget <- actionButton(ns(paste0('btn_validate_', SamplesMetadata)),
+                             'Perform SamplesMetadata',
+                             class = btn_success_color)
+      
+      Magellan::toggleWidget(widget, rv$steps.enabled['SamplesMetadata'])
+      
 
       observeEvent(input$btn_validate_SamplesMetadata, ignoreInit = TRUE, {
         # Add your stuff code here
@@ -406,20 +345,11 @@ mod_Convert_server <- function(id,
 
     output$Save <- renderUI({
       name <- 'Save'
-      tagList(
-        div(
-          if (rv$steps.enabled['Save'])
-            actionButton(ns(paste0('btn_validate_', Save)),
+      widget <- actionButton(ns(paste0('btn_validate_', Save)),
                          'Perform Save',
                          class = btn_success_color)
-          else
-            shinyjs::disabled(
-              actionButton(ns(paste0('btn_validate_', Save)),
-                           'Perform Save',
-                           class = btn_success_color)
-            )
-        )
-      )
+      Magellan::toggleWidget(widget, rv$steps.enabled['Save'])
+      
 
       observeEvent(input$btn_validate_Save, ignoreInit = TRUE, {
         # Add your stuff code here

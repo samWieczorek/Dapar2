@@ -118,7 +118,7 @@ setMethod("qMetadata", "SummarizedExperiment",
 ##' @return xxx
 ##' @noRd
 .GetRowdataSlot <- function(x, slotName = NULL) {
-  rowData(x)[[slotName]]
+  SummarizedExperiment::rowData(x)[[slotName]]
 }
 
 

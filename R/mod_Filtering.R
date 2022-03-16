@@ -1,6 +1,33 @@
 
-#' @title Module filtering
+#' @title Module Filtering
 #' 
+#' @description 
+#' 
+#' @section Step 'Quanti metadata filtering':
+#' 
+#' xxxxxxx
+#' 
+#' @section Step 'Variable filtering':
+#' 
+#' xxxxx
+#' 
+#' @section Step 'Save':
+#' 
+#' xxxxxx
+#' 
+#' @seealso The user manual of the package `Magellan`.
+#'
+#' 
+#' @name mod_filtering
+#' 
+#' @examples 
+#' if(interactive()){
+#'  run_workflow('Filtering', verbose = TRUE)
+#' }
+NULL
+
+
+
 #' @param id
 #' 
 #' @rdname mod_Filtering
@@ -12,30 +39,36 @@ mod_Filtering_ui <- function(id){
 }
 
 
-#' @param id xxx
-#' @param dataIn xxx
-#' @param steps.enabled xxx
-#' @param remoteReset xxx
-#' @param steps.status xxx
-#' @param current.pos xxx
-#' @param verbose xxx
+#' @param id A `character(1)` which is the 'id' of the module.
+#' @param dataIn An instance of the class `QFeatures`
+#' @param steps.enabled A `logical()` which indicates whether each step is
+#' enabled or disabled in the UI.
+#' @param remoteReset A `logical(1)` which acts asa a remote command to reset
+#' the module to its default values. Default is FALSE.
+#' @param steps.status A `logical()` which indicates the status of each step
+#' which can be either 'validated', 'undone' or 'skipped'.
+#' enabled or disabled in the UI.
+#' @param current.pos A `interger(1)` which acts as a remote command to make
+#'  a step active in the timeline. Default is 1.
+#' @param verbose A `logical(1)` to indicates whether run and debug infos must
+#' be printed in the console. Default is FALSE.
 #' 
 #' @rdname mod_Filtering
 #' @importFrom shinyjs toggle hidden
-#' @importFrom DT dataTableOutput
+#' @importFrom DT dataTableOutput renderDataTable DTOutput datatable
 #' @importFrom stats setNames
 #' @importFrom Magellan Timestamp toggleWidget Get_Worflow_Core_Code
 #' 
 #' @export
 #' 
 mod_Filtering_server <- function(id,
-                                  dataIn = reactive({NULL}),
-                                  steps.enabled = reactive({NULL}),
-                                  remoteReset = reactive({FALSE}),
-                                  steps.status = reactive({NULL}),
-                                  current.pos = reactive({1}),
-                                  verbose = FALSE
-){
+                                 dataIn = reactive({NULL}),
+                                 steps.enabled = reactive({NULL}),
+                                 remoteReset = reactive({FALSE}),
+                                 steps.status = reactive({NULL}),
+                                 current.pos = reactive({1}),
+                                 verbose = FALSE
+                                 ){
   
   
   # This list contains the basic configuration of the process
@@ -44,7 +77,7 @@ mod_Filtering_server <- function(id,
     mode = 'process',
     
     # List of all steps of the process
-    steps = c('Description', 'Quanti metadata filtering', 'String based filtering', 'Numerical filtering', 'Save'),
+    steps = c('Description', 'Quanti metadata filtering', 'Variable filtering', 'Save'),
     
     # A vector of boolean indicating if the steps are mandatory or not.
     mandatory = c(TRUE, FALSE, FALSE, FALSE, TRUE),
@@ -160,7 +193,10 @@ mod_Filtering_server <- function(id,
     
     
     
-    #-------------------------------------------------------------------
+    #--------------------------------------------------------------
+    # Quantitative metadata filtering UI
+    #--------------------------------------------------------------
+    
     output$Quantimetadatafiltering <- renderUI({
       wellPanel(
         # uiOutput for all widgets in this UI

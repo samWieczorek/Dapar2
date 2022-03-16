@@ -83,9 +83,13 @@ setMethod("write2excel", "SummarizedExperiment",
 
 
 #' @noRd
-#' @importFrom openxlsx createStyle createWorkbook addWorksheet writeData addStyle writeData
 #' @importFrom stats setNames
 .write2excel <- function(object, filename, exp.design) {
+  
+  if (! requireNamespace("openxlsx", quietly = TRUE)) {
+    stop("Please install openxlsx: BiocManager::install('openxlsx')")
+  }
+  
   name <- paste0(filename, ".xlsx", sep="")
   wb <- openxlsx::createWorkbook(name)
   # Write the assay data to the first sheet
