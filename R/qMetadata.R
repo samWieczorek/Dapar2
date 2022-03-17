@@ -162,10 +162,10 @@ qMetadata.def <- function(level){
   
   
   
-  def <- cbind(def, color = rep('white', nrow(def)))
+  #def <- cbind(def, color = rep('white', nrow(def)))
   
-  for(n in seq_len(nrow(def)))
-    def[n, 'color'] <- colors[[def[n, 'node']]]
+  #for(n in seq_len(nrow(def)))
+  #  def[n, 'color'] <- colors[[def[n, 'node']]]
   
 
   if (level == 'all')

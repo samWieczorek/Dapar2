@@ -100,6 +100,7 @@ Collate:
     pepa.R
     anova_analysis.R
     clustering.R
+    mod_filtering_example.R
     hypothesis_test.R
     global.R
     mod_Protein.R
@@ -108,7 +109,7 @@ Collate:
     mod_Protein_Normalization.R
     mod_convert.R
     mod_format_DT.R
-    mod_popover_for_help.R
+    mod_helpPopover.R
     mod_settings.R
     mod_Normalization.R
     zzz.R
