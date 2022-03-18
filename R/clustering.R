@@ -56,7 +56,7 @@
 #' #' @importFrom tidyr pivot_wider
 #' #' 
 #' standardiseMeanIntensities <- function(obj, sTab){
-#'   intensities <- assay(obj)
+#'   intensities <- SummarizedExperiment::assay(obj)
 #'   
 #'   sTab$Condition <- as.factor(sTab$Condition)
 #'   intensities_t <- as.data.frame(t(intensities))

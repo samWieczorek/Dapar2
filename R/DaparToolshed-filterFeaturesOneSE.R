@@ -177,8 +177,8 @@ setMethod("filterFeaturesOneSE", "QFeatures",
                 
               
               ## Link the input assay to the aggregated assay
-              rowData(object[[i]])[,idcol] <- rownames(object[[i]])
-              rowData(object[[name]])[,idcol] <- rownames(object[[name]])
+              SummarizedExperiment::rowData(object[[i]])[,idcol] <- rownames(object[[i]])
+              SummarizedExperiment::rowData(object[[name]])[,idcol] <- rownames(object[[name]])
               object <- addAssayLink(object,
                                      from = names(object)[i],
                                      to  = name,
@@ -200,7 +200,7 @@ setMethod("filterFeaturesOneSE", "SummarizedExperiment",
             lapply(filters, 
                    function(f){
               if (inherits(f, "AnnotationFilter")){
-                x <- rowData(object)
+                x <- SummarizedExperiment::rowData(object)
                 sel <- if (field(f) %in% names(x)){
                   do.call(condition(f),
                           list(x[, field(f)],

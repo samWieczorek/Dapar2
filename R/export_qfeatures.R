@@ -50,7 +50,7 @@ NULL
 setMethod("write2excel", "QFeatures",
           function(object, 
                    i = NULL,
-                   filename = "newFile") {
+                   filename = "newFile", ...) {
             if (length(object)==0)
               return(NULL)
             
@@ -62,7 +62,8 @@ setMethod("write2excel", "QFeatures",
               # One exports only one SE
               write2excel(object[[i]],
                           filename, 
-                          design(object))
+                          design(object),
+                          ...)
               
               
             }
@@ -73,8 +74,8 @@ setMethod("write2excel", "QFeatures",
 #' @exportMethod write2excel
 #' @rdname QFeatures-excel
 setMethod("write2excel", "SummarizedExperiment",
-          function(object, filename, exp.design)
-            .write2excel(object, filename, exp.design))
+          function(object, filename, exp.design, ...)
+            .write2excel(object, filename, exp.design, ...))
 
 
 
@@ -82,9 +83,13 @@ setMethod("write2excel", "SummarizedExperiment",
 
 
 #' @noRd
-#' @importFrom openxlsx createStyle createWorkbook addWorksheet writeData addStyle writeData
 #' @importFrom stats setNames
 .write2excel <- function(object, filename, exp.design) {
+  
+  if (! requireNamespace("openxlsx", quietly = TRUE)) {
+    stop("Please install openxlsx: BiocManager::install('openxlsx')")
+  }
+  
   name <- paste0(filename, ".xlsx", sep="")
   wb <- openxlsx::createWorkbook(name)
   # Write the assay data to the first sheet

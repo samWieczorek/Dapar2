@@ -9,7 +9,11 @@
 #' @return NA
 #'
 qMetadataFilteringScope <- function()
-  c("None", "WholeLine", "WholeMatrix", "AllCond", "AtLeastOneCond")
+  c("None", 
+    "WholeLine", 
+    "WholeMatrix", 
+    "AllCond", 
+    "AtLeastOneCond")
 
 
 
@@ -22,7 +26,12 @@ qMetadataFilteringScope <- function()
 #' @return NA
 #'
 SymFilteringOperators <- function()
-  c('<=','<', '>=', '>', '==', '!=')
+  c('<=',
+    '<', 
+    '>=', 
+    '>', 
+    '==', 
+    '!=')
 
 
 
@@ -55,13 +64,13 @@ SymFilteringOperators <- function()
 #' percent <- FALSE
 #' th <- 3
 #' op <- '>='
-#' ind <- qMetadatWholeMatrix(mask, op, percent, th)
+#' ind <- qMetadataWholeMatrix(mask, op, percent, th)
 #'
 #' @export
 #' 
 #' @rdname qMetadata-filter
 #'
-qMetadatWholeMatrix <- function(object, cmd, pattern, percent, th, operator){
+qMetadataWholeMatrix <- function(object, cmd, pattern, percent, th, operator){
   if(missing(object))
     return(NULL)
   if(missing(cmd))

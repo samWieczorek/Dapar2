@@ -1,34 +1,35 @@
-# Module UI
-
-#' @title   mod_popover_for_help_ui and mod_popover_for_help_server
+#' @title  Help popover windows
+#' 
 #' @description  A shiny Module.
 #'
-#' @param id shiny id
-#' @param input internal
-#' @param output internal
-#' @param session internal
-#' @param data A list of two items:
-#' * title: xxxx
-#' * content: xxxx
-#'
-#' @return NA
+#' @name mod_helpPopover
 #' 
-#' @rdname mod_popover_for_help
-#'
-#' @keywords internal
+#' @examples 
+#' if (interactive()){
+#' ui <- mod_helpPopover_ui('help')
+#' 
+#'  server <- function(input, output, session) {
+#'   mod_helpPopover_server('help',
+#'                          title = 'Foo',
+#'                          content = 'xxx'
+#'                          )
+#'  }
+#'  
+#'  shinyApp(ui=ui, server=server)
+#' 
+#' }
+NULL
+
+
+#' @param id A `character()` xxx
+#' @rdname mod_helpPopover
 #' @export 
 #' @importFrom shiny NS tagList 
 #' @importFrom shinyjs inlineCSS useShinyjs
 #' 
-#' @examples 
-#' if (interactive()){
-#' 
-#' 
-#' }
-#' 
-mod_popover_for_help_ui <- function(id){
+mod_helpPopover_ui <- function(id){
   ns <- NS(id)
-  tagList(
+  fluidPage(
     shinyjs::useShinyjs(),
     shinyjs::inlineCSS(pop_css),
     div(
@@ -45,34 +46,34 @@ mod_popover_for_help_ui <- function(id){
   )
 }
 
-# Module Server
-
-#' @rdname mod_popover_for_help
+#' @param id A `character(1)` xxx
+#' @param title A `character()` xxx
+#' @param content A `character()` xxx
+#' 
+#' @rdname mod_helpPopover
 #' 
 #' @export
-#' @return NA
 #' 
-#' @keywords internal
-#' 
-#' @importFrom shinyBS bsPopover addPopover bsTooltip
-#' 
-mod_popover_for_help_server <- function(id, data){
+mod_helpPopover_server <- function(id, title, content){
   
-  require(shinyBS)
+  if (! requireNamespace("shinyBS", quietly = TRUE)) {
+    stop("Please install shinyBS: BiocManager::install('shinyBS')")
+  }
   moduleServer(id, function(input, output, session){
     ns <- session$ns
     
     output$write_title_ui <- renderUI({
-      req(data)
-      HTML(paste0("<strong><font size=\"4\">", data$title, "</font></strong>"))
+      HTML(paste0("<strong><font size=\"4\">", title, "</font></strong>"))
     })
     
     output$dot <- renderUI({
-      tags$button(tags$sup("?"), class="Prostar_tooltip")
+      tags$button(tags$sup("?"), class="custom_tooltip")
     })
     
     output$show_Pop <- renderUI({
-      shinyBS::bsTooltip(ns("dot"), data$content, trigger = "hover")
+      shinyBS::bsTooltip(ns("dot"), 
+                         content, 
+                         trigger = "hover")
       
     })
     
@@ -82,7 +83,7 @@ mod_popover_for_help_server <- function(id, data){
 }
 
 
-pop_css <- "button.Prostar_tooltip {
+pop_css <- "button.custom_tooltip {
     background:none;
     color: #2EA8B1;
     border:none;
@@ -96,7 +97,7 @@ pop_css <- "button.Prostar_tooltip {
     padding:0;
 }
 
-button.Prostar_tooltip_white {
+button.custom_tooltip_white {
     background:none;
     color: white;
     border:none;
@@ -128,11 +129,3 @@ button.Prostar_tooltip_white {
     top: 5px;
     
 }"
-
-
-## To be copied in the UI
-# mod_popover_for_help_ui("popover_for_help_ui_1")
-
-## To be copied in the server
-# callModule(mod_popover_for_help_server, "popover_for_help_ui_1")
-

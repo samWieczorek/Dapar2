@@ -160,22 +160,12 @@ qMetadata.def <- function(level){
   )
   
   
-  colors <- list('all' = 'white',
-                 'missing' = 'white',
-                 'missing POV' = "lightblue",
-                 'missing MEC' = "orange",
-                 'quanti' = "white",
-                 'recovered' = "lightgrey",
-                 'identified' = "white",
-                 'combined' = "red",
-                 'imputed' = "white",
-                 'imputed POV' = "#0040FF",
-                 'imputed MEC' = "#DF7401")
   
-  def <- cbind(def, color = rep('white', nrow(def)))
   
-  for(n in seq_len(nrow(def)))
-    def[n, 'color'] <- colors[[def[n, 'node']]]
+  #def <- cbind(def, color = rep('white', nrow(def)))
+  
+  #for(n in seq_len(nrow(def)))
+  #  def[n, 'color'] <- colors[[def[n, 'node']]]
   
 
   if (level == 'all')
@@ -186,6 +176,21 @@ qMetadata.def <- function(level){
 
 }
 
+
+#' @export
+#' @rdname q_metadata
+custom_qMetadata_colors <- function()
+  list('all' = 'white',
+       'missing' = 'white',
+       'missing POV' = "lightblue",
+       'missing MEC' = "orange",
+       'quanti' = "white",
+       'recovered' = "lightgrey",
+       'identified' = "white",
+       'combined' = "red",
+       'imputed' = "white",
+       'imputed POV' = "#0040FF",
+       'imputed MEC' = "#DF7401")
 
 
 #' @title Sets the MEC tag in the qMetadata
@@ -636,7 +641,7 @@ setMethod("UpdateqMetadata", "SummarizedExperiment",
             
             ind <- match.qMetadata(metadata = qMetadata(object), 
                                   pattern = na.type, 
-                                  level = level) & !is.na(assay(object))
+                                  level = level) & !is.na(SummarizedExperiment::assay(object))
             
             rowData(object)$qMetadata_names[ind] <- gsub(from, 
                                                          to, 

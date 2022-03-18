@@ -181,7 +181,7 @@ createQFeatures <- function(data = NULL,
   #browser()
   qMetadata <- BuildqMetadata(from = software,
                               level = typeDataset,
-                              qdata = assay(obj),
+                              qdata = SummarizedExperiment::assay(obj),
                               conds = colData(obj)$Condition,
                               df = tmp.qMetadata)
 

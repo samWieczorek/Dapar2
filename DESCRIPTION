@@ -36,30 +36,19 @@ Imports:
     SummarizedExperiment,
     MultiAssayExperiment,
     AnnotationFilter,
-    openxlsx, 
-    preprocessCore,
     lme4,
     vsn, 
     stringr,
     RColorBrewer,
-    graph,
-    FactoMineR, 
-    factoextra,
-    doParallel,
-    dplyr,
-    foreach,
     gplots,
     highcharter,
     tibble,
     tidyr,
-    visNetwork, 
     Matrix,
     cp4p,
     limma,
-    vioplot,
     imp4p (>= 0.9),
     impute,
-    readxl,
     forcats,
     multcomp,
     purrr,
@@ -67,15 +56,11 @@ Imports:
     reshape2,
     htmlwidgets,
     shiny,
-    shinyBS,
     shinyWidgets,
     shinyalert,
     shinyjs,
     DT,
-    colourpicker,
-    base64enc,
     sos,
-    graphics,
     stats,
     utils
 biocViews: 
@@ -99,9 +84,8 @@ Collate:
     DaparToolshed_filter_qMetadata.R
     DaparToolshed-filterFeaturesOneSE.R
     iterative_agregation.R
-    adjacencyMatrixInfos.R
     mod_Filtering.R
-    mod_query_metacell.R
+    mod_build_qMetadata_FunctionFilter.R
     mod_Agregation.R
     compute.t.tests.R
     DiffAnalysis.R
@@ -109,16 +93,14 @@ Collate:
     export_qfeatures.R
     import_2_qfeatures.R
     limmaAnalysis.R
-    ConnectedComps.R
     normalize.R
-    plots_compare_normalization_plots.R
-    plots_volcano.R
     utils.R
     missingValuesImputation_PeptideLevel.R
     missingValuesImputation_ProteinLevel.R
     pepa.R
     anova_analysis.R
     clustering.R
+    mod_filtering_example.R
     hypothesis_test.R
     global.R
     mod_Protein.R
@@ -127,11 +109,12 @@ Collate:
     mod_Protein_Normalization.R
     mod_convert.R
     mod_format_DT.R
-    mod_graph_pept_prot.R
-    mod_popover_for_help.R
+    mod_helpPopover.R
     mod_settings.R
     mod_Normalization.R
     zzz.R
+    mod_tracker.R
+RoxygenNote: 7.1.2
 Packaged: 2017-10-13 11:13:04 UTC; sw175264
 Encoding: UTF-8
 LazyData: false
@@ -139,8 +122,18 @@ URL: https://github.com/samWieczorek/DaparToolshed
 BugReports: https://github.com/samWieczorek/DaparToolshed/issues
 Suggests: 
     knitr,
+    shinyBS,
     rmarkdown,
     BiocStyle,
-    testthat
+    testthat,
+    FactoMineR, 
+    factoextra,
+    doParallel,
+    dplyr,
+    foreach,
+    colourpicker,
+    openxlsx, 
+    readxl,
+    preprocessCore,
+    graph
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.1.2

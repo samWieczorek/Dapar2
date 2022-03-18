@@ -3,6 +3,7 @@
 \name{q_metadata}
 \alias{q_metadata}
 \alias{qMetadata.def}
+\alias{custom_qMetadata_colors}
 \alias{Set_POV_MEC_tags}
 \alias{BuildqMetadata}
 \alias{qMetadata_generic}
@@ -15,6 +16,8 @@
 \title{Quantitative metadata vocabulary for entities}
 \usage{
 qMetadata.def(level)
+
+custom_qMetadata_colors()
 
 Set_POV_MEC_tags(conds, df, level)
 

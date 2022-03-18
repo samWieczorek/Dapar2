@@ -1,6 +1,33 @@
 
-#' @title Module filtering
+#' @title Module Filtering
 #' 
+#' @description 
+#' 
+#' @section Step 'Quanti metadata filtering':
+#' 
+#' xxxxxxx
+#' 
+#' @section Step 'Variable filtering':
+#' 
+#' xxxxx
+#' 
+#' @section Step 'Save':
+#' 
+#' xxxxxx
+#' 
+#' @seealso The user manual of the package `Magellan`.
+#'
+#' 
+#' @name mod_filtering
+#' 
+#' @examples 
+#' if(interactive()){
+#'  run_workflow('Filtering', verbose = TRUE)
+#' }
+NULL
+
+
+
 #' @param id
 #' 
 #' @rdname mod_Filtering
@@ -12,30 +39,36 @@ mod_Filtering_ui <- function(id){
 }
 
 
-#' @param id xxx
-#' @param dataIn xxx
-#' @param steps.enabled xxx
-#' @param remoteReset xxx
-#' @param steps.status xxx
-#' @param current.pos xxx
-#' @param verbose xxx
+#' @param id A `character(1)` which is the 'id' of the module.
+#' @param dataIn An instance of the class `QFeatures`
+#' @param steps.enabled A `logical()` which indicates whether each step is
+#' enabled or disabled in the UI.
+#' @param remoteReset A `logical(1)` which acts asa a remote command to reset
+#' the module to its default values. Default is FALSE.
+#' @param steps.status A `logical()` which indicates the status of each step
+#' which can be either 'validated', 'undone' or 'skipped'.
+#' enabled or disabled in the UI.
+#' @param current.pos A `interger(1)` which acts as a remote command to make
+#'  a step active in the timeline. Default is 1.
+#' @param verbose A `logical(1)` to indicates whether run and debug infos must
+#' be printed in the console. Default is FALSE.
 #' 
 #' @rdname mod_Filtering
 #' @importFrom shinyjs toggle hidden
-#' @importFrom DT dataTableOutput
+#' @importFrom DT dataTableOutput renderDataTable DTOutput datatable
 #' @importFrom stats setNames
 #' @importFrom Magellan Timestamp toggleWidget Get_Worflow_Core_Code
 #' 
 #' @export
 #' 
 mod_Filtering_server <- function(id,
-                                  dataIn = reactive({NULL}),
-                                  steps.enabled = reactive({NULL}),
-                                  remoteReset = reactive({FALSE}),
-                                  steps.status = reactive({NULL}),
-                                  current.pos = reactive({1}),
-                                  verbose = FALSE
-){
+                                 dataIn = reactive({NULL}),
+                                 steps.enabled = reactive({NULL}),
+                                 remoteReset = reactive({FALSE}),
+                                 steps.status = reactive({NULL}),
+                                 current.pos = reactive({1}),
+                                 verbose = FALSE
+                                 ){
   
   
   # This list contains the basic configuration of the process
@@ -44,7 +77,10 @@ mod_Filtering_server <- function(id,
     mode = 'process',
     
     # List of all steps of the process
-    steps = c('Description', 'Quanti metadata filtering', 'String based filtering', 'Numerical filtering', 'Save'),
+    steps = c('Description', 
+              'Quanti metadata filtering', 
+              'Variable filtering', 
+              'Save'),
     
     # A vector of boolean indicating if the steps are mandatory or not.
     mandatory = c(TRUE, FALSE, FALSE, FALSE, TRUE),
@@ -56,15 +92,14 @@ mod_Filtering_server <- function(id,
   # Define default selected values for widgets
   # This is only for simple workflows
   widgets.default.values <- list(
-    MetacellTag = "None",
-    MetacellFilters = "None",
-    KeepRemove = 'delete',
-    metacell_value_th = 0,
-    choose_metacell_percent_th = 0,
-    metacell_value_percent = 0,
-    val_vs_percent = 'Value',
-    metacellFilter_operator = '<='
-
+    tag = "None",
+    scope = "None",
+    keepRemove = 'delete',
+    valueTh = 0,
+    percentTh = 0,
+    valuePercent = 0,
+    valPercent = 'Value',
+    operator = '<='
   )
   
   
@@ -86,7 +121,10 @@ mod_Filtering_server <- function(id,
     )))
     
     rv.custom <- reactiveValues(
+      
+      # Used to store intermediate datasets
       temp.filtered = NULL,
+      
       deleted.stringBased = NULL,
       deleted.metacell = NULL,
       deleted.numeric = NULL,
@@ -153,6 +191,7 @@ mod_Filtering_server <- function(id,
     observeEvent(input$Description_btn_validate, {
       rv$dataIn <- dataIn()
       rv.custom$temp.filtered <- dataIn()
+      
       dataOut$trigger <- Magellan::Timestamp()
       dataOut$value <- rv$dataIn
       rv$steps.status['Description'] <- global$VALIDATED
@@ -160,7 +199,10 @@ mod_Filtering_server <- function(id,
     
     
     
-    #-------------------------------------------------------------------
+    #--------------------------------------------------------------
+    # Quantitative metadata filtering UI
+    #--------------------------------------------------------------
+    
     output$Quantimetadatafiltering <- renderUI({
       wellPanel(
         # uiOutput for all widgets in this UI
@@ -170,19 +212,9 @@ mod_Filtering_server <- function(id,
         # widget he want to insert
         # Be aware of the naming convention for ids in uiOutput()
         # For more details, please refer to the dev document.
-        div(
-          # id = "screen1Filtering",
-          
-          mod_query_metacell_ui(ns('query')),
-          tags$hr(),
-          div( style="display:inline-block; vertical-align: middle; align: center;",
-               DT::dataTableOutput(ns("metacell_Filter_SummaryDT"))
-          ),
-          
-          hr(),
-          ################## Plots section #############################
-          mod_plotsMetacellHistos_ui(ns("MVPlots_filtering"))
-        ),
+        uiOutput(ns('qMetadataFilter_ui')),
+        DT::dataTableOutput(ns("metacell_Filter_SummaryDT")),
+        mod_plotsMetacellHistos_ui(ns("MVPlots_filtering")),
         
         # Insert validation button
         uiOutput(ns('Quantimetadatafiltering_btn_validate_ui'))
@@ -191,23 +223,23 @@ mod_Filtering_server <- function(id,
     
     
     mod_plotsMetacellHistos_server(id = "MVPlots_filtering", 
-                                   obj = reactive({rv$current.obj}),
+                                   obj = reactive({main_se(dataIn())}),
                                    pal = reactive({rv$PlotParams$paletteForConditions}),
-                                   pattern = reactive({rv$widgets$filtering$MetacellTag})
+                                   pattern = reactive({rv$widgets$filtering$tag})
     )
+    mod_ds_mv_server('plot', 
+                     #'                 reactive({assay(ft_na, 1)}),
+                     #'                 colData(ft_na)$Condition)
+                     #'                }
     
-    
-    indices <- mod_query_metacell_server(id = 'query',
-                                         obj = reactive({rv$dataIn}),
-                                         list_tags = reactive({c('None' = 'None',
-                                                                 qMetadata.def(typeDataset(rv$current.obj))$node
-                                         )}),
+   
+    ll.tags <- c('None' = 'None', 
+                 qMetadata.def(typeDataset(main_se(dataIn())))$node)
+    fun_filter <- mod_build_qMetadata_FunctionFilter_server(id = 'query',
+                                         obj = reactive({main_se(dataIn())}),
+                                         conds = reactive({colData(dataIn())$Condition}),
+                                         list_tags = reactive({ll.tags}),
                                          keep_vs_remove = reactive({setNames(nm = c("delete", "keep"))}),
-                                         filters = reactive({c("None" = "None",
-                                                               "Whole Line" = "WholeLine",
-                                                               "Whole matrix" = "WholeMatrix",
-                                                               "For every condition" = "AllCond",
-                                                               "At least one condition" = "AtLeastOneCond")}),
                                          val_vs_percent = reactive({setNames(nm=c('Count', 'Percentage'))}),
                                          operator = reactive({setNames(nm = SymFilteringOperators())})
     )
@@ -215,20 +247,24 @@ mod_Filtering_server <- function(id,
     
     
     
+    output$qMetadataFilter_ui <- renderUI({
+      widget <- mod_query_metacell_ui(ns('query'))
+      Magellan::toggleWidget(widget, rv$steps.enabled[])
+    }) 
+    
     
     
     output$Quantimetadatafiltering_btn_validate_ui <- renderUI({
       widget <- actionButton(ns("Quantimetadatafiltering_btn_validate"),
-                             "Perform metacell filtering",
+                             "Perform q. metadata filtering",
                              class = btn_success_color)
-      Magellan::toggleWidget(rv$steps.enabled['Quantimetadatafiltering'], widget)
+      Magellan::toggleWidget(widget, rv$steps.enabled['Quantimetadatafiltering'])
     })
     
     
     observeEvent(input$Quantimetadatafiltering_btn_validate, {
-      print('Perform')
       # rv$dataIn <- RunAggregation()
-      
+      print('toto')
       
       
       # rv.custom$temp.agregate <- RunAggregation()

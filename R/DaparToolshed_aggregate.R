@@ -68,9 +68,7 @@
 ##'     the *Aggregation* vignette, for a complete quantitative
 ##'     proteomics data processing pipeline. 
 ##'
-##' @name aggregateFeatures4Prostar
-##'
-##' @rdname DaparToolshed-aggregate
+##' @name DaparToolshed-aggregate
 ##'
 ##' @examples
 ##'
@@ -183,7 +181,7 @@ setMethod("aggregateFeatures4Prostar", "SummarizedExperiment",
 #' @title Get the type of dataset
 #' @description xxx
 #'
-#' @param qMeta  An object of class 'SummarizedExperiment'
+#' @param object  An object of class 'SummarizedExperiment'
 #' @param X xxxx
 #' @param level A `character(1)` which is the type of dataset
 #' @param conds A `character()` vector which is the names of conditions
