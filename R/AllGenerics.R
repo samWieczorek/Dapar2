@@ -30,6 +30,8 @@ setGeneric("version", function(object, ...) standardGeneric("version"))
 setGeneric("version<-", function(object, ..., value) standardGeneric("version<-"))
 setGeneric("design", function(object, ...) standardGeneric("design"))
 setGeneric("design<-", function(object, ..., value) standardGeneric("design<-"))
+setGeneric("params", function(object, ...) standardGeneric("params"))
+setGeneric("params<-", function(object, ..., value) standardGeneric("params<-"))
 
 
 setGeneric("GetHypoyhesisTest", function(object, ...) standardGeneric("GetHypoyhesisTest"))

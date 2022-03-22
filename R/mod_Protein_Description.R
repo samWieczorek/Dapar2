@@ -95,7 +95,7 @@ mod_Protein_Description_server <- function(id,
     # Initialization of the module
     observeEvent(steps.enabled(), ignoreNULL = TRUE, {
       if (is.null(steps.enabled()))
-        rv$steps.enabled <- setNames(rep(FALSE, length(config$steps)), config$steps)
+        rv$steps.enabled <- setNames(rep(FALSE, length(config@steps)), config@steps)
       else
         rv$steps.enabled <- steps.enabled()
     })
@@ -114,16 +114,16 @@ mod_Protein_Description_server <- function(id,
       rv$steps.enabled
 
       tagList(
-          includeMarkdown( system.file("md", paste0(config$name, ".md"), package="DaparToolshed")),
+          includeMarkdown( system.file("md", paste0(config@name, ".md"), package="DaparToolshed")),
           uiOutput(ns('datasetDescription')),
           if (isTRUE(rv$steps.enabled['Description']))
             actionButton(ns('btn_validate_Description'),
-                         paste0('Start ', config$name),
+                         paste0('Start ', config@name),
                          class = Magellan::btn_success_color)
           else
             shinyjs::disabled(
               actionButton(ns('btn_validate_Description'),
-                           paste0('Start ', config$name),
+                           paste0('Start ', config@name),
                            class = Magellan::btn_success_color)
             )
         )
@@ -146,11 +146,11 @@ mod_Protein_Description_server <- function(id,
     
     # Return of the process. It is always a list
     list(config = reactive({
-                  config$ll.UI <- setNames(lapply(config$steps,
+                  config@ll.UI <- setNames(lapply(config@steps,
                                       function(x){
                                         do.call('uiOutput', list(ns(x)))
                                       }),
-                               paste0('screen_', config$steps)
+                               paste0('screen_', config@steps)
                               )
                   config
                   }),

@@ -8,8 +8,20 @@
 #' @examples 
 #' if(interactive()){
 #' 
+#' data(ft_na)
+#' ui <- mod_filtering_example_ui('example')
 #' 
+#' server <- function(input, output, session) {
+#'   
+#'   mod_filtering_example_server(id = 'example',
+#'                                obj = reactive({ft_na[[1]]}),
+#'                                indices = reactive({c(2, 6)}),
+#'                                keepRemove = reactive({'delete'}),
+#'                                query = reactive({'query'})
+#'                                )
+#' }
 #' 
+#' shinyApp(ui=ui, server=server)
 #' }
 NULL
 
@@ -23,7 +35,7 @@ mod_filtering_example_ui <- function(id){
   
   ns <- NS(id)
   
-  tagList(
+  fluidPage(
     actionButton(ns("show_filtering_example"), "Preview filtering", class = actionBtnClass ),
     shinyBS::bsModal(ns("example_modal"),
                      title="Example preview of the filtering result.",
@@ -42,12 +54,11 @@ mod_filtering_example_ui <- function(id){
 }
 
 
-
-#' @param id xxx
-#' @param obj xxx
+#' @param id A `character(1)`
+#' @param obj An instance of the class `SummarizedExperiment`
 #' @param indices xxx
 #' @param params xxx
-#' @param txt
+#' @param query A `character()` 
 #' 
 #' @rdname mod_filtering_example
 #' @export
@@ -55,8 +66,8 @@ mod_filtering_example_ui <- function(id){
 mod_filtering_example_server <- function(id, 
                                          obj, 
                                          indices, 
-                                         params, 
-                                         txt) {
+                                         keepRemove, 
+                                         query) {
   
   
   moduleServer(
@@ -66,7 +77,7 @@ mod_filtering_example_server <- function(id,
       
       
       output$show_text <- renderUI({
-        h3(txt())
+        h3(query())
       })
       
       
@@ -90,7 +101,7 @@ mod_filtering_example_server <- function(id,
                           combined = 'Combined')
       
       
-      rgb2col = function(rgbmat){
+      rgb2col <- function(rgbmat){
         ProcessColumn = function(col){
           rgb(rgbmat[1, col], 
               rgbmat[2, col], 
@@ -118,17 +129,27 @@ mod_filtering_example_server <- function(id,
       }
       
       output$example_tab_filtered <- DT::renderDataTable({
-        df <- getDataForExprs(obj(), NULL)
-        c.tags <- BuildColorStyles(obj())$tags
-        c.colors <-  BuildColorStyles(obj())$colors
-        range.invisible <- ((ncol(df)/2)+1):ncol(df)
+        
+        # Build df to integrate qMetadata values
+        
+        df <- cbind(keyId = SummarizedExperiment::rowData(obj())[, DaparToolshed::idcol(obj())],
+                    round(SummarizedExperiment::assay(obj()), 
+                          digits = 3), 
+                    DaparToolshed::qMetadata(obj())
+        )
+        
+       # browser()
+        colors <- DaparToolshed::custom_qMetadata_colors()
+        c.tags <- names(colors)
+        c.colors <-  unname(unlist(colors))
+        range.invisible <- c((( 2 + (ncol(df)-1)/2)):ncol(df))
         
         
         if (!is.null(indices()) && input$run_btn == 'simulate filtered dataset'){
-          if (params()$KeepRemove == "keep")
-            index2darken <- (1:nrow(obj()))[-indices()]
-          else if (params()$KeepRemove == "delete")
-            index2darken <- indices()
+          index2darken <- switch(keepRemove(),
+                                 keep = (1:nrow(obj()))[-indices()],
+                                 delete = indices()
+          )
           
           for (i in index2darken)
             df[i, range.invisible] <- paste0('darken_', df[i, range.invisible] )
@@ -151,12 +172,16 @@ mod_filtering_example_server <- function(id,
                         scrollY = 500,
                         scroller = TRUE,
                         server = FALSE,
-                        columnDefs = list(list(targets = range.invisible, 
-                                               visible = FALSE)))
-        ) %>%
-          
+                        columnDefs = list(
+                          list(
+                            targets = range.invisible, 
+                            visible = FALSE)
+                          )
+                        )
+                      ) %>%
+      
           formatStyle(
-            colnames(df)[1:(ncol(df)/2)],
+            colnames(df)[2:(1 + (ncol(df)-1)/2)],
             colnames(df)[range.invisible],
             backgroundColor = styleEqual(c.tags, c.colors)
           )

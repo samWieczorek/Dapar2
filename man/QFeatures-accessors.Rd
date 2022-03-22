@@ -20,6 +20,10 @@
 \alias{version<-}
 \alias{design,QFeatures-method}
 \alias{design<-}
+\alias{mainAssay}
+\alias{params,QFeatures-method}
+\alias{params,SummarizedExperiment-method}
+\alias{params<-}
 \title{Additional accessors for instances of class \code{Qfeatures}.}
 \usage{
 \S4method{qMetadata}{QFeatures}(object, i, slotName = "qMetadata")
@@ -57,6 +61,14 @@ version(object, slotName = "version") <- value
 \S4method{design}{QFeatures}(object, slotName = "design")
 
 design(object, slotName = "design") <- value
+
+mainAssay(object)
+
+\S4method{params}{QFeatures}(object, i, slotName = "params")
+
+\S4method{params}{SummarizedExperiment}(object, slotName = "params")
+
+params(object, i, slotName = "params") <- value
 }
 \arguments{
 \item{object}{An instance of class \code{SummarizedExperiment} or \code{QFeatures}.}

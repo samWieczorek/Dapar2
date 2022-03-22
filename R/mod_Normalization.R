@@ -111,7 +111,7 @@
 #'     
 #'     
 #'     output$Description <- renderUI({
-#'       file <- paste0(config$path_to_md_dir, '/', id, '.md')
+#'       file <- paste0(config@path_to_md_dir, '/', id, '.md')
 #'       
 #'       tagList(
 #'         # In this example, the md file is found in the module_examples directory
@@ -381,7 +381,7 @@
 #'                      actionButton(ns("Save_btn_validate"), "Save",
 #'                                   class = btn_success_color)
 #'         ),
-#'         if (config$mode == 'process' && rv$steps.status['Save'] == global$VALIDATED) {
+#'         if (config@mode == 'process' && rv$steps.status['Save'] == global$VALIDATED) {
 #'           mod_Save_Dataset_ui(ns('createQuickLink'))
 #'         }
 #'       )

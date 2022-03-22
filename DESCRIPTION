@@ -85,10 +85,10 @@ Collate:
     DaparToolshed-filterFeaturesOneSE.R
     iterative_agregation.R
     mod_Filtering.R
-    mod_query_metacell.R
     mod_Agregation.R
     compute.t.tests.R
     DiffAnalysis.R
+    mod_build_qMetadata_FunctionFilter.R
     group_ttest.R
     export_qfeatures.R
     import_2_qfeatures.R

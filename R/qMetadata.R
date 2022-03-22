@@ -99,10 +99,11 @@ NULL
 #'
 #' @rdname q_metadata
 #' 
-qMetadata.def <- function(level){
+qMetadata.def <- function(level = 'all'){
+  if(is.null(level))
+    return()
   if(missing(level))
     stop("'level' is required.")
-  
   def <- switch(level,
                 peptide = {
                   node <- c('all', 

@@ -137,7 +137,7 @@ mod_Agregation_server <- function(id,
     
     
     output$Description <- renderUI({
-      file <- paste0(config$path_to_md_dir, '/', id, '.md')
+      file <- paste0(config@path_to_md_dir, '/', id, '.md')
       
       tagList(
         # In this example, the md file is found in the module_examples directory

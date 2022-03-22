@@ -3,7 +3,7 @@
 \name{qMetadataFilteringScope}
 \alias{qMetadataFilteringScope}
 \alias{SymFilteringOperators}
-\alias{qMetadatWholeMatrix}
+\alias{qMetadataWholeMatrix}
 \alias{qMetadataWholeLine}
 \alias{qMetadataOnConditions}
 \title{Quantitative cell metadata scopes for filtering}
@@ -12,7 +12,7 @@ qMetadataFilteringScope()
 
 SymFilteringOperators()
 
-qMetadatWholeMatrix(object, cmd, pattern, percent, th, operator)
+qMetadataWholeMatrix(object, cmd, pattern, percent, th, operator)
 
 qMetadataWholeLine(object, cmd, pattern)
 
@@ -88,7 +88,7 @@ mask <- match.qMetadata(metadata = qMetadata(obj),
 percent <- FALSE
 th <- 3
 op <- '>='
-ind <- qMetadatWholeMatrix(mask, op, percent, th)
+ind <- qMetadataWholeMatrix(mask, op, percent, th)
 
 data(ft)
 obj <- ft[[1]]

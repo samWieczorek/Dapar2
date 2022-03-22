@@ -111,7 +111,7 @@ mod_Protein_Filtering_server <- function(id,
     # Initialization of the module
     observeEvent(steps.enabled(), ignoreNULL = TRUE, {
       if (is.null(steps.enabled()))
-        rv$steps.enabled <- setNames(rep(FALSE, length(config$steps)), config$steps)
+        rv$steps.enabled <- setNames(rep(FALSE, length(config@steps)), config@steps)
       else
         rv$steps.enabled <- steps.enabled()
     })
@@ -136,16 +136,16 @@ mod_Protein_Filtering_server <- function(id,
       #browser()
       wellPanel(
         tagList(
-          includeMarkdown( system.file("app/md", paste0(config$name, ".md"), package="Magellan")),
+          includeMarkdown( system.file("app/md", paste0(config@name, ".md"), package="Magellan")),
           uiOutput(ns('datasetDescription')),
           if (isTRUE(rv$steps.enabled['Description'])  )
             actionButton(ns('btn_validate_Description'),
-                         paste0('Start ', config$name),
+                         paste0('Start ', config@name),
                          class = btn_success_color)
           else
             shinyjs::disabled(
               actionButton(ns('btn_validate_Description'),
-                           paste0('Start ', config$name),
+                           paste0('Start ', config@name),
                            class = btn_success_color)
             )
         )
@@ -360,7 +360,7 @@ mod_Protein_Filtering_server <- function(id,
 
     observeEvent(input$btn_validate_Step3, ignoreInit = TRUE, {
       # Add your stuff code here
-      rv$dataIn <- AddItemToDataset(rv$dataIn, config$name)
+      rv$dataIn <- AddItemToDataset(rv$dataIn, config@name)
       dataOut$trigger <- Magellan::Timestamp()
       dataOut$value <- rv$dataIn
       
@@ -372,11 +372,11 @@ mod_Protein_Filtering_server <- function(id,
     # Return value of module
     # DO NOT MODIFY THIS PART
     list(config = reactive({
-      config$ll.UI <- setNames(lapply(config$steps,
+      config@ll.UI <- setNames(lapply(config@steps,
                                       function(x){
                                         do.call('uiOutput', list(ns(x)))
                                       }),
-                               paste0('screen_', config$steps)
+                               paste0('screen_', config@steps)
       )
       config
     }),

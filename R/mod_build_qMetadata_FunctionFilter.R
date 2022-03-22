@@ -12,31 +12,31 @@
 #' @examples 
 #' if (interactive()){
 #' data(ft_na)
-ui <- mod_build_qMetadata_FunctionFilter_ui('query')
-
-server <- function(input, output, session) {
-  
-  rv <- reactiveValues(
-    res = NULL
-  )
-  ll.tags <- c('None' = 'None', 
-               qMetadata.def(typeDataset(ft_na[[1]]))$node)
-  rv$res <- mod_build_qMetadata_FunctionFilter_server('query', 
-                                                      obj = reactive({ft_na[[1]]}),
-                                                      conds = reactive({colData(ft_na)$Condition}),
-                                                      list_tags = reactive({ll.tags}),
-                                                      keep_vs_remove = reactive({setNames(nm = c("delete", "keep"))}),
-                                                      val_vs_percent = reactive({setNames(nm=c('Count', 'Percentage'))}),
-                                                      operator = reactive({setNames(nm = SymFilteringOperators())})
-  )
-  
-  
-  observeEvent(rv$res$dataOut()$trigger, ignoreNULL = TRUE, ignoreInit = TRUE, {
-    print(rv$res$dataOut()$fun)
-  })
-}
-
-shinyApp(ui=ui, server=server)
+#' ui <- mod_build_qMetadata_FunctionFilter_ui('query')
+#' 
+#' server <- function(input, output, session) {
+#'   
+#'   rv <- reactiveValues(
+#'     res = NULL
+#'   )
+#'   ll.tags <- c('None' = 'None', 
+#'                qMetadata.def(typeDataset(ft_na[[1]]))$node)
+#'   rv$res <- mod_build_qMetadata_FunctionFilter_server('query', 
+#'                                                       obj = reactive({ft_na[[1]]}),
+#'                                                       conds = reactive({colData(ft_na)$Condition}),
+#'                                                       list_tags = reactive({ll.tags}),
+#'                                                       keep_vs_remove = reactive({setNames(nm = c("delete", "keep"))}),
+#'                                                       val_vs_percent = reactive({setNames(nm=c('Count', 'Percentage'))}),
+#'                                                       operator = reactive({setNames(nm = SymFilteringOperators())})
+#'   )
+#'   
+#'   
+#'   observeEvent(rv$res$dataOut()$trigger, ignoreNULL = TRUE, ignoreInit = TRUE, {
+#'     print(rv$res$dataOut()$fun)
+#'   })
+#' }
+#' 
+#' shinyApp(ui=ui, server=server)
 #' }
 NULL
 
@@ -101,8 +101,9 @@ mod_build_qMetadata_FunctionFilter_server <- function(id,
                                       keep_vs_remove = reactive({NULL}),
                                       val_vs_percent = reactive({NULL}),
                                       operator = reactive({NULL}),
-                                      reset = reactive({NULL})
-) {
+                                      reset = reactive({NULL}),
+                                      is.enabled = reactive({TRUE})
+                                      ) {
   
   rv <- reactiveValues(
     indices = NULL,
@@ -172,36 +173,38 @@ mod_build_qMetadata_FunctionFilter_server <- function(id,
                  
     
     output$chooseTag_ui <- renderUI({
-      selectInput(ns("chooseTag"),
-                  mod_helpPopover_ui(ns("tag_help")),
-                  choices = list_tags(),
-                  selected = rv.widgets$tag,
-                  width='200px')
+      widget <- selectInput(ns("chooseTag"),
+                            mod_helpPopover_ui(ns("tag_help")),
+                            choices = list_tags(),
+                            selected = rv.widgets$tag,
+                            width='200px')
+      Magellan::toggleWidget(widget, is.enabled())
       })
     
     output$chooseKeepRemove_ui <- renderUI({
       req(rv.widgets$tag != 'None')
-      radioButtons(ns("chooseKeepRemove"),
-                   "Type of filter operation",
-                   choices = keep_vs_remove(),
-                   selected = rv.widgets$keepRemove)
+      widget <- radioButtons(ns("chooseKeepRemove"),
+                             "Type of filter operation",
+                             choices = keep_vs_remove(),
+                             selected = rv.widgets$keepRemove)
+      Magellan::toggleWidget(widget, is.enabled())
       })
     
     output$chooseScope_ui <- renderUI({
       req(rv.widgets$tag != 'None')
-      selectInput(ns("chooseScope"),
-                  mod_helpPopover_ui(ns("filterScope_help")),
-                  choices = c("None" = "None",
-                              "Whole Line" = "WholeLine",
-                              "Whole matrix" = "WholeMatrix",
-                              "For every condition" = "AllCond",
-                              "At least one condition" = "AtLeastOneCond"),
-                  selected = rv.widgets$scope,
-                  width='200px')
+      widget <- selectInput(ns("chooseScope"),
+                            mod_helpPopover_ui(ns("filterScope_help")),
+                            choices = c("None" = "None",
+                                        "Whole Line" = "WholeLine",
+                                        "Whole matrix" = "WholeMatrix",
+                                        "For every condition" = "AllCond",
+                                        "At least one condition" = "AtLeastOneCond"),
+                            selected = rv.widgets$scope,
+                            width='200px')
+      Magellan::toggleWidget(widget, is.enabled())
       })
     
     output$example_ui <- renderUI({
-      req(rv.widgets$scope != "None")
       mod_filtering_example_server(id = 'filteringExample',
                                    obj = reactive({obj()}),
                                    indices = reactive({CompileIndices()}),
@@ -209,10 +212,11 @@ mod_build_qMetadata_FunctionFilter_server <- function(id,
                                    txt = reactive({WriteQuery()})
                                    )
       
-      mod_filtering_example_ui(ns('filteringExample'))
+      mod <- mod_filtering_example_ui(ns('filteringExample'))
+      Magellan::toggleWidget(mod, is.enabled() && !is.null(dataOut$fun))
       })
     
-    output$qMetadataFilters_widgets_set2_ui <- renderUI({
+    output$qMetadataScope_widgets_set2_ui <- renderUI({
       req(!(rv.widgets$scope %in% c("None", "WholeLine")))
       mod_helpPopover_server("chooseValPercent_help", 
                              title = paste("#/% of values to ", rv.widgets$keepRemove),
@@ -252,8 +256,10 @@ mod_build_qMetadata_FunctionFilter_server <- function(id,
         mod_helpPopover_ui(ns("keepVal_help")),
         selectInput(ns("chooseValueTh"),
                     mod_helpPopover_ui(ns("value_th_help")),
-                    choices = getListNbValuesInLines(obj(), 
-                                                     type = rv.widgets$scope),
+                    choices = getListNbValuesInLines(object = obj(), 
+                                                     conds = conds(), 
+                                                     type = rv.widgets$scope
+                                                     ),
                     selected = rv.widgets$valueTh,
                     width='150px')
         )

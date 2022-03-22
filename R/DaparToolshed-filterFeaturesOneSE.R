@@ -158,10 +158,8 @@ setMethod("filterFeaturesOneSE", "QFeatures",
             
             if (missing(filters))
               return(object)
-            
             ## Create the aggregated assay
             new.se <- filterFeaturesOneSE(object[[i]], filters)
-            
             ## Add the assay to the QFeatures object
             object <- addAssay(object,
                                new.se,
@@ -177,8 +175,6 @@ setMethod("filterFeaturesOneSE", "QFeatures",
                 
               
               ## Link the input assay to the aggregated assay
-              SummarizedExperiment::rowData(object[[i]])[,idcol] <- rownames(object[[i]])
-              SummarizedExperiment::rowData(object[[name]])[,idcol] <- rownames(object[[name]])
               object <- addAssayLink(object,
                                      from = names(object)[i],
                                      to  = name,
@@ -197,28 +193,27 @@ setMethod("filterFeaturesOneSE", "QFeatures",
 ##' @rdname QFeatures-filtering-oneSE
 setMethod("filterFeaturesOneSE", "SummarizedExperiment",
           function(object, filters){
-            lapply(filters, 
-                   function(f){
-              if (inherits(f, "AnnotationFilter")){
+            ll.obj <- lapply(filters, 
+                   function(x){
+                     if (inherits(x, "AnnotationFilter")){
                 x <- SummarizedExperiment::rowData(object)
-                sel <- if (field(f) %in% names(x)){
-                  do.call(condition(f),
-                          list(x[, field(f)],
-                               value(f)))
+                sel <- if (field(x) %in% names(x)){
+                  do.call(condition(x),
+                          list(x[, field(x)],
+                               value(x)))
                 } else{
                   rep(FALSE, nrow(x))
                 }
 
                 object <- object[sel]
-              }
-              else if (inherits(f, "FunctionFilter"))
-               
-              object <- do.call(f@name, 
+              } else if (inherits(x, "FunctionFilter")){
+                object <- do.call(x@name, 
                                   append(list(object = object), 
-                                         f@params))
+                                         x@params))
+                }
                    }
-            )
+              )
             
-            return(object)
+           return(ll.obj[[1]])
           }
 )

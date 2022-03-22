@@ -160,8 +160,9 @@ qMetadataWholeLine <- function(object, cmd, pattern){
   if(missing(pattern))
     return(object)
   
+  
   stopifnot(inherits(object, 'SummarizedExperiment'))
-  stopifnot('qMetadata' %in% names(rowData(object)))
+  stopifnot('qMetadata' %in% names(SummarizedExperiment::rowData(object)))
   stopifnot(!is.null(cmd) || (cmd %in% c('keep', 'delete')))
   
   indices <- NULL
@@ -260,7 +261,6 @@ qMetadataOnConditions <- function(object,
     stop(paste0("'operator' must be one of the followinf values: ",
                 paste0(SymFilteringOperators(), collapse=' '))
     )
-  
   u_conds <- unique(conds)
   nbCond <- length(u_conds)
   
@@ -279,21 +279,21 @@ qMetadataOnConditions <- function(object,
   )
   
   indices <- NULL
-  s <- matrix(rep(0, nrow(mask)*nbCond),
-              nrow = nrow(mask),
-              ncol = nbCond)
+  temp <- matrix(rep(NA, nrow(mask)*nbCond),
+                 nrow = nrow(mask),
+                 ncol = nbCond)
   
   for (c in seq_len(nbCond)) {
     ind.cond <- which(conds == u_conds[c])
     inter <- rowSums(mask[, ind.cond])
     if (isTRUE(percent))
       inter <- inter/length(ind.cond)
-    s[,c] <- eval(parse(text=paste0("inter", operator, th)))
+    temp[,c] <- eval(parse(text=paste0("inter", operator, th)))
   }
   
   indices <- switch(mode,
-                    AllCond = which(rowSums(s) == nbCond),
-                    AtLeastOneCond = which(rowSums(s) >= 1)
+                    AllCond = which(rowSums(temp) == nbCond),
+                    AtLeastOneCond = which(rowSums(temp) >= 1)
   )
   
   if (length(indices) >0)

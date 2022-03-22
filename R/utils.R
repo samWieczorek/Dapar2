@@ -151,9 +151,9 @@ is.OfType <- function(data, type){
 
 #' @title Returns the possible number of values in lines in the data
 #' 
-#' @param obj An object of class \code{QFeatures}
+#' @param object An object of class \code{QFeatures}
 #' 
-#' @param i The indice of the dataset (SummarizedExperiment) in the object
+#' @param conds xxxx
 #' 
 #' @param type WholeMatrix, AllCond or AtLeastOneCond
 #' 
@@ -170,16 +170,14 @@ is.OfType <- function(data, type){
 #' @importFrom S4Vectors sort
 #' @importFrom SummarizedExperiment colData
 #' 
-getListNbValuesInLines <- function(obj, i, type="WholeMatrix"){
+getListNbValuesInLines <- function(object, conds, type = "WholeMatrix"){
   
-  if (is.null(obj)){return(NULL)}
-  if(missing(i))
-    stop("'i' is required")
-  if (!(type %in% c('None', 'WholeMatrix', 'AtLeastOneCond', 'AllCond')))
+  if (is.null(object)){return(NULL)}
+  stopifnot(inherits(object, 'SummarizedExperiment'))
+  if (!(type %in% c('None', 'WholeLine', 'WholeMatrix', 'AtLeastOneCond', 'AllCond')))
     stop("'type' is not one of: 'None', 'WholeMatrix', 'AtLeastOneCond', 'AllCond'")
   
-  data <- as.data.frame(SummarizedExperiment::assay(obj[[i]]))
-  conds <- colData(obj)[['Condition']]
+  data <- as.data.frame(SummarizedExperiment::assay(object))
   switch(type,
          WholeMatrix= {
            ll <- unique(ncol(data) - apply(is.na(data), 1, sum))
@@ -189,14 +187,14 @@ getListNbValuesInLines <- function(obj, i, type="WholeMatrix"){
            for (cond in unique(conds)){
              tmp <- c(tmp, length(which(conds == cond)))
            }
-           ll <- seq(0,min(tmp))
+           ll <- seq(0, min(tmp))
          },
          AtLeastOneCond = {
            tmp <- NULL
-           for (cond in unique()){
+           for (cond in unique(conds)){
              tmp <- c(tmp, length(which(conds == cond)))
            }
-           ll <- seq(0,max(tmp))
+           ll <- seq(0, max(tmp))
          }
   )
   

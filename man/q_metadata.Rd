@@ -15,7 +15,7 @@
 \alias{qMetadata_combine}
 \title{Quantitative metadata vocabulary for entities}
 \usage{
-qMetadata.def(level)
+qMetadata.def(level = "all")
 
 custom_qMetadata_colors()
 

@@ -115,8 +115,8 @@ mod_Protein_Normalization_server <- function(id,
     # Initialization of the module
     observeEvent(steps.enabled(), ignoreNULL = TRUE, {
       if (is.null(steps.enabled()))
-        rv$steps.enabled <- setNames(rep(FALSE, length(config$steps)), 
-                                     nm = config$steps)
+        rv$steps.enabled <- setNames(rep(FALSE, length(config@steps)), 
+                                     nm = config@steps)
       else
         rv$steps.enabled <- steps.enabled()
     })
@@ -207,7 +207,7 @@ mod_Protein_Normalization_server <- function(id,
     ###### ------------------- Code for Description (step 0) -------------------------    #####
     output$Description <- renderUI({
       tagList(
-        includeMarkdown(paste0("md/", paste0(config$parent, '_', config$name, ".md"))),
+        includeMarkdown(paste0("md/", paste0(config@parent, '_', config@name, ".md"))),
         uiOutput(ns('datasetDescription')),
         uiOutput(ns('validationBtn_ui'))
       )
@@ -670,11 +670,11 @@ mod_Protein_Normalization_server <- function(id,
     # Return value of module
     # DO NOT MODIFY THIS PART
     list(config = reactive({
-      config$ll.UI <- setNames(lapply(config$steps,
+      config@ll.UI <- setNames(lapply(config@steps,
                                       function(x){
                                         do.call('uiOutput', list(ns(x)))
                                       }),
-                               paste0('screen_', config$steps)
+                               paste0('screen_', config@steps)
       )
       config
     }),

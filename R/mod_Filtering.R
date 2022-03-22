@@ -72,15 +72,19 @@ mod_Filtering_server <- function(id,
   
   
   # This list contains the basic configuration of the process
-  config <- list(
+  config <- Magellan::Config(
+    name = 'Filtering',
     # Define the type of module
     mode = 'process',
     
     # List of all steps of the process
-    steps = c('Description', 'Quanti metadata filtering', 'Variable filtering', 'Save'),
+    steps = c('Description', 
+              'Quanti metadata filtering', 
+              'Variable filtering', 
+              'Save'),
     
     # A vector of boolean indicating if the steps are mandatory or not.
-    mandatory = c(TRUE, FALSE, FALSE, FALSE, TRUE),
+    mandatory = c(TRUE, FALSE, FALSE, TRUE),
     
     path_to_md_dir =  system.file('md/', package='DaparToolshed')
   )
@@ -89,17 +93,15 @@ mod_Filtering_server <- function(id,
   # Define default selected values for widgets
   # This is only for simple workflows
   widgets.default.values <- list(
-    MetacellTag = "None",
-    MetacellFilters = "None",
-    KeepRemove = 'delete',
-    metacell_value_th = 0,
-    choose_metacell_percent_th = 0,
-    metacell_value_percent = 0,
-    val_vs_percent = 'Value',
-    metacellFilter_operator = '<='
-
+    tag = "None",
+    scope = "None",
+    keepRemove = 'delete',
+    valueTh = 0,
+    percentTh = 0,
+    valuePercent = 0,
+    valPercent = 'Value',
+    operator = '<='
   )
-  
   
   
   
@@ -111,7 +113,7 @@ mod_Filtering_server <- function(id,
   ###-------------------------------------------------------------###
   moduleServer(id, function(input, output, session) {
     ns <- session$ns
-    
+     
     # Insert necessary code which is hosted by Magellan
     # DO NOT MODIFY THIS LINE
     eval(str2expression(Get_Worflow_Core_Code(
@@ -120,6 +122,8 @@ mod_Filtering_server <- function(id,
     
     rv.custom <- reactiveValues(
       temp.filtered = NULL,
+      funFilter = NULL,
+      
       deleted.stringBased = NULL,
       deleted.metacell = NULL,
       deleted.numeric = NULL,
@@ -133,10 +137,10 @@ mod_Filtering_server <- function(id,
                  nbDeleted=NULL,
                  Total=NULL,
                  stringsAsFactors=F),
-      metacell_Filter_SummaryDT = data.frame(query = NULL,
-                                              nbDeleted=NULL,
-                                              Total=NULL,
-                                              stringsAsFactors=F)
+      qMetadata_Filter_SummaryDT = data.frame(query = NULL,
+                                              nbDeleted = NULL,
+                                              TotalMainAssay = NULL,
+                                              stringsAsFactors = F)
     )
     
     # >>>
@@ -145,7 +149,7 @@ mod_Filtering_server <- function(id,
     
     
     output$Description <- renderUI({
-      file <- paste0(config$path_to_md_dir, '/', id, '.md')
+      file <- paste0(config@path_to_md_dir, '/', id, '.md')
       
       tagList(
         # In this example, the md file is found in the module_examples directory
@@ -179,13 +183,12 @@ mod_Filtering_server <- function(id,
       widget <- actionButton(ns("Description_btn_validate"),
                              "Start",
                              class = btn_success_color)
-      Magellan::toggleWidget(rv$steps.enabled['Description'], widget)
+      Magellan::toggleWidget(widget, rv$steps.enabled['Description'])
     })
     
     
     observeEvent(input$Description_btn_validate, {
       rv$dataIn <- dataIn()
-      rv.custom$temp.filtered <- dataIn()
       dataOut$trigger <- Magellan::Timestamp()
       dataOut$value <- rv$dataIn
       rv$steps.status['Description'] <- global$VALIDATED
@@ -206,80 +209,104 @@ mod_Filtering_server <- function(id,
         # widget he want to insert
         # Be aware of the naming convention for ids in uiOutput()
         # For more details, please refer to the dev document.
-        div(
-          # id = "screen1Filtering",
-          
-          mod_query_metacell_ui(ns('query')),
-          tags$hr(),
-          div( style="display:inline-block; vertical-align: middle; align: center;",
-               DT::dataTableOutput(ns("metacell_Filter_SummaryDT"))
-          ),
-          
-          hr(),
-          ################## Plots section #############################
-          mod_plotsMetacellHistos_ui(ns("MVPlots_filtering"))
-        ),
-        
+       # mod_build_qMetadata_FunctionFilter_ui(ns('query')),
+        DT::dataTableOutput(ns("qMetadata_Filter_Summary_DT")),
+        uiOutput(ns('Quantimetadatafiltering_buildQuery_ui')),
+        mod_ds_qMetadata_ui(ns('plots')),
         # Insert validation button
         uiOutput(ns('Quantimetadatafiltering_btn_validate_ui'))
       )
     })
     
+    mod_ds_qMetadata_server(id = 'plots',
+                            se = reactive({mainAssay(rv$dataIn)}),
+                            init.pattern = 'missing',
+                            conds = design(rv$dataIn)$Condition
+                            )
+      
     
-    mod_plotsMetacellHistos_server(id = "MVPlots_filtering", 
-                                   obj = reactive({rv$current.obj}),
-                                   pal = reactive({rv$PlotParams$paletteForConditions}),
-                                   pattern = reactive({rv$widgets$filtering$MetacellTag})
-    )
+    output$qMetadata_Filter_Summary_DT <- DT::renderDataTable(server=TRUE,{
+      req(rv$dataIn)
+      req(rv.custom$qMetadata_Filter_SummaryDT)
+      isolate({
+        
+        if (nrow(rv.custom$qMetadata_Filter_SummaryDT )==0){
+          df <- data.frame(query = "-",
+                           nbDeleted = 0,
+                           TotalMainAssay = nrow(mainAssay(rv$dataIn)),
+                           stringsAsFactors = FALSE)
+          rv.custom$qMetadata_Filter_SummaryDT <- df
+        }
+        
+        
+        DT::datatable(rv.custom$qMetadata_Filter_SummaryDT,
+                      extensions = c('Scroller'),
+                      rownames = FALSE,
+                      options = list(
+                        dom = 'rt',
+                        initComplete = .initComplete(),
+                        deferRender = TRUE,
+                        bLengthChange = FALSE
+                      ))
+      })
+    })
     
     
-    indices <- mod_query_metacell_server(id = 'query',
-                                         obj = reactive({rv$dataIn}),
-                                         list_tags = reactive({c('None' = 'None',
-                                                                 qMetadata.def(typeDataset(rv$current.obj))$node
-                                         )}),
+    
+    
+    
+    
+    output$Quantimetadatafiltering_buildQuery_ui <- renderUI({
+      widget <- mod_build_qMetadata_FunctionFilter_ui(ns("query"))
+      Magellan::toggleWidget(widget, rv$steps.enabled['Quantimetadatafiltering'])
+    })
+    
+    rv.custom$funFilter <- mod_build_qMetadata_FunctionFilter_server(id = 'query',
+                                         obj = reactive({mainAssay(rv$dataIn)}),
+                                         conds = reactive({design(rv$dataIn)$Condition}),
+                                         list_tags = reactive({
+                                           req(rv$dataIn)
+                                           c('None' = 'None',
+                                             qMetadata.def(typeDataset(mainAssay(rv$dataIn)))$node)}),
                                          keep_vs_remove = reactive({setNames(nm = c("delete", "keep"))}),
-                                         filters = reactive({c("None" = "None",
-                                                               "Whole Line" = "WholeLine",
-                                                               "Whole matrix" = "WholeMatrix",
-                                                               "For every condition" = "AllCond",
-                                                               "At least one condition" = "AtLeastOneCond")}),
                                          val_vs_percent = reactive({setNames(nm=c('Count', 'Percentage'))}),
                                          operator = reactive({setNames(nm = SymFilteringOperators())})
     )
-    
-    
-    
-    
-    
+
     
     output$Quantimetadatafiltering_btn_validate_ui <- renderUI({
       widget <- actionButton(ns("Quantimetadatafiltering_btn_validate"),
-                             "Perform metacell filtering",
+                             "Perform qMetadata filtering",
                              class = btn_success_color)
-      Magellan::toggleWidget(rv$steps.enabled['Quantimetadatafiltering'], widget)
+      cond <- !is.null(rv.custom$funFilter$dataOut()$fun) && rv$steps.enabled['Quantimetadatafiltering']
+      Magellan::toggleWidget(widget, cond)
     })
     
     
     observeEvent(input$Quantimetadatafiltering_btn_validate, {
-      print('Perform')
-      # rv$dataIn <- RunAggregation()
       
+      rv$dataIn <- filterFeaturesOneSE(object = rv$dataIn,
+                                       i = length(rv$dataIn),
+                                       name = 'qMetadataFiltered',
+                                       filters = list(rv.custom$funFilter$dataOut()$fun)
+                                       )
+
+      # Add infos
+       nBefore <- nrow(rv$dataIn[[length(rv$dataIn) - 1]])
+       nAfter <- nrow(rv$dataIn[[length(rv$dataIn)]])
+       
       
+      df <- data.frame(query =  rv.custom$funFilter$dataOut()$query,
+                       nbDeleted = nBefore - nAfter,
+                       TotalMainAssay = nrow(rv$dataIn[[length(rv$dataIn)]]))
       
-      # rv.custom$temp.agregate <- RunAggregation()
-      # 
-      # if(is.null(rv.custom$temp.agregate$issues)){
-      #   dataOut$trigger <- Magellan::Timestamp()
-      #   dataOut$value <- rv$dataIn
-      #   rv$steps.status['Agregation'] <- global$VALIDATED
-      # } else {
-      #   print("error")
-      #   shinyjs::toggle('downloadAggregationIssues', 
-      #                   condition = !rvModProcess$moduleAggregationDone[1] && length(rv.custom$temp.agregate$issues) > 0
-      #   )
-      # }
+      rv.custom$qMetadata_Filter_SummaryDT <- rbind(rv.custom$qMetadata_Filter_SummaryDT , 
+                                                     df)
       
+      params(rv$dataIn, length(rv$dataIn)) <- reactiveValuesToList(rv.widgets)
+      dataOut$trigger <- Magellan::Timestamp()
+      dataOut$value <- rv$dataIn
+      rv$steps.status['Quantimetadatafiltering'] <- global$VALIDATED
       
     })
     
@@ -300,7 +327,7 @@ mod_Filtering_server <- function(id,
       widget <- actionButton(ns("StringBasedFiltering_btn_validate"),
                              "Perform",
                              class = btn_success_color)
-      Magellan::toggleWidget(rv$steps.enabled['StringBasedFiltering'], widget)
+      Magellan::toggleWidget(widget, rv$steps.enabled['StringBasedFiltering'])
     })
     
     
@@ -327,7 +354,7 @@ mod_Filtering_server <- function(id,
       widget <- actionButton(ns("NumericalFiltering_btn_validate"),
                              "Perform",
                              class = btn_success_color)
-      Magellan::toggleWidget(rv$steps.enabled['NumericalFiltering'], widget)
+      Magellan::toggleWidget(widget, rv$steps.enabled['NumericalFiltering'])
     })
     
     
@@ -355,16 +382,21 @@ mod_Filtering_server <- function(id,
       widget <- actionButton(ns("Save_btn_validate"),
                              "Perform",
                              class = btn_success_color)
-      Magellan::toggleWidget(rv$steps.enabled['Save'], widget)
+      Magellan::toggleWidget(widget, rv$steps.enabled['Save'])
     })
     
     
     observeEvent(input$Save_btn_validate, {
+      #browser()
+      # Add the parameters values to the new dataset
+      par <- lapply(names(widgets.default.values),
+                        function(x) x )
       
       
+      params(rv$dataIn[[length(rv$dataIn)]]) <- par
       
-      #dataOut$trigger <- Magellan::Timestamp()
-      #dataOut$value <- rv$dataIn
+    dataOut$trigger <- Magellan::Timestamp()
+      dataOut$value <- rv$dataIn
       rv$steps.status['Save'] <- global$VALIDATED
     })
     
