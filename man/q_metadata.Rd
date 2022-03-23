@@ -19,6 +19,8 @@ qMetadata.def(level = "all")
 
 custom_qMetadata_colors()
 
+custom_qMetadata_colors()
+
 Set_POV_MEC_tags(conds, df, level)
 
 BuildqMetadata(from = NULL, level, qdata = NULL, conds = NULL, df = NULL)

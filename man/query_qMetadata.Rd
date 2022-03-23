@@ -32,7 +32,11 @@ server <- function(input, output, session) {
                                                       keep_vs_remove = reactive({setNames(nm = c("delete", "keep"))}),
                                                       val_vs_percent = reactive({setNames(nm=c('Count', 'Percentage'))}),
                                                       operator = reactive({setNames(nm = SymFilteringOperators())})
+<<<<<<< HEAD
   )
+=======
+                                                       )
+>>>>>>> 7d7784a50691e73d607d9bd45e3f2d66c068c17c
   
   
   observeEvent(rv$res$dataOut()$trigger, ignoreNULL = TRUE, ignoreInit = TRUE, {
