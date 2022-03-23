@@ -212,11 +212,34 @@ mod_Filtering_server <- function(id,
        # mod_build_qMetadata_FunctionFilter_ui(ns('query')),
         DT::dataTableOutput(ns("qMetadata_Filter_Summary_DT")),
         uiOutput(ns('Quantimetadatafiltering_buildQuery_ui')),
+        
+        uiOutput(ns('example_ui')),
         mod_ds_qMetadata_ui(ns('plots')),
         # Insert validation button
         uiOutput(ns('Quantimetadatafiltering_btn_validate_ui'))
       )
     })
+    
+    
+    
+    output$example_ui <- renderUI({
+      req(rv.custom$funFilter$dataOut()$fun)
+      req(rv$steps.status['Quantimetadatafiltering'] == 0)
+      
+      temp <- filterFeaturesOneSE(object = rv$dataIn[[length(rv$dataIn)]],
+                                  filters = list(rv.custom$funFilter$dataOut()$fun)
+                                  )
+      
+      mod_filtering_example_server(id = 'filteringExample',
+                                   objBefore = reactive({mainAssay(rv$dataIn)}),
+                                   objAfter = reactive({temp}),
+                                   query = reactive({rv.custom$funFilter$dataOut()$query})
+                                   )
+      widget <- mod_filtering_example_ui(ns('filteringExample'))
+      Magellan::toggleWidget(widget, rv$steps.enabled['Quantimetadatafiltering'])
+
+    })
+    
     
     mod_ds_qMetadata_server(id = 'plots',
                             se = reactive({mainAssay(rv$dataIn)}),
@@ -281,15 +304,14 @@ mod_Filtering_server <- function(id,
       cond <- !is.null(rv.custom$funFilter$dataOut()$fun) && rv$steps.enabled['Quantimetadatafiltering']
       Magellan::toggleWidget(widget, cond)
     })
-    
-    
+
     observeEvent(input$Quantimetadatafiltering_btn_validate, {
       
       rv$dataIn <- filterFeaturesOneSE(object = rv$dataIn,
                                        i = length(rv$dataIn),
                                        name = 'qMetadataFiltered',
                                        filters = list(rv.custom$funFilter$dataOut()$fun)
-                                       )
+      )
 
       # Add infos
        nBefore <- nrow(rv$dataIn[[length(rv$dataIn) - 1]])

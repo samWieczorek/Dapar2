@@ -14,9 +14,8 @@
 #' server <- function(input, output, session) {
 #'   
 #'   mod_filtering_example_server(id = 'example',
-#'                                obj = reactive({ft_na[[1]]}),
-#'                                indices = reactive({c(2, 6)}),
-#'                                keepRemove = reactive({'delete'}),
+#'                                objBefore = reactive({ft_na[[1]]}),
+#'                                objAfter = reactive({ft_na[[1]][-c(2, 6)]}),
 #'                                query = reactive({'query'})
 #'                                )
 #' }
@@ -36,7 +35,9 @@ mod_filtering_example_ui <- function(id){
   ns <- NS(id)
   
   fluidPage(
-    actionButton(ns("show_filtering_example"), "Preview filtering", class = actionBtnClass ),
+    actionButton(ns("show_filtering_example"), 
+                 "Preview filtering", 
+                 class = actionBtnClass),
     shinyBS::bsModal(ns("example_modal"),
                      title="Example preview of the filtering result.",
                      size = "large",
@@ -64,9 +65,8 @@ mod_filtering_example_ui <- function(id){
 #' @export
 #' 
 mod_filtering_example_server <- function(id, 
-                                         obj, 
-                                         indices, 
-                                         keepRemove, 
+                                         objBefore, 
+                                         objAfter, 
                                          query) {
   
   
@@ -74,7 +74,14 @@ mod_filtering_example_server <- function(id,
     id,
     function(input, output, session) {
       
+      indices <- reactiveVal()
       
+      observe({
+        req(c(objBefore(), objAfter()))
+        id.Before <- SummarizedExperiment::rowData(objBefore())[ ,idcol(objBefore())]
+        id.After <- SummarizedExperiment::rowData(objAfter())[ ,idcol(objAfter())]
+        indices(which(is.na(match(id.Before, id.After))))
+      })
       
       output$show_text <- renderUI({
         h3(query())
@@ -132,10 +139,10 @@ mod_filtering_example_server <- function(id,
         
         # Build df to integrate qMetadata values
         
-        df <- cbind(keyId = SummarizedExperiment::rowData(obj())[, DaparToolshed::idcol(obj())],
-                    round(SummarizedExperiment::assay(obj()), 
+        df <- cbind(keyId = SummarizedExperiment::rowData(objBefore())[, DaparToolshed::idcol(objBefore())],
+                    round(SummarizedExperiment::assay(objBefore()), 
                           digits = 3), 
-                    DaparToolshed::qMetadata(obj())
+                    DaparToolshed::qMetadata(objBefore())
         )
         
        # browser()
@@ -146,10 +153,7 @@ mod_filtering_example_server <- function(id,
         
         
         if (!is.null(indices()) && input$run_btn == 'simulate filtered dataset'){
-          index2darken <- switch(keepRemove(),
-                                 keep = (1:nrow(obj()))[-indices()],
-                                 delete = indices()
-          )
+          index2darken <- indices()
           
           for (i in index2darken)
             df[i, range.invisible] <- paste0('darken_', df[i, range.invisible] )

@@ -64,7 +64,6 @@ mod_build_qMetadata_FunctionFilter_ui <- function(id){
         column(2, uiOutput(ns("chooseKeepRemove_ui"))),
         column(2, uiOutput(ns('chooseScope_ui'))),
         column(6, tagList(
-          uiOutput(ns("example_ui")),
           uiOutput(ns("qMetadataScope_widgets_set2_ui")))
         )
       ),
@@ -204,17 +203,8 @@ mod_build_qMetadata_FunctionFilter_server <- function(id,
       Magellan::toggleWidget(widget, is.enabled())
       })
     
-    output$example_ui <- renderUI({
-      mod_filtering_example_server(id = 'filteringExample',
-                                   obj = reactive({obj()}),
-                                   indices = reactive({CompileIndices()}),
-                                   params = reactive({rv.widgets}),
-                                   txt = reactive({WriteQuery()})
-                                   )
-      
-      mod <- mod_filtering_example_ui(ns('filteringExample'))
-      Magellan::toggleWidget(mod, is.enabled() && !is.null(dataOut$fun))
-      })
+    
+    
     
     output$qMetadataScope_widgets_set2_ui <- renderUI({
       req(!(rv.widgets$scope %in% c("None", "WholeLine")))
@@ -383,11 +373,9 @@ mod_build_qMetadata_FunctionFilter_server <- function(id,
     
     
     observeEvent(input$BuildFilter_btn, {
-      print("click")
       dataOut$trigger <- as.numeric(Sys.time())
       dataOut$fun <- BuildFunctionFilter()
       dataOut$query <- WriteQuery()
-      
     })
     
     
