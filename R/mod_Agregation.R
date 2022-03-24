@@ -2,6 +2,7 @@
 #' @title Module agregation
 #' 
 #' @description 
+#' xxxxx
 #' 
 #' @section Step 'Description':
 #' 
@@ -467,11 +468,22 @@ mod_Agregation_server <- function(id,
     
     
     
-    #--------------------------------------------------------
+    
+    ## --------------------------------------------------------
+    ## 
+    ##
+    ## ------------------------------------------------------
     output$Save <- renderUI({
       wellPanel(
-        uiOutput(ns('Save_btn_validate_ui'))
+        uiOutput(ns('Save_btn_validate_ui')),
+        uiOutput(ns('mod_dl_ui'))
       )
+    })
+    
+    output$mod_dl_ui <- renderUI({
+      req(config@mode == 'process')
+      req(rv$steps.status['Save'] == global$VALIDATED)
+      mod_dl_ui(ns('createQuickLink'))
     })
     
     output$Save_btn_validate_ui <- renderUI({

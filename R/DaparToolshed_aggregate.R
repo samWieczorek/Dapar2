@@ -1,12 +1,4 @@
-##' @title Aggregate an assay of peptides into proteins.
-##' 
-##' @description 
-##' 
-##' This function is a wrapper for the function [QFeatures::aggregateFeatures()].
-##' It just add some meta informations to the aggregated assay, specific to
-##' DaparToolshed and implement methods to aggregate the quantitative
-##' metadata.
-#' 
+
 ##' @title Aggregate an assay's quantitative features
 ##'
 ##' @description
@@ -181,7 +173,7 @@ setMethod("aggregateFeatures4Prostar", "SummarizedExperiment",
 #' @title Get the type of dataset
 #' @description xxx
 #'
-#' @param object  An object of class 'SummarizedExperiment'
+#' @param qMeta  An object of class 'SummarizedExperiment'
 #' @param X xxxx
 #' @param level A `character(1)` which is the type of dataset
 #' @param conds A `character()` vector which is the names of conditions

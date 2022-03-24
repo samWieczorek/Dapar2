@@ -16,7 +16,6 @@ mod_Protein_ui(id)
 
 mod_Protein_server(
   id,
-  nav.mode = "pipeline",
   dataIn = reactive({     NULL }),
   steps.enabled = reactive({     NULL }),
   remoteReset = reactive({     FALSE }),

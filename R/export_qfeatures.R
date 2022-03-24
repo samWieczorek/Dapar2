@@ -75,13 +75,18 @@ setMethod("write2excel", "QFeatures",
 #' @rdname QFeatures-excel
 setMethod("write2excel", "SummarizedExperiment",
           function(object, filename, exp.design, ...)
-            .write2excel(object, filename, exp.design, ...))
+            .write2excel(object, filename, exp.design, ...)
+          )
 
 
 
 
 
 
+#' @param object xxx
+#' @param filename xxx
+#' @param exp.design xxx
+#' 
 #' @noRd
 #' @importFrom stats setNames
 .write2excel <- function(object, filename, exp.design) {

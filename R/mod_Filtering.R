@@ -3,6 +3,8 @@
 #' 
 #' @description 
 #' 
+#' xxxxx
+#' 
 #' @section Step 'Quanti metadata filtering':
 #' 
 #' xxxxxxx
@@ -483,6 +485,10 @@ mod_Filtering_server <- function(id,
       rv.custom$variable_Filter_SummaryDT <- rbind(rv.custom$variable_Filter_SummaryDT , 
                                                     df)
       
+      # Add the parameters values to the new dataset
+      par <- rv.custom$Variablefiltering_query
+      params(rv$dataIn[[length(rv$dataIn)]]) <- par
+      
       #params(rv$dataIn, length(rv$dataIn)) <- reactiveValuesToList(rv.widgets)
       
       dataOut$trigger <- Magellan::Timestamp()
@@ -497,30 +503,34 @@ mod_Filtering_server <- function(id,
     #--------------------------------------------------------
     output$Save <- renderUI({
       wellPanel(
-        uiOutput(ns('Save_btn_validate_ui'))
+        uiOutput(ns('Save_btn_validate_ui')),
+        uiOutput(ns('mod_dl_ui'))
       )
     })
+    
+    
+    output$mod_dl_ui <- renderUI({
+      req(config@mode == 'process')
+      req(rv$steps.status['Save'] == global$VALIDATED)
+        mod_dl_ui(ns('createQuickLink'))
+    })
+    
     
     output$Save_btn_validate_ui <- renderUI({
       widget <- actionButton(ns("Save_btn_validate"),
                              "Perform",
                              class = btn_success_color)
       Magellan::toggleWidget(widget, rv$steps.enabled['Save'])
+
     })
     
     
     observeEvent(input$Save_btn_validate, {
-      #browser()
-      # Add the parameters values to the new dataset
-      par <- lapply(names(widgets.default.values),
-                        function(x) x )
       
-      
-      params(rv$dataIn[[length(rv$dataIn)]]) <- par
-      
-    dataOut$trigger <- Magellan::Timestamp()
+      dataOut$trigger <- Magellan::Timestamp()
       dataOut$value <- rv$dataIn
       rv$steps.status['Save'] <- global$VALIDATED
+      mod_dl_server('createQuickLink', dataIn = reactive({rv$dataIn}))
     })
     
     

@@ -1,4 +1,45 @@
-
+#' @title
+#' Search lines which respects request on one or more conditions.
+#'
+#' @description
+#' This function looks for the lines that respect the request in either all conditions
+#' or at least one condition.
+#' 
+#' @examples
+#' data(ft)
+#' obj <- ft[[1]]
+#' level <- typeOfData(ft, 1)
+#' pattern <- 'missing'
+#' mask <- match.qMetadata(metadata = qMetadata(obj), 
+#'                         pattern = pattern, 
+#'                         level = level)
+#' percent <- FALSE
+#' th <- 3
+#' op <- '>='
+#' ind <- qMetadataWholeMatrix(mask, op, percent, th)
+#'
+#' data(ft)
+#' obj <- ft[[1]]
+#' mask <- match.qMetadata(metadata = qMetadata(obj), 
+#'                         pattern = 'missing POV', 
+#'                         level = typeOfData(obj)
+#'                         )
+#' ind <- qMetadataWholeLine(mask)
+#' 
+#' #' data(ft)
+#' obj <- ft[[1]]
+#' mask <- match.qMetadata(metadata = qMetadata(obj), 
+#'                         pattern = 'missing', 
+#'                         level = typeOfData(obj)
+#'                         )
+#' type <- 'AllCond'
+#' conds <- design(ft)$Condition
+#' op <- '>='
+#' th <- 2
+#' percent <- FALSE
+#' ind <- qMetadataOnConditions(mask, type, conds, percent, op, th)
+#'
+NULL
 
 #' @title Quantitative cell metadata scopes for filtering
 #'
@@ -35,13 +76,7 @@ SymFilteringOperators <- function()
 
 
 
-#' @title
-#' Search lines which respects request on one or more conditions.
-#'
-#' @description
-#' This function looks for the lines that respect the request in either all conditions
-#' or at least one condition.
-#' 
+
 #' @param object xxx
 #' @param cmd A `character(1)` xxx
 #' @param pattern A `character(1)` xxx
@@ -52,19 +87,6 @@ SymFilteringOperators <- function()
 #' 
 #'
 #' @return NA
-#'
-#' @examples
-#' data(ft)
-#' obj <- ft[[1]]
-#' level <- typeOfData(ft, 1)
-#' pattern <- 'missing'
-#' mask <- match.qMetadata(metadata = qMetadata(obj), 
-#'                         pattern = pattern, 
-#'                         level = level)
-#' percent <- FALSE
-#' th <- 3
-#' op <- '>='
-#' ind <- qMetadataWholeMatrix(mask, op, percent, th)
 #'
 #' @export
 #' 
@@ -129,26 +151,13 @@ qMetadataWholeMatrix <- function(object, cmd, pattern, percent, th, operator){
 }
 
 
-#' @title
-#' Search lines which respects query on all their elements.
-#'
-#' @description
-#' This function looks for the lines where each element respect the query.
-#'
-#' @param mask xxx
+
+#' @param object xxx
+#' @param cmd xxx
+#' @param pattern xxx
 #'
 #' @return NA
-#'
-#' @examples
-#' data(ft)
-#' obj <- ft[[1]]
-#' mask <- match.qMetadata(metadata = qMetadata(obj), 
-#'                         pattern = 'missing POV', 
-#'                         level = typeOfData(obj)
-#'                         )
-#' ind <- qMetadataWholeLine(mask)
-#'
-#'@export
+#' @export
 #'
 #' @rdname qMetadata-filter
 #'
@@ -188,43 +197,22 @@ qMetadataWholeLine <- function(object, cmd, pattern){
 }
 
 
-#' @title
-#' Search lines which respects request on one or more conditions.
+
+#' @param object xxx
 #'
-#' @description
-#' This function looks for the lines that respect the request in either all conditions
-#' or at least one condition.
+#' @param cmd Available values are:
 #'
-#' @param mask xxx
-#'
-#' @param type Available values are:
-#' * 'AllCond' (the query is valid in all the conditions),
-#' * 'AtLeatOneCond' (the query is valid in at leat one condition.
-#'
+#' @param mode xxx
+#' @param pattern ss
 #' @param conds xxx
 #'
 #' @param percent xxx
 #'
-#' @param op  String for operator to use. List of operators is available with SymFilteringOperators().
+#' @param operator  String for operator to use. List of operators is available with SymFilteringOperators().
 #'
 #' @param th The theshold to apply
 #'
 #' @return NA
-#'
-#' #' @examples
-#' data(ft)
-#' obj <- ft[[1]]
-#' mask <- match.qMetadata(metadata = qMetadata(obj), 
-#'                         pattern = 'missing', 
-#'                         level = typeOfData(obj)
-#'                         )
-#' type <- 'AllCond'
-#' conds <- design(ft)$Condition
-#' op <- '>='
-#' th <- 2
-#' percent <- FALSE
-#' ind <- qMetadataOnConditions(mask, type, conds, percent, op, th)
-#'
 #' @export
 #'
 #' @rdname qMetadata-filter

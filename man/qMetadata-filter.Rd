@@ -21,9 +21,9 @@ qMetadataOnConditions(object, cmd, mode, pattern, conds, percent, operator, th)
 \arguments{
 \item{object}{xxx}
 
-\item{cmd}{A \code{character(1)} xxx}
+\item{cmd}{Available values are:}
 
-\item{pattern}{A \code{character(1)} xxx}
+\item{pattern}{ss}
 
 \item{percent}{xxx}
 
@@ -31,17 +31,9 @@ qMetadataOnConditions(object, cmd, mode, pattern, conds, percent, operator, th)
 
 \item{operator}{String for operator to use. List of operators is available with SymFilteringOperators().}
 
+\item{mode}{xxx}
+
 \item{conds}{xxx}
-
-\item{mask}{xxx}
-
-\item{type}{Available values are:
-\itemize{
-\item 'AllCond' (the query is valid in all the conditions),
-\item 'AtLeatOneCond' (the query is valid in at leat one condition.
-}}
-
-\item{op}{String for operator to use. List of operators is available with SymFilteringOperators().}
 }
 \value{
 NA
@@ -53,49 +45,9 @@ NA
 NA
 
 NA
-
-#' @examples
-data(ft)
-obj <- ft[\link{1}]
-mask <- match.qMetadata(metadata = qMetadata(obj),
-pattern = 'missing',
-level = typeOfData(obj)
-)
-type <- 'AllCond'
-conds <- design(ft)$Condition
-op <- '>='
-th <- 2
-percent <- FALSE
-ind <- qMetadataOnConditions(mask, type, conds, percent, op, th)
 }
 \description{
-This function looks for the lines that respect the request in either all conditions
-or at least one condition.
+Quantitative cell metadata scopes for filtering
 
-This function looks for the lines where each element respect the query.
-
-This function looks for the lines that respect the request in either all conditions
-or at least one condition.
-}
-\examples{
-data(ft)
-obj <- ft[[1]]
-level <- typeOfData(ft, 1)
-pattern <- 'missing'
-mask <- match.qMetadata(metadata = qMetadata(obj), 
-                        pattern = pattern, 
-                        level = level)
-percent <- FALSE
-th <- 3
-op <- '>='
-ind <- qMetadataWholeMatrix(mask, op, percent, th)
-
-data(ft)
-obj <- ft[[1]]
-mask <- match.qMetadata(metadata = qMetadata(obj), 
-                        pattern = 'missing POV', 
-                        level = typeOfData(obj)
-                        )
-ind <- qMetadataWholeLine(mask)
-
+Operators for complex queries
 }

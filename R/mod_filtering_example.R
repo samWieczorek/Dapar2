@@ -28,10 +28,15 @@ NULL
 #' @param id
 #' 
 #' @rdname mod_filtering_example
+#' 
+#' @import DT
 #' @export
 #' 
 mod_filtering_example_ui <- function(id){
   
+  if (! requireNamespace("shinyBS", quietly = TRUE)) {
+    stop("Please install shinyBS: BiocManager::install('shinyBS')")
+  }
   ns <- NS(id)
   
   fluidPage(
@@ -62,6 +67,8 @@ mod_filtering_example_ui <- function(id){
 #' @param query A `character()` 
 #' 
 #' @rdname mod_filtering_example
+#' 
+#' @import DT
 #' @export
 #' 
 mod_filtering_example_server <- function(id, 
@@ -78,6 +85,8 @@ mod_filtering_example_server <- function(id,
       
       observe({
         req(c(objBefore(), objAfter()))
+        req(!is.null(idcol(objBefore())))
+        req(!is.null(idcol(objAfter())))
         id.Before <- SummarizedExperiment::rowData(objBefore())[ ,idcol(objBefore())]
         id.After <- SummarizedExperiment::rowData(objAfter())[ ,idcol(objAfter())]
         indices(which(is.na(match(id.Before, id.After))))

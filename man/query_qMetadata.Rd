@@ -6,46 +6,14 @@
 \title{xxxx}
 \usage{
 mod_build_qMetadata_FunctionFilter_ui(id)
-
-mod_build_qMetadata_FunctionFilter_ui(id)
 }
 \arguments{
 \item{id}{xxx}
 }
 \description{
 xxx
-
-xxx
 }
 \examples{
-if (interactive()){
-data(ft_na)
-ui <- mod_build_qMetadata_FunctionFilter_ui('query')
-
-server <- function(input, output, session) {
-  
-  rv <- reactiveValues(
-    res = NULL
-  )
-  ll.tags <- c('None' = 'None', 
-               qMetadata.def(typeDataset(ft_na[[1]]))$node)
-  rv.custom$res <- mod_build_qMetadata_FunctionFilter_server('query', 
-                                                      obj = reactive({ft_na[[1]]}),
-                                                      conds = reactive({colData(ft_na)$Condition}),
-                                                      list_tags = reactive({ll.tags}),
-                                                      keep_vs_remove = reactive({setNames(nm = c("delete", "keep"))}),
-                                                      val_vs_percent = reactive({setNames(nm=c('Count', 'Percentage'))}),
-                                                      operator = reactive({setNames(nm = SymFilteringOperators())})
-  )
-  
-  
-  observeEvent(rv.custom$res$dataOut()$trigger, ignoreNULL = TRUE, ignoreInit = TRUE, {
-    print(rv.custom$res$dataOut()$fun)
-  })
-}
-
-shinyApp(ui=ui, server=server)
-}
 if (interactive()){
 data(ft_na)
 ui <- mod_build_qMetadata_FunctionFilter_ui('query')

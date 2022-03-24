@@ -30,7 +30,7 @@ aggQmetadata(qMeta, X, level, conds)
 aggregateMethods()
 }
 \arguments{
-\item{object}{An object of class 'SummarizedExperiment'}
+\item{object}{An instance of class \link{QFeatures} or \link{SummarizedExperiment}.}
 
 \item{i}{The index or name of the assay which features will be
 aggregated the create the new assay.}
@@ -51,6 +51,8 @@ aggregation. See Details for examples.}
 
 \item{conds}{A \code{character()} vector which is the names of conditions
 for each sample in the dataset.}
+
+\item{qMeta}{An object of class 'SummarizedExperiment'}
 
 \item{X}{xxxx}
 
