@@ -93,18 +93,25 @@ mod_Filtering_server <- function(id,
   # Define default selected values for widgets
   # This is only for simple workflows
   widgets.default.values <- list(
-    tag = "None",
-    scope = "None",
-    keepRemove = 'delete',
-    valueTh = 0,
-    percentTh = 0,
-    valuePercent = 0,
-    valPercent = 'Value',
-    operator = '<='
+    Quantimetadatafiltering_tag = "None",
+    Quantimetadatafiltering_scope = "None",
+    Quantimetadatafiltering_keepRemove = 'delete',
+    Quantimetadatafiltering_valueTh = 0,
+    Quantimetadatafiltering_percentTh = 0,
+    Quantimetadatafiltering_valuePercent = 0,
+    Quantimetadatafiltering_valPercent = 'Value',
+    Quantimetadatafiltering_operator = '<=',
+    Variablefiltering_cname = 'None',
+    Variablefiltering_value = NULL,
+    Variablefiltering_operator = ''
   )
   
   
-  
+  rv.custom.default.values <- list(
+    funFilter = NULL,
+    varFilters = list(),
+    Variablefiltering_query = list()
+  )
   
   ###-------------------------------------------------------------###
   ###                                                             ###
@@ -117,31 +124,16 @@ mod_Filtering_server <- function(id,
     # Insert necessary code which is hosted by Magellan
     # DO NOT MODIFY THIS LINE
     eval(str2expression(Get_Worflow_Core_Code(
-      w.names = names(widgets.default.values)
+      w.names = names(widgets.default.values),
+      rv.custom.names = names(rv.custom.default.values)
     )))
     
-    rv.custom <- reactiveValues(
-      temp.filtered = NULL,
-      funFilter = NULL,
-      
-      deleted.stringBased = NULL,
-      deleted.metacell = NULL,
-      deleted.numeric = NULL,
-      DT_filterSummary = data.frame(Filter=NULL,
-                                     Prefix=NULL,
-                                     nbDeleted=NULL,
-                                     Total=NULL,
-                                     stringsAsFactors=F),
-      DT_numfilterSummary = data.frame(Filter=NULL,
-                 Condition=NULL,
-                 nbDeleted=NULL,
-                 Total=NULL,
-                 stringsAsFactors=F),
-      qMetadata_Filter_SummaryDT = data.frame(query = NULL,
-                                              nbDeleted = NULL,
-                                              TotalMainAssay = NULL,
-                                              stringsAsFactors = F)
-    )
+    
+    
+    
+    
+    # Add observer to catch the remoteReset so as to 
+    # manage rv.custom values
     
     # >>>
     # >>> START ------------- Code for Description UI---------------
@@ -197,7 +189,9 @@ mod_Filtering_server <- function(id,
     
     
     #--------------------------------------------------------------
-    # Quantitative metadata filtering UI
+    #
+    #             Quantitative metadata filtering UI
+    # 
     #--------------------------------------------------------------
     
     output$Quantimetadatafiltering <- renderUI({
@@ -223,17 +217,17 @@ mod_Filtering_server <- function(id,
     
     
     output$example_ui <- renderUI({
-      req(rv.custom$funFilter$dataOut()$fun)
+      req(rv.custom$funFilter()$fun)
       req(rv$steps.status['Quantimetadatafiltering'] == 0)
       
       temp <- filterFeaturesOneSE(object = rv$dataIn[[length(rv$dataIn)]],
-                                  filters = list(rv.custom$funFilter$dataOut()$fun)
+                                  filters = list(rv.custom$funFilter()$fun)
                                   )
       
       mod_filtering_example_server(id = 'filteringExample',
                                    objBefore = reactive({mainAssay(rv$dataIn)}),
                                    objAfter = reactive({temp}),
-                                   query = reactive({rv.custom$funFilter$dataOut()$query})
+                                   query = reactive({rv.custom$funFilter()$query})
                                    )
       widget <- mod_filtering_example_ui(ns('filteringExample'))
       Magellan::toggleWidget(widget, rv$steps.enabled['Quantimetadatafiltering'])
@@ -301,16 +295,17 @@ mod_Filtering_server <- function(id,
       widget <- actionButton(ns("Quantimetadatafiltering_btn_validate"),
                              "Perform qMetadata filtering",
                              class = btn_success_color)
-      cond <- !is.null(rv.custom$funFilter$dataOut()$fun) && rv$steps.enabled['Quantimetadatafiltering']
+      cond <- !is.null(rv.custom$funFilter()$fun) && rv$steps.enabled['Quantimetadatafiltering']
       Magellan::toggleWidget(widget, cond)
     })
 
+    
     observeEvent(input$Quantimetadatafiltering_btn_validate, {
       
       rv$dataIn <- filterFeaturesOneSE(object = rv$dataIn,
                                        i = length(rv$dataIn),
                                        name = 'qMetadataFiltered',
-                                       filters = list(rv.custom$funFilter$dataOut()$fun)
+                                       filters = list(rv.custom$funFilter()$fun)
       )
 
       # Add infos
@@ -318,7 +313,7 @@ mod_Filtering_server <- function(id,
        nAfter <- nrow(rv$dataIn[[length(rv$dataIn)]])
        
       
-      df <- data.frame(query =  rv.custom$funFilter$dataOut()$query,
+      df <- data.frame(query =  rv.custom$funFilter()$query,
                        nbDeleted = nBefore - nAfter,
                        TotalMainAssay = nrow(rv$dataIn[[length(rv$dataIn)]]))
       
@@ -334,59 +329,165 @@ mod_Filtering_server <- function(id,
     
 
     
-    #-------------------------------------------------------
-    
-    output$StringBasedFiltering <- renderUI({
+    # -------------------------------------------------------
+    #
+    #                  Variable filtering
+    #
+    # -------------------------------------------------------
+    output$Variablefiltering <- renderUI({
       wellPanel(
-        uiOutput(ns('StringBasedFiltering_btn_validate_ui'))
+        uiOutput(ns('Variablefiltering_cname_ui')),
+        uiOutput(ns('Variablefiltering_value_ui')),
+        uiOutput(ns('Variablefiltering_operator_ui')),
+        
+        uiOutput(ns('Variablefiltering_addFilter_btn_ui')),
+        
+        htmlOutput(ns('show_filters_ui')),
+        uiOutput(ns('Variablefiltering_btn_validate_ui')),
+        
+        DT::dataTableOutput(ns("Variable_Filter_Summary_DT"))
       )
+
     })
     
     
     
     
-    output$StringBasedFiltering_btn_validate_ui <- renderUI({
-      widget <- actionButton(ns("StringBasedFiltering_btn_validate"),
+    output$show_filters_ui <- renderText({
+      req(length(rv.custom$Variablefiltering_query) > 0)
+     # browser()
+      HTML(paste0(unlist(rv.custom$Variablefiltering_query),
+                  collapse = " "))
+    })
+    
+    
+    
+    output$Variable_Filter_Summary_DT <- DT::renderDataTable(server=TRUE,{
+      req(rv$dataIn)
+      req(rv.custom$variable_Filter_SummaryDT)
+      isolate({
+        
+        if (nrow(rv.custom$variable_Filter_SummaryDT )==0){
+          df <- data.frame(query = "-",
+                           nbDeleted = 0,
+                           TotalMainAssay = nrow(mainAssay(rv$dataIn)),
+                           stringsAsFactors = FALSE)
+          rv.custom$variable_Filter_SummaryDT <- df
+        }
+        
+        
+        DT::datatable(rv.custom$variable_Filter_SummaryDT,
+                      extensions = c('Scroller'),
+                      rownames = FALSE,
+                      options = list(
+                        dom = 'rt',
+                        initComplete = .initComplete(),
+                        deferRender = TRUE,
+                        bLengthChange = FALSE
+                      ))
+      })
+    })
+  
+  output$Variablefiltering_cname_ui <- renderUI({
+    .choices <- c("None", 
+                  colnames(SummarizedExperiment::rowData(mainAssay(rv$dataIn))))
+  
+    widget <- selectInput(ns("Variablefiltering_cname"), 
+                          "Column name", 
+                          choices = setNames(.choices, nm = .choices),
+                          width = '300px')
+    
+    Magellan::toggleWidget(widget, rv$steps.enabled['Variablefiltering'])
+  })
+  
+  
+  output$Variablefiltering_operator_ui <- renderUI({
+    req(rv.widgets$Variablefiltering_value)
+    if (is.na(as.numeric(rv.widgets$Variablefiltering_value)))
+      .operator <- c('==', '!=', 'startsWith', 'endsWith', 'contains')
+    else
+      .operator <- DaparToolshed::SymFilteringOperators()
+    
+    
+  widget <- selectInput(ns("Variablefiltering_operator"), 
+              "operator",
+              choices = setNames(nm = .operator),
+              width='100px')
+  Magellan::toggleWidget(widget, rv$steps.enabled['Variablefiltering'])
+  })
+  
+  output$Variablefiltering_value_ui <- renderUI({
+    widget <- textInput(ns("Variablefiltering_value"), 
+                          "value",
+                          width='100px')
+    Magellan::toggleWidget(widget, rv$steps.enabled['Variablefiltering'])
+  })
+  
+  
+    output$Variablefiltering_btn_validate_ui <- renderUI({
+      widget <- actionButton(ns("Variablefiltering_btn_validate"),
                              "Perform",
                              class = btn_success_color)
-      Magellan::toggleWidget(widget, rv$steps.enabled['StringBasedFiltering'])
+      Magellan::toggleWidget(widget, 
+                             rv$steps.enabled['Variablefiltering'] && length(rv.custom$varFilters) > 0)
     })
     
     
-    observeEvent(input$StringBasedFiltering_btn_validate, {
+    
+    
+    
+    
+    output$Variablefiltering_addFilter_btn_ui <- renderUI({
+      widget <- actionButton(ns('Variablefiltering_addFilter_btn'), 'Add filter')
+      Magellan::toggleWidget(widget, rv$steps.enabled['Variablefiltering'])
+    })
+    
+    
+    observeEvent(input$Variablefiltering_addFilter_btn, {
+      
+      if (!is.na(as.numeric(rv.widgets$Variablefiltering_value)))
+        value <- as.numeric(rv.widgets$Variablefiltering_value)
+      else
+        rv.widgets$Variablefiltering_value
+        
+        
+      rv.custom$varFilters <- append(rv.custom$varFilters,
+                                     VariableFilter(field = rv.widgets$Variablefiltering_cname, 
+                                                    value = value,
+                                                    condition = rv.widgets$Variablefiltering_operator)
+                                     )
+      rv.custom$Variablefiltering_query <- append(rv.custom$Variablefiltering_query,
+                                                  paste0(rv.widgets$Variablefiltering_cname, " ",
+                                                         rv.widgets$Variablefiltering_operator, " ",
+                                                         value))
+      
+    })
+    
+    
+    
+    observeEvent(input$Variablefiltering_btn_validate, {
      
-      
-      #dataOut$trigger <- Magellan::Timestamp()
-      #dataOut$value <- rv$dataIn
-      rv$steps.status['AddMetadata'] <- global$VALIDATED
-    })
-    
-    
-    
-    
-    
-    #--------------------------------------------------------
-    output$NumericalFiltering <- renderUI({
-      wellPanel(
-        uiOutput(ns('NumericalFiltering_btn_validate_ui'))
-      )
-    })
-    
-    output$NumericalFiltering_btn_validate_ui <- renderUI({
-      widget <- actionButton(ns("NumericalFiltering_btn_validate"),
-                             "Perform",
-                             class = btn_success_color)
-      Magellan::toggleWidget(widget, rv$steps.enabled['NumericalFiltering'])
-    })
-    
-    
-    observeEvent(input$NumericalFiltering_btn_validate, {
+      rv$dataIn <- filterFeaturesOneSE(object = rv$dataIn,
+                                       i = length(rv$dataIn),
+                                       name = 'variableFiltered',
+                                       filters = rv.custom$varFilters)
+      # Add infos
+      nBefore <- nrow(rv$dataIn[[length(rv$dataIn) - 1]])
+      nAfter <- nrow(rv$dataIn[[length(rv$dataIn)]])
       
       
+      df <- data.frame(query = paste0(unlist(rv.custom$Variablefiltering_query), collapse = " "),
+                       nbDeleted = nBefore - nAfter,
+                       TotalMainAssay = nrow(rv$dataIn[[length(rv$dataIn)]]))
       
-      #dataOut$trigger <- Magellan::Timestamp()
-      #dataOut$value <- rv$dataIn
-      rv$steps.status['NumericalFiltering'] <- global$VALIDATED
+      rv.custom$variable_Filter_SummaryDT <- rbind(rv.custom$variable_Filter_SummaryDT , 
+                                                    df)
+      
+      #params(rv$dataIn, length(rv$dataIn)) <- reactiveValuesToList(rv.widgets)
+      
+      dataOut$trigger <- Magellan::Timestamp()
+      dataOut$value <- rv$dataIn
+      rv$steps.status['Variablefiltering'] <- global$VALIDATED
     })
     
     

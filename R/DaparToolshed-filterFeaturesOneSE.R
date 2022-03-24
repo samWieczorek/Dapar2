@@ -196,13 +196,15 @@ setMethod("filterFeaturesOneSE", "SummarizedExperiment",
             ll.obj <- lapply(filters, 
                    function(x){
                      if (inherits(x, "AnnotationFilter")){
-                x <- SummarizedExperiment::rowData(object)
-                sel <- if (field(x) %in% names(x)){
-                  do.call(condition(x),
-                          list(x[, field(x)],
-                               value(x)))
+                       .tmp <- SummarizedExperiment::rowData(object)
+                       sel <- if (AnnotationFilter::field(x) %in% names(.tmp)){
+                         do.call(AnnotationFilter::condition(x),
+                                 list(.tmp[, AnnotationFilter::field(x)],
+                                      AnnotationFilter::value(x)
+                                      )
+                                 )
                 } else{
-                  rep(FALSE, nrow(x))
+                  rep(FALSE, nrow(.tmp))
                 }
 
                 object <- object[sel]

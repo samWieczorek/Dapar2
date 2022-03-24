@@ -110,7 +110,9 @@ mod_Agregation_server <- function(id,
   )
   
   
-  
+  rv.custom.default.values <- list(
+    temp.agregate = NULL
+  )
   
   
   ###-------------------------------------------------------------###
@@ -124,12 +126,11 @@ mod_Agregation_server <- function(id,
     # Insert necessary code which is hosted by Magellan
     # DO NOT MODIFY THIS LINE
     eval(str2expression(Get_Worflow_Core_Code(
-      w.names = names(widgets.default.values)
+      w.names = names(widgets.default.values),
+      rv.custom.names = names(rv.custom.default.values)
     )))
     
-    rv.custom <- reactiveValues(
-      temp.agregate = NULL
-    )
+    
     
     # >>>
     # >>> START ------------- Code for Description UI---------------

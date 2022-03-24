@@ -8,18 +8,18 @@
 \usage{
 mod_filtering_example_ui(id)
 
-mod_filtering_example_server(id, obj, indices, params, txt)
+mod_filtering_example_server(id, objBefore, objAfter, query)
 }
 \arguments{
-\item{id}{xxx}
+\item{id}{A \code{character(1)}}
 
-\item{obj}{xxx}
+\item{query}{A \code{character()}}
+
+\item{obj}{An instance of the class \code{SummarizedExperiment}}
 
 \item{indices}{xxx}
 
 \item{params}{xxx}
-
-\item{txt}{}
 }
 \description{
 xxxxx
@@ -27,7 +27,18 @@ xxxxx
 \examples{
 if(interactive()){
 
+data(ft_na)
+ui <- mod_filtering_example_ui('example')
 
+server <- function(input, output, session) {
+  
+  mod_filtering_example_server(id = 'example',
+                               objBefore = reactive({ft_na[[1]]}),
+                               objAfter = reactive({ft_na[[1]][-c(2, 6)]}),
+                               query = reactive({'query'})
+                               )
+}
 
+shinyApp(ui=ui, server=server)
 }
 }

@@ -21,7 +21,7 @@
 #'   )
 #'   ll.tags <- c('None' = 'None', 
 #'                qMetadata.def(typeDataset(ft_na[[1]]))$node)
-#'   rv$res <- mod_build_qMetadata_FunctionFilter_server('query', 
+#'   rv.custom$res <- mod_build_qMetadata_FunctionFilter_server('query', 
 #'                                                       obj = reactive({ft_na[[1]]}),
 #'                                                       conds = reactive({colData(ft_na)$Condition}),
 #'                                                       list_tags = reactive({ll.tags}),
@@ -31,8 +31,8 @@
 #'   )
 #'   
 #'   
-#'   observeEvent(rv$res$dataOut()$trigger, ignoreNULL = TRUE, ignoreInit = TRUE, {
-#'     print(rv$res$dataOut()$fun)
+#'   observeEvent(rv.custom$res$dataOut()$trigger, ignoreNULL = TRUE, ignoreInit = TRUE, {
+#'     print(rv.custom$res$dataOut()$fun)
 #'   })
 #' }
 #' 
@@ -104,7 +104,19 @@ mod_build_qMetadata_FunctionFilter_server <- function(id,
                                       is.enabled = reactive({TRUE})
                                       ) {
   
-  rv <- reactiveValues(
+  # Define default selected values for widgets
+  # This is only for simple workflows
+  widgets.default.values <- list(
+    tag = "None",
+    scope = "None",
+    keepRemove = 'delete',
+    valueTh = 0,
+    percentTh = 0,
+    valPercent = 'Count',
+    operator = '<='
+  )
+  
+  rv.custom.default.values <- list(
     indices = NULL,
     trigger = NULL,
     functionFilter = NULL,
@@ -113,6 +125,18 @@ mod_build_qMetadata_FunctionFilter_server <- function(id,
   
   moduleServer(id,function(input, output, session) {
     ns <- session$ns
+    
+    eval(
+      str2expression(
+        Get_AdditionalModule_Core_Code(
+          w.names = names(widgets.default.values),
+          rv.custom.names = names(rv.custom.default.values)
+        )
+      )
+    )
+    
+    
+    
     mod_helpPopover_server("tag_help", 
                           title = "Nature of data to filter", 
                           content = "Define xxx")
@@ -135,44 +159,13 @@ mod_build_qMetadata_FunctionFilter_server <- function(id,
                           content = HTML(help.txt1)
                           )
     
-    rv.widgets <- reactiveValues(
-      tag = "None",
-      scope = "None",
-      keepRemove = 'delete',
-      valueTh = 0,
-      percentTh = 0,
-      valPercent = 'Count',
-      operator = '<='
-      )
     
-    dataOut <- reactiveValues(
-      trigger = NULL,
-      fun = NULL,
-      query = NULL
-    )
     
-    observeEvent(reset(),{
-      rv.widgets$tag <- "None"
-      rv.widgets$scope <- "None"
-      rv.widgets$keepRemove <- 'delete'
-      rv.widgets$valueTh <- 0
-      rv.widgets$percentTh <- 0
-      rv.widgets$valPercent <- 'Count'
-      rv.widgets$operator <- '<='
-      updateSelectInput(session, "chooseTag", selected = "None")
-      })
     
-    observeEvent(input$chooseTag, { rv.widgets$tag <- input$chooseTag})
-    observeEvent(input$chooseKeepRemove, {  rv.widgets$keepRemove <- input$chooseKeepRemove})
-    observeEvent(input$chooseScope, {  rv.widgets$scope <- input$chooseScope})
-    observeEvent(input$chooseValPercent, {rv.widgets$valPercent <- input$chooseValPercent})
-    observeEvent(input$chooseValueTh, { rv.widgets$valueTh <- input$chooseValueTh})
-    observeEvent(input$choosePercentTh, {rv.widgets$percentTh <- input$choosePercentTh})
-    observeEvent(input$chooseOperator, {  rv.widgets$operator <- input$chooseOperator})
                  
     
     output$chooseTag_ui <- renderUI({
-      widget <- selectInput(ns("chooseTag"),
+      widget <- selectInput(ns("tag"),
                             mod_helpPopover_ui(ns("tag_help")),
                             choices = list_tags(),
                             selected = rv.widgets$tag,
@@ -182,7 +175,7 @@ mod_build_qMetadata_FunctionFilter_server <- function(id,
     
     output$chooseKeepRemove_ui <- renderUI({
       req(rv.widgets$tag != 'None')
-      widget <- radioButtons(ns("chooseKeepRemove"),
+      widget <- radioButtons(ns("keepRemove"),
                              "Type of filter operation",
                              choices = keep_vs_remove(),
                              selected = rv.widgets$keepRemove)
@@ -191,7 +184,7 @@ mod_build_qMetadata_FunctionFilter_server <- function(id,
     
     output$chooseScope_ui <- renderUI({
       req(rv.widgets$tag != 'None')
-      widget <- selectInput(ns("chooseScope"),
+      widget <- selectInput(ns("scope"),
                             mod_helpPopover_ui(ns("filterScope_help")),
                             choices = c("None" = "None",
                                         "Whole Line" = "WholeLine",
@@ -212,66 +205,70 @@ mod_build_qMetadata_FunctionFilter_server <- function(id,
                              title = paste("#/% of values to ", rv.widgets$keepRemove),
                              content = "Define xxx")
       
-      tagList(
-        fluidRow(
-          column(4,
-                 radioButtons(ns('chooseValPercent'),
+      widget1 <- radioButtons(ns('valPercent'),
                               mod_helpPopover_ui(ns("chooseValPercent_help")),
                               choices = val_vs_percent(),
                               selected = rv.widgets$valPercent
                               )
-                 ),
-          column(8,
-                 selectInput(ns("chooseOperator"),
+      
+      widget2 <- selectInput(ns("operator"),
                              "Choose operator",
                              choices = operator(),
                              selected = rv.widgets$operator,
-                             width='100px'),
-                 uiOutput(ns('chooseValue_ui')),
-                 uiOutput(ns('choosePercentage_ui'))
+                             width='100px')
+      
+      
+      tagList(
+        fluidRow(
+          column(4, Magellan::toggleWidget(widget1, is.enabled())
+                 ),
+          column(8, Magellan::toggleWidget(widget2, is.enabled()),
+                 uiOutput(ns('value_ui')),
+                 uiOutput(ns('percentage_ui'))
                  )
           )
         )
       })
     
     
-    output$chooseValue_ui <- renderUI({
+    output$value_ui <- renderUI({
       req(rv.widgets$valPercent == 'Count')
       req(!(rv.widgets$scope %in% c("None", "WholeLine")))
       mod_helpPopover_server("value_th_help", 
                              title = "Count threshold", 
                              content = "Define xxx")
       
+      widget <- selectInput(ns("valueTh"),
+                            mod_helpPopover_ui(ns("value_th_help")),
+                            choices = getListNbValuesInLines(object = obj(), 
+                                                             conds = conds(), 
+                                                             type = rv.widgets$scope
+                            ),
+                            selected = rv.widgets$valueTh,
+                            width='150px')
       tagList(
         mod_helpPopover_ui(ns("keepVal_help")),
-        selectInput(ns("chooseValueTh"),
-                    mod_helpPopover_ui(ns("value_th_help")),
-                    choices = getListNbValuesInLines(object = obj(), 
-                                                     conds = conds(), 
-                                                     type = rv.widgets$scope
-                                                     ),
-                    selected = rv.widgets$valueTh,
-                    width='150px')
+        Magellan::toggleWidget(widget, is.enabled())
         )
       })
     
-    output$choosePercentage_ui <- renderUI({
+    output$percentage_ui <- renderUI({
       req(rv.widgets$valPercent == 'Percentage')
       req(!(rv.widgets$scope %in% c("None", "WholeLine")))
       
       mod_helpPopover_server("percentTh_help", 
                              title = "Percentage threshold", 
                              content = "Define xxx")
-      
+      widget <- sliderInput(ns("percentTh"), 
+                            mod_helpPopover_ui(ns("percentTh_help")),
+                            min = 0,
+                            max = 100,
+                            step = 1,
+                            value = rv.widgets$percentTh,
+                            width='250px')
       tagList(
         mod_helpPopover_ui(ns("keepVal_percent_help")),
-        sliderInput(ns("choosePercentTh"), 
-                    mod_helpPopover_ui(ns("percentTh_help")),
-                    min = 0,
-                    max = 100,
-                    step = 1,
-                    value = rv.widgets$percentTh,
-                    width='250px')
+        Magellan::toggleWidget(widget, is.enabled())
         )
       })
     
@@ -368,6 +365,8 @@ mod_build_qMetadata_FunctionFilter_server <- function(id,
                                                    th = th, 
                                                    operator = rv.widgets$operator)
       )
+      
+      ff
 
       })
     
@@ -376,11 +375,12 @@ mod_build_qMetadata_FunctionFilter_server <- function(id,
       dataOut$trigger <- as.numeric(Sys.time())
       dataOut$fun <- BuildFunctionFilter()
       dataOut$query <- WriteQuery()
+      dataOut$widgets <- reactiveValuesToList(rv.widgets)
     })
     
     
     
-    list(dataOut = reactive({dataOut}))
+    return(reactive({dataOut}))
 
     })
 }

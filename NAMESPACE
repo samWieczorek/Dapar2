@@ -32,10 +32,7 @@ export(fudge2LRT)
 export(getListNbValuesInLines)
 export(is.OfType)
 export(last_assay)
-<<<<<<< HEAD
 export(mainAssay)
-=======
->>>>>>> 7d7784a50691e73d607d9bd45e3f2d66c068c17c
 export(match.qMetadata)
 export(mod_Agregation_server)
 export(mod_Agregation_ui)

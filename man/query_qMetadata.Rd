@@ -6,11 +6,15 @@
 \title{xxxx}
 \usage{
 mod_build_qMetadata_FunctionFilter_ui(id)
+
+mod_build_qMetadata_FunctionFilter_ui(id)
 }
 \arguments{
 \item{id}{xxx}
 }
 \description{
+xxx
+
 xxx
 }
 \examples{
@@ -25,22 +29,46 @@ server <- function(input, output, session) {
   )
   ll.tags <- c('None' = 'None', 
                qMetadata.def(typeDataset(ft_na[[1]]))$node)
-  rv$res <- mod_build_qMetadata_FunctionFilter_server('query', 
+  rv.custom$res <- mod_build_qMetadata_FunctionFilter_server('query', 
                                                       obj = reactive({ft_na[[1]]}),
                                                       conds = reactive({colData(ft_na)$Condition}),
                                                       list_tags = reactive({ll.tags}),
                                                       keep_vs_remove = reactive({setNames(nm = c("delete", "keep"))}),
                                                       val_vs_percent = reactive({setNames(nm=c('Count', 'Percentage'))}),
                                                       operator = reactive({setNames(nm = SymFilteringOperators())})
-<<<<<<< HEAD
   )
-=======
-                                                       )
->>>>>>> 7d7784a50691e73d607d9bd45e3f2d66c068c17c
   
   
-  observeEvent(rv$res$dataOut()$trigger, ignoreNULL = TRUE, ignoreInit = TRUE, {
-    print(rv$res$dataOut()$fun)
+  observeEvent(rv.custom$res$dataOut()$trigger, ignoreNULL = TRUE, ignoreInit = TRUE, {
+    print(rv.custom$res$dataOut()$fun)
+  })
+}
+
+shinyApp(ui=ui, server=server)
+}
+if (interactive()){
+data(ft_na)
+ui <- mod_build_qMetadata_FunctionFilter_ui('query')
+
+server <- function(input, output, session) {
+  
+  rv <- reactiveValues(
+    res = NULL
+  )
+  ll.tags <- c('None' = 'None', 
+               qMetadata.def(typeDataset(ft_na[[1]]))$node)
+  rv.custom$res <- mod_build_qMetadata_FunctionFilter_server('query', 
+                                                      obj = reactive({ft_na[[1]]}),
+                                                      conds = reactive({colData(ft_na)$Condition}),
+                                                      list_tags = reactive({ll.tags}),
+                                                      keep_vs_remove = reactive({setNames(nm = c("delete", "keep"))}),
+                                                      val_vs_percent = reactive({setNames(nm=c('Count', 'Percentage'))}),
+                                                      operator = reactive({setNames(nm = SymFilteringOperators())})
+  )
+  
+  
+  observeEvent(rv.custom$res$dataOut()$trigger, ignoreNULL = TRUE, ignoreInit = TRUE, {
+    print(rv.custom$res$dataOut()$fun)
   })
 }
 

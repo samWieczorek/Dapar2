@@ -90,7 +90,8 @@
 #'     Normalization_sync = FALSE
 #'   )
 #'   
-#'   
+#'   rv.custom <- list()
+#'     
 #'   ###-------------------------------------------------------------###
 #'   ###                                                             ###
 #'   ### ------------------- MODULE SERVER --------------------------###
@@ -100,10 +101,10 @@
 #'     ns <- session$ns
 #'     
 #'     eval(str2expression(Get_Worflow_Core_Code(
-#'       w.names = names(widgets.default.values)
+#'       w.names = names(widgets.default.values),
+#'       rv.custom.names = names(rv.custom.default.values)
 #'     )))
 #'     
-#'     rv.custom <- reactiveValues()
 #'     
 #'     # >>>
 #'     # >>> START ------------- Code for Description UI---------------
