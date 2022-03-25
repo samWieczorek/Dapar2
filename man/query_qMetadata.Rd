@@ -3,15 +3,49 @@
 \name{query_qMetadata}
 \alias{query_qMetadata}
 \alias{mod_build_qMetadata_FunctionFilter_ui}
-\title{xxxx}
+\alias{mod_build_qMetadata_FunctionFilter_server}
+\title{Build queries for filtering quantitative metadata}
 \usage{
 mod_build_qMetadata_FunctionFilter_ui(id)
+
+mod_build_qMetadata_FunctionFilter_server(
+  id,
+  obj,
+  conds,
+  list_tags = reactive({     NULL }),
+  keep_vs_remove = reactive({     NULL }),
+  val_vs_percent = reactive({     NULL }),
+  operator = reactive({     NULL }),
+  reset = reactive({     NULL }),
+  is.enabled = reactive({     TRUE })
+)
 }
 \arguments{
 \item{id}{xxx}
+
+\item{obj}{An instance of the class \code{SummarizedExperiment}}
+
+\item{conds}{A \code{character()} which contains the name of the conditions. The
+length of this vector must be equal to the number of samples in the assay
+(i.e. number of columns in àssay(obj))}
+
+\item{list_tags}{xxx}
+
+\item{keep_vs_remove}{xxx}
+
+\item{val_vs_percent}{xxx}
+
+\item{operator}{xxx}
+
+\item{reset}{A \code{ìnteger(1)} xxxx}
+
+\item{is.enabled}{A \code{logical(1)} that indicates whether the module is
+enabled or disabled. This is a remote command.}
 }
 \description{
-xxx
+This function is a shiny module to create a list of queries (instances of the
+class \code{FunctionFilter} to filter the quantitative metadata of an instance
+of the class \code{SummarizedExperiment})
 }
 \examples{
 if (interactive()){

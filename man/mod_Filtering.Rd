@@ -4,7 +4,7 @@
 \alias{mod_filtering}
 \title{Module Filtering}
 \description{
-
+xxxxx
 }
 \section{Step 'Quanti metadata filtering'}{
 

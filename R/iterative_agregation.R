@@ -118,6 +118,13 @@
 #'     warning('The parameter \'conditions\' is NULL: the aggregation cannot be process.')
 #'     return(NULL)
 #'   }
+#'   
+#'   
+#'   if (! requireNamespace("Matrix", quietly = TRUE)) {
+#'    stop("Please install Matrix: BiocManager::install('Matrix')")
+#'    }
+#'   
+#'   
 #'   doParallel::registerDoParallel()
 #'   
 #'   #qPepData <- 2^(qPepData)

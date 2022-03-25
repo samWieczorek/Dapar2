@@ -6,7 +6,7 @@
 \alias{aggregateFeatures4Prostar,SummarizedExperiment-method}
 \alias{aggQmetadata}
 \alias{aggregateMethods}
-\title{Aggregate an assay of peptides into proteins.}
+\title{Aggregate an assay's quantitative features}
 \usage{
 \S4method{aggregateFeatures4Prostar}{QFeatures}(
   object,
@@ -68,11 +68,6 @@ A \code{QFeatures} object with an additional assay or a
 xxxxx
 }
 \description{
-This function is a wrapper for the function \code{\link[QFeatures:QFeatures-aggregate]{QFeatures::aggregateFeatures()}}.
-It just add some meta informations to the aggregated assay, specific to
-DaparToolshed and implement methods to aggregate the quantitative
-metadata.
-
 This function aggregates the quantitative features of an assay,
 applying a summarization function (\code{fun}) to sets of features.
 The \code{fcol} variable name points to a rowData column that defines

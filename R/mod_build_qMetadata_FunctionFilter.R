@@ -1,13 +1,21 @@
-#' @title xxxx
+#' @title Build queries for filtering quantitative metadata
 #' 
-#' @description xxx
+#' @description 
+#' 
+#' This function is a shiny module to create a list of queries (instances of the 
+#' class `FunctionFilter` to filter the quantitative metadata of an instance
+#' of the class `SummarizedExperiment`)
 #' 
 #' @name query_qMetadata
 #' 
-#' @value A `list()` of three items:
-#' - a trigger : xxx
-#' - an instance of the class `FunctionFilter`
-#' - A `character()` which describes the query in natural language
+#' @value As for all modules used with `Magellan`, the return value is a
+#' `list()` of two items:
+#' - trigger : xxx
+#' - value: In this case, it contains a list() of three slots:
+#'   - ll.fun: a list() of instances of the class `FunctionFilter`, 
+#'   - ll.query: a list of `character()` which describe the queries in natural 
+#'   language,
+#'   - ll.widgets.value: a list of the values of widgets.
 #'
 #' @examples 
 #' if (interactive()){
@@ -70,7 +78,7 @@ mod_build_qMetadata_FunctionFilter_ui <- function(id){
       div( style="display:inline-block; vertical-align: middle; align: center;",
            uiOutput(ns('qMetadataScope_request_ui'))
       ),
-      actionButton(ns("BuildFilter_btn"), "Build filter")
+      actionButton(ns("BuildFilter_btn"), "Add filter")
     )
   )
   
@@ -80,16 +88,19 @@ mod_build_qMetadata_FunctionFilter_ui <- function(id){
 
 
 #' @param id xxx
-#' @param obj xxx
+#' @param obj An instance of the class `SummarizedExperiment`
+#' @param conds A `character()` which contains the name of the conditions. The
+#' length of this vector must be equal to the number of samples in the assay
+#' (i.e. number of columns in àssay(obj))
 #' @param list_tags xxx
 #' @param keep_vs_remove xxx
-#' @param filters xxx
 #' @param val_vs_percent xxx
 #' @param operator xxx
-#' @param reset xxx
+#' @param reset A `ìnteger(1)` xxxx
+#' @param is.enabled A `logical(1)` that indicates whether the module is 
+#' enabled or disabled. This is a remote command.
 #' 
-#' @name mod_query_qMetadata_server
-#' @rdname quantitative-metadata
+#' @rdname query_qMetadata
 #' 
 #' @export
 #' 
@@ -118,9 +129,10 @@ mod_build_qMetadata_FunctionFilter_server <- function(id,
   
   rv.custom.default.values <- list(
     indices = NULL,
-    trigger = NULL,
     functionFilter = NULL,
-    query = NULL
+    query = list(),
+    fun.list = list(),
+    widgets.value = list()
   )
   
   moduleServer(id,function(input, output, session) {
@@ -159,10 +171,6 @@ mod_build_qMetadata_FunctionFilter_server <- function(id,
                           content = HTML(help.txt1)
                           )
     
-    
-    
-    
-                 
     
     output$chooseTag_ui <- renderUI({
       widget <- selectInput(ns("tag"),
@@ -372,15 +380,26 @@ mod_build_qMetadata_FunctionFilter_server <- function(id,
     
     
     observeEvent(input$BuildFilter_btn, {
+      
+      rv.custom$ll.fun <- append(rv.custom$ll.fun, BuildFunctionFilter())
+      rv.custom$ll.query <- append(rv.custom$ll.query, WriteQuery())
+      rv.custom$ll.widgets.value <- append(rv.custom$ll.widgets.value,
+                                           list(reactiveValuesToList(rv.widgets)))
+      
+
+      # Append a new FunctionFilter to the list
       dataOut$trigger <- as.numeric(Sys.time())
-      dataOut$fun <- BuildFunctionFilter()
-      dataOut$query <- WriteQuery()
-      dataOut$widgets <- reactiveValuesToList(rv.widgets)
-    })
+      dataOut$value <- list(ll.fun = rv.custom$ll.fun,
+                            ll.query = rv.custom$ll.query,
+                            ll.widgets.value = rv.custom$ll.widgets.value)
+       })
     
     
     
-    return(reactive({dataOut}))
+    list(trigger = reactive({dataOut$trigger}),
+         value = reactive({dataOut$value})
+         )
+
 
     })
 }

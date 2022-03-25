@@ -297,7 +297,8 @@ mod_Filtering_server <- function(id,
       widget <- actionButton(ns("Quantimetadatafiltering_btn_validate"),
                              "Perform qMetadata filtering",
                              class = btn_success_color)
-      cond <- !is.null(rv.custom$funFilter()$fun) && rv$steps.enabled['Quantimetadatafiltering']
+      cond <- length(rv.custom$funFilter()$value()$ll.fun)
+      cond <- cond && rv$steps.enabled['Quantimetadatafiltering']
       Magellan::toggleWidget(widget, cond)
     })
 
@@ -307,7 +308,7 @@ mod_Filtering_server <- function(id,
       rv$dataIn <- filterFeaturesOneSE(object = rv$dataIn,
                                        i = length(rv$dataIn),
                                        name = 'qMetadataFiltered',
-                                       filters = list(rv.custom$funFilter()$fun)
+                                       filters = list(rv.custom$funFilter()$value()$ll.fun)
       )
 
       # Add infos
@@ -315,14 +316,14 @@ mod_Filtering_server <- function(id,
        nAfter <- nrow(rv$dataIn[[length(rv$dataIn)]])
        
       
-      df <- data.frame(query =  rv.custom$funFilter()$query,
+      df <- data.frame(query =  rv.custom$funFilter()$value()$ll.query,
                        nbDeleted = nBefore - nAfter,
                        TotalMainAssay = nrow(rv$dataIn[[length(rv$dataIn)]]))
       
       rv.custom$qMetadata_Filter_SummaryDT <- rbind(rv.custom$qMetadata_Filter_SummaryDT , 
                                                      df)
-      
-      params(rv$dataIn, length(rv$dataIn)) <- reactiveValuesToList(rv.widgets)
+      par <- rv.custom$funFilter()$value()$ll.widgets.value
+      params(rv$dataIn, length(rv$dataIn)) <- par
       dataOut$trigger <- Magellan::Timestamp()
       dataOut$value <- rv$dataIn
       rv$steps.status['Quantimetadatafiltering'] <- global$VALIDATED
