@@ -293,6 +293,12 @@ mod_Filtering_server <- function(id,
     )
 
     
+    # Update the list of queries each time a new filter is added
+    observeEvent(rv.custom$funFilter()$trigger, {
+      
+      print(rv.custom$funFilter()$value()$ll.query)
+    })
+    
     output$Quantimetadatafiltering_btn_validate_ui <- renderUI({
       widget <- actionButton(ns("Quantimetadatafiltering_btn_validate"),
                              "Perform qMetadata filtering",
