@@ -193,29 +193,27 @@ setMethod("filterFeaturesOneSE", "QFeatures",
 ##' @rdname QFeatures-filtering-oneSE
 setMethod("filterFeaturesOneSE", "SummarizedExperiment",
           function(object, filters){
-            ll.obj <- lapply(filters, 
-                   function(x){
-                     if (inherits(x, "AnnotationFilter")){
-                       .tmp <- SummarizedExperiment::rowData(object)
-                       sel <- if (AnnotationFilter::field(x) %in% names(.tmp)){
-                         do.call(AnnotationFilter::condition(x),
-                                 list(.tmp[, AnnotationFilter::field(x)],
-                                      AnnotationFilter::value(x)
-                                      )
-                                 )
-                } else{
-                  rep(FALSE, nrow(.tmp))
-                }
-
+            for (x in filters){
+              if (inherits(x, "AnnotationFilter")){
+                .tmp <- SummarizedExperiment::rowData(object)
+                sel <- if (AnnotationFilter::field(x) %in% names(.tmp)){
+                  do.call(AnnotationFilter::condition(x),
+                          list(.tmp[, AnnotationFilter::field(x)],
+                               AnnotationFilter::value(x)
+                               )
+                          )
+                  } else{
+                    rep(FALSE, nrow(.tmp))
+                    }
                 object <- object[sel]
-              } else if (inherits(x, "FunctionFilter")){
-                object <- do.call(x@name, 
-                                  append(list(object = object), 
-                                         x@params))
+                } else if (inherits(x, "FunctionFilter")){
+                  object <- do.call(x@name, 
+                                    append(list(object = object), 
+                                           x@params))
                 }
-                   }
-              )
+              }
+
             
-           return(ll.obj[[1]])
+           return(object)
           }
 )

@@ -33,7 +33,7 @@
 #'                         level = typeOfData(obj)
 #'                         )
 #' type <- 'AllCond'
-#' conds <- design(ft)$Condition
+#' conds <- design.qf(ft)$Condition
 #' op <- '>='
 #' th <- 2
 #' percent <- FALSE

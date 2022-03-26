@@ -62,7 +62,7 @@ setMethod("write2excel", "QFeatures",
               # One exports only one SE
               write2excel(object[[i]],
                           filename, 
-                          design(object),
+                          design.qf(object),
                           ...)
               
               

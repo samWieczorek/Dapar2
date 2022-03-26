@@ -112,7 +112,16 @@ mod_Filtering_server <- function(id,
   rv.custom.default.values <- list(
     funFilter = NULL,
     varFilters = list(),
-    Variablefiltering_query = list()
+    varQueries = list(),
+    varFilter_DT = data.frame(query = "-", 
+                              nbDeleted = "-", 
+                              TotalMainAssay = "-",
+                              stringsAsFactors = FALSE
+                              ),
+    qMetadata_Filter_SummaryDT = data.frame(query = "-", 
+                                            nbDeleted = "-", 
+                                            TotalMainAssay = "-",
+                                            stringsAsFactors = FALSE)
   )
   
   ###-------------------------------------------------------------###
@@ -206,7 +215,7 @@ mod_Filtering_server <- function(id,
         # Be aware of the naming convention for ids in uiOutput()
         # For more details, please refer to the dev document.
        # mod_build_qMetadata_FunctionFilter_ui(ns('query')),
-        DT::dataTableOutput(ns("qMetadata_Filter_Summary_DT")),
+        DT::dataTableOutput(ns("qMetadata_Filter_DT")),
         uiOutput(ns('Quantimetadatafiltering_buildQuery_ui')),
         
         uiOutput(ns('example_ui')),
@@ -219,19 +228,18 @@ mod_Filtering_server <- function(id,
     
     
     output$example_ui <- renderUI({
-      req(rv.custom$funFilter()$fun)
+      req(length(rv.custom$funFilter$ll.fun()) > 0)
       req(rv$steps.status['Quantimetadatafiltering'] == 0)
       
-      temp <- filterFeaturesOneSE(object = rv$dataIn[[length(rv$dataIn)]],
-                                  filters = list(rv.custom$funFilter()$fun)
+      temp <- filterFeaturesOneSE(object = mainAssay(rv$dataIn),
+                                  filters = rv.custom$funFilter$ll.fun()
                                   )
-      
-      mod_filtering_example_server(id = 'filteringExample',
+      mod_filterExample_server(id = 'filteringExample',
                                    objBefore = reactive({mainAssay(rv$dataIn)}),
                                    objAfter = reactive({temp}),
-                                   query = reactive({rv.custom$funFilter()$query})
+                                   query = reactive({rv.custom$funFilter$ll.query()})
                                    )
-      widget <- mod_filtering_example_ui(ns('filteringExample'))
+      widget <- mod_filterExample_ui(ns('filteringExample'))
       Magellan::toggleWidget(widget, rv$steps.enabled['Quantimetadatafiltering'])
 
     })
@@ -240,40 +248,14 @@ mod_Filtering_server <- function(id,
     mod_ds_qMetadata_server(id = 'plots',
                             se = reactive({mainAssay(rv$dataIn)}),
                             init.pattern = 'missing',
-                            conds = design(rv$dataIn)$Condition
+                            conds = design.qf(rv$dataIn)$Condition
                             )
       
-    
     output$qMetadata_Filter_Summary_DT <- DT::renderDataTable(server=TRUE,{
-      req(rv$dataIn)
-      req(rv.custom$qMetadata_Filter_SummaryDT)
-      isolate({
-        
-        if (nrow(rv.custom$qMetadata_Filter_SummaryDT )==0){
-          df <- data.frame(query = "-",
-                           nbDeleted = 0,
-                           TotalMainAssay = nrow(mainAssay(rv$dataIn)),
-                           stringsAsFactors = FALSE)
-          rv.custom$qMetadata_Filter_SummaryDT <- df
-        }
-        
-        
-        DT::datatable(rv.custom$qMetadata_Filter_SummaryDT,
-                      extensions = c('Scroller'),
-                      rownames = FALSE,
-                      options = list(
-                        dom = 'rt',
-                        initComplete = .initComplete(),
-                        deferRender = TRUE,
-                        bLengthChange = FALSE
-                      ))
-      })
+      df <- rv.custom$qMetadata_Filter_SummaryDT
+      df[,'query'] <- ConvertListToHtml(rv.custom$funFilter$ll.query())
+      showDT(df)
     })
-    
-    
-    
-    
-    
     
     output$Quantimetadatafiltering_buildQuery_ui <- renderUI({
       widget <- mod_build_qMetadata_FunctionFilter_ui(ns("query"))
@@ -282,7 +264,7 @@ mod_Filtering_server <- function(id,
     
     rv.custom$funFilter <- mod_build_qMetadata_FunctionFilter_server(id = 'query',
                                          obj = reactive({mainAssay(rv$dataIn)}),
-                                         conds = reactive({design(rv$dataIn)$Condition}),
+                                         conds = reactive({design.qf(rv$dataIn)$Condition}),
                                          list_tags = reactive({
                                            req(rv$dataIn)
                                            c('None' = 'None',
@@ -294,16 +276,20 @@ mod_Filtering_server <- function(id,
 
     
     # Update the list of queries each time a new filter is added
-    observeEvent(rv.custom$funFilter()$trigger, {
-      
-      print(rv.custom$funFilter()$value()$ll.query)
-    })
+    # observeEvent(rv.custom$funFilter$trigger(), ignoreInit = TRUE, ignoreNULL = TRUE,{
+    #   rv.custom$qMetadata_Filter_SummaryDT$query <- data.frame(
+    #     query = rv.custom$funFilter$ll.query(),
+    #     nbDeleted = '-',
+    #     TotalMainAssay = '-',
+    #     stringsAsFactors = FALSE)
+    # })
     
     output$Quantimetadatafiltering_btn_validate_ui <- renderUI({
       widget <- actionButton(ns("Quantimetadatafiltering_btn_validate"),
                              "Perform qMetadata filtering",
                              class = btn_success_color)
-      cond <- length(rv.custom$funFilter()$value()$ll.fun)
+      
+      cond <- length(rv.custom$funFilter$ll.fun()) > 0
       cond <- cond && rv$steps.enabled['Quantimetadatafiltering']
       Magellan::toggleWidget(widget, cond)
     })
@@ -314,21 +300,17 @@ mod_Filtering_server <- function(id,
       rv$dataIn <- filterFeaturesOneSE(object = rv$dataIn,
                                        i = length(rv$dataIn),
                                        name = 'qMetadataFiltered',
-                                       filters = list(rv.custom$funFilter()$value()$ll.fun)
-      )
+                                       filters = rv.custom$funFilter$ll.fun()
+                                       )
 
       # Add infos
        nBefore <- nrow(rv$dataIn[[length(rv$dataIn) - 1]])
        nAfter <- nrow(rv$dataIn[[length(rv$dataIn)]])
        
+      rv.custom$qMetadata_Filter_SummaryDT[, 'nbDeleted']  <- nBefore - nAfter
+      rv.custom$qMetadata_Filter_SummaryDT[, 'TotalMainAssay']  <- nrow(mainAssay(rv$dataIn))
       
-      df <- data.frame(query =  rv.custom$funFilter()$value()$ll.query,
-                       nbDeleted = nBefore - nAfter,
-                       TotalMainAssay = nrow(rv$dataIn[[length(rv$dataIn)]]))
-      
-      rv.custom$qMetadata_Filter_SummaryDT <- rbind(rv.custom$qMetadata_Filter_SummaryDT , 
-                                                     df)
-      par <- rv.custom$funFilter()$value()$ll.widgets.value
+      par <- rv.custom$funFilter$ll.widgets.value()
       params(rv$dataIn, length(rv$dataIn)) <- par
       dataOut$trigger <- Magellan::Timestamp()
       dataOut$value <- rv$dataIn
@@ -345,58 +327,61 @@ mod_Filtering_server <- function(id,
     # -------------------------------------------------------
     output$Variablefiltering <- renderUI({
       wellPanel(
+        DT::dataTableOutput(ns("VarFilter_DT")),
+        # Build queries
         uiOutput(ns('Variablefiltering_cname_ui')),
         uiOutput(ns('Variablefiltering_value_ui')),
         uiOutput(ns('Variablefiltering_operator_ui')),
-        
         uiOutput(ns('Variablefiltering_addFilter_btn_ui')),
-        
-        htmlOutput(ns('show_filters_ui')),
-        uiOutput(ns('Variablefiltering_btn_validate_ui')),
-        
-        DT::dataTableOutput(ns("Variable_Filter_Summary_DT"))
+        # Show example
+        uiOutput(ns('Variablefiltering_example_ui')),
+        # Process the queries
+        uiOutput(ns('Variablefiltering_btn_validate_ui'))
       )
 
     })
     
     
-    
-    
-    output$show_filters_ui <- renderText({
-      req(length(rv.custom$Variablefiltering_query) > 0)
-     # browser()
-      HTML(paste0(unlist(rv.custom$Variablefiltering_query),
-                  collapse = " "))
+    output$Variablefiltering_example_ui <- renderUI({
+      req(length(rv.custom$varFilters) > 0)
+      req(rv$steps.status['Variablefiltering'] == 0)
+      
+      
+      browser()
+      temp <- filterFeaturesOneSE(object = mainAssay(rv$dataIn),
+                                  filters = rv.custom$varFilters)
+      
+      mod_filterExample_server(id = 'varFilterExample',
+                               objBefore = reactive({mainAssay(rv$dataIn)}),
+                               objAfter = reactive({temp}),
+                               query = reactive({rv.custom$varQueries})
+                               )
+      
+      widget <- mod_filterExample_ui(ns('varFilterExample'))
+      Magellan::toggleWidget(widget, rv$steps.enabled['Variablefiltering'])
     })
     
-    
-    
-    output$Variable_Filter_Summary_DT <- DT::renderDataTable(server=TRUE,{
-      req(rv$dataIn)
-      req(rv.custom$variable_Filter_SummaryDT)
-      isolate({
-        
-        if (nrow(rv.custom$variable_Filter_SummaryDT )==0){
-          df <- data.frame(query = "-",
-                           nbDeleted = 0,
-                           TotalMainAssay = nrow(mainAssay(rv$dataIn)),
-                           stringsAsFactors = FALSE)
-          rv.custom$variable_Filter_SummaryDT <- df
-        }
-        
-        
-        DT::datatable(rv.custom$variable_Filter_SummaryDT,
-                      extensions = c('Scroller'),
-                      rownames = FALSE,
-                      options = list(
-                        dom = 'rt',
-                        initComplete = .initComplete(),
-                        deferRender = TRUE,
-                        bLengthChange = FALSE
-                      ))
-      })
+
+    output$VarFilter_DT <- DT::renderDataTable(
+      server=TRUE,{
+        rv.custom$varFilter_DT[,'query'] <- ConvertListToHtml(rv.custom$varQueries)
+        showDT(rv.custom$varFilter_DT)
     })
   
+    showDT <- function(df){
+      DT::datatable(df,
+                    extensions = c('Scroller'),
+                    escape = FALSE,
+                    rownames = FALSE,
+                    options = list(
+                      dom = 'rt',
+                      initComplete = .initComplete(),
+                      deferRender = TRUE,
+                      bLengthChange = FALSE
+                    ))
+    }
+    
+    
   output$Variablefiltering_cname_ui <- renderUI({
     .choices <- c("None", 
                   colnames(SummarizedExperiment::rowData(mainAssay(rv$dataIn))))
@@ -442,20 +427,20 @@ mod_Filtering_server <- function(id,
     })
     
     
-    
-    
-    
-    
     output$Variablefiltering_addFilter_btn_ui <- renderUI({
-      widget <- actionButton(ns('Variablefiltering_addFilter_btn'), 'Add filter')
-      Magellan::toggleWidget(widget, rv$steps.enabled['Variablefiltering'])
+      widget <- actionButton(
+        ns('Variablefiltering_addFilter_btn'), 
+        'Add filter'
+        )
+      Magellan::toggleWidget(widget, 
+                             rv$steps.enabled['Variablefiltering'])
     })
     
     
     observeEvent(input$Variablefiltering_addFilter_btn, {
-      
-      if (!is.na(as.numeric(rv.widgets$Variablefiltering_value)))
-        value <- as.numeric(rv.widgets$Variablefiltering_value)
+      type.val <- as.numeric(rv.widgets$Variablefiltering_value)
+      if (!is.na(type.val))
+        value <- type.val
       else
         rv.widgets$Variablefiltering_value
         
@@ -465,10 +450,11 @@ mod_Filtering_server <- function(id,
                                                     value = value,
                                                     condition = rv.widgets$Variablefiltering_operator)
                                      )
-      rv.custom$Variablefiltering_query <- append(rv.custom$Variablefiltering_query,
-                                                  paste0(rv.widgets$Variablefiltering_cname, " ",
-                                                         rv.widgets$Variablefiltering_operator, " ",
-                                                         value))
+      rv.custom$varQueries <- append(rv.custom$varQueries,
+                                     paste0(rv.widgets$Variablefiltering_cname, " ",
+                                            rv.widgets$Variablefiltering_operator, " ",
+                                            value)
+                                     )
       
     })
     
@@ -482,18 +468,20 @@ mod_Filtering_server <- function(id,
                                        filters = rv.custom$varFilters)
       # Add infos
       nBefore <- nrow(rv$dataIn[[length(rv$dataIn) - 1]])
-      nAfter <- nrow(rv$dataIn[[length(rv$dataIn)]])
+      nAfter <- nrow(mainAssay(rv$dataIn))
       
       
-      df <- data.frame(query = paste0(unlist(rv.custom$Variablefiltering_query), collapse = " "),
-                       nbDeleted = nBefore - nAfter,
-                       TotalMainAssay = nrow(rv$dataIn[[length(rv$dataIn)]]))
+      df <- data.frame(
+        query = paste0(unlist(rv.custom$varQueries), collapse = " "),
+        nbDeleted = nBefore - nAfter,
+        TotalMainAssay = nrow(mainAssay(rv$dataIn))
+        )
       
       rv.custom$variable_Filter_SummaryDT <- rbind(rv.custom$variable_Filter_SummaryDT , 
                                                     df)
       
       # Add the parameters values to the new dataset
-      par <- rv.custom$Variablefiltering_query
+      par <- rv.custom$varQueries
       params(rv$dataIn[[length(rv$dataIn)]]) <- par
       
       #params(rv$dataIn, length(rv$dataIn)) <- reactiveValuesToList(rv.widgets)

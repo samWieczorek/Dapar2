@@ -47,7 +47,7 @@
 ##'   
 ##' @examples 
 ##' data(ft)
-##' design(ft)
+##' design.qf(ft)
 NULL
 
 ##' @exportMethod qMetadata
@@ -160,10 +160,13 @@ setMethod("typeDataset", "SummarizedExperiment",
 ##' @exportMethod idcol
 ##' @rdname QFeatures-accessors
 setMethod("idcol", "QFeatures",
-          function(object, i, slotName = "idcol")
+          function(object, i, slotName = "idcol"){
+            stopifnot(!is.null(object))
             lapply(object[[i]],
                         .GetMetadataSlot,
-                        slotName = slotName))
+                        slotName = slotName)
+          }
+)
 ##' @export
 ##' @rdname QFeatures-accessors
 setMethod("idcol", "SummarizedExperiment",
@@ -289,9 +292,9 @@ setMethod("version", "QFeatures",
 }
 
 
-##' @exportMethod design
+##' @exportMethod design.qf
 ##' @rdname QFeatures-accessors
-setMethod("design", "QFeatures",
+setMethod("design.qf", "QFeatures",
           function(object, slotName = "design")
             SummarizedExperiment::colData(object)
 )
@@ -300,7 +303,7 @@ setMethod("design", "QFeatures",
 
 ##' @export
 ##' @rdname QFeatures-accessors
-"design<-" <- function(object, slotName = "design", value) {
+"design.qf<-" <- function(object, slotName = "design", value) {
   stopifnot (inherits(object, "QFeatures"))
   SummarizedExperiment::colData(object)@listData <- value
   return(object)

@@ -252,3 +252,24 @@ nonzero <- function(x){
 #' @export
 GetExtension <- function(fname)
   strsplit(fname, '.', TRUE)[[1]][2]
+
+
+#' @title Convert a list to unnumbered HTML list
+#' @description xxx
+#' @param ll A `list()` of `character()`
+#' @export
+ConvertListToHtml <- function(ll){
+  if(length(ll) == 0)
+    return('-')
+  
+  paste0('<ul>',
+         paste0(
+           lapply(ll, 
+                  function(x){
+                    paste0('<li>', 
+                           paste0(x, collapse=' '), 
+                           '</li>')}),
+           collapse = " "),
+           '</ul>')
+  #}
+}

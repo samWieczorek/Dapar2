@@ -99,24 +99,24 @@ than a value equal to 0.
 Conversion rules
 Initial conversion rules for maxquant
 
-|--------------|-----------------|-----|
-| Quanti       |    PSM count    | Tag |
-|--------------|-----------------|-----|
-|  == 0 | N.A.	|   whatever 			| 2.0 |
-|  > 0		  		|    > 0		     	| 1.1 |
-|  > 0		  		|    == 0	      	| 1.2 |
-|  > 0		  		|   unknown col   | 1.0 |
-|--------------|-----------------|-----|
+|--------------|-----------------|-----|\tabular{lll}{
+   Quanti \tab PSM count \tab Tag \cr
+   == 0 \tab N.A. \tab whatever \cr
+   > 0 \tab > 0 \tab 1.1 \cr
+   > 0 \tab == 0 \tab 1.2 \cr
+   > 0 \tab unknown col \tab 1.0 \cr
+   -------------- \tab ----------------- \tab ----- \cr
+}
 
 Initial conversion rules for maxquant
-|------------|-----------------------|--------|
-| Quanti     |     Identification    |    Tag |
-|------------|-----------------------|--------|
-|  == 0			|       whatever 				|    2.0 |
-|  > 0				|       'By MS/MS'			|    1.1 |
-|  > 0				|      'By matching'		|    1.2 |
-|  > 0				|       unknown col			|    1.0 |
-|------------|-----------------------|--------|
+|------------|-----------------------|--------|\tabular{lll}{
+   Quanti \tab Identification \tab Tag \cr
+   == 0 \tab whatever \tab 2.0 \cr
+   > 0 \tab 'By MS/MS' \tab 1.1 \cr
+   > 0 \tab 'By matching' \tab 1.2 \cr
+   > 0 \tab unknown col \tab 1.0 \cr
+   ------------ \tab ----------------------- \tab -------- \cr
+}
 
 Similar to the function \code{is.na} but focused on the equality with
 the paramter 'type'.
@@ -186,11 +186,12 @@ Conversion from Maxquant datasets
 }
 
 \section{Basic agreagtion}{
-Agregation of non imputed values (2.X) with quantitative values
-(1.0, 1.X, 3.0, 3.X)
-|----------------------------
-Not possible
-|----------------------------\tabular{l}{
+Agregation of non imputed values (2.X) with quantitative values\tabular{l}{
+   (1.0, 1.X, 3.0, 3.X) \cr
+   Not possible \cr
+   ---------------------------- \cr
+}
+\tabular{l}{
    Agregation of different types of missing values (among 2.1, 2.2) \cr
 }
 

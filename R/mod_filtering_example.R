@@ -3,17 +3,17 @@
 #' @description 
 #' xxxxx
 #' 
-#' @name mod_filtering_example
+#' @name mod_filterExample
 #' 
 #' @examples 
 #' if(interactive()){
 #' 
 #' data(ft_na)
-#' ui <- mod_filtering_example_ui('example')
+#' ui <- mod_filterExample_ui('example')
 #' 
 #' server <- function(input, output, session) {
 #'   
-#'   mod_filtering_example_server(id = 'example',
+#'   mod_filterExample_server(id = 'example',
 #'                                objBefore = reactive({ft_na[[1]]}),
 #'                                objAfter = reactive({ft_na[[1]][-c(2, 6)]}),
 #'                                query = reactive({'query'})
@@ -27,12 +27,12 @@ NULL
 
 #' @param id
 #' 
-#' @rdname mod_filtering_example
+#' @rdname mod_filterExample
 #' 
 #' @import DT
 #' @export
 #' 
-mod_filtering_example_ui <- function(id){
+mod_filterExample_ui <- function(id){
   
   if (! requireNamespace("shinyBS", quietly = TRUE)) {
     stop("Please install shinyBS: BiocManager::install('shinyBS')")
@@ -66,16 +66,17 @@ mod_filtering_example_ui <- function(id){
 #' @param params xxx
 #' @param query A `character()` 
 #' 
-#' @rdname mod_filtering_example
+#' @rdname mod_filterExample
 #' 
 #' @import DT
 #' @export
 #' 
-mod_filtering_example_server <- function(id, 
-                                         objBefore, 
-                                         objAfter, 
-                                         query) {
+mod_filterExample_server <- function(id,
+                                     objBefore, 
+                                     objAfter,
+                                     query) {
   
+  require(DT)
   
   moduleServer(
     id,
@@ -84,9 +85,7 @@ mod_filtering_example_server <- function(id,
       indices <- reactiveVal()
       
       observe({
-        req(c(objBefore(), objAfter()))
-        req(!is.null(idcol(objBefore())))
-        req(!is.null(idcol(objAfter())))
+        req(objBefore(), objAfter())
         id.Before <- SummarizedExperiment::rowData(objBefore())[ ,idcol(objBefore())]
         id.After <- SummarizedExperiment::rowData(objAfter())[ ,idcol(objAfter())]
         indices(which(is.na(match(id.Before, id.After))))
@@ -102,13 +101,6 @@ mod_filtering_example_server <- function(id,
       # jqui_draggable(paste0("#","example_modal"," .modal-content"),
       #                options = list(revert=FALSE)
       # )
-      # ###############
-      
-      # colorsTypeMV = list(MEC = 'orange', 
-      #                     POV = 'lightblue',
-      #                     identified = 'white',
-      #                     recovered = 'lightgrey',
-      #                     combined = 'red')
       
       legendTypeMV = list(MEC = 'Missing in Entire Condition (MEC)', 
                           POV = "Partially Observed Value (POV)",
@@ -193,10 +185,10 @@ mod_filtering_example_server <- function(id,
                         )
                       ) %>%
       
-          formatStyle(
+          DT::formatStyle(
             colnames(df)[2:(1 + (ncol(df)-1)/2)],
             colnames(df)[range.invisible],
-            backgroundColor = styleEqual(c.tags, c.colors)
+            backgroundColor = DT::styleEqual(c.tags, c.colors)
           )
         
       })

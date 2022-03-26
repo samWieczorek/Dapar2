@@ -161,7 +161,7 @@ createQFeatures <- function(data = NULL,
   
   ## Encoding the sample data
   sample <- lapply(sample, function(x){ ReplaceSpecialChars(x)})
-  design(obj) <- sample
+  design.qf(obj) <- sample
   
   
   # Get the quantitative metadata 

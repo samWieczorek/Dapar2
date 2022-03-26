@@ -105,7 +105,7 @@ setMethod("aggregateFeatures4Prostar", "QFeatures",
             aggAssay <- aggregateFeatures4Prostar(object = object[[i]], 
                                                   fcol = fcol, 
                                                   fun = fun, 
-                                                  conds  = design(object)$Condition,
+                                                  conds  = design.qf(object)$Condition,
                                                   ...)
             #browser()
             ## Add the assay to the QFeatures object

@@ -18,8 +18,8 @@
 \alias{analysis<-}
 \alias{version,QFeatures-method}
 \alias{version<-}
-\alias{design,QFeatures-method}
-\alias{design<-}
+\alias{design.qf,QFeatures-method}
+\alias{design.qf<-}
 \alias{mainAssay}
 \alias{params,QFeatures-method}
 \alias{params,SummarizedExperiment-method}
@@ -58,9 +58,9 @@ analysis(object, i, slotName = "analysis") <- value
 
 version(object, slotName = "version") <- value
 
-\S4method{design}{QFeatures}(object, slotName = "design")
+\S4method{design.qf}{QFeatures}(object, slotName = "design")
 
-design(object, slotName = "design") <- value
+design.qf(object, slotName = "design") <- value
 
 mainAssay(object)
 
@@ -117,5 +117,5 @@ as generaled by the \code{\link[=sparseMatrix]{sparseMatrix()}} constructor.
 
 \examples{
 data(ft)
-design(ft)
+design.qf(ft)
 }

@@ -389,15 +389,17 @@ mod_build_qMetadata_FunctionFilter_server <- function(id,
 
       # Append a new FunctionFilter to the list
       dataOut$trigger <- as.numeric(Sys.time())
-      dataOut$value <- list(ll.fun = rv.custom$ll.fun,
-                            ll.query = rv.custom$ll.query,
-                            ll.widgets.value = rv.custom$ll.widgets.value)
+      dataOut$ll.fun = rv.custom$ll.fun
+      dataOut$ll.query = rv.custom$ll.query
+      dataOut$ll.widgets.value = rv.custom$ll.widgets.value
        })
     
     
     
     list(trigger = reactive({dataOut$trigger}),
-         value = reactive({dataOut$value})
+         ll.fun = reactive({dataOut$ll.fun}),
+         ll.query = reactive({dataOut$ll.query}),
+         ll.widgets.value = reactive({dataOut$ll.widgets.value})
          )
 
 
