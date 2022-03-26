@@ -251,10 +251,11 @@ mod_Filtering_server <- function(id,
                             conds = design.qf(rv$dataIn)$Condition
                             )
       
-    output$qMetadata_Filter_Summary_DT <- DT::renderDataTable(server=TRUE,{
-      df <- rv.custom$qMetadata_Filter_SummaryDT
-      df[,'query'] <- ConvertListToHtml(rv.custom$funFilter$ll.query())
-      showDT(df)
+    output$qMetadata_Filter_DT <- DT::renderDataTable(
+      server=TRUE,{
+        df <- rv.custom$qMetadata_Filter_SummaryDT
+        df[,'query'] <- ConvertListToHtml(rv.custom$funFilter$ll.query())
+        showDT(df)
     })
     
     output$Quantimetadatafiltering_buildQuery_ui <- renderUI({
@@ -346,8 +347,6 @@ mod_Filtering_server <- function(id,
       req(length(rv.custom$varFilters) > 0)
       req(rv$steps.status['Variablefiltering'] == 0)
       
-      
-      browser()
       temp <- filterFeaturesOneSE(object = mainAssay(rv$dataIn),
                                   filters = rv.custom$varFilters)
       
@@ -471,20 +470,11 @@ mod_Filtering_server <- function(id,
       nAfter <- nrow(mainAssay(rv$dataIn))
       
       
-      df <- data.frame(
-        query = paste0(unlist(rv.custom$varQueries), collapse = " "),
-        nbDeleted = nBefore - nAfter,
-        TotalMainAssay = nrow(mainAssay(rv$dataIn))
-        )
-      
-      rv.custom$variable_Filter_SummaryDT <- rbind(rv.custom$variable_Filter_SummaryDT , 
-                                                    df)
+      rv.custom$varFilter_DT[, 'nbDeleted']  <- nBefore - nAfter
+      rv.custom$varFilter_DT[, 'TotalMainAssay']  <- nrow(mainAssay(rv$dataIn))
       
       # Add the parameters values to the new dataset
-      par <- rv.custom$varQueries
-      params(rv$dataIn[[length(rv$dataIn)]]) <- par
-      
-      #params(rv$dataIn, length(rv$dataIn)) <- reactiveValuesToList(rv.widgets)
+      params(rv$dataIn[[length(rv$dataIn)]]) <- rv.custom$varQueries
       
       dataOut$trigger <- Magellan::Timestamp()
       dataOut$value <- rv$dataIn
