@@ -10,8 +10,12 @@ mod_Convert_ui(id)
 mod_Convert_server(
   id,
   dataIn = NULL,
-  steps.enabled = reactive({     NULL }),
-  remoteReset = reactive({     FALSE })
+  steps.enabled = reactive({
+     NULL
+ }),
+  remoteReset = reactive({
+     FALSE
+ })
 )
 }
 \arguments{

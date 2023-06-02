@@ -17,21 +17,23 @@ mod_helpPopover_server(id, title, content)
 
 \item{content}{A \code{character()} xxx}
 }
+\value{
+NA
+}
 \description{
 A shiny Module.
 }
 \examples{
-if (interactive()){
-ui <- mod_helpPopover_ui('help')
+if (interactive()) {
+    ui <- mod_helpPopover_ui("help")
 
- server <- function(input, output, session) {
-  mod_helpPopover_server('help',
-                         title = 'Foo',
-                         content = 'xxx'
-                         )
- }
- 
- shinyApp(ui=ui, server=server)
+    server <- function(input, output, session) {
+        mod_helpPopover_server("help",
+            title = "Foo",
+            content = "xxx"
+        )
+    }
 
+    shinyApp(ui = ui, server = server)
 }
 }

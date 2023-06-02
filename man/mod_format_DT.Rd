@@ -2,52 +2,60 @@
 % Please edit documentation in R/mod_format_DT.R
 \name{mod_format_DT}
 \alias{mod_format_DT}
-\alias{mod_format_DT_ui}
-\alias{mod_format_DT_server}
+\alias{format_DT_ui}
+\alias{format_DT_server}
 \title{mod_format_DT_ui and mod_format_DT_server}
 \usage{
-mod_format_DT_ui(id)
+format_DT_ui(id)
 
-mod_format_DT_server(
+format_DT_server(
   id,
-  df,
-  rownames = FALSE,
+  data = reactive({
+     NULL
+ }),
+  withDLBtns = FALSE,
+  showRownames = FALSE,
   dom = "Bt",
-  style = reactive({     NULL })
+  hc_style = reactive({
+     NULL
+ }),
+  full_style = reactive({
+     NULL
+ }),
+  filename = "Prostar_export",
+  hideCols = reactive({
+     NULL
+ })
 )
 }
 \arguments{
-\item{id}{internal}
+\item{id}{shiny id}
 
-\item{df}{internal}
+\item{data}{xxx}
 
-\item{rownames}{xxxx}
+\item{withDLBtns}{xxx}
+
+\item{showRownames}{xxx}
 
 \item{dom}{xxx}
 
-\item{style}{xxx}
+\item{hc_style}{xxx}
+
+\item{full_style}{A list of four items:
+\itemize{
+\item cols: a vector of colnames of columns to show,
+\item vals: a vector of colnames of columns that contain values,
+\item unique: unique(conds),
+\item pal: RColorBrewer::brewer.pal(3, "Dark2")\link{seq_len(2)}
+}}
+
+\item{filename}{xxx}
+
+\item{hideCols}{xxx}
+}
+\value{
+NA
 }
 \description{
 A shiny Module.
-}
-\examples{
-if(interactive()){
- library(QFeatures)
- library(shiny)
- library(DaparToolshed)
- data(ft)
- 
-  
- ui <- mod_format_DT_ui('dt')
-
- server <- function(input, output, session) {
-  mod_format_DT_server(id = 'dt',
-                       df = reactive({assay(ft,1)})
-                       )
-  }
- 
- shinyApp(ui=ui, server=server)
-}
-
-
 }

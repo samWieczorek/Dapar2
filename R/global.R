@@ -1,12 +1,12 @@
 # btn_success_color <- "btn-success"
- optionsBtnClass <- "info"
+optionsBtnClass <- "info"
 # redBtnClass <- "btn-danger"
 # PrevNextBtnClass <- "btn-info"
 # actionBtnClass <- "btn-primary"
-# 
-# 
+#
+#
 # btn_style <- "display:inline-block; vertical-align: middle; padding: 7px"
-# 
+#
 
 # list.plots.module <- c(
 #   'mod_plots_se_explorer',
@@ -17,4 +17,3 @@
 #   'mod_plots_heatmap',
 #   'mod_plots_group_mv'
 # )
-

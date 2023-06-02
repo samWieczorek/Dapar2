@@ -32,8 +32,8 @@ createQFeatures(
 of a column in designTable that have to be integrated in
 the \code{rowData()} table of the \code{QFeatures} object.}
 
-\item{keyId}{A \code{character(1)} or \code{numeric(1)} which is the indice of the column containing the ID of entities
-(peptides or proteins)}
+\item{keyId}{A \code{character(1)} or \code{numeric(1)} which is the indice of the
+column containing the ID of entities (peptides or proteins)}
 
 \item{indQMetadata}{xxxxxxxxxxx}
 
@@ -42,21 +42,23 @@ quantitative values  must be replaced by 'NA' (Default is FALSE)}
 
 \item{typeDataset}{A string that indicates whether the dataset is about}
 
-\item{parentProtId}{A \code{character(1)} For peptide entities, a string which is the name of a column in rowData. It contains the id of parent
-proteins and is used to generate adjacency matrix and process to aggregation.}
+\item{parentProtId}{A \code{character(1)} For peptide entities, a string which
+is the name of a column in rowData. It contains the id of parent proteins
+and is used to generate adjacency matrix and process to aggregation.}
 
 \item{analysis}{A \code{character(1)} which is the name of the MS study.}
 
-\item{processes}{A vector of A \code{character()} which contains the name of processes
-which has already been run on the data. Default is 'original'.}
+\item{processes}{A vector of A \code{character()} which contains the name of
+processes which has already been run on the data. Default is 'original'.}
 
-\item{typePipeline}{A \code{character(1)} The type of pipeline used with this dataset. The list of predefined
-pipelines in DaparToolshed can be obtained with the function \code{pipelines()}. Default value is NULL}
+\item{typePipeline}{A \code{character(1)} The type of pipeline used with this
+dataset. The list of predefined pipelines in DaparToolshed can be obtained
+with the function \code{pipelines()}. Default value is NULL}
 
 \item{software}{A \code{character(1)}}
 
-\item{name}{A \code{character(1)} which is the name of the assay in the QFeatures object.
-Default is 'original'}
+\item{name}{A \code{character(1)} which is the name of the assay in the
+QFeatures object. Default is 'original'}
 }
 \value{
 An instance of class \code{QFeatures}.
@@ -68,14 +70,25 @@ for the samples description.
 }
 \examples{
 {
-data.file <- system.file("extdata", "Exp1_R25_pept.txt", package="DaparToolshedData")
-data <- read.table(data.file, header=TRUE, sep="\t", as.is=TRUE, stringsAsFactors = FALSE)
-sample.file <- system.file("extdata", "samples_Exp1_R25.txt", package="DaparToolshedData")
-sample <- read.table(sample.file, header=TRUE, sep="\t", as.is=TRUE, stringsAsFactors = FALSE)
-ft <- createQFeatures(data = data, sample = sample, indQData = 56:61, 
-keyId = 'Sequence', analysis = 'test',
-indQMetadata = 43:48, typeDataset = 'peptide',
-parentProtId = 'Protein_group_IDs', forceNA = TRUE, software = 'maxquant')
+    data.file <- system.file("extdata", "Exp1_R25_pept.txt", 
+    package = "DaparToolshedData")
+    data <- read.table(data.file, header = TRUE, sep = "\t", 
+    as.is = TRUE, stringsAsFactors = FALSE)
+    sample.file <- system.file("extdata", "samples_Exp1_R25.txt", 
+    package = "DaparToolshedData")
+    sample <- read.table(sample.file, header = TRUE, sep = "\t", 
+    as.is = TRUE, stringsAsFactors = FALSE)
+    ft <- createQFeatures(
+        data = data, sample = sample, 
+        indQData = 56:61,
+        keyId = "Sequence", 
+        analysis = "test",
+        indQMetadata = 43:48, 
+        typeDataset = "peptide",
+        parentProtId = "Protein_group_IDs", 
+        forceNA = TRUE, 
+        software = "maxquant"
+    )
 }
 
 }

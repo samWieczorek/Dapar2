@@ -5,6 +5,8 @@
 \alias{qMetadata,QFeatures-method}
 \alias{qMetadata,SummarizedExperiment-method}
 \alias{qMetadata<-}
+\alias{.GetMetadataSlot}
+\alias{.GetRowdataSlot}
 \alias{typeDataset,QFeatures-method}
 \alias{typeDataset,SummarizedExperiment-method}
 \alias{typeDataset<-}
@@ -12,6 +14,7 @@
 \alias{idcol,SummarizedExperiment-method}
 \alias{idcol<-}
 \alias{parentProtId,QFeatures-method}
+\alias{parentProtId,SummarizedExperiment-method}
 \alias{parentProtId<-}
 \alias{analysis,QFeatures-method}
 \alias{analysis,SummarizedExperiment-method}
@@ -32,6 +35,10 @@
 
 qMetadata(object, i, slotName = "qMetadata") <- value
 
+.GetMetadataSlot(object, slotName = NULL)
+
+.GetRowdataSlot(object, slotName = NULL)
+
 \S4method{typeDataset}{QFeatures}(object, i, slotName = "typeDataset")
 
 \S4method{typeDataset}{SummarizedExperiment}(object, slotName = "typeDataset")
@@ -45,6 +52,8 @@ typeDataset(object, i, slotName = "typeDataset") <- value
 idcol(object, i, slotName = "idcol") <- value
 
 \S4method{parentProtId}{QFeatures}(object, i, slotName = "parentProtId")
+
+\S4method{parentProtId}{SummarizedExperiment}(object, slotName = "parentProtId")
 
 parentProtId(object, i, slotName = "parentProtId") <- value
 
@@ -73,18 +82,31 @@ params(object, i, slotName = "params") <- value
 \arguments{
 \item{object}{An instance of class \code{SummarizedExperiment} or \code{QFeatures}.}
 
-\item{i}{The index or name of the assays to extract the quantitative metadata
-from. All must have a rowdata variable named as \code{slotName}}
+\item{i}{The index or name of the assays to extract the quantitative
+metadata from. All must have a rowdata variable named as \code{slotName}}
 
 \item{slotName}{xxx}
 
 \item{value}{xxx}
 }
+\value{
+NA
+
+NA
+
+NA
+
+NA
+
+NA
+
+NA
+}
 \description{
 These names are common to all assays contained in the object. This is why
-they are stored in the global metadata. This function is used whenever it is necessary
-to (re)detect MEC and POV (new dataset or when post processing protein qMetadata
-after aggregation)
+they are stored in the global metadata. This function is used whenever it i
+s necessary to (re)detect MEC and POV (new dataset or when post processing
+protein qMetadata after aggregation)
 }
 \details{
 Additional slots for rowdata of a \code{SummarizedExperiment} object:
@@ -116,6 +138,6 @@ as generaled by the \code{\link[=sparseMatrix]{sparseMatrix()}} constructor.
 }
 
 \examples{
-data(ft)
+data(ft, package='DaparToolshed')
 design.qf(ft)
 }

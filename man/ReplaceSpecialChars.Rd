@@ -19,7 +19,7 @@ with functions of \link{Shinyjs}, \link{Shiny}
 }
 \examples{
 
-ReplaceSpecialChars(c('foo.1', 'foo-2', 'foo 3'))
+ReplaceSpecialChars(c("foo.1", "foo-2", "foo 3"))
 
 }
 \author{

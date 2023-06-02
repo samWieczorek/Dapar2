@@ -109,14 +109,14 @@ Initial conversion rules for maxquant
 }
 
 Initial conversion rules for maxquant
-|------------|-----------------------|--------|\tabular{lll}{
-   Quanti \tab Identification \tab Tag \cr
-   == 0 \tab whatever \tab 2.0 \cr
-   > 0 \tab 'By MS/MS' \tab 1.1 \cr
-   > 0 \tab 'By matching' \tab 1.2 \cr
-   > 0 \tab unknown col \tab 1.0 \cr
-   ------------ \tab ----------------------- \tab -------- \cr
-}
+|------------|-----------------------|--------|
+| Quanti     |     Identification    |    Tag |
+|------------|-----------------------|--------|
+|  == 0			|       whatever 				|    2.0 |
+|  > 0				|       'By MS/MS'			|    1.1 |
+|  > 0				|      'By matching'		|    1.2 |
+|  > 0				|       unknown col			|    1.0 |
+|------------|-----------------------|--------|
 
 Similar to the function \code{is.na} but focused on the equality with
 the paramter 'type'.
@@ -229,109 +229,112 @@ TODO
 
 
 #-----------------------------------------------
-# A shiny app to view color legends 
+# A shiny app to view color legends
 #-----------------------------------------------
-if(interactive()){
-data(ft)
-ui <- mod_qMetadataLegend_ui("legend")
+if (interactive()) {
+    data(ft, package='DaparToolshed')
+    ui <- mod_qMetadataLegend_ui("legend")
 
-server <- function(input, output, session) {
-  mod_qMetadataLegend_server('legend',
-                                object = reactive({ft[[1]]}))
-  }
-  
- shinyApp(ui = ui, server = server)
-  
-  
+    server <- function(input, output, session) {
+        mod_qMetadataLegend_server("legend",
+            object = reactive({
+                ft[[1]]
+            })
+        )
+    }
+
+    shinyApp(ui = ui, server = server)
 }
-data(ft_na)
+library(SummarizedExperiment)
+data(ft_na, package='DaparToolshed')
 df <- assay(ft_na, 2)
 level <- typeDataset(ft_na, 1)
 df <- Set_POV_MEC_tags(ft_na, 1, level)
 
-file <- system.file("extdata", "Exp1_R25_pept.txt", package="DaparToolshedData")
-data <- read.table(file, header=TRUE, sep="\t",stringsAsFactors = FALSE)
-metadataFile <- system.file("extdata", "samples_Exp1_R25.txt", 
-package="DaparToolshedData")
-metadata <- read.table(metadataFile, header=TRUE, sep="\t", as.is=TRUE, 
-stringsAsFactors = FALSE)
+file <- system.file("extdata", "Exp1_R25_pept.txt", package = "DaparToolshedData")
+data <- read.table(file, header = TRUE, sep = "\t", stringsAsFactors = FALSE)
+metadataFile <- system.file("extdata", "samples_Exp1_R25.txt",
+    package = "DaparToolshedData"
+)
+metadata <- read.table(metadataFile,
+    header = TRUE, sep = "\t", as.is = TRUE,
+    stringsAsFactors = FALSE
+)
 conds <- metadata$Condition
-qdata <- data[,56:61]
-df <- data[ , 43:48]
-df <- BuildqMetadata('maxquant', 'peptide', qdata, conds, df)
-df <- BuildqMetadata('proline', 'peptide', qdata, conds, df)
+qdata <- data[, 56:61]
+df <- data[, 43:48]
+df <- BuildqMetadata("maxquant", "peptide", qdata, conds, df)
+df <- BuildqMetadata("proline", "peptide", qdata, conds, df)
 
-file <- system.file("extdata", "Exp1_R25_pept.txt", package="DaparToolshedData")
-data <- read.table(file, header=TRUE, sep="\t",stringsAsFactors = FALSE)
-metadataFile <- system.file("extdata", "samples_Exp1_R25.txt", 
-package="DaparToolshedData")
-metadata <- read.table(metadataFile, header=TRUE, sep="\t", as.is=TRUE, 
-stringsAsFactors = FALSE)
+file <- system.file("extdata", "Exp1_R25_pept.txt", package = "DaparToolshedData")
+data <- read.table(file, header = TRUE, sep = "\t", stringsAsFactors = FALSE)
+metadataFile <- system.file("extdata", "samples_Exp1_R25.txt",
+    package = "DaparToolshedData"
+)
+metadata <- read.table(metadataFile,
+    header = TRUE, sep = "\t", as.is = TRUE,
+    stringsAsFactors = FALSE
+)
 conds <- metadata$Condition
 qdata <- data[seq_len(100), seq(56, 61)]
-df <- data[seq_len(100) , seq(43,48)]
-df <- qMetadata_generic(qdata, conds, 'peptide')
+df <- data[seq_len(100), seq(43, 48)]
+df <- qMetadata_generic(qdata, conds, "peptide")
 
-\donttest{ 
-file <- system.file("extdata", "Exp1_R25_pept.txt", package="DaparToolshedData")
-data <- read.table(file, header=TRUE, sep="\t",stringsAsFactors = FALSE)
-metadataFile <- system.file("extdata", "samples_Exp1_R25.txt", 
-package="DaparToolshedData")
-metadata <- read.table(metadataFile, header=TRUE, sep="\t", as.is=TRUE, 
-stringsAsFactors = FALSE)
+\donttest{
+file <- system.file("extdata", "Exp1_R25_pept.txt", package = "DaparToolshedData")
+data <- read.table(file, header = TRUE, sep = "\t", stringsAsFactors = FALSE)
+metadataFile <- system.file("extdata", "samples_Exp1_R25.txt",
+    package = "DaparToolshedData"
+)
+metadata <- read.table(metadataFile,
+    header = TRUE, sep = "\t", as.is = TRUE,
+    stringsAsFactors = FALSE
+)
 conds <- metadata$Condition
 qdata <- data[seq_len(100), seq(56, 61)]
-df <- data[seq_len(100) , seq(43, 48)]
-df <- qMetadata_proline(qdata, conds, df, 'peptide')
+df <- data[seq_len(100), seq(43, 48)]
+df <- qMetadata_proline(qdata, conds, df, "peptide")
 }
 
-file <- system.file("extdata", "Exp1_R25_pept.txt", package="DaparToolshedData")
-data <- read.table(file, header=TRUE, sep="\t",stringsAsFactors = FALSE)
-metadataFile <- system.file("extdata", "samples_Exp1_R25.txt", 
-package="DaparToolshedData")
-metadata <- read.table(metadataFile, header=TRUE, sep="\t", as.is=TRUE, 
-stringsAsFactors = FALSE)
+file <- system.file("extdata", "Exp1_R25_pept.txt", package = "DaparToolshedData")
+data <- read.table(file, header = TRUE, sep = "\t", stringsAsFactors = FALSE)
+metadataFile <- system.file("extdata", "samples_Exp1_R25.txt",
+    package = "DaparToolshedData"
+)
+metadata <- read.table(metadataFile,
+    header = TRUE, sep = "\t", as.is = TRUE,
+    stringsAsFactors = FALSE
+)
 conds <- metadata$Condition
-qdata <- data[seq_len(10),seq(56, 61)]
-df <- data[seq_len(10) , seq(43, 48)]
-df2 <- qMetadata_maxquant(qdata, conds, df, 'peptide')
+qdata <- data[seq_len(10), seq(56, 61)]
+df <- data[seq_len(10), seq(43, 48)]
+df2 <- qMetadata_maxquant(qdata, conds, df, "peptide")
 
-data(ft)
+data(ft, package='DaparToolshed')
 obj <- ft[[1]]
 metadata <- qMetadata(obj)
-m <- match.qMetadata(metadata, "missing", 'peptide')
+m <- match.qMetadata(metadata, "missing", "peptide")
 
 
-obj <- Exp1_R25_pept[seq_len(10),]
-obj[[2]] <- UpdateqMetadata(obj[[2]], 'missing', 'imputed')
+obj <- Exp1_R25_pept[seq_len(10), ]
+obj[[2]] <- UpdateqMetadata(obj[[2]], "missing", "imputed")
 
-search.qMetadata.tags('missing POV', 'peptide')
-search.qMetadata.tags('quanti', 'peptide')
+search.qMetadata.tags("missing POV", "peptide")
+search.qMetadata.tags("quanti", "peptide")
 
 \dontrun{
-ll <- qMetadata.def('peptide')$node
-for (i in 1:length(ll))
-test <- lapply(combn(ll, i, simplify = FALSE), 
-function(x) tag <- qMetadata_combine(x, 'peptide'))
+ll <- qMetadata.def("peptide")$node
+for (i in seq(length(ll))) {
+    test <- lapply(
+        combn(ll, i, simplify = FALSE),
+        function(x) tag <- qMetadata_combine(x, "peptide")
+    )
+}
 }
 
 }
 \author{
 Thomas Burger, Samuel Wieczorek
-
-Samuel Wieczorek
-
-Samuel Wieczorek
-
-Samuel Wieczorek
-
-Samuel Wieczorek
-
-Samuel Wieczorek
-
-Samuel Wieczorek
-
-Samuel Wieczorek
 
 Samuel Wieczorek
 }

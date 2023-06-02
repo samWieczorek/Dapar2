@@ -12,12 +12,24 @@ mod_build_qMetadata_FunctionFilter_server(
   id,
   obj,
   conds,
-  list_tags = reactive({     NULL }),
-  keep_vs_remove = reactive({     NULL }),
-  val_vs_percent = reactive({     NULL }),
-  operator = reactive({     NULL }),
-  reset = reactive({     NULL }),
-  is.enabled = reactive({     TRUE })
+  list_tags = reactive({
+     NULL
+ }),
+  keep_vs_remove = reactive({
+     NULL
+ }),
+  val_vs_percent = reactive({
+     NULL
+ }),
+  operator = reactive({
+     NULL
+ }),
+  reset = reactive({
+     NULL
+ }),
+  is.enabled = reactive({
+     TRUE
+ })
 )
 }
 \arguments{
@@ -42,38 +54,66 @@ length of this vector must be equal to the number of samples in the assay
 \item{is.enabled}{A \code{logical(1)} that indicates whether the module is
 enabled or disabled. This is a remote command.}
 }
+\value{
+As for all modules used with \code{MagellanNTK}, the return value is a
+\code{list()} of two items:
+\itemize{
+\item trigger : xxx
+\item value: In this case, it contains a list() of three slots:
+\itemize{
+\item ll.fun: a list() of instances of the class \code{FunctionFilter},
+\item ll.query: a list of \code{character()} which describe the queries in natural
+language,
+\item ll.widgets.value: a list of the values of widgets.
+}
+}
+}
 \description{
 This function is a shiny module to create a list of queries (instances of the
 class \code{FunctionFilter} to filter the quantitative metadata of an instance
 of the class \code{SummarizedExperiment})
 }
 \examples{
-if (interactive()){
-data(ft_na)
-ui <- mod_build_qMetadata_FunctionFilter_ui('query')
+if (interactive()) {
+    data(ft_na, package='DaparToolshed')
+    ui <- mod_build_qMetadata_FunctionFilter_ui("query")
 
-server <- function(input, output, session) {
-  
-  rv <- reactiveValues(
-    res = NULL
-  )
-  ll.tags <- c('None' = 'None', 
-               qMetadata.def(typeDataset(ft_na[[1]]))$node)
-  rv.custom$res <- mod_build_qMetadata_FunctionFilter_server('query', 
-                                                      obj = reactive({ft_na[[1]]}),
-                                                      conds = reactive({colData(ft_na)$Condition}),
-                                                      list_tags = reactive({ll.tags}),
-                                                      keep_vs_remove = reactive({setNames(nm = c("delete", "keep"))}),
-                                                      val_vs_percent = reactive({setNames(nm=c('Count', 'Percentage'))}),
-                                                      operator = reactive({setNames(nm = SymFilteringOperators())})
-  )
-  
-  
-  observeEvent(rv.custom$res$dataOut()$trigger, ignoreNULL = TRUE, ignoreInit = TRUE, {
-    print(rv.custom$res$dataOut()$fun)
-  })
-}
+    server <- function(input, output, session) {
+        rv <- reactiveValues(
+            res = NULL
+        )
+        ll.tags <- c(
+            "None" = "None",
+            qMetadata.def(typeDataset(ft_na[[1]]))$node
+        )
+        rv.custom$res <- mod_build_qMetadata_FunctionFilter_server("query",
+            obj = reactive({
+                ft_na[[1]]
+            }),
+            conds = reactive({
+                colData(ft_na)$Condition
+            }),
+            list_tags = reactive({
+                ll.tags
+            }),
+            keep_vs_remove = reactive({
+                setNames(nm = c("delete", "keep"))
+            }),
+            val_vs_percent = reactive({
+                setNames(nm = c("Count", "Percentage"))
+            }),
+            operator = reactive({
+                setNames(nm = SymFilteringOperators())
+            })
+        )
 
-shinyApp(ui=ui, server=server)
+
+        observeEvent(rv.custom$res$dataOut()$trigger, ignoreNULL = TRUE, 
+        ignoreInit = TRUE, {
+            print(rv.custom$res$dataOut()$fun)
+        })
+    }
+
+    shinyApp(ui = ui, server = server)
 }
 }
