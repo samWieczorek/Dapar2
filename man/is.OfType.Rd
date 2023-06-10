@@ -23,7 +23,7 @@ with the paramter 'type'.
 library(QFeatures)
 data(ft, package='DaparToolshed')
 obj <- ft[[1]]
-data <- qMetadata(obj)
+data <- qMetacell(obj)
 is.OfType(as.data.frame(data), "MEC")
 
 }

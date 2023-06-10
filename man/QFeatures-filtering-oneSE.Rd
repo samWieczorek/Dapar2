@@ -97,7 +97,7 @@ FunctionFilter('FUN',
                param1 = 'value_of_param1',
                param2 = 'value_of_param2')
 
-FunctionFilter('qMetadataWholeLine',
+FunctionFilter('qMetacellWholeLine',
                cmd = 'delete',
                pattern = 'imputed POV')
 
@@ -128,7 +128,7 @@ filterFeaturesOneSE(feat1, lst.filters)
 ## condition, there is less than 80\% of samples marked as 'imputed POV'
 ## ----------------------------------------------------------------
 
-filter <- FunctionFilter('qMetadataOnConditions',
+filter <- FunctionFilter('qMetacellOnConditions',
 cmd = 'delete',
 mode = 'AtLeastOneCond',
 pattern = 'imputed POV',

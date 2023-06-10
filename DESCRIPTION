@@ -92,7 +92,7 @@ Collate:
     DaparToolshed.R
     QFeatures_utils.R
     example-data.R
-    qMetadata.R
+    metacell.R
     DaparToolshed_aggregate.R
     DaparToolshed_filter_Adjmat.R
     DaparToolshed_QFeatures_Addons.R
@@ -120,7 +120,6 @@ Collate:
     mod_tracker.R
     mod_metacell_tree.R
     mod_query_metacell.R
-    metacell.R
 RoxygenNote: 7.2.3
 Packaged: 2017-10-13 11:13:04 UTC; sw175264
 Encoding: UTF-8

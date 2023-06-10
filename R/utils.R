@@ -1,3 +1,25 @@
+#' @title Loads packages
+#' 
+#' @description Checks if a package is available to load it
+#' 
+#' @param ll.deps A `character()` vector which contains packages names
+#' 
+#' @examples 
+#' pkgs.require('DAPAR')
+#' 
+#' @export
+#' 
+#' @author Samuel Wieczorek
+#' 
+pkgs.require <- function(ll.deps){
+  lapply(ll.deps, function(x) {
+    if (!requireNamespace(x, quietly = TRUE)) {
+      stop(paste0("Please install ", x, ": BiocManager::install('", x, "')"))
+    }
+  })
+}
+
+
 
 #' @title Standardize names
 #'
@@ -141,7 +163,7 @@ nEmptyLines <- function(df) {
 #' library(QFeatures)
 #' data(ft, package='DaparToolshed')
 #' obj <- ft[[1]]
-#' data <- qMetadata(obj)
+#' data <- qMetacell(obj)
 #' is.OfType(as.data.frame(data), "MEC")
 #'
 #' @export

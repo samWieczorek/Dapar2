@@ -388,7 +388,7 @@ mod_Agregation_server <- function(id,
 
         output$warningAgregationMethod <- renderUI({
             req(rv$dataIn)
-            m <- match.qMetadata(qMetadata(rv$dataIn, length(rv$dataIn)),
+            m <- match.qMetacell(qMetacell(rv$dataIn, length(rv$dataIn)),
                 pattern = "missing",
                 level = "peptide"
             )

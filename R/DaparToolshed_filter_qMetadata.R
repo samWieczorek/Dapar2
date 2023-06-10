@@ -5,7 +5,7 @@
 #' This function looks for the lines that respect the request in either all 
 #' conditions or at least one condition.
 #'
-#' @name qMetadata-filter
+#' @name qMetacell-filter
 #' 
 #' @return NA
 #'
@@ -14,29 +14,29 @@
 #' obj <- ft[[1]]
 #' level <- typeOfData(ft, 1)
 #' pattern <- "missing"
-#' mask <- match.qMetadata(
-#'     metadata = qMetadata(obj),
+#' mask <- match.qMetacell(
+#'     metadata = qMetacell(obj),
 #'     pattern = pattern,
 #'     level = level
 #' )
 #' percent <- FALSE
 #' th <- 3
 #' op <- ">="
-#' ind <- qMetadataWholeMatrix(mask, op, percent, th)
+#' ind <- qMetacellWholeMatrix(mask, op, percent, th)
 #'
 #' data(ft, package='DaparToolshed')
 #' obj <- ft[[1]]
-#' mask <- match.qMetadata(
-#'     metadata = qMetadata(obj),
+#' mask <- match.qMetacell(
+#'     metadata = qMetacell(obj),
 #'     pattern = "missing POV",
 #'     level = typeOfData(obj)
 #' )
-#' ind <- qMetadataWholeLine(mask)
+#' ind <- qMetacellWholeLine(mask)
 #'
 #' #' data(ft, package='DaparToolshed')
 #' obj <- ft[[1]]
-#' mask <- match.qMetadata(
-#'     metadata = qMetadata(obj),
+#' mask <- match.qMetacell(
+#'     metadata = qMetacell(obj),
 #'     pattern = "missing",
 #'     level = typeOfData(obj)
 #' )
@@ -45,7 +45,7 @@
 #' op <- ">="
 #' th <- 2
 #' percent <- FALSE
-#' ind <- qMetadataOnConditions(mask, type, conds, percent, op, th)
+#' ind <- qMetacellOnConditions(mask, type, conds, percent, op, th)
 #'
 NULL
 
@@ -53,14 +53,14 @@ NULL
 #'
 #' @export
 #'
-#' @rdname qMetadata-filter
+#' @rdname qMetacell-filter
 #'
 #' @return NA
 #' 
 #' @examples
-#' qMetadataFilteringScope()
+#' qMetacellFilteringScope()
 #'
-qMetadataFilteringScope <- function() {
+qMetacellFilteringScope <- function() {
     c(
         "None",
         "WholeLine",
@@ -76,7 +76,7 @@ qMetadataFilteringScope <- function() {
 #'
 #' @export
 #'
-#' @rdname qMetadata-filter
+#' @rdname qMetacell-filter
 #'
 #' @return NA
 #' 
@@ -111,12 +111,12 @@ SymFilteringOperators <- function() {
 #'
 #' @export
 #'
-#' @rdname qMetadata-filter
+#' @rdname qMetacell-filter
 #' 
 #' @examples 
 #' NA
 #'
-qMetadataWholeMatrix <- function(object, cmd, pattern, percent, th, operator) {
+qMetacellWholeMatrix <- function(object, cmd, pattern, percent, th, operator) {
     if (missing(object)) {
         return(NULL)
     }
@@ -137,7 +137,7 @@ qMetadataWholeMatrix <- function(object, cmd, pattern, percent, th, operator) {
     }
 
     stopifnot(inherits(object, "SummarizedExperiment"))
-    stopifnot("qMetadata" %in% names(rowData(object)))
+    stopifnot("qMetacell" %in% names(rowData(object)))
 
     stopifnot(!is.null(cmd) || (cmd %in% c("keep", "delete")))
 
@@ -146,8 +146,8 @@ qMetadataWholeMatrix <- function(object, cmd, pattern, percent, th, operator) {
 
 
     # Check parameters
-    mask <- match.qMetadata(
-        df = qMetadata(object),
+    mask <- match.qMetacell(
+        df = qMetacell(object),
         pattern = pattern,
         level = level
     )
@@ -202,9 +202,9 @@ qMetadataWholeMatrix <- function(object, cmd, pattern, percent, th, operator) {
 #' @return NA
 #' @export
 #'
-#' @rdname qMetadata-filter
+#' @rdname qMetacell-filter
 #'
-qMetadataWholeLine <- function(object, cmd, pattern) {
+qMetacellWholeLine <- function(object, cmd, pattern) {
     if (missing(object)) {
         return(NULL)
     }
@@ -217,19 +217,19 @@ qMetadataWholeLine <- function(object, cmd, pattern) {
 
 
     stopifnot(inherits(object, "SummarizedExperiment"))
-    stopifnot("qMetadata" %in% names(SummarizedExperiment::rowData(object)))
+    stopifnot("qMetacell" %in% names(SummarizedExperiment::rowData(object)))
     stopifnot(!is.null(cmd) || (cmd %in% c("keep", "delete")))
 
     indices <- NULL
     level <- typeDataset(object)
 
-    if (!(pattern %in% qMetadata.def(level)$node)) {
+    if (!(pattern %in% qMetacell.def(level)$node)) {
         warning("Either 'pattern' nor 'type' are equal to 'None'")
         return(NULL)
     }
 
-    mask <- match.qMetadata(
-        df = qMetadata(object),
+    mask <- match.qMetacell(
+        df = qMetacell(object),
         pattern = pattern,
         level = level
     )
@@ -266,9 +266,9 @@ qMetadataWholeLine <- function(object, cmd, pattern) {
 #' @return NA
 #' @export
 #'
-#' @rdname qMetadata-filter
+#' @rdname qMetacell-filter
 #'
-qMetadataOnConditions <- function(object,
+qMetacellOnConditions <- function(object,
     cmd,
     mode,
     pattern,
@@ -325,8 +325,8 @@ qMetadataOnConditions <- function(object,
     }
 
 
-    mask <- match.qMetadata(
-        df = qMetadata(object),
+    mask <- match.qMetacell(
+        df = qMetacell(object),
         pattern = pattern,
         level = typeDataset(object)
     )

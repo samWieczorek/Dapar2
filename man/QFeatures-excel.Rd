@@ -46,11 +46,11 @@ The resulting file is composed of four sheets:
 \item \verb{quantitative data} which contains the content of \code{\link[=assay]{assay()}} object whith a
 color code for each cell w.r.t. to cell quantitative metadata.
 \item \code{metadata} which is the content of \code{\link[=rowData]{rowData()}} with only one-dimensionnal
-data (i.e. the adjacencyMatrix and the qMetadata slots are not part of
+data (i.e. the adjacencyMatrix and the qMetacell slots are not part of
 the sheet),
 \item \verb{exp. design} which is the content of \code{\link[=colData]{colData()}}. Each condition in the
 table is colored with a different color,
-\item \verb{quantitative metadata} which is the content of \code{\link[=qMetadata]{qMetadata()}}. There is a
+\item \verb{quantitative metadata} which is the content of \code{\link[=qMetacell]{qMetacell()}}. There is a
 color code for the different tags.
 }
 }

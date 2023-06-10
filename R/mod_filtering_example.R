@@ -160,18 +160,18 @@ mod_filterExample_server <- function(id,
 
             output$example_tab_filtered <- DT::renderDataTable({
 
-                # Build df to integrate qMetadata values
+                # Build df to integrate qMetacell values
                 .id <- DaparToolshed::idcol(objBefore())
                 df <- cbind(
                     keyId = SummarizedExperiment::rowData(objBefore())[, .id],
                     round(SummarizedExperiment::assay(objBefore()),
                         digits = 3
                     ),
-                    DaparToolshed::qMetadata(objBefore())
+                    DaparToolshed::qMetacell(objBefore())
                 )
 
                 # browser()
-                colors <- DaparToolshed::custom_qMetadata_colors()
+                colors <- DaparToolshed::custom_qMetacell_colors()
                 c.tags <- names(colors)
                 c.colors <- unname(unlist(colors))
                 range.invisible <- c(((2 + (ncol(df) - 1) / 2)):ncol(df))

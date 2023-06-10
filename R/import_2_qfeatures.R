@@ -19,7 +19,7 @@
 #' @param keyId A `character(1)` or `numeric(1)` which is the indice of the 
 #' column containing the ID of entities (peptides or proteins)
 #'
-#' @param indQMetadata xxxxxxxxxxx
+#' @param indQMetacell xxxxxxxxxxx
 #'
 #' @param force.na A `boolean` that indicates if the '0' and 'NaN' values of
 #' quantitative values  must be replaced by 'NA' (Default is FALSE)
@@ -48,27 +48,7 @@
 #'
 #' @author Samuel Wieczorek
 #'
-#' @examples {
-#'     data.file <- system.file("extdata", "Exp1_R25_pept.txt", 
-#'     package = "DaparToolshedData")
-#'     data <- read.table(data.file, header = TRUE, sep = "\t", 
-#'     as.is = TRUE, stringsAsFactors = FALSE)
-#'     sample.file <- system.file("extdata", "samples_Exp1_R25.txt", 
-#'     package = "DaparToolshedData")
-#'     sample <- read.table(sample.file, header = TRUE, sep = "\t", 
-#'     as.is = TRUE, stringsAsFactors = FALSE)
-#'     ft <- createQFeatures(
-#'         data = data, sample = sample, 
-#'         indQData = 56:61,
-#'         keyId = "Sequence", 
-#'         analysis = "test",
-#'         indQMetadata = 43:48, 
-#'         typeDataset = "peptide",
-#'         parentProtId = "Protein_group_IDs", 
-#'         forceNA = TRUE, 
-#'         software = "maxquant"
-#'     )
-#' }
+#' @examples examples/xx.R
 #'
 #' @importFrom QFeatures readQFeatures
 #' @importFrom PSMatch makeAdjacencyMatrix
@@ -84,7 +64,7 @@ createQFeatures <- function(data = NULL,
     sample,
     indQData,
     keyId = "AutoID",
-    indQMetadata = NULL,
+    indexForMetacell = NULL,
     force.na = TRUE,
     typeDataset,
     parentProtId = NULL,
@@ -95,6 +75,8 @@ createQFeatures <- function(data = NULL,
     name = "original") {
 
 
+  pkgs.require(c('SummarizedExperiment', 'QFeatures'))
+  
     # Check parameters validity
     if (missing(data) && missing(file)) {
         stop("Either 'data' or 'file' is required")
@@ -134,10 +116,10 @@ createQFeatures <- function(data = NULL,
         stop("'indQData' must be a vector of integer")
     }
 
-    if (missing(indQMetadata)) {
-        stop("'indQMetadata' is required")
-    } else if (!is.numeric(indQMetadata)) {
-        stop("'indQMetadata' must be a vector of integer")
+    if (missing(indexForMetacell)) {
+        stop("'indexForMetacell' is required")
+    } else if (!is.numeric(indexForMetacell)) {
+        stop("'indexForMetacell' must be a vector of integer")
     }
 
     if (!is.null(keyId) && !is.character(keyId)) {
@@ -151,20 +133,19 @@ createQFeatures <- function(data = NULL,
     # Standardize all colnames
     colnames(data) <- ReplaceSpecialChars(colnames(data))
 
-    if (is.numeric(indQData)) {
+    if (is.numeric(indQData))
         indQData <- colnames(data)[indQData]
-    }
 
-    if (is.numeric(indQMetadata)) {
-        indQMetadata <- colnames(data)[indQMetadata]
-    }
+    if (is.numeric(indexForMetacell))
+      indexForMetacell <- colnames(data)[indexForMetacell]
 
 
+    # Standardizes names
     keyId <- ReplaceSpecialChars(keyId)
     typeDataset <- ReplaceSpecialChars(typeDataset)
     parentProtId <- ReplaceSpecialChars(parentProtId)
     analysis <- ReplaceSpecialChars(analysis)
-    processes <- ReplaceSpecialChars(processes)
+    #processes <- ReplaceSpecialChars(processes)
     typePipeline <- ReplaceSpecialChars(typePipeline)
     software <- ReplaceSpecialChars(software)
 
@@ -178,68 +159,62 @@ createQFeatures <- function(data = NULL,
     } else {
         rownames(data) <- data[, keyId]
     }
+    
+    
     # Creates the QFeatures object
-    obj <- readQFeatures(data,
-        ecol = indQData,
-        name = "original",
-        fnames = keyId
-    )
+    obj <- QFeatures::readQFeatures(data,
+                                    ecol = indQData,
+                                    name = "original",
+                                    fnames = keyId
+                                    )
 
     ## Encoding the sample data
-    sample <- lapply(sample, function(x) {
-        ReplaceSpecialChars(x)
-    })
+    sample <- lapply(sample, function(x) {ReplaceSpecialChars(x)})
     design.qf(obj) <- sample
 
 
-    # Get the quantitative metadata
-    tmp.qMetadata <- NULL
-    if (!is.null(indQMetadata)) {
-        tmp.qMetadata <- data[, indQMetadata]
-        tmp.qMetadata <- apply(tmp.qMetadata, 2, tolower)
-        tmp.qMetadata <- apply(
-            tmp.qMetadata,
-            2,
-            function(x) {
-                gsub("\\s", "", x)
-            }
-        )
-        tmp.qMetadata <- as.data.frame(tmp.qMetadata,
+    # Get the metacell info
+    tmp.qMetacell <- NULL
+    if (!is.null(indexForMetacell)) {
+      tmp.qMetacell <- data[, indexForMetacell]
+      tmp.qMetacell <- apply(tmp.qMetacell, 2, tolower)
+      tmp.qMetacell <- apply(tmp.qMetacell, 2,
+            function(x) gsub("\\s", "", x))
+      tmp.qMetacell <- as.data.frame(tmp.qMetacell,
             stringsAsFactors = FALSE
         )
-    }
+      colnames(tmp.qMetacell) <- gsub(".", "_", colnames(tmp.qMetacell), fixed = TRUE)
+    
 
     # browser()
-    qMetadata <- BuildqMetadata(
-        from = software,
-        level = typeDataset,
-        qdata = SummarizedExperiment::assay(obj),
-        conds = colData(obj)$Condition,
-        df = tmp.qMetadata
-    )
-
-
-
-    # Remove the identification columns which became useless
-    .ind <- -match(indQMetadata, colnames(rowData(obj[[1]])))
-    rowData(obj[[1]]) <- rowData(obj[[1]])[, .ind]
-
-
+    qMetacell <- BuildMetacell(from = software,
+                               level = typeDataset,
+                               qdata = SummarizedExperiment::assay(obj),
+                               conds = colData(obj)$Condition,
+                               df = tmp.qMetacell
+                               )
+    
+    colnames(qMetacell) <- gsub(".", "_", colnames(qMetacell), fixed = TRUE)
+    
     # Add the quantitative cell metadata info
-    qMetadata(obj[["original"]]) <- qMetadata
-
+    qMetacell(obj[["original"]]) <- qMetacell
+    
+    # Remove the identification columns which became useless
+    .ind <- -match(indexForMetacell, colnames(rowData(obj[[1]])))
+    rowData(obj[[1]]) <- rowData(obj[[1]])[, .ind]
+    }
 
     if (force.na) {
-        obj <- zeroIsNA(obj, seq_along(obj))
+        obj <- QFeatures::zeroIsNA(obj, seq_along(obj))
     }
 
 
     # Enrich the metadata for whole QFeatures object
     S4Vectors::metadata(obj)$versions <- ProstarVersions()
     S4Vectors::metadata(obj)$analysis <- list(
-        analysis = analysis,
-        typePipeline = typePipeline,
-        processes = c("original", processes)
+        analysis = analysis
+        #typePipeline = typePipeline
+        #processes = c("original", processes)
     )
 
     # Fill the metadata for the first assay
@@ -249,9 +224,9 @@ createQFeatures <- function(data = NULL,
     idcol(obj[["original"]]) <- keyId
 
     if (tolower(typeDataset) == "peptide") {
-        X <- makeAdjacencyMatrix(rowData(obj[[1]])[, parentProtId])
+        X <- PSMatch::makeAdjacencyMatrix(rowData(obj[[1]])[, parentProtId])
         rownames(X) <- rownames(rowData(obj[[1]]))
-        adjacencyMatrix(obj[[1]]) <- X
+        QFeatures::adjacencyMatrix(obj[[1]]) <- X
     }
 
     return(obj)

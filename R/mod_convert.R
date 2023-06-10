@@ -22,10 +22,9 @@ optionsBtnClass <- "info"
 #'
 #' @return NA
 #'
-mod_Convert_ui <- function(id) {
-    # ns <- NS(id)
-    # tagList()
-}
+Convert_ui <- function(id) {
+    ns <- NS(id)
+    }
 
 
 
@@ -47,25 +46,37 @@ mod_Convert_ui <- function(id) {
 #'
 #' @return NA
 #'
-mod_Convert_server <- function(id,
+Convert_server <- function(id,
     dataIn = NULL,
     steps.enabled = reactive({NULL}),
-    remoteReset = reactive({FALSE})) {
+    remoteReset = reactive({FALSE}),
+    steps.status = reactive({NULL}),
+    current.pos = reactive({1}),
+    verbose = FALSE
+) {
+  
+  
     if (!requireNamespace("openxlsx", quietly = TRUE)) {
         stop("Please install openxlsx: BiocManager::install('openxlsx')")
     }
 
-    global <- list(
-        VALIDATED = 1,
-        UNDONE = 0,
-        SKIPPED = -1
-    )
+  # This list contains the basic configuration of the process
+  config <- Config(
+    fullname = 'Convert',
+    # Define the type of module
+    mode = 'process',
+    # List of all steps of the process
+    steps = c('Select File'),
+    # A vector of boolean indicating if the steps are mandatory or not.
+    mandatory = c(TRUE)
+  )
 
     widgets.default.values <- list(
-        selectFile_typeOfData = NULL,
-        selectFile_checkDataLogged = "no",
-        selectFile_replaceAllZeros = TRUE,
-        selectFile_software = character(0)
+      Step1_typeOfData = NULL,
+      Step1_checkDataLogged = "no",
+      Step1_replaceAllZeros = TRUE,
+      Step1_software = character(0),
+      Step1_XLSsheets = NULL
     )
 
     ### -------------------------------------------------------------###
@@ -76,335 +87,272 @@ mod_Convert_server <- function(id,
     moduleServer(id, function(input, output, session) {
         ns <- session$ns
 
-        rv <- reactiveValues(
-            dataIn = NULL,
-            dataOut = NULL,
-            status = NULL,
-            reset = NULL,
-            steps.enabled = NULL
+        # Insert necessary code which is hosted by MagellanNTK
+        # DO NOT MODIFY THIS LINE
+        eval(
+          str2expression(
+            Get_Workflow_Core_Code(
+              w.names = names(widgets.default.values),
+              rv.custom.names = names(rv.custom.default.values)
+            )
+          )
         )
-
-
-        dataOut <- reactiveValues(
-            trigger = NULL,
-            value = NULL
-        )
-
-        config <- list(
-            name = "Convert",
-            steps = c("Description", "SelectFile", "DataID", "ExpFeatData", 
-                "SamplesMetadata", "Save"),
-            mandatory = c(TRUE, TRUE, TRUE, TRUE, TRUE, TRUE)
-        )
-
-        rv.widgets <- reactiveValues(
-            selectFile_typeOfData = widgets.default.values$selectFile_typeOfData,
-            selectFile_checkDataLogged = widgets.default.values$selectFile_checkDataLogged,
-            selectFile_replaceAllZeros = widgets.default.values$selectFile_replaceAllZeros,
-            selectFile_software = widgets.default.values$selectFile_software,
-            selectFile_XLSsheets = widgets.default.values$selectFile_XLSsheets
-        )
-
-        #
-        # Initialization of the module
-        #
-        observeEvent(steps.enabled(), ignoreNULL = TRUE, {
-            if (is.null(steps.enabled())) {
-                rv$steps.enabled <- stats::setNames(
-                    rep(FALSE, length(config@steps)), config@steps)
-            } else {
-                rv$steps.enabled <- steps.enabled()
-            }
-        })
-
-
-        observeEvent(remoteReset(), {
-            lapply(names(rv.widgets), function(x) {
-                rv.widgets[[x]] <- widgets.default.values[[x]]
-            })
-        })
-
-
-        ###### ------------------- Code for Description (step 0) -----    #####
+        # >>>
+        # >>> START ------------- Code for Description UI---------------
+        # >>> 
+        
+        
         output$Description <- renderUI({
-            rv$steps.enabled
-
-            widget <- actionButton(ns("btn_validate_Description"),
-                paste0("Start ", config@name),
-                class = MagellanNTK::GlobalSettings$btn_success_color
-            )
-            wellPanel(
-                tagList(
-                    includeMarkdown(
-                        system.file("app/md", paste0(config@name, ".md"),
-                        package = "DaparToolshed"
-                    )),
-                    uiOutput(ns("datasetDescription")),
-                    MagellanNTK::toggleWidget(widget, 
-                        rv$steps.enabled["Description"])
-                )
-            )
-
-            observeEvent(input$btn_validate_Description, 
-                ignoreInit = TRUE, ignoreNULL = TRUE, {
-                rv$dataIn <- dataIn()
-                dataOut$trigger <- MagellanNTK::Timestamp()
-                dataOut$value <- rv$dataIn
-            })
+          file <- paste0(config@path_to_md_dir, '/', id, '.md')
+          
+          tagList(
+            # In this example, the md file is found in the extdata/module_examples directory
+            # but with a real app, it should be provided by the package which
+            # contains the UI for the different steps of the process module.
+            # system.file(xxx)
+            
+            if (file.exists(file))
+              includeMarkdown(file)
+            else
+              p('No Description available'),
+            
+            
+            # Used to show some information about the dataset which is loaded
+            # This function must be provided by the package of the process module
+            uiOutput(ns('datasetDescription_ui')),
+            
+            # Insert validation button
+            uiOutput(ns('Description_btn_validate_ui'))
+          )
+        })
+        
+        output$datasetDescription_ui <- renderUI({
+          # Insert your own code to visualize some information
+          # about your dataset. It will appear once the 'Start' button
+          # has been clicked
+          
+        })
+        
+        output$Description_btn_validate_ui <- renderUI({
+          widget <- actionButton(ns("Description_btn_validate"),
+                                 "Start",
+                                 class = btn_success_color)
+          toggleWidget(widget, rv$steps.enabled['Description'])
+        })
+        
+        
+        observeEvent(input$Description_btn_validate, {
+          rv$dataIn <- dataIn()
+          dataOut$trigger <- MagellanNTK::Timestamp()
+          dataOut$value <- rv$dataIn
+          rv$steps.status['Description'] <- global$VALIDATED
         })
 
-
-
-
-
-
-        ### -------------------------------------------------------------###
-        ### --------------- Code for step 1: selectFile ----------------###
-        ### -------------------------------------------------------------###
-
-
-
-
-        output$choose_file_to_import_ui <- renderUI({
-            req(rv.widgets$selectFile_software)
-            rv.widgets$selectFile_file2convert
-
-            widget <- fileInput(ns("file2convert"), "",
-                multiple = FALSE,
-                accept = c(".txt", ".tsv", ".csv", ".xls", ".xlsx")
-            )
-
-            fluidRow(
-                column(
-                    width = 2,
-                    mod_popover_for_help_ui("modulePopover_convertChooseDatafile")
-                ),
-                column(
-                    width = 10,
-                    MagellanNTK::toggleWidget(widget, 
-                        rv$steps.enabled["SelectFile"])
-                )
-            )
-        })
-
-
-        output$ConvertOptions_ui <- renderUI({
-            req(rv.widgets$selectFile_software)
-            req(input$file2convert)
-            rv.widgets$selectFile_typeOfData
-            rv.widgets$selectFile_checkDataLogged
-            rv.widgets$selectFile_replaceAllZeros
-
-            widget1 <- radioButtons(ns("typeOfData"),
-                "Is it a peptide or protein dataset ?",
-                choices = c(
-                    "peptide dataset" = "peptide",
-                    "protein dataset" = "protein"
-                ),
-                selected = rv.widgets$selectFile_typeOfData
-            )
-
-            widget2 <- radioButtons(ns("checkDataLogged"),
-                "Are your data already log-transformed ?",
-                choices = c(
-                    "yes (they stay unchanged)" = "yes",
-                    "no (they will be automatically transformed)" = "no"
-                ),
-                selected = rv.widgets$selectFile_checkDataLogged
-            )
-
-            widget3 <- checkboxInput(ns("replaceAllZeros"),
-                "Replace all 0 and NaN by NA",
-                value = rv.widgets$selectFile_replaceAllZeros
-            )
-
-
-            tagList(
-                MagellanNTK::toggleWidget(widget1, rv$steps.enabled["SelectFile"]),
-                MagellanNTK::toggleWidget(widget2, rv$steps.enabled["SelectFile"]),
-                br(),
-                MagellanNTK::toggleWidget(widget2, rv$steps.enabled["SelectFile"])
-            )
-
-            observeEvent(input$selectFile_typeOfData, {
-                rv.widgets$selectFile_typeOfData <- input$selectFile_typeOfData
-            })
-            observeEvent(input$selectFile_checkDataLogged, {
-                rv.widgets$selectFile_checkDataLogged <- input$selectFile_checkDataLogged
-            })
-            observeEvent(input$selectFile_replaceAllZeros, {
-                rv.widgets$selectFile_replaceAllZeros <- input$selectFile_replaceAllZeros
-            })
-        })
-
-
-        output$ManageXlsFiles_ui <- renderUI({
-            req(rv.widgets$selectFile_software)
-            req(input$file2convert)
-
-            if (GetExtension(input$file2convert$name) %in% c("xls", "xlsx")) {
-                sheets <- openxlsx::getSheetNames(input$file2convert$datapath)
-                widget <- selectInput(ns("selectFile_XLSsheets"), "sheets",
-                    choices = as.list(sheets),
-                    selected = rv.widgets$selectFile_XLSsheets,
-                    width = "200px"
-                )
-                MagellanNTK::toggleWidget(widget2, rv$steps.enabled["SelectFile"])
-            }
-
-            observeEvent(input$selectFile_XLSsheets, {
-                rv.widgets$selectFile_XLSsheets <- input$selectFile_XLSsheets
-            })
-        })
-
-
-
-
-        ##
-        ## Main renderUI() function for the step SelectFile
-        ##
+        
+        # >>>
+        # >>> START ------------- Code for step 1 UI---------------
+        # >>> 
+        
+        # >>>> -------------------- STEP 1 : Global UI ------------------------------------
         output$SelectFile <- renderUI({
-            name <- "SelectFile"
-
-            widget1 <- div(
-                radioButtons(ns("choose_software"), "Software to import from",
-                    choices = stats::setNames(nm = c("maxquant", "proline")),
-                    selected = rv.widgets$selectFile_software
-                )
-            )
-
-            widget2 <- div(
-                actionButton(ns("btn_validate_SelectFile"),
-                    "Perform SelectFile",
-                    class = MagellanNTK::GlobalSettings$btn_success_color
-                )
-            )
-
-
-            tagList(
-                MagellanNTK::toggleWidget(widget1, rv$steps.enabled["SelectFile"]),
-                uiOutput(ns("choose_file_to_import_ui")),
-                uiOutput(ns("ManageXlsFiles_ui")),
-                uiOutput(ns("ConvertOptions_ui")),
-                MagellanNTK::toggleWidget(widget2, rv$steps.enabled["SelectFile"])
-            )
+          wellPanel(
+            # uiOutput for all widgets in this UI
+            # This part is mandatory
+            # The renderUI() function of each widget is managed by MagellanNTK
+            # The dev only have to define a reactive() function for each
+            # widget he want to insert
+            # Be aware of the naming convention for ids in uiOutput()
+            # For more details, please refer to the dev document.
+            uiOutput(ns('SelectFile_software_ui')),
+            uiOutput(ns('SelectFile_file_ui')),
+            uiOutput(ns('SelectFile_ManageXlsFiles_ui')),
+            uiOutput(ns('SelectFile_select3_ui')),
+            mod_foo_ui(ns('foo')),
+            # Insert validation button
+            uiOutput(ns('Step1_btn_validate_ui')),
+            
+            # Additional code
+            plotOutput(ns('showPlot'))
+          )
         })
-
-
-        observeEvent(input$selectFile_software, {
-            rv.widgets$selectFile_software <- input$selectFile_software
-        })
-
-        observeEvent(input$btn_validate_SelectFile, ignoreInit = TRUE, {
-            # Add your stuff code here
-            dataOut$trigger <- MagellanNTK::Timestamp()
-            dataOut$value <- rv$dataIn
-        })
-
-        ###### ------------- Code for step 2: DataID ------------------    #####
-
-
-        output$DataID <- renderUI({
-            name <- "DataID"
-            widget <- actionButton(ns(paste0("btn_validate_", DataID)),
-                "Perform DataID",
-                class = MagellanNTK::GlobalSettings$btn_success_color
-            )
-            MagellanNTK::toggleWidget(widget, rv$steps.enabled["DataID"])
-            observeEvent(input$btn_validate_DataID, ignoreInit = TRUE, {
-                # Add your stuff code here
-                dataOut$trigger <- MagellanNTK::Timestamp()
-                dataOut$value <- rv$dataIn
-            })
-        })
-
-
-
-        ###### -------------- Code for ExpFeatData ----------------    #####
-
-        output$ExpFeatData <- renderUI({
-            name <- "ExpFeatData"
-            widget <- actionButton(ns(paste0("btn_validate_", ExpFeatData)),
-                "Perform ExpFeatData",
-                class = MagellanNTK::GlobalSettings$btn_success_color
-            )
-
-            MagellanNTK::toggleWidget(widget, rv$steps.enabled["ExpFeatData"])
-
-            observeEvent(input$btn_validate_ExpFeatData, ignoreInit = TRUE, {
-                # Add your stuff code here
-                dataOut$trigger <- MagellanNTK::Timestamp()
-                dataOut$value <- rv$dataIn
-            })
-        })
-
-
-
-        ###### ------------ Code for SamplesMetadata ----------------#####
-
-        output$SamplesMetadata <- renderUI({
-            name <- "SamplesMetadata"
-            widget <- actionButton(ns(paste0("btn_validate_", SamplesMetadata)),
-                "Perform SamplesMetadata",
-                class = MagellanNTK::GlobalSettings$btn_success_color
-            )
-
-            MagellanNTK::toggleWidget(widget, rv$steps.enabled["SamplesMetadata"])
-
-
-            observeEvent(input$btn_validate_SamplesMetadata, 
-                ignoreInit = TRUE, {
-                # Add your stuff code here
-                dataOut$trigger <- MagellanNTK::Timestamp()
-                dataOut$value <- rv$dataIn
-            })
-        })
-
-
-
-        ###### ------------------- Code for Save ---------------#####
-
-        output$Save <- renderUI({
-            name <- "Save"
-            widget <- actionButton(ns(paste0("btn_validate_", Save)),
-                "Perform Save",
-                class = MagellanNTK::GlobalSettings$btn_success_color
-            )
-            MagellanNTK::toggleWidget(widget, rv$steps.enabled["Save"])
-
-
-            observeEvent(input$btn_validate_Save, ignoreInit = TRUE, {
-                # Add your stuff code here
-                rv$dataIn <- AddItemToDataset(rv$dataIn, config@name)
-                dataOut$trigger <- MagellanNTK::Timestamp()
-                dataOut$value <- rv$dataIn
-            })
-        })
-
-        #------------- Code for validation step ---------------
-
-
-
-
-        # Return value of module
-        # DO NOT MODIFY THIS PART
-        list(
-            config = reactive({
-                config@ll.UI <- stats::setNames(
-                    lapply(
-                        config@steps,
-                        function(x) {
-                            do.call("uiOutput", list(ns(x)))
-                        }
-                    ),
-                    paste0("screen_", config@steps)
-                )
-                config
-            }),
-            dataOut = reactive({
-                dataOut
-            })
-            # status = reactive({rv$status})
+        
+        
+        # >>> START: Definition of the widgets
+        
+        
+        
+        
+        rv.custom$mod_foo <- mod_foo_server('foo',
+                                            obj = reactive({rv$dataIn}),
+                                            reset = reactive({NULL}),
+                                            is.enabled = reactive({rv$steps.enabled['Step1']})
         )
+        
+        
+        
+        output$SelectFile_software_ui <- renderUI({
+          widget <- radioButtons(ns("SelectFile_software"), 
+                                 "Software to import from",
+                                 choices = setNames(nm = DAPAR::GetSoftAvailables()),
+                                 selected = character(0)
+                                 )
+          
+          toggleWidget(widget, rv$steps.enabled['SelectFile'] )
+        })
+        
+        # This part must be customized by the developer of a new module
+        output$SelectFile_file_ui <- renderUI({
+          req(input$choose_software)
+          fluidRow(
+            column(width = 2,
+              popover_for_help_ui("modulePopover_convertChooseDatafile")
+            ),
+            column(width = 10,
+              widget <- fileInput(ns("file"), "",
+                        multiple = FALSE,
+                        accept = c(".txt", ".tsv", ".csv", ".xls", ".xlsx")
+              )
+            )
+          )
+          
+          toggleWidget(widget, rv$steps.enabled['SelectFile'] )
+        })
+        
+        fileExt.ok <- reactive({
+          req(input$file1$name)
+          authorizedExts <- c("txt", "csv", "tsv", "xls", "xlsx")
+          ext <- GetExtension(input$file1$name)
+          !is.na(match(ext, authorizedExts))
+        })
+        
+        
+        
+        output$SelectFile_ManageXlsFiles_ui <- renderUI({
+          req(input$choose_software)
+          req(input$file1)
+          
+          req(GetExtension(input$file1$name) %in% c("xls", "xlsx"))
+          
+          tryCatch({   
+            sheets <- listSheets(input$file1$datapath)
+            widget <- selectInput(ns("XLSsheets"), 
+                                  "sheets", 
+                                  choices = as.list(sheets), 
+                                  width = "200px")
+          },
+          warning = function(w) {
+            shinyjs::info(conditionMessage(w))
+            return(NULL)
+          },
+          error = function(e) {
+            shinyjs::info(conditionMessage(e))
+            return(NULL)
+          },
+          finally = {
+            # cleanup-code
+          }
+          )
+          toggleWidget(widget, rv$steps.enabled['SelectFile'])
+        })
+        
+
+        output$SelectFile_btn_validate_ui <- renderUI({
+          widget <-  actionButton(ns("SelectFile_btn_validate"),
+                                  "Perform",
+                                  class = btn_success_color)
+          toggleWidget(widget, rv$steps.enabled['SelectFile'] )
+          
+        })
+        # >>> END: Definition of the widgets
+        
+        
+        observeEvent(input$SelectFile_btn_validate, {
+          # Do some stuff
+          rv$dataIn <- Add_Datasets_to_Object(object = rv$dataIn,
+                                              dataset = rnorm(1:5),
+                                              name = paste0('temp_',id))
+          
+          # DO NOT MODIFY THE THREE FOLLOWINF LINES
+          dataOut$trigger <- MagellanNTK::Timestamp()
+          dataOut$value <- rv$dataIn
+          rv$steps.status['SelectFile'] <- global$VALIDATED
+        })
+        
+
+        # <<< END ------------- Code for step 1 UI---------------
+
+        # >>> START ------------- Code for step 3 UI---------------
+        output$Save <- renderUI({
+          tagList(
+            # Insert validation button
+            # This line is necessary. DO NOT MODIFY
+            uiOutput(ns('Save_btn_validate_ui')),
+            uiOutput(ns('mod_dl_ui'))
+          )
+        })
+        
+        output$mod_dl_ui <- renderUI({
+          req(config@mode == 'process')
+          req(rv$steps.status['Save'] == global$VALIDATED)
+          mod_dl_ui(ns('createQuickLink'))
+        })
+        
+        output$Save_btn_validate_ui <- renderUI({
+          toggleWidget(actionButton(ns("Save_btn_validate"), "Save",
+                                    class = btn_success_color),
+                       rv$steps.enabled['Save']
+          )
+        })
+        observeEvent(input$Save_btn_validate, {
+          # Do some stuff
+          rv$dataIn <- Add_Datasets_to_Object(object = rv$dataIn,
+                                              dataset = rnorm(1:5),
+                                              name = id)
+          
+          # DO NOT MODIFY THE THREE FOLLOWINF LINES
+          dataOut$trigger <- MagellanNTK::Timestamp()
+          dataOut$value <- rv$dataIn
+          rv$steps.status['Save'] <- global$VALIDATED
+          mod_dl_server('createQuickLink', dataIn = reactive({rv$dataIn}))
+          
+        })
+        # <<< END ------------- Code for step 3 UI---------------
+        
     })
 }
+
+
+
+
+#--------------------------------------------------
+
+library(MagellanNTK)
+
+#f <- system.file("module_examples", "extdata/mod_Process1.R", package="MagellanNTK")
+#source(file(f), local=TRUE)$value
+
+# ui <- fluidPage(
+#   nav_ui('Convert')
+# )
+# 
+# 
+# server <- function(input, output){
+#   rv <- reactiveValues(
+#     dataIn = NULL,
+#     dataOut = NULL
+#   )
+#   
+#   observe({
+#     rv$dataOut <- nav_server(id = 'Convert')
+#   }, priority=1000)
+# }
+# 
+# 
+# shinyApp(ui, server)
+# 
+
+
+
+
+
+run_workflow("Convert", dataIn = data.frame())

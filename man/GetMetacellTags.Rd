@@ -4,12 +4,12 @@
 \alias{GetMetacellTags}
 \title{List of metacell tags}
 \usage{
-GetMetacellTags(level = NULL, obj = NULL, onlyPresent = FALSE, all = FALSE)
+GetMetacellTags(obj = NULL, level = NULL, onlyPresent = FALSE, all = FALSE)
 }
 \arguments{
-\item{level}{xxx}
-
 \item{obj}{An object of class \code{MSnSet}}
+
+\item{level}{xxx}
 
 \item{onlyPresent}{A boolean that indicates if one wants a list with only the tags
 present in the dataset.}
@@ -25,6 +25,18 @@ This function gives the list of metacell tags available in DAPAR.
 \item onlyPresent: In this case, the function gives the tags found in a dataset.
 In addition, and w.r.t to the hierarchy of tags, if all leaves of a node are
 present, then the tag corresponding to this node is added.
+}
+}
+\details{
+#' @title xxxx
+#' @description xxx
+#' @param obj xxx
+#' @export
+GetUniqueTags <- function(obj){
+df <- Biobase::fData(obj)\link{, obj@experimentData@other$names_metacell}
+tmp <- sapply(colnames(df), function(x) unique(df\link{,x}))
+ll <- unique(as.vector(tmp))
+return(ll)
 }
 }
 \examples{

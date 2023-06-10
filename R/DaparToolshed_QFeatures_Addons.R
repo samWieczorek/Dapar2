@@ -5,7 +5,7 @@
 #' These names are common to all assays contained in the object. This is why
 #' they are stored in the global metadata. This function is used whenever it i
 #' s necessary to (re)detect MEC and POV (new dataset or when post processing 
-#' protein qMetadata after aggregation)
+#' protein qMetacell after aggregation)
 #'
 #' @param object An instance of class `SummarizedExperiment` or `QFeatures`.
 #'
@@ -22,13 +22,13 @@
 #' @details
 #'
 #' Additional slots for rowdata of a `SummarizedExperiment` object:
-#'  - qMetadata: xxx
+#'  - qMetacell: xxx
 #'
 #' Additional slots for Metadata for a `QFeatures` object:
 #'  - xxx: xxxx
 #'
 #' Additional slots for Metadata for a `SummarizedExperiment` object:
-#'  - qMetadata: xxxx
+#'  - qMetacell: xxxx
 #'  - parentProtId: xxx
 #'  - idcol: xxxx
 #'  - typeDataset: xxx
@@ -36,7 +36,7 @@
 #'
 #' @section Quantitative metadata:
 #'
-#' Default slotName is `"qMetadata"`.
+#' Default slotName is `"qMetacell"`.
 #'  The value is an adjacency matrix with row and column names. The
 #'     matrix will be coerced to compressed, column-oriented sparse
 #'     matrix (class `dgCMatrix`) as defined in the `Matrix` package,
@@ -49,12 +49,12 @@
 #' design.qf(ft)
 NULL
 
-#' @exportMethod qMetadata
+#' @exportMethod qMetacell
 #' @rdname QFeatures-accessors
 #' @return NA
 setMethod(
-    "qMetadata", "QFeatures",
-    function(object, i, slotName = "qMetadata") {
+    "qMetacell", "QFeatures",
+    function(object, i, slotName = "qMetacell") {
         lapply(
             object[[i]],
             function(x) {
@@ -71,8 +71,8 @@ setMethod(
 #' @rdname QFeatures-accessors
 #' @return NA
 setMethod(
-    "qMetadata", "SummarizedExperiment",
-    function(object, slotName = "qMetadata") {
+    "qMetacell", "SummarizedExperiment",
+    function(object, slotName = "qMetacell") {
         .GetRowdataSlot(object, slotName)
     }
 )
@@ -82,9 +82,9 @@ setMethod(
 #' @export
 #' @rdname QFeatures-accessors
 #' @return NA
-"qMetadata<-" <- function(object,
+"qMetacell<-" <- function(object,
                           i,
-                          slotName = "qMetadata",
+                          slotName = "qMetacell",
                           value) {
     if (is.null(colnames(value)) | is.null(rownames(value))) {
         stop("The DataFrame must have row and column names.")
@@ -113,9 +113,86 @@ setMethod(
         stop("Assay '", i, "' not found.")
     }
     se <- object[[i]]
-    object[[i]] <- qMetadata(se, slotName) <- value
+    object[[i]] <- qMetacell(se, slotName) <- value
     return(object)
 }
+
+
+
+
+
+# 
+# 
+# #' @exportMethod adjacencyMatrix
+# #' @rdname QFeatures-accessors
+# #' @return NA
+# setMethod(
+#   "adjacencyMatrix", "QFeatures",
+#   function(object, i, slotName = "adjacencyMatrix") {
+#     lapply(
+#       object[[i]],
+#       function(x) {
+#         .GetRowdataSlot(x, slotName = slotName)
+#       }
+#     )
+#   }
+# )
+# 
+# 
+# 
+# 
+# #' @export
+# #' @rdname QFeatures-accessors
+# #' @return NA
+# setMethod(
+#   "adjacencyMatrix", "SummarizedExperiment",
+#   function(object, slotName = "adjacencyMatrix") {
+#     .GetRowdataSlot(object, slotName)
+#   }
+# )
+# 
+# 
+# 
+# #' @export
+# #' @rdname QFeatures-accessors
+# #' @return NA
+# "adjacencyMatrix<-" <- function(object,
+#                           i,
+#                           slotName = "adjacencyMatrix",
+#                           value) {
+#   if (is.null(colnames(value)) | is.null(rownames(value))) {
+#     stop("The DataFrame must have row and column names.")
+#   }
+#   ## Coerse to a data.frame
+#   # value <- as(value, "data.frame")
+#   if (inherits(object, "SummarizedExperiment")) {
+#     if (!identical(rownames(value), rownames(object))) {
+#       stop("Row names of the SummarizedExperiment and the DataFrame 
+#                 must match.")
+#     }
+#     # if (slotName %in% colnames(rowData(object)))
+#     #  stop("Found an existing variable ", slotName, ".")
+#     rowData(object)[[slotName]] <- value
+#     return(object)
+#   }
+#   stopifnot(inherits(object, "QFeatures"))
+#   if (length(i) != 1) {
+#    stop("'i' must be of length one. Repeat the call to add a matrix to 
+#             multiple assays.")
+#  }
+#   if (is.numeric(i) && i > length(object)) {
+#    stop("Subscript is out of bounds.")
+#   }
+#   if (is.character(i) && !(i %in% names(object))) {
+#     stop("Assay '", i, "' not found.")
+#   }
+#   se <- object[[i]]
+#   object[[i]] <- adjacencyMatrix(se, slotName) <- value
+#   return(object)
+# }
+
+
+
 
 
 
@@ -420,4 +497,71 @@ setMethod(
     # se <- object[[i]]
     S4Vectors::metadata(object[[i]])[[slotName]] <- value
     return(object)
+}
+
+
+#' @exportMethod design.qf
+#' @rdname QFeatures-accessors
+setMethod(
+  "GetUniqueTags", "SummarizedExperiment",
+  function(object) {
+    SummarizedExperiment::colData(object)
+    
+    df <- Biobase::fData(obj)[, obj@experimentData@other$names_metacell]
+    tmp <- sapply(colnames(df), function(x) unique(df[,x]))
+    ll <- unique(as.vector(tmp))
+    return(ll)
+    
+  }
+)
+
+
+
+
+
+
+
+
+
+#' @exportMethod parentProtId
+#' @rdname QFeatures-accessors
+setMethod(
+  "names_metacell", "QFeatures",
+  function(object, i, slotName = "names_metacell") {
+    lapply(object[[i]], names_metacell, slotName = slotName)
+  }
+)
+
+#' @exportMethod parentProtId
+#' @rdname QFeatures-accessors
+setMethod(
+  "names_metacell", "SummarizedExperiment",
+  function(object, slotName = "names_metacell") {
+    .GetMetadataSlot(object, slotName)
+    }
+)
+
+
+#' @export
+#' @rdname QFeatures-accessors
+"names_metacell<-" <- function(object, i, slotName = "names_metacell", value) {
+  if (inherits(object, "SummarizedExperiment")) {
+    S4Vectors::metadata(object)[[slotName]] <- value
+    return(object)
+  }
+  stopifnot(inherits(object, "QFeatures"))
+  
+  if (length(i) != 1) {
+    stop("'i' must be of length one. Repeat the call to add a matrix to 
+            multiple assays.")
+  }
+  if (is.numeric(i) && i > length(object)) {
+    stop("Subscript is out of bounds.")
+  }
+  if (is.character(i) && !(i %in% names(object))) {
+    stop("Assay '", i, "' not found.")
+  }
+  se <- object[[i]]
+  S4Vectors::metadata(object[[i]])[[slotName]] <- value
+  return(object)
 }

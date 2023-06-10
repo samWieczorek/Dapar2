@@ -6,7 +6,7 @@
 #' class `FunctionFilter` to filter the quantitative metadata of an instance
 #' of the class `SummarizedExperiment`)
 #'
-#' @name query_qMetadata
+#' @name query_qMetacell
 #'
 #' @return As for all modules used with `MagellanNTK`, the return value is a
 #' `list()` of two items:
@@ -20,7 +20,7 @@
 #' @examples
 #' if (interactive()) {
 #'     data(ft_na, package='DaparToolshed')
-#'     ui <- mod_build_qMetadata_FunctionFilter_ui("query")
+#'     ui <- mod_build_qMetacell_FunctionFilter_ui("query")
 #'
 #'     server <- function(input, output, session) {
 #'         rv <- reactiveValues(
@@ -28,9 +28,9 @@
 #'         )
 #'         ll.tags <- c(
 #'             "None" = "None",
-#'             qMetadata.def(typeDataset(ft_na[[1]]))$node
+#'             qMetacell.def(typeDataset(ft_na[[1]]))$node
 #'         )
-#'         rv.custom$res <- mod_build_qMetadata_FunctionFilter_server("query",
+#'         rv.custom$res <- mod_build_qMetacell_FunctionFilter_server("query",
 #'             obj = reactive({
 #'                 ft_na[[1]]
 #'             }),
@@ -74,9 +74,9 @@ NULL
 #'
 #' @export
 #'
-#' @rdname query_qMetadata
+#' @rdname query_qMetacell
 #'
-mod_build_qMetadata_FunctionFilter_ui <- function(id) {
+mod_build_qMetacell_FunctionFilter_ui <- function(id) {
     ns <- NS(id)
     tagList(
         div(
@@ -85,13 +85,13 @@ mod_build_qMetadata_FunctionFilter_ui <- function(id) {
                 column(2, uiOutput(ns("chooseKeepRemove_ui"))),
                 column(2, uiOutput(ns("chooseScope_ui"))),
                 column(6, tagList(
-                    uiOutput(ns("qMetadataScope_widgets_set2_ui"))
+                    uiOutput(ns("qMetacellScope_widgets_set2_ui"))
                 ))
             ),
             div(
                 style = "display:inline-block; 
                 vertical-align: middle; align: center;",
-                uiOutput(ns("qMetadataScope_request_ui"))
+                uiOutput(ns("qMetacellScope_request_ui"))
             ),
             actionButton(ns("BuildFilter_btn"), "Add filter")
         )
@@ -114,11 +114,11 @@ mod_build_qMetadata_FunctionFilter_ui <- function(id) {
 #' @param is.enabled A `logical(1)` that indicates whether the module is
 #' enabled or disabled. This is a remote command.
 #'
-#' @rdname query_qMetadata
+#' @rdname query_qMetacell
 #'
 #' @export
 #'
-mod_build_qMetadata_FunctionFilter_server <- function(id,
+mod_build_qMetacell_FunctionFilter_server <- function(id,
     obj,
     conds,
     list_tags = reactive({NULL}),
@@ -230,7 +230,7 @@ mod_build_qMetadata_FunctionFilter_server <- function(id,
 
 
 
-        output$qMetadataScope_widgets_set2_ui <- renderUI({
+        output$qMetacellScope_widgets_set2_ui <- renderUI({
             req(!(rv.widgets$scope %in% c("None", "WholeLine")))
             mod_helpPopover_server("chooseValPercent_help",
                 title = paste("#/% of values to ", rv.widgets$keepRemove),
@@ -355,7 +355,7 @@ mod_build_qMetadata_FunctionFilter_server <- function(id,
         })
 
 
-        output$qMetadataFilter_request_ui <- renderUI({
+        output$qMetacellFilter_request_ui <- renderUI({
             tags$p(paste("You are going to ", WriteQuery()),
                 style = "font-size: small; text-align : center; color: purple;"
             )
@@ -386,18 +386,18 @@ mod_build_qMetadata_FunctionFilter_server <- function(id,
             )
 
             ff <- switch(rv.widgets$scope,
-                WholeLine = FunctionFilter("qMetadataWholeLine",
+                WholeLine = FunctionFilter("qMetacellWholeLine",
                     cmd = rv.widgets$keepRemove,
                     pattern = rv.widgets$tag
                 ),
-                WholeMatrix = FunctionFilter("qMetadataWholeMatrix",
+                WholeMatrix = FunctionFilter("qMetacellWholeMatrix",
                     cmd = rv.widgets$keepRemove,
                     pattern = rv.widgets$tag,
                     percent = rv.widgets$valPercent,
                     th = th,
                     operator = rv.widgets$operator
                 ),
-                AllCond = FunctionFilter("qMetadataOnConditions",
+                AllCond = FunctionFilter("qMetacellOnConditions",
                     cmd = rv.widgets$keepRemove,
                     mode = rv.widgets$scope,
                     pattern = rv.widgets$tag,
@@ -406,7 +406,7 @@ mod_build_qMetadata_FunctionFilter_server <- function(id,
                     th = th,
                     operator = rv.widgets$operator
                 ),
-                AtLeastOneCond = FunctionFilter("qMetadataOnConditions",
+                AtLeastOneCond = FunctionFilter("qMetacellOnConditions",
                     cmd = rv.widgets$keepRemove,
                     mode = rv.widgets$scope,
                     pattern = rv.widgets$tag,

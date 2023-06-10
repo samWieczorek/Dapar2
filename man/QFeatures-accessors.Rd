@@ -2,9 +2,9 @@
 % Please edit documentation in R/DaparToolshed_QFeatures_Addons.R
 \name{QFeatures-accessors}
 \alias{QFeatures-accessors}
-\alias{qMetadata,QFeatures-method}
-\alias{qMetadata,SummarizedExperiment-method}
-\alias{qMetadata<-}
+\alias{qMetacell,QFeatures-method}
+\alias{qMetacell,SummarizedExperiment-method}
+\alias{qMetacell<-}
 \alias{.GetMetadataSlot}
 \alias{.GetRowdataSlot}
 \alias{typeDataset,QFeatures-method}
@@ -27,13 +27,17 @@
 \alias{params,QFeatures-method}
 \alias{params,SummarizedExperiment-method}
 \alias{params<-}
+\alias{GetUniqueTags,SummarizedExperiment-method}
+\alias{names_metacell,QFeatures-method}
+\alias{names_metacell,SummarizedExperiment-method}
+\alias{names_metacell<-}
 \title{Additional accessors for instances of class \code{Qfeatures}.}
 \usage{
-\S4method{qMetadata}{QFeatures}(object, i, slotName = "qMetadata")
+\S4method{qMetacell}{QFeatures}(object, i, slotName = "qMetacell")
 
-\S4method{qMetadata}{SummarizedExperiment}(object, slotName = "qMetadata")
+\S4method{qMetacell}{SummarizedExperiment}(object, slotName = "qMetacell")
 
-qMetadata(object, i, slotName = "qMetadata") <- value
+qMetacell(object, i, slotName = "qMetacell") <- value
 
 .GetMetadataSlot(object, slotName = NULL)
 
@@ -78,6 +82,14 @@ mainAssay(object)
 \S4method{params}{SummarizedExperiment}(object, slotName = "params")
 
 params(object, i, slotName = "params") <- value
+
+\S4method{GetUniqueTags}{SummarizedExperiment}(object)
+
+\S4method{names_metacell}{QFeatures}(object, i, slotName = "names_metacell")
+
+\S4method{names_metacell}{SummarizedExperiment}(object, slotName = "names_metacell")
+
+names_metacell(object, i, slotName = "names_metacell") <- value
 }
 \arguments{
 \item{object}{An instance of class \code{SummarizedExperiment} or \code{QFeatures}.}
@@ -106,12 +118,12 @@ NA
 These names are common to all assays contained in the object. This is why
 they are stored in the global metadata. This function is used whenever it i
 s necessary to (re)detect MEC and POV (new dataset or when post processing
-protein qMetadata after aggregation)
+protein qMetacell after aggregation)
 }
 \details{
 Additional slots for rowdata of a \code{SummarizedExperiment} object:
 \itemize{
-\item qMetadata: xxx
+\item qMetacell: xxx
 }
 
 Additional slots for Metadata for a \code{QFeatures} object:
@@ -121,7 +133,7 @@ Additional slots for Metadata for a \code{QFeatures} object:
 
 Additional slots for Metadata for a \code{SummarizedExperiment} object:
 \itemize{
-\item qMetadata: xxxx
+\item qMetacell: xxxx
 \item parentProtId: xxx
 \item idcol: xxxx
 \item typeDataset: xxx
@@ -130,7 +142,7 @@ Additional slots for Metadata for a \code{SummarizedExperiment} object:
 \section{Quantitative metadata}{
 
 
-Default slotName is \code{"qMetadata"}.
+Default slotName is \code{"qMetacell"}.
 The value is an adjacency matrix with row and column names. The
 matrix will be coerced to compressed, column-oriented sparse
 matrix (class \code{dgCMatrix}) as defined in the \code{Matrix} package,

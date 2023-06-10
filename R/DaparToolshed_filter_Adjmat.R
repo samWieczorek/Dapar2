@@ -218,7 +218,7 @@ topnPeptides <- function(object, fun, top) {
     .names <- names(SummarizedExperiment::rowData(object))
     stopifnot("adjacencyMatrix" %in% .names)
 
-    X <- QFeatures::adjacencyMatrix(object)
+    X <- adjacencyMatrix(object)
     qData <- SummarizedExperiment::assay(object)
     X.topn <- subAdjMat_topnPeptides(X, qData, fun, top)
     object <- .UpdateSEBasedOnAdjmat(object, X.topn)

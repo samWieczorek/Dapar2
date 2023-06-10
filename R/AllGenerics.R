@@ -10,10 +10,10 @@ setGeneric("normalizeD",
 setGeneric("impute_dapar", 
     function(object, ...) standardGeneric("impute_dapar"))
 
-setGeneric("UpdateqMetadata", 
-    function(object, ...) standardGeneric("UpdateqMetadata"))
-setGeneric("aggregateQmetadata", 
-    function(object, ...) standardGeneric("aggregateQmetadata"))
+setGeneric("UpdateMetacellAfterImputation", 
+    function(object, ...) standardGeneric("UpdateMetacellAfterImputation"))
+setGeneric("aggregateQmetacell", 
+    function(object, ...) standardGeneric("aggregateQmetacell"))
 setGeneric("aggregateFeatures4Prostar", 
     function(object, ...) standardGeneric("aggregateFeatures4Prostar"))
 setGeneric("FinalizeAggregation", 
@@ -26,10 +26,10 @@ setGeneric("write2excel",
 
 
 
-setGeneric("qMetadata", 
-    function(object, ...) standardGeneric("qMetadata"))
-setGeneric("qMetadata<-", 
-    function(object, ..., value) standardGeneric("qMetadata<-"))
+setGeneric("qMetacell", 
+    function(object, ...) standardGeneric("qMetacell"))
+setGeneric("qMetacell<-", 
+    function(object, ..., value) standardGeneric("qMetacell<-"))
 setGeneric("typeDataset", 
     function(object, ...) standardGeneric("typeDataset"))
 setGeneric("typeDataset<-", 
@@ -58,6 +58,13 @@ setGeneric("params",
     function(object, ...) standardGeneric("params"))
 setGeneric("params<-", 
     function(object, ..., value) standardGeneric("params<-"))
+
+setGeneric("GetUniqueTags", 
+           function(object, ...) standardGeneric("GetUniqueTags"))
+
+
+setGeneric("names_metacell", 
+           function(object, ...) standardGeneric("names_metacell"))
 
 
 setGeneric("GetHypoyhesisTest", 

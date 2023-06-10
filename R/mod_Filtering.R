@@ -122,7 +122,7 @@ mod_Filtering_server <- function(id,
             TotalMainAssay = "-",
             stringsAsFactors = FALSE
         ),
-        qMetadata_Filter_SummaryDT = data.frame(
+        qMetacell_Filter_SummaryDT = data.frame(
             query = "-",
             nbDeleted = "-",
             TotalMainAssay = "-",
@@ -222,11 +222,11 @@ mod_Filtering_server <- function(id,
                 # widget he want to insert
                 # Be aware of the naming convention for ids in uiOutput()
                 # For more details, please refer to the dev document.
-                # mod_build_qMetadata_FunctionFilter_ui(ns('query')),
-                DT::dataTableOutput(ns("qMetadata_Filter_DT")),
+                # mod_build_qMetacell_FunctionFilter_ui(ns('query')),
+                DT::dataTableOutput(ns("qMetacell_Filter_DT")),
                 uiOutput(ns("Quantimetadatafiltering_buildQuery_ui")),
                 uiOutput(ns("example_ui")),
-                mod_ds_qMetadata_ui(ns("plots")),
+                mod_ds_qMetacell_ui(ns("plots")),
                 # Insert validation button
                 uiOutput(ns("Quantimetadatafiltering_btn_validate_ui"))
             )
@@ -260,7 +260,7 @@ mod_Filtering_server <- function(id,
         })
 
 
-        mod_ds_qMetadata_server(
+        mod_ds_qMetacell_server(
             id = "plots",
             se = reactive({
                 mainAssay(rv$dataIn)
@@ -269,22 +269,22 @@ mod_Filtering_server <- function(id,
             conds = design.qf(rv$dataIn)$Condition
         )
 
-        output$qMetadata_Filter_DT <- DT::renderDataTable(
+        output$qMetacell_Filter_DT <- DT::renderDataTable(
             server = TRUE,
             {
-                df <- rv.custom$qMetadata_Filter_SummaryDT
+                df <- rv.custom$qMetacell_Filter_SummaryDT
                 df[, "query"] <- ConvertListToHtml(rv.custom$funFilter$ll.query())
                 showDT(df)
             }
         )
 
         output$Quantimetadatafiltering_buildQuery_ui <- renderUI({
-            widget <- mod_build_qMetadata_FunctionFilter_ui(ns("query"))
+            widget <- mod_build_qMetacell_FunctionFilter_ui(ns("query"))
             MagellanNTK::toggleWidget(widget, 
                 rv$steps.enabled["Quantimetadatafiltering"])
         })
 
-        rv.custom$funFilter <- mod_build_qMetadata_FunctionFilter_server(
+        rv.custom$funFilter <- mod_build_qMetacell_FunctionFilter_server(
             id = "query",
             obj = reactive({
                 mainAssay(rv$dataIn)
@@ -296,7 +296,7 @@ mod_Filtering_server <- function(id,
                 req(rv$dataIn)
                 c(
                     "None" = "None",
-                    qMetadata.def(typeDataset(mainAssay(rv$dataIn)))$node
+                    qMetacell.def(typeDataset(mainAssay(rv$dataIn)))$node
                 )
             }),
             keep_vs_remove = reactive({
@@ -314,7 +314,7 @@ mod_Filtering_server <- function(id,
         # Update the list of queries each time a new filter is added
         # observeEvent(rv.custom$funFilter$trigger(), ignoreInit = TRUE, 
         # ignoreNULL = TRUE,{
-        #   rv.custom$qMetadata_Filter_SummaryDT$query <- data.frame(
+        #   rv.custom$qMetacell_Filter_SummaryDT$query <- data.frame(
         #     query = rv.custom$funFilter$ll.query(),
         #     nbDeleted = '-',
         #     TotalMainAssay = '-',
@@ -323,7 +323,7 @@ mod_Filtering_server <- function(id,
 
         output$Quantimetadatafiltering_btn_validate_ui <- renderUI({
             widget <- actionButton(ns("Quantimetadatafiltering_btn_validate"),
-                "Perform qMetadata filtering",
+                "Perform qMetacell filtering",
                 class = MagellanNTK::GlobalSettings$btn_success_color
             )
 
@@ -337,7 +337,7 @@ mod_Filtering_server <- function(id,
             rv$dataIn <- filterFeaturesOneSE(
                 object = rv$dataIn,
                 i = length(rv$dataIn),
-                name = "qMetadataFiltered",
+                name = "qMetacellFiltered",
                 filters = rv.custom$funFilter$ll.fun()
             )
 
@@ -345,8 +345,8 @@ mod_Filtering_server <- function(id,
             nBefore <- nrow(rv$dataIn[[length(rv$dataIn) - 1]])
             nAfter <- nrow(rv$dataIn[[length(rv$dataIn)]])
 
-            rv.custom$qMetadata_Filter_SummaryDT[, "nbDeleted"] <- nBefore - nAfter
-            rv.custom$qMetadata_Filter_SummaryDT[, "TotalMainAssay"] <- nrow(mainAssay(rv$dataIn))
+            rv.custom$qMetacell_Filter_SummaryDT[, "nbDeleted"] <- nBefore - nAfter
+            rv.custom$qMetacell_Filter_SummaryDT[, "TotalMainAssay"] <- nrow(mainAssay(rv$dataIn))
 
             par <- rv.custom$funFilter$ll.widgets.value()
             params(rv$dataIn, length(rv$dataIn)) <- par

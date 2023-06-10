@@ -9,13 +9,13 @@
 #' color code for each cell w.r.t. to cell quantitative metadata.
 #'
 #' - `metadata` which is the content of [rowData()] with only one-dimensionnal
-#' data (i.e. the adjacencyMatrix and the qMetadata slots are not part of
+#' data (i.e. the adjacencyMatrix and the qMetacell slots are not part of
 #' the sheet),
 #'
 #' - `exp. design` which is the content of [colData()]. Each condition in the 
 #' table is colored with a different color,
 #'
-#' - `quantitative metadata` which is the content of [qMetadata()]. There is a 
+#' - `quantitative metadata` which is the content of [qMetacell()]. There is a 
 #' color code for the different tags.
 #'
 #'
@@ -115,11 +115,11 @@ setMethod(
 
 
     # Add colors to quantitative table
-    mc <- qMetadata.def(typeDataset(object))
+    mc <- qMetacell.def(typeDataset(object))
     colors <- as.list(stats::setNames(mc$color, mc$node))
     tags <- cbind(
         keyId = rep("identified", nrow(object)),
-        qMetadata(object)
+        qMetacell(object)
     )
 
     addColors(wb, i.sheet, tags, colors)
@@ -166,10 +166,10 @@ setMethod(
     )
 
 
-    # Add the qMetadata information
+    # Add the qMetacell information
     n <- 4
-    new.rowData <- qMetadata(object)
-    openxlsx::addWorksheet(wb, "qMetadata")
+    new.rowData <- qMetacell(object)
+    openxlsx::addWorksheet(wb, "qMetacell")
     openxlsx::writeData(wb,
         sheet = n,
         cbind(

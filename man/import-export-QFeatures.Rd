@@ -10,7 +10,7 @@ createQFeatures(
   sample,
   indQData,
   keyId = "AutoID",
-  indQMetadata = NULL,
+  indexForMetacell = NULL,
   force.na = TRUE,
   typeDataset,
   parentProtId = NULL,
@@ -35,8 +35,6 @@ the \code{rowData()} table of the \code{QFeatures} object.}
 \item{keyId}{A \code{character(1)} or \code{numeric(1)} which is the indice of the
 column containing the ID of entities (peptides or proteins)}
 
-\item{indQMetadata}{xxxxxxxxxxx}
-
 \item{force.na}{A \code{boolean} that indicates if the '0' and 'NaN' values of
 quantitative values  must be replaced by 'NA' (Default is FALSE)}
 
@@ -59,6 +57,8 @@ with the function \code{pipelines()}. Default value is NULL}
 
 \item{name}{A \code{character(1)} which is the name of the assay in the
 QFeatures object. Default is 'original'}
+
+\item{indQMetacell}{xxxxxxxxxxx}
 }
 \value{
 An instance of class \code{QFeatures}.
@@ -69,27 +69,7 @@ single tabulated-like file for quantitative and meta-data and a dataframe
 for the samples description.
 }
 \examples{
-{
-    data.file <- system.file("extdata", "Exp1_R25_pept.txt", 
-    package = "DaparToolshedData")
-    data <- read.table(data.file, header = TRUE, sep = "\t", 
-    as.is = TRUE, stringsAsFactors = FALSE)
-    sample.file <- system.file("extdata", "samples_Exp1_R25.txt", 
-    package = "DaparToolshedData")
-    sample <- read.table(sample.file, header = TRUE, sep = "\t", 
-    as.is = TRUE, stringsAsFactors = FALSE)
-    ft <- createQFeatures(
-        data = data, sample = sample, 
-        indQData = 56:61,
-        keyId = "Sequence", 
-        analysis = "test",
-        indQMetadata = 43:48, 
-        typeDataset = "peptide",
-        parentProtId = "Protein_group_IDs", 
-        forceNA = TRUE, 
-        software = "maxquant"
-    )
-}
+examples/xx.R
 
 }
 \author{

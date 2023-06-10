@@ -38,9 +38,9 @@
 ##'  - [DaparToolshed::specPeptides()]: xxx
 ##'
 ##' Or based on the quantitative metadata (identification):
-##'  - [DaparToolshed::qMetadatWholeMatrix()]: xxx
-##'  - [DaparToolshed::qMetadataWholeLine()]: xxx
-##'  - [DaparToolshed::qMetadataOnConditions()]: xxx
+##'  - [DaparToolshed::qMetacellWholeMatrix()]: xxx
+##'  - [DaparToolshed::qMetacellWholeLine()]: xxx
+##'  - [DaparToolshed::qMetacellOnConditions()]: xxx
 ##'
 ##' @return A filtered `QFeature` object
 ##'
@@ -63,7 +63,7 @@
 ##'                param1 = 'value_of_param1',
 ##'                param2 = 'value_of_param2')
 ##'
-##' FunctionFilter('qMetadataWholeLine',
+##' FunctionFilter('qMetacellWholeLine',
 ##'                cmd = 'delete',
 ##'                pattern = 'imputed POV')
 ##'
@@ -94,7 +94,7 @@
 ##' ## condition, there is less than 80% of samples marked as 'imputed POV'
 ##' ## ----------------------------------------------------------------
 ##'
-##' filter <- FunctionFilter('qMetadataOnConditions',
+##' filter <- FunctionFilter('qMetacellOnConditions',
 ##' cmd = 'delete',
 ##' mode = 'AtLeastOneCond',
 ##' pattern = 'imputed POV',

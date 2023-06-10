@@ -144,24 +144,24 @@ setMethod(
 .aggregateFeatures4Prostar <- function(object, fcol, fun, conds, ...) {
     X <- adjacencyMatrix(object)
 
-    # add agregation of qMetadata
+    # add agregation of qMetacell
     # Aggregate the quantitative metdata
-    aggQ <- aggQmetadata(
-        qMeta = qMetadata(object),
+    aggQ <- aggQmetacell(
+        qMeta = qMetacell(object),
         X = adjacencyMatrix(object),
         level = typeDataset(object),
         conds = conds
     )
 
-    ## Remove the qMetadata that should be dropped anyway and not be aggregated
+    ## Remove the qMetacell that should be dropped anyway and not be aggregated
     ## within QFeatures::aggregateFeatures
-    SummarizedExperiment::rowData(object)[["qMetadata"]] <- NULL
+    SummarizedExperiment::rowData(object)[["qMetacell"]] <- NULL
 
     ## Create the aggregated assay
     aggAssay <- aggregateFeatures(object, fcol, fun, ...)
 
-    ## Add the qMetadata to the new assay
-    qMetadata(aggAssay) <- aggQ
+    ## Add the qMetacell to the new assay
+    qMetacell(aggAssay) <- aggQ
     X.spec <- X.shared <- X
 
     X.spec[which(rowSums(as.matrix(X.spec)) > 1), ] <- 0
@@ -199,15 +199,15 @@ setMethod(
 #'
 #' @examples
 #' data(ft, package='DaparToolshed')
-#' qMeta <- qMetadata(ft, 1)
+#' qMeta <- qMetacell(ft, 1)
 #' X <- adjacencyMatrix(ft, 1)
 #' level <- typeDataset(ft, 1)
 #' conds <- colData(ft)$Condition
-#' aggQmeta <- aggQmetadata(qMeta, X, level, conds)
+#' aggQmeta <- aggQmetacell(qMeta, X, level, conds)
 #'
 #' @rdname DaparToolshed-aggregate
 #'
-aggQmetadata <- function(qMeta, X, level, conds) {
+aggQmetacell <- function(qMeta, X, level, conds) {
     # stopifnot(inherits(object, "SummarizedExperiment"))
 
     rowcol <- function(meta.col, X.col) {
@@ -217,7 +217,7 @@ aggQmetadata <- function(qMeta, X, level, conds) {
     df <- data.frame(stringsAsFactors = TRUE)
     for (j in seq(ncol(qMeta))) {
         for (i in seq(ncol(X))) {
-            df[i, j] <- qMetadata_combine(
+            df[i, j] <- qMetacell_combine(
                 rowcol(qMeta[, j], X[, i]),
                 level
             )

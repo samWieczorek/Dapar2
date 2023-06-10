@@ -4,7 +4,7 @@
 \alias{DaparToolshed-aggregate}
 \alias{aggregateFeatures4Prostar,QFeatures-method}
 \alias{aggregateFeatures4Prostar,SummarizedExperiment-method}
-\alias{aggQmetadata}
+\alias{aggQmetacell}
 \alias{aggregateMethods}
 \title{Aggregate an assay's quantitative features}
 \usage{
@@ -25,7 +25,7 @@
   ...
 )
 
-aggQmetadata(qMeta, X, level, conds)
+aggQmetacell(qMeta, X, level, conds)
 
 aggregateMethods()
 }
@@ -129,11 +129,11 @@ assay(feat1[[3]])
 aggcounts(feat1[[3]])
 rowData(ft[[2]])
 data(ft, package='DaparToolshed')
-qMeta <- qMetadata(ft, 1)
+qMeta <- qMetacell(ft, 1)
 X <- adjacencyMatrix(ft, 1)
 level <- typeDataset(ft, 1)
 conds <- colData(ft)$Condition
-aggQmeta <- aggQmetadata(qMeta, X, level, conds)
+aggQmeta <- aggQmetacell(qMeta, X, level, conds)
 
 }
 \seealso{
