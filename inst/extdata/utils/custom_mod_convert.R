@@ -80,11 +80,13 @@ Convert_server <- function(id,
   
   
   widgets.default.values <- list(
-    Step1_typeOfData = NULL,
-    Step1_checkDataLogged = "no",
-    Step1_replaceAllZeros = TRUE,
-    Step1_software = character(0),
-    Step1_XLSsheets = NULL
+    SelectFile_software = '',
+    SelectFile_file = '',
+    SelectFile_typeOfData = NULL,
+    SelectFile_checkDataLogged = "no",
+    SelectFile_replaceAllZeros = TRUE,
+    SelectFile_software = character(0),
+    SelectFile_XLSsheets = NULL
   )
   
   rv.custom.default.values <- list()
@@ -179,13 +181,13 @@ Convert_server <- function(id,
         uiOutput(ns('SelectFile_software_ui')),
         uiOutput(ns('SelectFile_file_ui')),
         uiOutput(ns('SelectFile_ManageXlsFiles_ui')),
-        uiOutput(ns('SelectFile_select3_ui')),
-        mod_foo_ui(ns('foo')),
-        # Insert validation button
-        uiOutput(ns('Step1_btn_validate_ui')),
+        uiOutput(ns('SelectFile_typeOfData_ui')),
+        uiOutput(ns('SelectFile_checkDataLogged_ui')),
+        uiOutput(ns('SelectFile_replaceAllZeros_ui')),
         
-        # Additional code
-        plotOutput(ns('showPlot'))
+        # Insert validation button
+        uiOutput(ns('SelectFile_btn_validate_ui')),
+        
       )
     })
     
@@ -258,6 +260,45 @@ Convert_server <- function(id,
       )
       toggleWidget(widget, rv$steps.enabled['SelectFile'])
     })
+    
+    
+    
+    output$SelectFile_typeOfData_ui <- renderUI({
+      widget <- radioButtons(ns("SelectFile_typeOfData"), 
+                             "Is it a peptide or protein dataset ?",
+                             choices = c(
+                               "peptide dataset" = "peptide",
+                               "protein dataset" = "protein"
+                             )
+                             )
+      
+      toggleWidget(widget, rv$steps.enabled['SelectFile'] )
+    })
+    
+    
+    output$SelectFile_checkDataLogged_ui <- renderUI({
+      widget <- radioButtons(ns("SelectFile_checkDataLogged"), 
+                             "Are your data already log-transformed ?",
+                             choices = c(
+                               "yes (they stay unchanged)" = "yes",
+                               "no (they wil be automatically transformed)" = "no"
+                             ),
+                             selected = "no"
+                             )
+      
+      toggleWidget(widget, rv$steps.enabled['SelectFile'] )
+    })
+    
+    
+    output$SelectFile_replaceAllZeros_ui <- renderUI({
+      widget <- checkboxInput(ns("SelectFile_replaceAllZeros"), 
+                             "Replacve all 0 and NaN by NA",
+                             value = TRUE
+                             )
+      
+      toggleWidget(widget, rv$steps.enabled['SelectFile'] )
+    })
+    
     
     
     output$SelectFile_btn_validate_ui <- renderUI({
