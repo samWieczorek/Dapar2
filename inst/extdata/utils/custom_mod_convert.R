@@ -553,7 +553,9 @@ Convert_server <- function(id,
         fluidRow(
           column(width = 4, uiOutput(ns("ExpandFeatData_quantCols_ui"), width = "400px")),
           column(width = 8, shinyjs::hidden(
-            uiOutput(ns("ExpandFeatData_inputGroup_ui"), width = "600px")
+            uiOutput(ns("ExpandFeatData_inputGroup_ui")
+                     #, width = "600px"
+                     )
           ))
         ),
         
@@ -589,8 +591,7 @@ Convert_server <- function(id,
       mod_helpPopover_server("help_ExpandFeatData_quantCols",
                               title = "Quantitative data",
                               content = "Select the columns that are quantitation values
-            by clicking in the field below."
-      )
+            by clicking in the field below.")
       
       tagList(
         mod_helpPopover_ui(ns("help_ExpandFeatData_quantCols")),
@@ -639,14 +640,64 @@ Convert_server <- function(id,
       rv$steps.status['ExpandFeatData'] <- global$VALIDATED
     })
     
-    # <<< END ------------- Code for step 3 UI---------------
+    # <<< END ------------- Code for Design UI---------------
+    
+    
+    ############# STEP 4 ######################
+    output$Design <- renderUI({
+      wellPanel(
+        tags$p(
+            "If you do not know how to fill the experimental design, you can
+            click on the '?' next to each design in the list that appear
+            once the conditions are checked or got to the ",
+            actionLink("linkToFaq1", "FAQ", style = "background-color: white"),
+            " page."
+          ),
+          fluidRow(
+            column(width = 6,
+              tags$b("1 - Fill the \"Condition\" column to identify
+                the conditions to compare.")
+            ),
+            column(width = 6, uiOutput("UI_checkConditions"))
+          ),
+          fluidRow(
+            column(width = 6, uiOutput("UI_hierarchicalExp")),
+            column(width = 6, uiOutput("checkDesign"))
+          ),
+          hr(),
+          uiOutput(ns('Design_reorder_ui')),
+          tags$div(
+            tags$div(
+              style = "display:inline-block; vertical-align: top;",
+              uiOutput("viewDesign", width = "100%")
+            ),
+            tags$div(
+              style = "display:inline-block; vertical-align: top;",
+              shinyjs::hidden(div(
+                id = "showExamples",
+                uiOutput("designExamples")
+              ))
+            )
+          )
+        
+        # Insert validation button
+        # This line is necessary. DO NOT MODIFY
+        uiOutput(ns('Design_btn_validate_ui'))
+      )
+    })
+    
+    
+    output$Design_reorder_ui <- renderUI({
+      widget <- selectInput("convert_reorder", "Order by conditions ?",
+                            choices = setNames(nm = c("No" = "No")),
+                            width = "100px")
+      toggleWidget(widget, rv$steps.enabled['Design'] )
+    })
     
     
     
     
-    
-    
-    # >>> START ------------- Code for step 3 UI---------------
+    # >>> START ------------- Code for Save UI---------------
     output$Save <- renderUI({
       tagList(
         # Insert validation button
@@ -668,8 +719,12 @@ Convert_server <- function(id,
                    rv$steps.enabled['Save']
       )
     })
+    
+    
     observeEvent(input$Save_btn_validate, {
       # Do some stuff
+      browser()
+      
       rv$dataIn <- Add_Datasets_to_Object(object = rv$dataIn,
                                           dataset = rnorm(1:5),
                                           name = id)

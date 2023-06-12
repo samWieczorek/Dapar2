@@ -36,9 +36,8 @@ mod_inputGroup_ui <- function(id) {
   ns <- NS(id)
   
   tagList(
-    uiOutput(ns("inputGroup"), width = "600px"),
+    uiOutput(ns("inputGroup")),
     uiOutput(ns("checkIdentificationTab"))
-    
   )
 }
 
@@ -52,13 +51,9 @@ mod_inputGroup_server <- function(id, df, quantCols) {
   if (!requireNamespace("shinyBS", quietly = TRUE)) {
     stop("Please install shinyBS: BiocManager::install('shinyBS')")
   }
-  
-  
-  
+
   moduleServer(id, function(input, output, session) {
     ns <- session$ns
-    
-    
     
     rv <- reactiveValues(
       dataOut = NULL
