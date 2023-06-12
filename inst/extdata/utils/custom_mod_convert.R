@@ -16,9 +16,9 @@ Convert_conf <- function(){
     # Define the type of module
     mode = 'process',
     # List of all steps of the process
-    steps = c('Select File'),
+    steps = c('Select File', 'Data Id', 'Exp and Feat Data'),
     # A vector of boolean indicating if the steps are mandatory or not.
-    mandatory = c(TRUE)
+    mandatory = c(TRUE, TRUE, TRUE)
   )
 }
 
@@ -86,7 +86,14 @@ Convert_server <- function(id,
     SelectFile_checkDataLogged = "no",
     SelectFile_replaceAllZeros = TRUE,
     SelectFile_software = character(0),
-    SelectFile_XLSsheets = NULL
+    SelectFile_XLSsheets = NULL,
+    
+    DataId_datasetId = NULL,
+    DataId_convertChooseProteinID = NULL,
+    
+    ExpandFeatData_idMethod = NULL,
+    ExpandFeatData_quantCols = NULL,
+    ExpandFeatData_inputGroup = NULL
   )
   
   rv.custom.default.values <- list()
@@ -109,6 +116,11 @@ Convert_server <- function(id,
     )
     
     eval(str2expression(core.code))
+    
+    #Define local reactive variables
+    rv.convert <- reactiveValues(
+      tab = NULL
+    )
     
     # >>>
     # >>> START ------------- Code for Description UI---------------
@@ -149,8 +161,7 @@ Convert_server <- function(id,
     })
     
     output$Description_btn_validate_ui <- renderUI({
-      widget <- actionButton(ns("Description_btn_validate"),
-                             "Start",
+      widget <- actionButton(ns("Description_btn_validate"), "Start",
                              class = btn_success_color)
       toggleWidget(widget, rv$steps.enabled['Description'])
     })
@@ -208,13 +219,17 @@ Convert_server <- function(id,
     
     # This part must be customized by the developer of a new module
     output$SelectFile_file_ui <- renderUI({
-      req(input$choose_software)
+      req(input$SelectFile_software)
       fluidRow(
         column(width = 2,
-               popover_for_help_ui("modulePopover_convertChooseDatafile")
+               mod_helpPopover_server("help_chooseFile",
+                                      title = "Data file",
+                                      content = "Select one (.txt, .csv, .tsv, .xls, .xlsx) file."
+               ),
+               mod_helpPopover_ui(ns("help_chooseFile"))
         ),
         column(width = 10,
-               widget <- fileInput(ns("file"), "",
+               widget <- fileInput(ns("SelectFile_file"), "",
                                    multiple = FALSE,
                                    accept = c(".txt", ".tsv", ".csv", ".xls", ".xlsx")
                )
@@ -225,23 +240,66 @@ Convert_server <- function(id,
     })
     
     fileExt.ok <- reactive({
-      req(input$file1$name)
+      req(input$SelectFile_file$name)
       authorizedExts <- c("txt", "csv", "tsv", "xls", "xlsx")
-      ext <- GetExtension(input$file1$name)
+      ext <- GetExtension(input$SelectFile_file$name)
       !is.na(match(ext, authorizedExts))
     })
     
-    
+    ############ Read text file to be imported ######################
+    observeEvent(req(input$SelectFile_file), {
+      input$SelectFile_XLSsheets
+      
+      ext <- GetExtension(input$SelectFile_file$name)
+      
+      if (((ext %in% c("xls", "xlsx"))) && is.null(input$SelectFile_XLSsheets))
+        return(NULL)
+
+      
+      authorizedExts <- c("txt", "csv", "tsv", "xls", "xlsx")
+      
+      if (!fileExt.ok()) {
+        shinyjs::info("Warning : this file is not a text nor an Excel file !
+     Please choose another one.")
+      } else {
+        tryCatch({
+          
+          shinyjs::disable("SelectFile_file")
+          f.path <- input$SelectFile_file$datapath
+          rv.convert$tab <- switch(ext,
+                 txt = read.csv(f.path, header = TRUE, sep = "\t", as.is = T),
+                 csv = read.csv(f.path, header = TRUE, sep = ";", as.is = T),
+                 tsv = read.csv(f.path, header = TRUE, sep = "\t", as.is = T),
+                 xls = readExcel(f.path, ext, sheet = input$SelectFile_XLSsheets),
+                 xlsx = readExcel(f.path, ext, sheet = input$SelectFile_XLSsheets)
+          )
+          
+          colnames(rv.convert$tab) <- gsub(".", "_", colnames(rv.convert$tab), fixed = TRUE)
+          colnames(rv.convert$tab) <- gsub(" ", "_", colnames(rv.convert$tab), fixed = TRUE)
+        },
+        warning = function(w) {
+          shinyjs::info(conditionMessage(w))
+          return(NULL)
+        },
+        error = function(e) {
+          shinyjs::info(conditionMessage(e))
+          return(NULL)
+        },
+        finally = {
+          # cleanup-code
+        })
+      }
+    })
     
     output$SelectFile_ManageXlsFiles_ui <- renderUI({
-      req(input$choose_software)
-      req(input$file1)
+      req(input$SelectFile_software)
+      req(input$SelectFile_file)
       
-      req(GetExtension(input$file1$name) %in% c("xls", "xlsx"))
+      req(GetExtension(input$SelectFile_file$name) %in% c("xls", "xlsx"))
       
       tryCatch({   
-        sheets <- listSheets(input$file1$datapath)
-        widget <- selectInput(ns("XLSsheets"), 
+        sheets <- listSheets(input$SelectFile_file$datapath)
+        widget <- selectInput(ns("SelectFile_XLSsheets"), 
                               "sheets", 
                               choices = as.list(sheets), 
                               width = "200px")
@@ -266,10 +324,9 @@ Convert_server <- function(id,
     output$SelectFile_typeOfData_ui <- renderUI({
       widget <- radioButtons(ns("SelectFile_typeOfData"), 
                              "Is it a peptide or protein dataset ?",
-                             choices = c(
-                               "peptide dataset" = "peptide",
-                               "protein dataset" = "protein"
-                             )
+                             choices = c("peptide dataset" = "peptide",
+                                         "protein dataset" = "protein"
+                                         )
                              )
       
       toggleWidget(widget, rv$steps.enabled['SelectFile'] )
@@ -279,10 +336,8 @@ Convert_server <- function(id,
     output$SelectFile_checkDataLogged_ui <- renderUI({
       widget <- radioButtons(ns("SelectFile_checkDataLogged"), 
                              "Are your data already log-transformed ?",
-                             choices = c(
-                               "yes (they stay unchanged)" = "yes",
-                               "no (they wil be automatically transformed)" = "no"
-                             ),
+                             choices = c("yes (they stay unchanged)" = "yes",
+                                         "no (they wil be automatically transformed)" = "no"),
                              selected = "no"
                              )
       
@@ -302,8 +357,7 @@ Convert_server <- function(id,
     
     
     output$SelectFile_btn_validate_ui <- renderUI({
-      widget <-  actionButton(ns("SelectFile_btn_validate"),
-                              "Perform",
+      widget <-  actionButton(ns("SelectFile_btn_validate"), "Perform",
                               class = btn_success_color)
       toggleWidget(widget, rv$steps.enabled['SelectFile'] )
       
@@ -313,10 +367,10 @@ Convert_server <- function(id,
     
     observeEvent(input$SelectFile_btn_validate, {
       # Do some stuff
-      rv$dataIn <- Add_Datasets_to_Object(object = rv$dataIn,
-                                          dataset = rnorm(1:5),
-                                          name = paste0('temp_',id))
-      
+      # rv$dataIn <- Add_Datasets_to_Object(object = rv$dataIn,
+      #                                     dataset = rnorm(1:5),
+      #                                     name = paste0('temp_',id))
+      # 
       # DO NOT MODIFY THE THREE FOLLOWINF LINES
       dataOut$trigger <- MagellanNTK::Timestamp()
       dataOut$value <- rv$dataIn
@@ -325,6 +379,272 @@ Convert_server <- function(id,
     
     
     # <<< END ------------- Code for step 1 UI---------------
+    
+    
+    
+    
+    # >>> START ------------- Code for step 2 UI---------------
+    
+    output$DataId <- renderUI({
+      wellPanel(
+        br(), br(),
+        tags$div(
+          tags$div(
+            # Two examples of widgets in a renderUI() function
+            uiOutput(ns('DataId_datasetId_ui')),
+            uiOutput(ns('DataId_warningNonUniqueID_ui'))
+            ),
+          tags$div(
+            style = "display:inline-block; vertical-align: top;",
+            uiOutput("DataId_convertChooseProteinID_ui"),
+            uiOutput("DataId_previewProteinID_ui")
+          ),
+        
+        # Insert validation button
+        # This line is necessary. DO NOT MODIFY
+        uiOutput(ns('DataId_btn_validate_ui'))
+        )
+      )
+    })
+    
+    
+    output$DataId_datasetId_ui <- renderUI({
+      req(rv.convert$tab)
+      
+      #.choices <- setNames(nm = c("AutoID", colnames(rv.convert$tab)))
+      #names(.choices) <- c("Auto ID", colnames(rv.convert$tab))
+      
+      mod_helpPopover_server("help_convertIdType",
+                             title = "ID definition",
+                             content = "If you choose the automatic ID, 
+                            Prostar will build an index.")
+      
+      tagList(
+        mod_helpPopover_ui(ns("help_convertIdType")),
+        widget <- selectInput(ns("DataId_datasetId"), 
+                              label = "", 
+                              choices = setNames(nm = c("AutoID", colnames(rv.convert$tab)))
+                              )
+      )
+      
+      toggleWidget(widget, rv$steps.enabled['DataId'] )
+    })
+    
+    
+    datasetID_Ok <- reactive({
+      req(input$DataId_datasetId)
+      req(rv.convert$tab)
+      if (input$DataId_datasetId == "AutoID") {
+        t <- TRUE
+      } else {
+        t <- (length(as.data.frame(rv.convert$tab)[, input$DataId_datasetId])
+              == length(unique(as.data.frame(rv.convert$tab)[, input$DataId_datasetId])))
+      }
+      t
+    })
+    
+    
+    output$DataId_warningNonUniqueID_ui <- renderUI({
+      # req(input$DataId_datasetId != "AutoID")
+      # req(rv.convert$tab)
+      # 
+      # df <- as.data.frame(rv.convert$tab)
+      # t <- (length(df[, input$DataId_datasetId]) == length(unique(df[, input$DataId_datasetId])))
+      # 
+      if (!datasetID_Ok()) {
+        text <- "<img src=\"images/Problem.png\" height=\"24\"></img><font color=\"red\">
+        Warning ! Your ID contains duplicate data. Please choose another one."
+      } else {
+        text <- "<img src=\"images/Ok.png\" height=\"24\"></img>"
+      }
+      HTML(text)
+    })
+    
+    
+    output$DataId_ProteinId_ui <- renderUI({
+      req(rv.convert$tab)
+      req(input$SelectFile_typeOfData != "protein")
+      
+      mod_helpPopover_server("help_ProteinId",
+                             title = "Select protein IDs",
+                             content = "Select the column containing the parent protein IDs."
+      )
+      
+      tagList(
+        mod_helpPopover_ui(ns("help_ProteinId")),
+        widget <- selectInput(ns("DataId_ProteinId"),
+                    "",
+                    choices = setNames(nm =c("", colnames(rv.convert$tab))),
+                    selected = character(0))
+        )
+      toggleWidget(widget, rv$steps.enabled['DataId'] )
+    })
+    
+    
+    output$helpTextDataID <- renderUI({
+      req(input$SelectFile_typeOfData)
+  
+      t <- switch(input$SelectFile_typeOfData,
+                  protein = "proteins",
+                  peptide = "peptides",
+                  default = "")
+      
+      txt <- paste("Please select among the columns of your data the one that
+                corresponds to a unique ID of the ", t, ".", sep = " ")
+      helpText(txt)
+    })
+    
+    
+    
+    
+    output$previewProteinID_UI <- renderUI({
+      req(input$DataId_ProteinId)
+      
+      tagList(
+        p(style = "color: black;", "Preview"),
+        tableOutput("previewProtID")
+      )
+    })
+    
+    output$previewProtID <- renderTable(
+      head(rv.convert$tab[, input$DataId_ProteinId]), colnames = FALSE
+    )
+    
+    
+    
+    output$DataId_btn_validate_ui <- renderUI({
+      widget <- actionButton(ns("DataId_btn_validate"), "Perform",
+                             class = GlobalSettings$btn_success_color)
+      toggleWidget(widget, rv$steps.enabled['DataId'] )
+    })
+    
+    observeEvent(input$DataId_btn_validate, {
+      # Do some stuff
+      # new.dataset <- 10*rv$dataIn[[length(rv$dataIn)]]
+      # rv$dataIn <- Add_Datasets_to_Object(object = rv$dataIn,
+      #                                     dataset = new.dataset,
+      #                                     name = paste0('temp_',id))
+      # 
+      # DO NOT MODIFY THE THREE FOLLOWINF LINES
+      dataOut$trigger <- Timestamp()
+      dataOut$value <- rv$dataIn
+      rv$steps.status['DataId'] <- global$VALIDATED
+    })
+    
+    # <<< END ------------- Code for step 2 UI---------------
+    
+    
+    # >>> START ------------- Code for step 3 UI---------------
+    
+    output$ExpandFeatData <- renderUI({
+      wellPanel(
+        shinyjs::useShinyjs(),
+        fluidRow(
+          column(width = 4, uiOutput(ns('ExpandFeatData_idMethod_ui'))),
+          #column(width = 4, uiOutput(ns("ExpandFeatData_checkIdTab_ui")),
+          column(width = 4, shinyjs::hidden(
+            div(id = "warning_neg_values",
+              p("Warning : Your original dataset may contain negative values",
+                "so that they cannot be logged. Please check back the dataset or",
+                "the log option in the first tab.")
+            )
+          ))
+        ),
+        fluidRow(
+          column(width = 4, uiOutput(ns("ExpandFeatData_quantCols_ui"), width = "400px")),
+          column(width = 8, shinyjs::hidden(
+            uiOutput(ns("ExpandFeatData_inputGroup_ui"), width = "600px")
+          ))
+        ),
+        
+        # Insert validation button
+        # This line is necessary. DO NOT MODIFY
+        uiOutput(ns('ExpandFeatData_btn_validate_ui'))
+      )
+    })
+    
+    
+    output$ExpandFeatData_idMethod_ui <- renderUI({
+      widget <- radioButtons(ns("ExpandFeatData_idMethod"), 
+                             "Provide identification method",
+                             choices = list(
+                               "No (default values will be computed)" = FALSE,
+                               "Yes" = TRUE),
+                             selected = FALSE)
+      toggleWidget(widget, rv$steps.enabled['ExpandFeatData'] )
+    })
+    
+    
+    output$ExpandFeatData_inputGroup_ui <- renderUI({
+      req(as.logical(input$ExpandFeatData_idMethod))
+      input$ExpandFeatData_quantCols
+      
+      mod_inputGroup_server('inputGroup', rv.convert$tab, input$ExpandFeatData_quantCols)
+      mod_inputGroup_ui(ns('inputGroup'))
+    })
+    
+    output$ExpandFeatData_quantCols_ui <- renderUI({
+      req(rv.convert$tab)
+      
+      mod_helpPopover_server("help_ExpandFeatData_quantCols",
+                              title = "Quantitative data",
+                              content = "Select the columns that are quantitation values
+            by clicking in the field below."
+      )
+      
+      tagList(
+        mod_helpPopover_ui(ns("help_ExpandFeatData_quantCols")),
+        widget <- selectInput(ns("ExpandFeatData_quantCols"),
+                    label = "",
+                    choices = setNames(nm=colnames(rv.convert$tab)),
+                    multiple = TRUE, selectize = FALSE ,
+                    width = "200px", size = 20
+        )
+      )
+      
+      toggleWidget(widget, rv$steps.enabled['ExpandFeatData'] )
+    })
+    
+    
+    
+    
+    observe({
+      shinyjs::toggle("warning_neg_values",
+                      condition = !is.null(input$ExpandFeatData_quantCols) &&
+                        length(which(rv.convert$tab[, input$ExpandFeatData_quantCols] < 0)) > 0
+      )
+      shinyjs::toggle("ExpandFeatData_idMethod", condition = !is.null(input$ExpandFeatData_quantCols))
+      shinyjs::toggle("ExpandFeatData_inputGroup_ui", condition = as.logical(input$idMethod) == TRUE)
+    })
+    
+    
+    
+    output$ExpandFeatData_btn_validate_ui <- renderUI({
+      widget <- actionButton(ns("ExpandFeatData_btn_validate"),
+                             "Perform",
+                             class = GlobalSettings$btn_success_color)
+      toggleWidget(widget, rv$steps.enabled['ExpandFeatData'] )
+    })
+    
+    observeEvent(input$ExpandFeatData_btn_validate, {
+      # Do some stuff
+      # new.dataset <- 10*rv$dataIn[[length(rv$dataIn)]]
+      # rv$dataIn <- Add_Datasets_to_Object(object = rv$dataIn,
+      #                                     dataset = new.dataset,
+      #                                     name = paste0('temp_',id))
+      # 
+      # DO NOT MODIFY THE THREE FOLLOWINF LINES
+      dataOut$trigger <- Timestamp()
+      dataOut$value <- rv$dataIn
+      rv$steps.status['ExpandFeatData'] <- global$VALIDATED
+    })
+    
+    # <<< END ------------- Code for step 3 UI---------------
+    
+    
+    
+    
+    
     
     # >>> START ------------- Code for step 3 UI---------------
     output$Save <- renderUI({
