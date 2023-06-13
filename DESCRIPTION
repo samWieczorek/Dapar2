@@ -39,7 +39,8 @@ Imports:
     shinyjs,
     sos,
     stats,
-    utils
+    utils,
+    rHandsontable
 biocViews: 
     Proteomics,
     Normalization,
@@ -120,6 +121,11 @@ Collate:
     mod_tracker.R
     mod_metacell_tree.R
     mod_query_metacell.R
+    mod_buildDesign.R
+    mod_designExample.R
+    mod_inputGroup.R
+    palette.R
+    shinyValue.R
 RoxygenNote: 7.2.3
 Packaged: 2017-10-13 11:13:04 UTC; sw175264
 Encoding: UTF-8

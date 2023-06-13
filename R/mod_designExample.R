@@ -14,41 +14,9 @@ mod_designExample_server <- function(id, n){
   }
   
   
-  example_2 <- data.frame(
-    Sample.name = paste0("Sample ", as.character(1:14)),
-    Condition = c(rep("A", 4), rep("B", 4), rep("C", 6)),
-    Bio.Rep = as.integer(c(1, 1, 2, 2, 3, 3, 4, 4, 5, 5, 6, 6, 7, 7)),
-    Tech.Rep = c(1:14),
-    stringsAsFactors = FALSE
-  )
-  
-  
-  example_3 <- data.frame(
-    Sample.name = paste0("Sample ", as.character(1:16)),
-    Condition = c(rep("A", 8), rep("B", 8)),
-    Bio.Rep = as.integer(c(rep(1, 4), rep(2, 4), rep(3, 4), rep(4, 4))),
-    Tech.Rep = as.integer(c(1, 1, 2, 2, 3, 3, 4, 4, 5, 5, 6, 6, 7, 7, 8, 8)),
-    Analyt.Rep = c(1:16),
-    stringsAsFactors = FALSE
-  )
-  
-  
-  moduleServer(id, function(input, output, session) {
-    ns <- session$ns
-    
-    rv.designEx <- reactiveValues(
-      df = NULL
-    )
-  
-  output$examples <- renderRHandsontable({
-    print(n)
-    
-    df <- NULL
-    if (n == 2) {
-      rv.designEx$df <- example_2
-      
-      pal <- ExtendPalette(3, listBrewerPalettes[1])
-      color_rend <- paste0("function (instance, td, row, col, prop, value,
+  example_2 <- function(){
+    pal <- ExtendPalette(3, listBrewerPalettes[1])
+    color_rend <- paste0("function (instance, td, row, col, prop, value,
       cellProperties) {
       Handsontable.renderers.TextRenderer.apply(this, arguments);
       if(col==1 && (row>=0 && row<=3)) {td.style.background = '", pal[1], "';}
@@ -59,15 +27,24 @@ mod_designExample_server <- function(id, n){
       if(col==3 && (row == 0|| row == 2|| row == 4|| row == 6|| row == 8|| row == 10|| row == 12)) 
       {td.style.background = 'lightgrey';}
                     }")
+    
+      df <- data.frame(
+        Sample.name = paste0("Sample ", as.character(1:14)),
+        Condition = c(rep("A", 4), rep("B", 4), rep("C", 6)),
+        Bio.Rep = as.integer(c(1, 1, 2, 2, 3, 3, 4, 4, 5, 5, 6, 6, 7, 7)),
+        Tech.Rep = c(1:14),
+        stringsAsFactors = FALSE)
       
+      list(df = df, color_rend = color_rend)
       
-    } else if (n == 3) {
-      rv.designEx$df <- example_3
-      
-      pal <- ExtendPalette(3, listBrewerPalettes[1])
-      
-      color_rend <- paste0(
-        "function (instance, td, row, col, prop, value, cellProperties) {
+  }
+  
+  
+  example_3 <- function(){
+    pal <- ExtendPalette(3, listBrewerPalettes[1])
+    
+    color_rend <- paste0(
+      "function (instance, td, row, col, prop, value, cellProperties) {
                 Handsontable.renderers.TextRenderer.apply(this, arguments);
                 if(col==1 && (row>=0 && row<=7)) {td.style.background = '", pal[1], "';}
                 if(col==1 && (row>=8 && row<=15))  { td.style.background = '", pal[2], "';}
@@ -81,16 +58,38 @@ mod_designExample_server <- function(id, n){
                 if(col==4 && (row == 0|| row == 2|| row == 4|| row == 6|| row == 8|| row == 10|| row == 12 || row == 14))
                 {td.style.background = 'lightgrey';}
               }"
-      )
-    }
+    )
     
-    print(color_rend)
-    rhandsontable::rhandsontable(rv.designEx$df,
+    df <- data.frame(
+      Sample.name = paste0("Sample ", as.character(1:16)),
+      Condition = c(rep("A", 8), rep("B", 8)),
+      Bio.Rep = as.integer(c(rep(1, 4), rep(2, 4), rep(3, 4), rep(4, 4))),
+      Tech.Rep = as.integer(c(1, 1, 2, 2, 3, 3, 4, 4, 5, 5, 6, 6, 7, 7, 8, 8)),
+      Analyt.Rep = c(1:16),
+      stringsAsFactors = FALSE)
+    
+    list(df = df, color_rend = color_rend)
+    
+  }
+  
+  
+  moduleServer(id, function(input, output, session) {
+    ns <- session$ns
+    
+    
+  output$examples <- renderRHandsontable({
+    
+    if (n == 2)
+      data <- example_2()
+    else if (n == 3)
+      data <- example_3()
+
+    rhandsontable::rhandsontable(data$df,
                                  rowHeaders = NULL,
                                  fillHandle = list(
                                    direction = "vertical",
                                    autoInsertRow = FALSE,
-                                   maxRows = length(rv.designEx$df$Sample.name)
+                                   maxRows = nrow(data$df)
                                  )
     ) %>%
       rhandsontable::hot_rows(rowHeights = 30) %>%
@@ -102,7 +101,7 @@ mod_designExample_server <- function(id, n){
         allowRemoveRow = FALSE,
         allowRemoveColumn = FALSE,
         autoInsertRow = FALSE) %>%
-      rhandsontable::hot_cols(readOnly = TRUE, renderer = color_rend)
+      rhandsontable::hot_cols(readOnly = TRUE, renderer = data$color_rend)
   })
   
   })

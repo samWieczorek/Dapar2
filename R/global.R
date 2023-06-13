@@ -1,8 +1,8 @@
-# btn_success_color <- "btn-success"
+btn_success_color <- "btn-success"
 optionsBtnClass <- "info"
-# redBtnClass <- "btn-danger"
-# PrevNextBtnClass <- "btn-info"
-# actionBtnClass <- "btn-primary"
+redBtnClass <- "btn-danger"
+PrevNextBtnClass <- "btn-info"
+actionBtnClass <- "btn-primary"
 #
 #
 # btn_style <- "display:inline-block; vertical-align: middle; padding: 7px"
