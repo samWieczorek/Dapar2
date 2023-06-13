@@ -16,9 +16,9 @@ Convert_conf <- function(){
     # Define the type of module
     mode = 'process',
     # List of all steps of the process
-    steps = c('Select File', 'Data Id', 'Exp and Feat Data'),
+    steps = c('Select File', 'Data Id', 'Exp and Feat Data', 'Design'),
     # A vector of boolean indicating if the steps are mandatory or not.
-    mandatory = c(TRUE, TRUE, TRUE)
+    mandatory = c(TRUE, TRUE, TRUE, TRUE)
   )
 }
 
@@ -96,7 +96,10 @@ Convert_server <- function(id,
     ExpandFeatData_inputGroup = NULL
   )
   
-  rv.custom.default.values <- list()
+  rv.custom.default.values <- list(
+    tab = NULL,
+    design = NULL
+  )
   
   ### -------------------------------------------------------------###
   ###                                                             ###
@@ -117,9 +120,10 @@ Convert_server <- function(id,
     
     eval(str2expression(core.code))
     
-    #Define local reactive variables
+    # #Define local reactive variables
     rv.convert <- reactiveValues(
-      tab = NULL
+      tab = NULL,
+      design = NULL
     )
     
     # >>>
@@ -219,7 +223,7 @@ Convert_server <- function(id,
     
     # This part must be customized by the developer of a new module
     output$SelectFile_file_ui <- renderUI({
-      req(input$SelectFile_software)
+      req(rv.widgets$SelectFile_software)
       fluidRow(
         column(width = 2,
                mod_helpPopover_server("help_chooseFile",
@@ -240,19 +244,19 @@ Convert_server <- function(id,
     })
     
     fileExt.ok <- reactive({
-      req(input$SelectFile_file$name)
+      req(rv.widgets$SelectFile_file$name)
       authorizedExts <- c("txt", "csv", "tsv", "xls", "xlsx")
-      ext <- GetExtension(input$SelectFile_file$name)
+      ext <- GetExtension(rv.widgets$SelectFile_file$name)
       !is.na(match(ext, authorizedExts))
     })
     
     ############ Read text file to be imported ######################
-    observeEvent(req(input$SelectFile_file), {
-      input$SelectFile_XLSsheets
+    observeEvent(req(rv.widgets$SelectFile_file), {
+      rv.widgets$SelectFile_XLSsheets
       
-      ext <- GetExtension(input$SelectFile_file$name)
+      ext <- GetExtension(rv.widgets$SelectFile_file$name)
       
-      if (((ext %in% c("xls", "xlsx"))) && is.null(input$SelectFile_XLSsheets))
+      if (((ext %in% c("xls", "xlsx"))) && is.null(rv.widgets$SelectFile_XLSsheets))
         return(NULL)
 
       
@@ -265,13 +269,13 @@ Convert_server <- function(id,
         tryCatch({
           
           shinyjs::disable("SelectFile_file")
-          f.path <- input$SelectFile_file$datapath
+          f.path <- rv.widgets$SelectFile_file$datapath
           rv.convert$tab <- switch(ext,
                  txt = read.csv(f.path, header = TRUE, sep = "\t", as.is = T),
                  csv = read.csv(f.path, header = TRUE, sep = ";", as.is = T),
                  tsv = read.csv(f.path, header = TRUE, sep = "\t", as.is = T),
-                 xls = readExcel(f.path, ext, sheet = input$SelectFile_XLSsheets),
-                 xlsx = readExcel(f.path, ext, sheet = input$SelectFile_XLSsheets)
+                 xls = readExcel(f.path, ext, sheet = rv.widgets$SelectFile_XLSsheets),
+                 xlsx = readExcel(f.path, ext, sheet = rv.widgets$SelectFile_XLSsheets)
           )
           
           colnames(rv.convert$tab) <- gsub(".", "_", colnames(rv.convert$tab), fixed = TRUE)
@@ -292,13 +296,13 @@ Convert_server <- function(id,
     })
     
     output$SelectFile_ManageXlsFiles_ui <- renderUI({
-      req(input$SelectFile_software)
-      req(input$SelectFile_file)
+      req(rv.widgets$SelectFile_software)
+      req(rv.widgets$SelectFile_file)
       
-      req(GetExtension(input$SelectFile_file$name) %in% c("xls", "xlsx"))
+      req(GetExtension(rv.widgets$SelectFile_file$name) %in% c("xls", "xlsx"))
       
       tryCatch({   
-        sheets <- listSheets(input$SelectFile_file$datapath)
+        sheets <- listSheets(rv.widgets$SelectFile_file$datapath)
         widget <- selectInput(ns("SelectFile_XLSsheets"), 
                               "sheets", 
                               choices = as.list(sheets), 
@@ -375,6 +379,7 @@ Convert_server <- function(id,
       dataOut$trigger <- MagellanNTK::Timestamp()
       dataOut$value <- rv$dataIn
       rv$steps.status['SelectFile'] <- global$VALIDATED
+
     })
     
     
@@ -432,24 +437,24 @@ Convert_server <- function(id,
     
     
     datasetID_Ok <- reactive({
-      req(input$DataId_datasetId)
+      req(rv.widgets$DataId_datasetId)
       req(rv.convert$tab)
-      if (input$DataId_datasetId == "AutoID") {
+      if (rv.widgets$DataId_datasetId == "AutoID") {
         t <- TRUE
       } else {
-        t <- (length(as.data.frame(rv.convert$tab)[, input$DataId_datasetId])
-              == length(unique(as.data.frame(rv.convert$tab)[, input$DataId_datasetId])))
+        t <- (length(as.data.frame(rv.convert$tab)[, rv.widgets$DataId_datasetId])
+              == length(unique(as.data.frame(rv.convert$tab)[, rv.widgets$DataId_datasetId])))
       }
       t
     })
     
     
     output$DataId_warningNonUniqueID_ui <- renderUI({
-      # req(input$DataId_datasetId != "AutoID")
+      # req(rv.widgets$DataId_datasetId != "AutoID")
       # req(rv.convert$tab)
       # 
       # df <- as.data.frame(rv.convert$tab)
-      # t <- (length(df[, input$DataId_datasetId]) == length(unique(df[, input$DataId_datasetId])))
+      # t <- (length(df[, rv.widgets$DataId_datasetId]) == length(unique(df[, rv.widgets$DataId_datasetId])))
       # 
       if (!datasetID_Ok()) {
         text <- "<img src=\"images/Problem.png\" height=\"24\"></img><font color=\"red\">
@@ -463,7 +468,7 @@ Convert_server <- function(id,
     
     output$DataId_ProteinId_ui <- renderUI({
       req(rv.convert$tab)
-      req(input$SelectFile_typeOfData != "protein")
+      req(rv.widgets$SelectFile_typeOfData != "protein")
       
       mod_helpPopover_server("help_ProteinId",
                              title = "Select protein IDs",
@@ -482,9 +487,9 @@ Convert_server <- function(id,
     
     
     output$helpTextDataID <- renderUI({
-      req(input$SelectFile_typeOfData)
+      req(rv.widgets$SelectFile_typeOfData)
   
-      t <- switch(input$SelectFile_typeOfData,
+      t <- switch(rv.widgets$SelectFile_typeOfData,
                   protein = "proteins",
                   peptide = "peptides",
                   default = "")
@@ -498,7 +503,7 @@ Convert_server <- function(id,
     
     
     output$previewProteinID_UI <- renderUI({
-      req(input$DataId_ProteinId)
+      req(rv.widgets$DataId_ProteinId)
       
       tagList(
         p(style = "color: black;", "Preview"),
@@ -507,7 +512,7 @@ Convert_server <- function(id,
     })
     
     output$previewProtID <- renderTable(
-      head(rv.convert$tab[, input$DataId_ProteinId]), colnames = FALSE
+      head(rv.convert$tab[, rv.widgets$DataId_ProteinId]), colnames = FALSE
     )
     
     
@@ -578,10 +583,10 @@ Convert_server <- function(id,
     
     
     output$ExpandFeatData_inputGroup_ui <- renderUI({
-      req(as.logical(input$ExpandFeatData_idMethod))
-      input$ExpandFeatData_quantCols
+      req(as.logical(rv.widgets$ExpandFeatData_idMethod))
+      rv.widgets$ExpandFeatData_quantCols
       
-      mod_inputGroup_server('inputGroup', rv.convert$tab, input$ExpandFeatData_quantCols)
+      mod_inputGroup_server('inputGroup', rv.convert$tab, rv.widgets$ExpandFeatData_quantCols)
       mod_inputGroup_ui(ns('inputGroup'))
     })
     
@@ -611,11 +616,11 @@ Convert_server <- function(id,
     
     observe({
       shinyjs::toggle("warning_neg_values",
-                      condition = !is.null(input$ExpandFeatData_quantCols) &&
-                        length(which(rv.convert$tab[, input$ExpandFeatData_quantCols] < 0)) > 0
+                      condition = !is.null(rv.widgets$ExpandFeatData_quantCols) &&
+                        length(which(rv.convert$tab[, rv.widgets$ExpandFeatData_quantCols] < 0)) > 0
       )
-      shinyjs::toggle("ExpandFeatData_idMethod", condition = !is.null(input$ExpandFeatData_quantCols))
-      shinyjs::toggle("ExpandFeatData_inputGroup_ui", condition = as.logical(input$idMethod) == TRUE)
+      shinyjs::toggle("ExpandFeatData_idMethod", condition = !is.null(rv.widgets$ExpandFeatData_quantCols))
+      shinyjs::toggle("ExpandFeatData_inputGroup_ui", condition = as.logical(rv.widgets$idMethod) == TRUE)
     })
     
     
@@ -645,57 +650,37 @@ Convert_server <- function(id,
     
     ############# STEP 4 ######################
     output$Design <- renderUI({
+      
+      browser()
+      rv.convert$design <- mod_buildDesign_server("designEx", rv.widgets$ExpandFeatData_quantCols)
+      
       wellPanel(
-        tags$p(
-            "If you do not know how to fill the experimental design, you can
-            click on the '?' next to each design in the list that appear
-            once the conditions are checked or got to the ",
-            actionLink("linkToFaq1", "FAQ", style = "background-color: white"),
-            " page."
-          ),
-          fluidRow(
-            column(width = 6,
-              tags$b("1 - Fill the \"Condition\" column to identify
-                the conditions to compare.")
-            ),
-            column(width = 6, uiOutput("UI_checkConditions"))
-          ),
-          fluidRow(
-            column(width = 6, uiOutput("UI_hierarchicalExp")),
-            column(width = 6, uiOutput("checkDesign"))
-          ),
-          hr(),
-          uiOutput(ns('Design_reorder_ui')),
-          tags$div(
-            tags$div(
-              style = "display:inline-block; vertical-align: top;",
-              uiOutput("viewDesign", width = "100%")
-            ),
-            tags$div(
-              style = "display:inline-block; vertical-align: top;",
-              shinyjs::hidden(div(
-                id = "showExamples",
-                uiOutput("designExamples")
-              ))
-            )
-          )
+        mod_buildDesign_ui(ns("designEx"))
         
-        # Insert validation button
-        # This line is necessary. DO NOT MODIFY
-        uiOutput(ns('Design_btn_validate_ui'))
       )
     })
     
     
-    output$Design_reorder_ui <- renderUI({
-      widget <- selectInput("convert_reorder", "Order by conditions ?",
-                            choices = setNames(nm = c("No" = "No")),
-                            width = "100px")
+    output$Design_btn_validate_ui <- renderUI({
+      widget <- actionButton(ns("Design_btn_validate"), "Perform",
+                             class = GlobalSettings$btn_success_color)
       toggleWidget(widget, rv$steps.enabled['Design'] )
     })
     
-    
-    
+    observeEvent(input$Design_btn_validate, {
+      
+      req(rv.convert$design)
+      # Do some stuff
+      # new.dataset <- 10*rv$dataIn[[length(rv$dataIn)]]
+      # rv$dataIn <- Add_Datasets_to_Object(object = rv$dataIn,
+      #                                     dataset = new.dataset,
+      #                                     name = paste0('temp_',id))
+      # 
+      # DO NOT MODIFY THE THREE FOLLOWINF LINES
+      dataOut$trigger <- Timestamp()
+      dataOut$value <- rv$dataIn
+      rv$steps.status['Design'] <- global$VALIDATED
+    })
     
     # >>> START ------------- Code for Save UI---------------
     output$Save <- renderUI({

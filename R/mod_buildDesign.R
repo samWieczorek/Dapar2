@@ -33,8 +33,8 @@ mod_buildDesign_ui <- function(id) {
       tags$div(style = "display:inline-block; vertical-align: top;",
         shinyjs::hidden(div(id = "showExamples", uiOutput(ns("designExamples"))))
       )
-    ),
-    shinyjs::disabled(actionButton(ns('validateDesign'), 'Validate design'))
+    )
+    #shinyjs::disabled(actionButton(ns('validateDesign'), 'Validate design'))
   )
 }
 
@@ -426,9 +426,12 @@ mod_buildDesign_server <- function(id,
     
     
     
-    observeEvent(input$validateDesign, {
+    observeEvent(rv$designChecked$valid, {
       dataOut$trigger <- MagellanNTK::Timestamp()
-      dataOut$design <- rv$hot
+      if (isTRUE(rv$designChecked$valid))
+        dataOut$design <- rv$hot
+      else
+        dataOut$design <- NULL
     })
     
     
