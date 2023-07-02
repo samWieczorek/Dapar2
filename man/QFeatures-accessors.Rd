@@ -5,6 +5,8 @@
 \alias{qMetacell,QFeatures-method}
 \alias{qMetacell,SummarizedExperiment-method}
 \alias{qMetacell<-}
+\alias{GetUniqueTags,QFeatures-method}
+\alias{GetUniqueTags,SummarizedExperiment-method}
 \alias{.GetMetadataSlot}
 \alias{.GetRowdataSlot}
 \alias{typeDataset,QFeatures-method}
@@ -27,7 +29,6 @@
 \alias{params,QFeatures-method}
 \alias{params,SummarizedExperiment-method}
 \alias{params<-}
-\alias{GetUniqueTags,SummarizedExperiment-method}
 \alias{names_metacell,QFeatures-method}
 \alias{names_metacell,SummarizedExperiment-method}
 \alias{names_metacell<-}
@@ -38,6 +39,10 @@
 \S4method{qMetacell}{SummarizedExperiment}(object, slotName = "qMetacell")
 
 qMetacell(object, i, slotName = "qMetacell") <- value
+
+\S4method{GetUniqueTags}{QFeatures}(object, i)
+
+\S4method{GetUniqueTags}{SummarizedExperiment}(object)
 
 .GetMetadataSlot(object, slotName = NULL)
 
@@ -83,8 +88,6 @@ mainAssay(object)
 
 params(object, i, slotName = "params") <- value
 
-\S4method{GetUniqueTags}{SummarizedExperiment}(object)
-
 \S4method{names_metacell}{QFeatures}(object, i, slotName = "names_metacell")
 
 \S4method{names_metacell}{SummarizedExperiment}(object, slotName = "names_metacell")
@@ -102,6 +105,10 @@ metadata from. All must have a rowdata variable named as \code{slotName}}
 \item{value}{xxx}
 }
 \value{
+NA
+
+NA
+
 NA
 
 NA

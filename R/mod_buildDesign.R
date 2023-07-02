@@ -122,7 +122,7 @@ mod_buildDesign_server <- function(id,
     
     
     #-------------------------------------------------------------
-    output$hot <- renderRHandsontable({
+    output$hot <- rhandsontable::renderRHandsontable({
       rv$hot
       input$chooseExpDesign
       
@@ -190,7 +190,7 @@ mod_buildDesign_server <- function(id,
     
     
     #--------------------------------------------------------------------------
-    observeEvent(input$hot, {rv$hot <- hot_to_r(input$hot)})
+    observeEvent(input$hot, {rv$hot <- rhandsontable::hot_to_r(input$hot)})
     
     #----------------------------------------------------------
     output$UI_checkConditions <- renderUI({
@@ -201,22 +201,17 @@ mod_buildDesign_server <- function(id,
       if ((sum(rv$hot$Condition == "") == 0) && (input$convert_reorder != "None")) {
         tags$div(
           tags$div(style = "display:inline-block;",
-            actionButton(ns("btn_checkConds"), "Check conditions", class = actionBtnClass)
+            actionButton(ns("btn_checkConds"), "Check conditions", class = GlobalSettings$actionBtnClass)
           ),
           tags$div(style = "display:inline-block;",
             if (!is.null(rv$conditionsChecked)) {
               if (isTRUE(rv$conditionsChecked$valid)) {
-                img <- "images/Ok.png"
-                txt <- "Correct conditions"
+                txt <- "<img src=\"images/Ok.png\" height=\"24\"></img>Correct conditions."
               } else {
-                img <- "images/Problem.png"
-                txt <- "Invalid conditions"
+                txt <- "<img src=\"images/Problem.png\" height=\"24\"></img><font color=\"red\">Invalid conditions."
               }
               tagList(
-                tags$div(
-                  tags$div(style = "display:inline-block;", tags$img(src = img, height = 25)),
-                  tags$div(style = "display:inline-block;", tags$p(txt))
-                ),
+                tags$div(style = "display:inline-block;", HTML(txt)),
                 if (!isTRUE(rv$conditionsChecked$valid))
                   tags$p(rv$conditionsChecked$warn)
 
@@ -272,7 +267,7 @@ mod_buildDesign_server <- function(id,
       
       tagList(
         h4("Design"),
-        rHandsontableOutput(ns("hot"))
+        rhandsontable::rHandsontableOutput(ns("hot"))
       )
     })
     
@@ -377,7 +372,7 @@ mod_buildDesign_server <- function(id,
       
       tags$div(
         tags$div(style = "display:inline-block;",
-          actionButton(ns("btn_checkDesign"), "Check design", class = actionBtnClass)
+          actionButton(ns("btn_checkDesign"), "Check design", class = GlobalSettings$actionBtnClass)
         ),
         tags$div(
           style = "display:inline-block;",

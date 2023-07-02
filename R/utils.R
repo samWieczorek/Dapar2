@@ -79,13 +79,13 @@ ReplaceSpecialChars <- function(x) {
 ProstarVersions <- function() {
     Prostar <- DaparToolshed <- DaparToolshedData <- MagellanNTK <- NA
 
-    tryCatch(
-        {
-            find.package("Prostar")
-            Prostar <- Biobase::package.version("Prostar")
-        },
-        error = function(e) Prostar <- NA
-    )
+    # tryCatch(
+    #     {
+    #         find.package("Prostar.2.0")
+    #         Prostar <- Biobase::package.version("Prostar.2.0")
+    #     },
+    #     error = function(e) Prostar <- NA
+    # )
 
     tryCatch(
         {

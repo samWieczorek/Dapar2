@@ -121,6 +121,40 @@ setMethod(
 
 
 
+
+
+#' @exportMethod qMetacell
+#' @rdname QFeatures-accessors
+#' @return NA
+setMethod(
+  "GetUniqueTags", "QFeatures",
+  function(object, i) {
+    GetUniqueTags(object[[i]])
+  }
+)
+
+
+
+
+#' @export
+#' @rdname QFeatures-accessors
+#' @return NA
+setMethod(
+  "GetUniqueTags", "SummarizedExperiment",
+  function(object) {
+    df <- qMetacell(object)
+    tmp <- sapply(colnames(df), function(x) unique(df[,x]))
+    ll <- unique(as.vector(tmp))
+    return(ll)
+  }
+)
+
+
+
+
+
+
+
 # 
 # 
 # #' @exportMethod adjacencyMatrix
@@ -498,22 +532,6 @@ setMethod(
     S4Vectors::metadata(object[[i]])[[slotName]] <- value
     return(object)
 }
-
-
-#' @exportMethod design.qf
-#' @rdname QFeatures-accessors
-setMethod(
-  "GetUniqueTags", "SummarizedExperiment",
-  function(object) {
-    SummarizedExperiment::colData(object)
-    
-    df <- Biobase::fData(obj)[, obj@experimentData@other$names_metacell]
-    tmp <- sapply(colnames(df), function(x) unique(df[,x]))
-    ll <- unique(as.vector(tmp))
-    return(ll)
-    
-  }
-)
 
 
 

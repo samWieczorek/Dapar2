@@ -133,7 +133,7 @@ mod_query_metacell_server <- function(id,
             
             
             
-            observeEvent(id, {
+            observeEvent(c(id, obj()), {
                 #print('marqueur 1')
                 if(is.null(obj())){
                     dataOut$trigger <- as.numeric(Sys.time())
@@ -455,9 +455,6 @@ mod_query_metacell_server <- function(id,
 
 # Example
 # 
-library(DAPAR)
-library(DAPARdata)
-library(Prostar)
 library(shinyBS)
 
     ui <- fluidPage(
@@ -475,7 +472,7 @@ server <- function(input, output) {
     
     
     
-    utils::data("Exp1_R25_prot")
+    utils::data("Exp1_R25_prot", package='DaparToolShedData')
     
     tmp <- mod_query_metacell_server('query', 
                                      obj = reactive({Exp1_R25_prot}),

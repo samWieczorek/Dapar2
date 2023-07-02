@@ -40,7 +40,7 @@ Imports:
     sos,
     stats,
     utils,
-    rHandsontable
+    rhandsontable
 biocViews: 
     Proteomics,
     Normalization,
@@ -123,9 +123,14 @@ Collate:
     mod_query_metacell.R
     mod_buildDesign.R
     mod_designExample.R
+    mod_infos_dataset.R
+    design_utils.R
     mod_inputGroup.R
     palette.R
     shinyValue.R
+    mod_dl.R
+    mod_open_dataset.R
+    mod_open_demoDataset.R
 RoxygenNote: 7.2.3
 Packaged: 2017-10-13 11:13:04 UTC; sw175264
 Encoding: UTF-8

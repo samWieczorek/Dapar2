@@ -1,4 +1,11 @@
 
+
+#' @title xxx
+#' @description xxx
+#' @name mod_convert
+#' @author Samuel Wieczorek 
+NULL
+
 redBtnClass <- "btn-danger"
 PrevNextBtnClass <- "btn-info"
 btn_success_color <- 'info'
@@ -6,7 +13,7 @@ btn_success_color <- 'info'
 optionsBtnClass <- "info"
 options(shiny.fullstacktrace = T)
 
-#' @rdname example_module_process1
+#' @rdname mod_convert
 #' @export
 #' 
 Convert_conf <- function(){
@@ -81,15 +88,14 @@ Convert_server <- function(id,
   
   widgets.default.values <- list(
     SelectFile_software = '',
-    SelectFile_file = '',
+    SelectFile_file = NULL,
     SelectFile_typeOfData = NULL,
     SelectFile_checkDataLogged = "no",
     SelectFile_replaceAllZeros = TRUE,
-    SelectFile_software = character(0),
-    SelectFile_XLSsheets = NULL,
+     SelectFile_XLSsheets = '',
     
     DataId_datasetId = NULL,
-    DataId_convertChooseProteinID = NULL,
+    DataId_parentProteinID = NULL,
     
     ExpandFeatData_idMethod = NULL,
     ExpandFeatData_quantCols = NULL,
@@ -166,7 +172,7 @@ Convert_server <- function(id,
     
     output$Description_btn_validate_ui <- renderUI({
       widget <- actionButton(ns("Description_btn_validate"), "Start",
-                             class = btn_success_color)
+                             class = GlobalSettings$btn_success_color)
       toggleWidget(widget, rv$steps.enabled['Description'])
     })
     
@@ -215,8 +221,7 @@ Convert_server <- function(id,
       widget <- radioButtons(ns("SelectFile_software"), 
                              "Software to import from",
                              choices = setNames(nm = DAPAR::GetSoftAvailables()),
-                             selected = character(0)
-      )
+                             selected = rv.widgets$SelectFile_software)
       
       toggleWidget(widget, rv$steps.enabled['SelectFile'] )
     })
@@ -306,7 +311,8 @@ Convert_server <- function(id,
         widget <- selectInput(ns("SelectFile_XLSsheets"), 
                               "sheets", 
                               choices = as.list(sheets), 
-                              width = "200px")
+                              width = "200px",
+                              selected = rv.widgets$SelectFile_XLSsheets)
       },
       warning = function(w) {
         shinyjs::info(conditionMessage(w))
@@ -330,8 +336,8 @@ Convert_server <- function(id,
                              "Is it a peptide or protein dataset ?",
                              choices = c("peptide dataset" = "peptide",
                                          "protein dataset" = "protein"
-                                         )
-                             )
+                                         ),
+                             selected = rv.widgets$SelectFile_typeOfData)
       
       toggleWidget(widget, rv$steps.enabled['SelectFile'] )
     })
@@ -342,7 +348,7 @@ Convert_server <- function(id,
                              "Are your data already log-transformed ?",
                              choices = c("yes (they stay unchanged)" = "yes",
                                          "no (they wil be automatically transformed)" = "no"),
-                             selected = "no"
+                             selected = rv.widgets$SelectFile_checkDataLogged
                              )
       
       toggleWidget(widget, rv$steps.enabled['SelectFile'] )
@@ -352,7 +358,7 @@ Convert_server <- function(id,
     output$SelectFile_replaceAllZeros_ui <- renderUI({
       widget <- checkboxInput(ns("SelectFile_replaceAllZeros"), 
                              "Replacve all 0 and NaN by NA",
-                             value = TRUE
+                             value = rv.widgets$SelectFile_replaceAllZeros
                              )
       
       toggleWidget(widget, rv$steps.enabled['SelectFile'] )
@@ -362,7 +368,7 @@ Convert_server <- function(id,
     
     output$SelectFile_btn_validate_ui <- renderUI({
       widget <-  actionButton(ns("SelectFile_btn_validate"), "Perform",
-                              class = btn_success_color)
+                              class = GlobalSettings$btn_success_color)
       toggleWidget(widget, rv$steps.enabled['SelectFile'] )
       
     })
@@ -401,7 +407,7 @@ Convert_server <- function(id,
             ),
           tags$div(
             style = "display:inline-block; vertical-align: top;",
-            uiOutput("DataId_convertChooseProteinID_ui"),
+            uiOutput("DataId_parentProteinID_ui"),
             uiOutput("DataId_previewProteinID_ui")
           ),
         
@@ -428,7 +434,8 @@ Convert_server <- function(id,
         mod_helpPopover_ui(ns("help_convertIdType")),
         widget <- selectInput(ns("DataId_datasetId"), 
                               label = "", 
-                              choices = setNames(nm = c("AutoID", colnames(rv.convert$tab)))
+                              choices = setNames(nm = c("AutoID", colnames(rv.convert$tab))),
+                              selected = rv.widgets$DataId_datasetId
                               )
       )
       
@@ -466,7 +473,7 @@ Convert_server <- function(id,
     })
     
     
-    output$DataId_ProteinId_ui <- renderUI({
+    output$DataId_parentProteinId_ui <- renderUI({
       req(rv.convert$tab)
       req(rv.widgets$SelectFile_typeOfData != "protein")
       
@@ -477,11 +484,11 @@ Convert_server <- function(id,
       
       tagList(
         mod_helpPopover_ui(ns("help_ProteinId")),
-        widget <- selectInput(ns("DataId_ProteinId"),
+        widget <- selectInput(ns("DataId_parentProteinId"),
                     "",
                     choices = setNames(nm =c("", colnames(rv.convert$tab))),
-                    selected = character(0))
-        )
+                    selected = rv.widgets$DataId_parentProteinId)
+      )
       toggleWidget(widget, rv$steps.enabled['DataId'] )
     })
     
@@ -503,7 +510,7 @@ Convert_server <- function(id,
     
     
     output$previewProteinID_UI <- renderUI({
-      req(rv.widgets$DataId_ProteinId)
+      req(rv.widgets$DataId_parentProteinId)
       
       tagList(
         p(style = "color: black;", "Preview"),
@@ -512,7 +519,7 @@ Convert_server <- function(id,
     })
     
     output$previewProtID <- renderTable(
-      head(rv.convert$tab[, rv.widgets$DataId_ProteinId]), colnames = FALSE
+      head(rv.convert$tab[, rv.widgets$DataId_parentProteinId]), colnames = FALSE
     )
     
     
@@ -577,7 +584,7 @@ Convert_server <- function(id,
                              choices = list(
                                "No (default values will be computed)" = FALSE,
                                "Yes" = TRUE),
-                             selected = FALSE)
+                             selected = rv.widgets$ExpandFeatData_idMethod)
       toggleWidget(widget, rv$steps.enabled['ExpandFeatData'] )
     })
     
@@ -604,7 +611,8 @@ Convert_server <- function(id,
                     label = "",
                     choices = setNames(nm=colnames(rv.convert$tab)),
                     multiple = TRUE, selectize = FALSE ,
-                    width = "200px", size = 20
+                    width = "200px", size = 20,
+                    selected = rv.widgets$ExpandFeatData_quantCols
         )
       )
       
@@ -651,11 +659,12 @@ Convert_server <- function(id,
     ############# STEP 4 ######################
     output$Design <- renderUI({
       
-      browser()
+      #browser()
       rv.convert$design <- mod_buildDesign_server("designEx", rv.widgets$ExpandFeatData_quantCols)
       
       wellPanel(
-        mod_buildDesign_ui(ns("designEx"))
+        mod_buildDesign_ui(ns("designEx")),
+        uiOutput(ns('Design_btn_validate_ui'))
         
       )
     })
@@ -695,30 +704,36 @@ Convert_server <- function(id,
     output$mod_dl_ui <- renderUI({
       req(config@mode == 'process')
       req(rv$steps.status['Save'] == global$VALIDATED)
-      mod_dl_ui(ns('createQuickLink'))
+      dl_ui(ns('createQuickLink'))
     })
     
     output$Save_btn_validate_ui <- renderUI({
-      toggleWidget(actionButton(ns("Save_btn_validate"), "Save",
-                                class = btn_success_color),
+      toggleWidget(actionButton(ns("Save_btn_validate"), "Create QFeatures dataset", class = GlobalSettings$btn_success_color),
                    rv$steps.enabled['Save']
       )
     })
     
     
     observeEvent(input$Save_btn_validate, {
-      # Do some stuff
-      browser()
-      
-      rv$dataIn <- Add_Datasets_to_Object(object = rv$dataIn,
-                                          dataset = rnorm(1:5),
-                                          name = id)
+      # Create QFeatures dataset file
+      rv$dataIn <- createQFeatures(data = rv.convert$tab, 
+                                   sample = as.data.frame(rv.convert$design()$design),
+                                   indQData = rv.widgets$ExpandFeatData_quantCols,
+                                   keyId = rv.widgets$DataId_datasetId,
+                                   analysis = "analysis",
+                                   indexForMetacell = rv.widgets$ExpandFeatData_inputGroup,
+                                   typeDataset = rv.widgets$SelectFile_typeOfData,
+                                   parentProtId = rv.widgets$DataId_parentProteinID,
+                                   force.na = rv.widgets$SelectFile_replaceAllZeros,
+                                   software = rv.widgets$SelectFile_software)
       
       # DO NOT MODIFY THE THREE FOLLOWINF LINES
       dataOut$trigger <- MagellanNTK::Timestamp()
       dataOut$value <- rv$dataIn
       rv$steps.status['Save'] <- global$VALIDATED
-      mod_dl_server('createQuickLink', dataIn = reactive({rv$dataIn}))
+      dl_server('createQuickLink', 
+                dataIn = reactive({rv$dataIn}),
+                extension = c('csv', 'xlsx', 'RData'))
       
     })
     # <<< END ------------- Code for step 3 UI---------------

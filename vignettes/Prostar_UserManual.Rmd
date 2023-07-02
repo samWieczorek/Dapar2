@@ -471,15 +471,10 @@ possible to directly reload them (see Section~\ref{sec:load}).
 
 
 \section{Data manager}\label{sec:manager}
-The \textbf{Dataset manager} allows it to open, import or export quantitative 
-datasets. \Biocpkg{Prostar} relies on the MSnSet format which is part of the 
-package \Biocpkg{MSnbase}:
+The \textbf{Dataset manager} allows it to open, import or export quantitative datasets. \Biocpkg{Prostar} relies on the MSnSet format which is part of the package \Biocpkg{MSnbase}:
 
 It is either possible to load existing MSnSet files (see 
-Section~\ref{sec:load}), or to import text (-tabulated) and Excel files (see 
-Section~\ref{sec:import}). The \textbf{Demo data} menu allows it to load 
-the datasets of the package \Biocpkg{DAPARdata} as examples to discover
-\Biocpkg{Prostar} functionalities (see Section~\ref{sec:demomode}).
+Section~\ref{sec:load}), or to import text (-tabulated) and Excel files (see Section~\ref{sec:import}). The \textbf{Demo data} menu allows it to load the datasets of the package \Biocpkg{DAPARdata} as examples to discover \Biocpkg{Prostar} functionalities (see Section~\ref{sec:demomode}).
 
 
 \subsection{Open MSnSet file} \label{sec:load}

@@ -32,7 +32,7 @@ NULL
 #' @export
 #' @rdname mod_format_DT
 #'
-format_DT_ui <- function(id) {
+mod_format_DT_ui <- function(id) {
     if (!requireNamespace("DT", quietly = TRUE)) {
         stop("Please install DT: BiocManager::install('DT')")
     }
@@ -60,8 +60,8 @@ format_DT_ui <- function(id) {
 #'
 #' @importFrom htmlwidgets JS
 #' @rdname mod_format_DT
-format_DT_server <- function(id,
-                             data = reactive({NULL}),
+mod_format_DT_server <- function(id,
+                             data,
                              withDLBtns = FALSE,
                              showRownames = FALSE,
                              dom = 'Bt',
@@ -149,10 +149,10 @@ format_DT_server <- function(id,
 library(shiny)
 library(shinyjs)
 
-ui <- format_DT_ui("dt")
+ui <- mod_format_DT_ui("dt")
 
 server <- function(input, output, session) {
-  format_DT_server("dt", data = reactive({iris[1:5,]}))
+  mod_format_DT_server("dt", data = iris )
 }
 
 shinyApp(ui = ui, server = server)

@@ -60,19 +60,19 @@
 #' @rdname import-export-QFeatures
 #'
 createQFeatures <- function(data = NULL,
-    file = NULL,
-    sample,
-    indQData,
-    keyId = "AutoID",
-    indexForMetacell = NULL,
-    force.na = TRUE,
-    typeDataset,
-    parentProtId = NULL,
-    analysis = "foo",
-    processes = NULL,
-    typePipeline = NULL,
-    software = NULL,
-    name = "original") {
+                            file = NULL,
+                            sample,
+                            indQData,
+                            keyId = "AutoID",
+                            indexForMetacell = NULL,
+                            force.na = TRUE,
+                            typeDataset,
+                            parentProtId = NULL,
+                            analysis = "foo",
+                            processes = NULL,
+                            typePipeline = NULL,
+                            software = NULL,
+                            name = "original") {
 
 
   pkgs.require(c('SummarizedExperiment', 'QFeatures'))
@@ -112,15 +112,17 @@ createQFeatures <- function(data = NULL,
 
     if (missing(indQData)) {
         stop("'indQData' is required")
-    } else if (!is.numeric(indQData)) {
-        stop("'indQData' must be a vector of integer")
     }
+  # else if (!is.numeric(indQData)) {
+  #       stop("'indQData' must be a vector of integer")
+  #   }
 
     if (missing(indexForMetacell)) {
         stop("'indexForMetacell' is required")
-    } else if (!is.numeric(indexForMetacell)) {
-        stop("'indexForMetacell' must be a vector of integer")
     }
+  # else if (!is.numeric(indexForMetacell)) {
+  #       stop("'indexForMetacell' must be a vector of integer")
+  #   }
 
     if (!is.null(keyId) && !is.character(keyId)) {
         stop("'keyId' must be either NULL nor a string")
@@ -178,11 +180,8 @@ createQFeatures <- function(data = NULL,
     if (!is.null(indexForMetacell)) {
       tmp.qMetacell <- data[, indexForMetacell]
       tmp.qMetacell <- apply(tmp.qMetacell, 2, tolower)
-      tmp.qMetacell <- apply(tmp.qMetacell, 2,
-            function(x) gsub("\\s", "", x))
-      tmp.qMetacell <- as.data.frame(tmp.qMetacell,
-            stringsAsFactors = FALSE
-        )
+      tmp.qMetacell <- apply(tmp.qMetacell, 2, function(x) gsub("\\s", "", x))
+      tmp.qMetacell <- as.data.frame(tmp.qMetacell, stringsAsFactors = FALSE)
       colnames(tmp.qMetacell) <- gsub(".", "_", colnames(tmp.qMetacell), fixed = TRUE)
     
 

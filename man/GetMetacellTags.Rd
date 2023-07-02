@@ -7,7 +7,7 @@
 GetMetacellTags(obj = NULL, level = NULL, onlyPresent = FALSE, all = FALSE)
 }
 \arguments{
-\item{obj}{An object of class \code{MSnSet}}
+\item{obj}{An object of class \code{QFeatures}}
 
 \item{level}{xxx}
 
@@ -32,15 +32,21 @@ present, then the tag corresponding to this node is added.
 #' @description xxx
 #' @param obj xxx
 #' @export
-GetUniqueTags <- function(obj){
-df <- Biobase::fData(obj)\link{, obj@experimentData@other$names_metacell}
+#' @examples
+#' data(Exp1_R25_pept, package="DaparToolshedData")
+#' GetUniqueTags(Exp1_R25_pept[\link{1}])
+#'
+GetUniqueTags <- function(se){
+stopifnot(inherits(se, "SummarizedExperiment"))
+
+df <- qMetacell(se)
 tmp <- sapply(colnames(df), function(x) unique(df\link{,x}))
 ll <- unique(as.vector(tmp))
 return(ll)
 }
 }
 \examples{
-data(Exp1_R25_pept, package="DAPARdata")
+data(Exp1_R25_pept, package="DaparToolshedData")
 obj <- Exp1_R25_pept
 GetMetacellTags(level="peptide")
 GetMetacellTags(level="peptide", obj, onlyPresent=TRUE)

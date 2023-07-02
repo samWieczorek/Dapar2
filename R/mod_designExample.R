@@ -2,7 +2,7 @@
 
 mod_designExample_ui <- function(id) {
   ns <- NS(id)
-  rHandsontableOutput(ns("examples"))
+  rhandsontable::rHandsontableOutput(ns("examples"))
 }
 
 

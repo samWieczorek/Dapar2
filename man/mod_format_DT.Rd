@@ -2,17 +2,15 @@
 % Please edit documentation in R/mod_format_DT.R
 \name{mod_format_DT}
 \alias{mod_format_DT}
-\alias{format_DT_ui}
-\alias{format_DT_server}
+\alias{mod_format_DT_ui}
+\alias{mod_format_DT_server}
 \title{mod_format_DT_ui and mod_format_DT_server}
 \usage{
-format_DT_ui(id)
+mod_format_DT_ui(id)
 
-format_DT_server(
+mod_format_DT_server(
   id,
-  data = reactive({
-     NULL
- }),
+  data,
   withDLBtns = FALSE,
   showRownames = FALSE,
   dom = "Bt",

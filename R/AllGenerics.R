@@ -25,7 +25,8 @@ setGeneric("write2excel",
     function(object, ...) standardGeneric("write2excel"))
 
 
-
+setGeneric("GetUniqueTags", 
+           function(object, ...) standardGeneric("GetUniqueTags"))
 setGeneric("qMetacell", 
     function(object, ...) standardGeneric("qMetacell"))
 setGeneric("qMetacell<-", 

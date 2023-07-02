@@ -174,19 +174,7 @@ metacell.def <- function(level){
   )
   
   
-  colors <- list(
-    "Any" = "white",
-    "Missing" = "#CF8205",
-    "Missing POV" = "#E5A947",
-    "Missing MEC" = "#F1CA8A",
-    "Quantified" = "#0A31D0",
-    "Quant. by recovery" = "#B9C4F2",
-    "Quant. by direct id" = "#6178D9",
-    "Combined tags" = "#1E8E05",
-    "Imputed" = "#A40C0C",
-    "Imputed POV" = "#E34343",
-    "Imputed MEC" = "#F59898"
-  )
+  colors <- custom_metacell_colors()
   
   def <- cbind(def, color = rep("white", nrow(def)))
   
@@ -202,17 +190,17 @@ metacell.def <- function(level){
 #' @export
 #' @rdname q_metadata
 custom_metacell_colors <- function()
-  list('all' = 'white',
-       'missing' = 'white',
-       'missing POV' = "lightblue",
-       'missing MEC' = "orange",
-       'quanti' = "white",
-       'recovered' = "lightgrey",
-       'identified' = "white",
-       'combined' = "red",
-       'imputed' = "white",
-       'imputed POV' = "#0040FF",
-       'imputed MEC' = "#DF7401")
+  list("Any" = "white",
+       "Missing" = "#CF8205",
+       "Missing POV" = "#E5A947",
+       "Missing MEC" = "#F1CA8A",
+       "Quantified" = "#0A31D0",
+       "Quant. by recovery" = "#B9C4F2",
+       "Quant. by direct id" = "#6178D9",
+       "Combined tags" = "#1E8E05",
+       "Imputed" = "#A40C0C",
+       "Imputed POV" = "#E34343",
+       "Imputed MEC" = "#F59898")
 
 
 
@@ -275,8 +263,14 @@ Children <- function(level, parent = NULL){
 #' #' @description xxx
 #' #' @param obj xxx
 #' #' @export
-#' GetUniqueTags <- function(obj){
-#'   df <- Biobase::fData(obj)[, obj@experimentData@other$names_metacell]
+#' #' @examples
+#' #' data(Exp1_R25_pept, package="DaparToolshedData")
+#' #' GetUniqueTags(Exp1_R25_pept[[1]])
+#' #' 
+#' GetUniqueTags <- function(se){
+#'   stopifnot(inherits(se, "SummarizedExperiment"))
+#'   
+#'   df <- qMetacell(se)
 #'   tmp <- sapply(colnames(df), function(x) unique(df[,x]))
 #'   ll <- unique(as.vector(tmp))
 #'   return(ll)
@@ -291,7 +285,7 @@ Children <- function(level, parent = NULL){
 #' In addition, and w.r.t to the hierarchy of tags, if all leaves of a node are
 #' present, then the tag corresponding to this node is added.
 #'
-#' @param obj An object of class \code{MSnSet}
+#' @param obj An object of class \code{QFeatures}
 #' @param level xxx
 #' @param onlyPresent A boolean that indicates if one wants a list with only the tags
 #' present in the dataset.
@@ -302,7 +296,7 @@ Children <- function(level, parent = NULL){
 #' @author Samuel Wieczorek
 #'
 #' @examples
-#' data(Exp1_R25_pept, package="DAPARdata")
+#' data(Exp1_R25_pept, package="DaparToolshedData")
 #' obj <- Exp1_R25_pept
 #' GetMetacellTags(level="peptide")
 #' GetMetacellTags(level="peptide", obj, onlyPresent=TRUE)
@@ -314,6 +308,7 @@ GetMetacellTags <- function(obj = NULL,
                             level = NULL,
                             onlyPresent = FALSE, 
                             all = FALSE) {
+  stopifnot(inherits(obj, "SummarizedExperiment"))
   
   if (!onlyPresent && !all){
     if (!is.null(level) && is.null(obj))

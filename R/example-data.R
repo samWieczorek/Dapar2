@@ -23,10 +23,7 @@
 #'
 create_ft_example <- function(with.na = FALSE) {
     filename <- if (with.na) "ft-data-na.txt" else "ft-data.txt"
-    data.file <- system.file("extdata",
-        filename,
-        package = "DaparToolshed"
-    )
+    data.file <- system.file("extdata", filename, package = "DaparToolshed")
     data <- read.table(data.file,
         header = TRUE,
         sep = "\t",
@@ -46,17 +43,17 @@ create_ft_example <- function(with.na = FALSE) {
     )
 
     tmp.qf <- createQFeatures(
-        data = data,
-        sample = sample,
-        indQData = 2:7,
-        keyId = "ID",
-        analysis = "test",
-        indQMetacell = 9:14,
-        typeDataset = "peptide",
-        parentProtId = "Proteins",
-        force.na = TRUE,
-        software = "maxquant"
-    )
+      data = data,
+      sample = sample,
+      indQData = 2:7,
+      keyId = "ID",
+      analysis = "test",
+      indexForMetacell = 9:14,
+      typeDataset = "peptide",
+      parentProtId = "Proteins",
+      force.na = TRUE,
+      software = "maxquant"
+      )
 
 
     if (with.na) {

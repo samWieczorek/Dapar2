@@ -6,6 +6,14 @@ sample.file <- system.file("extdata", "samples_Exp1_R25.txt", package = "DaparTo
 
 sample <- read.table(sample.file, header = TRUE, sep = "\t", as.is = TRUE, stringsAsFactors = FALSE)
 
+
+metacell.indices <- 43:48
+metacell.names <- colnames(data)[metacell.indices]
+
+qdata.indices <- 56:61
+qdata.names <- colnames(data)[qdata.indices]
+
+
 ft <- createQFeatures(data = data, 
                       sample = sample,
                       indQData = 56:61,
@@ -17,3 +25,14 @@ ft <- createQFeatures(data = data,
                       force.na = TRUE,
                       software = "maxquant"
                       )
+
+ft <- createQFeatures(data = data, 
+                      sample = sample,
+                      indQData = qdata.names,
+                      keyId = "Sequence",
+                      analysis = "test",
+                      indexForMetacell = metacell.names,
+                      typeDataset = "peptide",
+                      parentProtId = "Protein_group_IDs",
+                      force.na = TRUE,
+                      software = "maxquant")
