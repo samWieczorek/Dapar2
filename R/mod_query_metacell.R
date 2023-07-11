@@ -378,7 +378,7 @@ mod_query_metacell_server <- function(id,
                 query <- gsub('#arithmetic_op#', arithmetic_op, query)
                 query <- gsub('#threshold#', threshold, query)
                 query <- gsub('#method#', method, query)
-                query <- gsub('#datatype#', GetTypeofData(obj()), query)
+                query <- gsub('#datatype#', typeDataset(obj()), query)
                 query <- gsub('#plural#', plural, query)
                 
                 
@@ -414,7 +414,7 @@ mod_query_metacell_server <- function(id,
                 
                 DAPAR::GetIndices_MetacellFiltering(
                     obj = obj(),
-                    level = GetTypeofData(obj()),
+                    level = typeDataset(obj()),
                     pattern = rv.widgets$MetacellTag,
                     type = rv.widgets$MetacellFilters,
                     percent = rv.widgets$val_vs_percent == "Percentage",

@@ -185,7 +185,7 @@ createQFeatures <- function(data = NULL,
       colnames(tmp.qMetacell) <- gsub(".", "_", colnames(tmp.qMetacell), fixed = TRUE)
     
 
-    # browser()
+    
     qMetacell <- BuildMetacell(from = software,
                                level = typeDataset,
                                qdata = SummarizedExperiment::assay(obj),

@@ -57,6 +57,9 @@ ul {
 }"
 
 
+#' @export
+#' @import shinyBS
+#' 
 mod_metacell_tree_ui <- function(id) {
     ns <- NS(id)
     if (!requireNamespace("shinyBS", quietly = TRUE)) {
@@ -84,6 +87,12 @@ mod_metacell_tree_ui <- function(id) {
 
 }
 
+
+
+#' @export
+#' @import shinyBS
+#' @import shinyjs
+#'
 mod_metacell_tree_server <- function(id, 
                                      obj = reactive({NULL}),
                                      reset = reactive({NULL})) {
@@ -204,9 +213,9 @@ mod_metacell_tree_server <- function(id,
 
         
         init_tree <- function(){
-            req(GetTypeofData(obj()))
+            req(typeDataset(obj()))
             #print('------------ init_tree() ---------------')
-            rv$meta <- DAPAR::metacell.def(GetTypeofData(obj()))
+            rv$meta <- DAPAR::metacell.def(typeDataset(obj()))
             rv$mapping <- BuildMapping(rv$meta)$names
             rv$bg_colors <- BuildMapping(rv$meta)$colors
             
@@ -225,7 +234,7 @@ mod_metacell_tree_server <- function(id,
             # dataOut$trigger <- as.numeric(Sys.time())
             # dataOut$values <- NULL
             
-            if (!is.null(GetTypeofData(obj())))
+            if (!is.null(typeDataset(obj())))
                 init_tree()
             dataOut$trigger <- as.numeric(Sys.time())
             dataOut$values <- NULL
@@ -259,7 +268,7 @@ observeEvent(input$lastModalClose,  ignoreInit = FALSE, ignoreNULL = TRUE, {
 observeEvent(id, ignoreInit = FALSE, {
     #print('------------ observeEvent(id ---------------')
     
-    if (!is.null(GetTypeofData(obj())))
+    if (!is.null(typeDataset(obj())))
         init_tree()
     dataOut$trigger <- as.numeric(Sys.time())
     dataOut$values <- NULL
@@ -305,7 +314,7 @@ observeEvent(input$checkbox_mode, {
 
 output$tree <- renderUI({
     div(style = "overflow-y: auto;",
-        uiOutput(ns(paste0('metacell_tree_', GetTypeofData(obj()))))
+        uiOutput(ns(paste0('metacell_tree_', typeDataset(obj()))))
     )
 })
 
@@ -519,7 +528,7 @@ observeEvent(somethingChanged(), ignoreInit = TRUE, {
                    update_CB(newSelection)
                    },
                subtree = {
-                   level <- GetTypeofData(obj())
+                   level <- typeDataset(obj())
                    # As the leaves are disabled, this selection is a node
                    # by default, all its children must be also selected
                    for (i in newSelection){

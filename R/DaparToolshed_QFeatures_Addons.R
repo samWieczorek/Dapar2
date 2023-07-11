@@ -54,13 +54,8 @@ NULL
 #' @return NA
 setMethod(
     "qMetacell", "QFeatures",
-    function(object, i, slotName = "qMetacell") {
-        lapply(
-            object[[i]],
-            function(x) {
-                .GetRowdataSlot(x, slotName = slotName)
-            }
-        )
+    function(object, i) {
+        .GetRowdataSlot(object[[i]], "qMetacell")
     }
 )
 
@@ -72,8 +67,8 @@ setMethod(
 #' @return NA
 setMethod(
     "qMetacell", "SummarizedExperiment",
-    function(object, slotName = "qMetacell") {
-        .GetRowdataSlot(object, slotName)
+    function(object) {
+        .GetRowdataSlot(object, "qMetacell")
     }
 )
 
@@ -93,8 +88,7 @@ setMethod(
     # value <- as(value, "data.frame")
     if (inherits(object, "SummarizedExperiment")) {
         if (!identical(rownames(value), rownames(object))) {
-            stop("Row names of the SummarizedExperiment and the DataFrame 
-                must match.")
+            stop("Row names of the SummarizedExperiment and the DataFrame must match.")
         }
         # if (slotName %in% colnames(rowData(object)))
         #  stop("Found an existing variable ", slotName, ".")
@@ -103,8 +97,7 @@ setMethod(
     }
     stopifnot(inherits(object, "QFeatures"))
     if (length(i) != 1) {
-        stop("'i' must be of length one. Repeat the call to add a matrix to 
-            multiple assays.")
+        stop("'i' must be of length one. Repeat the call to add a matrix to multiple assays.")
     }
     if (is.numeric(i) && i > length(object)) {
         stop("Subscript is out of bounds.")
@@ -112,8 +105,8 @@ setMethod(
     if (is.character(i) && !(i %in% names(object))) {
         stop("Assay '", i, "' not found.")
     }
-    se <- object[[i]]
-    object[[i]] <- qMetacell(se, slotName) <- value
+    
+    qMetacell(object[[i]], slotName) <- value
     return(object)
 }
 
@@ -123,7 +116,7 @@ setMethod(
 
 
 
-#' @exportMethod qMetacell
+#' @exportMethod GetUniqueTags
 #' @rdname QFeatures-accessors
 #' @return NA
 setMethod(
@@ -247,8 +240,7 @@ setMethod(
 
 #' @exportMethod typeDataset
 #' @rdname QFeatures-accessors
-setMethod(
-    "typeDataset", "QFeatures",
+setMethod("typeDataset", "QFeatures",
     function(object, i, slotName = "typeDataset") {
         lapply(object[[i]],
             .GetMetadataSlot,
@@ -258,8 +250,7 @@ setMethod(
 )
 #' @export
 #' @rdname QFeatures-accessors
-setMethod(
-    "typeDataset", "SummarizedExperiment",
+setMethod("typeDataset", "SummarizedExperiment",
     function(object, slotName = "typeDataset") {
         .GetMetadataSlot(object, slotName)
     }

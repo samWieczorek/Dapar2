@@ -2,12 +2,12 @@
 % Please edit documentation in R/metacell.R
 \name{GetSoftAvailables}
 \alias{GetSoftAvailables}
-\title{The set of softwares available}
+\title{The set of available softwares to convert from}
 \usage{
 GetSoftAvailables()
 }
 \description{
-The set of softwares available
+The set of available softwares to convert from
 }
 \examples{
 GetSoftAvailables()

@@ -47,7 +47,7 @@ metacombine(met, level)
 A data.frame containing the different tags and corresponding colors for the level
 given in parameter
 
-An instance of class \code{MSnSet}.
+An instance of class \code{QFeatures}.
 
 NA
 

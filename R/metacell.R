@@ -259,22 +259,6 @@ Children <- function(level, parent = NULL){
 
 
 
-#' #' @title xxxx
-#' #' @description xxx
-#' #' @param obj xxx
-#' #' @export
-#' #' @examples
-#' #' data(Exp1_R25_pept, package="DaparToolshedData")
-#' #' GetUniqueTags(Exp1_R25_pept[[1]])
-#' #' 
-#' GetUniqueTags <- function(se){
-#'   stopifnot(inherits(se, "SummarizedExperiment"))
-#'   
-#'   df <- qMetacell(se)
-#'   tmp <- sapply(colnames(df), function(x) unique(df[,x]))
-#'   ll <- unique(as.vector(tmp))
-#'   return(ll)
-#' }
 
 #' @title List of metacell tags
 #'
@@ -298,17 +282,47 @@ Children <- function(level, parent = NULL){
 #' @examples
 #' data(Exp1_R25_pept, package="DaparToolshedData")
 #' obj <- Exp1_R25_pept
-#' GetMetacellTags(level="peptide")
-#' GetMetacellTags(level="peptide", obj, onlyPresent=TRUE)
+#' GetMetacellTags(obj, 1, level="peptide")
+#' GetMetacellTags(obj, 1, level="peptide", onlyPresent=TRUE)
 #'
 #' @export
 #'
 #'
-GetMetacellTags <- function(obj = NULL,
+
+
+#' @exportMethod GetMetacellTags
+#' @rdname QFeatures-accessors
+#' @return NA
+setMethod("GetMetacellTags", "QFeatures",
+  function(object, i, ...) {
+    GetMetacellTags(object[[i]], ...)
+  }
+)
+
+
+
+
+#' @export
+#' @rdname QFeatures-accessors
+#' @return NA
+setMethod("GetMetacellTags", "SummarizedExperiment",
+  function(object, ...) {
+    .GetMetacellTags(object, ...)
+    }
+)
+
+
+.GetMetacellTags <- function(obj = NULL,
                             level = NULL,
                             onlyPresent = FALSE, 
                             all = FALSE) {
-  stopifnot(inherits(obj, "SummarizedExperiment"))
+  
+  if (is.null(obj))
+    stop('obj in NULL')
+  
+  if (is.null(level))
+    stop('level in NULL')
+  
   
   if (!onlyPresent && !all){
     if (!is.null(level) && is.null(obj))
@@ -324,14 +338,14 @@ GetMetacellTags <- function(obj = NULL,
   
   if (is.null(level) && all)
     stop("level must be defined")
+  
   if (is.null(level) && !all)
     all <- TRUE
   
   if (is.null(obj) && onlyPresent)
     stop("`obj` must be defined")
   
-  #browser()
-  ll <- NULL
+   ll <- NULL
   if(onlyPresent) {
     ll <- unique(unlist(GetUniqueTags(obj)))
     # Check if parent must be added
@@ -354,12 +368,9 @@ GetMetacellTags <- function(obj = NULL,
     test <- match (Children(level, 'Combined tags'), ll)
     if (length(test) == length(Children(level, 'Combined tags')) && !all(is.na(test)))
       ll <- c(ll, 'Combined tags')
-    
-    
-    
+
   } else if (all) {
     ll <- metacell.def(level)$node[-which(metacell.def(level)$node =='Any')]
-    #  ll <- metacell.def(level)
   }
   
   return(ll)
@@ -380,7 +391,7 @@ GetMetacellTags <- function(obj = NULL,
 #' @param df An object of class \code{SummarizedExperiment}
 #' @param level Type of entity/pipeline
 #' 
-#' @return An instance of class \code{MSnSet}.
+#' @return An instance of class \code{QFeatures}.
 #' 
 #' @author Samuel Wieczorek
 #' 
@@ -403,16 +414,20 @@ Set_POV_MEC_tags <- function(conds, df, level){
     ind.samples <- which(conds == u_conds[i])
     
     ind.imputed <- match.metacell(df[, ind.samples], "Imputed", level)
+    
     ind.missing <- match.metacell(df[, ind.samples], "Missing", level)
+    
     ind.missing.pov <- ind.missing & 
       rowSums(ind.missing) < length(ind.samples) & 
       rowSums(ind.missing) > 0
+    
     ind.missing.mec <- ind.missing & 
       rowSums(ind.missing) == length(ind.samples)
     
     ind.imputed.pov <- ind.imputed & 
       rowSums(ind.imputed) < length(ind.samples) & 
       rowSums(ind.imputed) > 0
+    
     ind.imputed.mec <- ind.imputed & 
       rowSums(ind.imputed) == length(ind.samples)
     
@@ -425,7 +440,8 @@ Set_POV_MEC_tags <- function(conds, df, level){
 }
 
 
-#' @title The set of softwares available
+
+#' @title The set of available softwares to convert from
 #' 
 #' @examples 
 #' GetSoftAvailables()
@@ -436,7 +452,7 @@ GetSoftAvailables <- function(){
   
   library(DAPAR)
   
-  funcs <- ls('package:DAPAR')
+  funcs <- ls('package:DaparToolshed')
   funcs <- funcs[grep('Metacell_', funcs)]
   funcs <- strsplit(funcs, 'Metacell_')
   funcs <- unlist(lapply(funcs, function(x) x[[2]]))
@@ -824,9 +840,9 @@ Metacell_maxquant <- function(qdata, conds, df, level = NULL) {
 #' @author Samuel Wieczorek
 #'
 #' @examples
-#' data(Exp1_R25_pept, package="DAPARdata")
+#' data(Exp1_R25_pept, package="DaparToolshedData")
 #' obj <- Exp1_R25_pept[seq_len(10), ]
-#' metadata <- GetMetacell(obj)
+#' metadata <- qMetacell(obj[[1]])
 #' m <- match.metacell(metadata, pattern = "Missing", level = "peptide")
 #' m <- match.metacell(metadata, pattern = NULL, level = "peptide")
 #' m <- match.metacell(metadata, pattern = c('Missing', 'Missing POV'), level = "peptide")
@@ -836,11 +852,9 @@ match.metacell <- function(metadata, pattern = NULL, level) {
   if (missing(metadata))
     stop("'metadata' is required")
   
-  if (missing(pattern))
+  if (missing(pattern) || is.null(pattern))
     stop("'pattern' is required.")
-  else if (is.null(pattern))
-    return(NULL)
-  
+
   if (missing(level))
     stop("'level' is required.")
   

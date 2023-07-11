@@ -333,3 +333,81 @@ ConvertListToHtml <- function(ll) {
         "</ul>"
     )
 }
+
+
+
+
+#' @title Customised contextual menu of highcharts plots
+#'
+#' @param hc A highcharter object
+#'
+#' @param filename The filename under which the plot has to be saved
+#'
+#' @return A contextual menu for highcharts plots
+#'
+#' @author Samuel Wieczorek
+#'
+#' @examples
+#' library("highcharter")
+#' hc <- highchart()
+#' hc_chart(hc, type = "line")
+#' hc_add_series(hc, data = c(29, 71, 40))
+#' my_hc_ExportMenu(hc, filename = "foo")
+#'
+#' @export
+#'
+my_hc_ExportMenu <- function(hc, filename) {
+  hc_exporting(hc,
+               enabled = TRUE,
+               filename = filename,
+               buttons = list(
+                 contextButton = list(
+                   menuItems = list("downloadPNG", "downloadSVG", "downloadPDF")
+                 )
+               )
+  )
+}
+
+
+
+
+
+
+#' @title Customised resetZoomButton of highcharts plots
+#'
+#' @param hc A highcharter object
+#'
+#' @param chartType The type of the plot
+#'
+#' @param zoomType The type of the zoom (one of "x", "y", "xy", "None")
+#'
+#' @return A highchart plot
+#'
+#' @author Samuel Wieczorek
+#' 
+#' @import highcharter
+#'
+#' @examples
+#' library("highcharter")
+#' hc <- highchart()
+#' hc_chart(hc, type = "line")
+#' hc_add_series(hc, data = c(29, 71, 40))
+#' my_hc_ExportMenu(hc, filename = "foo")
+#'
+#' @export
+#'
+my_hc_chart <- function(hc, chartType, zoomType = "None") {
+  hc %>%
+    hc_chart(
+      type = chartType,
+      zoomType = zoomType,
+      showAxes = TRUE,
+      resetZoomButton = list(
+        position = list(
+          align = "left",
+          verticalAlign = "top"
+        )
+      )
+    )
+}
+
