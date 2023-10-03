@@ -15,7 +15,7 @@
 #' * cols: a vector of colnames of columns to show,
 #' * vals: a vector of colnames of columns that contain values,
 #' * unique: unique(conds),
-#' * pal: RColorBrewer::brewer.pal(3, "Dark2")[seq_len(2)]
+#' * pal: xxx
 #' @param filename xxx
 #' @param hideCols xxx
 #'
@@ -33,9 +33,7 @@ NULL
 #' @rdname mod_format_DT
 #'
 mod_format_DT_ui <- function(id) {
-    if (!requireNamespace("DT", quietly = TRUE)) {
-        stop("Please install DT: BiocManager::install('DT')")
-    }
+  pkgs.require("DT")
     
   ns <- NS(id)
   tagList(
@@ -145,14 +143,3 @@ mod_format_DT_server <- function(id,
 
 
 
-
-library(shiny)
-library(shinyjs)
-
-ui <- mod_format_DT_ui("dt")
-
-server <- function(input, output, session) {
-  mod_format_DT_server("dt", data = iris )
-}
-
-shinyApp(ui = ui, server = server)

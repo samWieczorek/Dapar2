@@ -2,7 +2,7 @@
 % Please edit documentation in R/metacell.R
 \name{match.metacell}
 \alias{match.metacell}
-\title{Similar to the function \code{is.na} but focused on the equality
+\title{Similar to the function \code{is.na()} but focused on the equality
 with the paramter 'type'.}
 \usage{
 match.metacell(metadata, pattern = NULL, level)
@@ -18,7 +18,7 @@ match.metacell(metadata, pattern = NULL, level)
 A boolean dataframe
 }
 \description{
-Similar to the function \code{is.na} but focused on the equality
+Similar to the function \code{is.na()} but focused on the equality
 with the paramter 'type'.
 }
 \examples{

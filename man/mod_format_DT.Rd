@@ -44,7 +44,7 @@ mod_format_DT_server(
 \item cols: a vector of colnames of columns to show,
 \item vals: a vector of colnames of columns that contain values,
 \item unique: unique(conds),
-\item pal: RColorBrewer::brewer.pal(3, "Dark2")\link{seq_len(2)}
+\item pal: xxx
 }}
 
 \item{filename}{xxx}

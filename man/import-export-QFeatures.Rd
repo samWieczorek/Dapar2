@@ -24,7 +24,7 @@ createQFeatures(
 \arguments{
 \item{data}{The name of a tab-separated file that contains the data.}
 
-\item{file}{\code{character(1)}. The name of a file xxx}
+\item{file}{A \code{character(1)}. The name of a file xxx}
 
 \item{sample}{A dataframe describing the samples (in lines).}
 
@@ -34,6 +34,8 @@ the \code{rowData()} table of the \code{QFeatures} object.}
 
 \item{keyId}{A \code{character(1)} or \code{numeric(1)} which is the indice of the
 column containing the ID of entities (peptides or proteins)}
+
+\item{indexForMetacell}{xxxxxxxxxxx}
 
 \item{force.na}{A \code{boolean} that indicates if the '0' and 'NaN' values of
 quantitative values  must be replaced by 'NA' (Default is FALSE)}
@@ -57,8 +59,6 @@ with the function \code{pipelines()}. Default value is NULL}
 
 \item{name}{A \code{character(1)} which is the name of the assay in the
 QFeatures object. Default is 'original'}
-
-\item{indQMetacell}{xxxxxxxxxxx}
 }
 \value{
 An instance of class \code{QFeatures}.
@@ -69,7 +69,7 @@ single tabulated-like file for quantitative and meta-data and a dataframe
 for the samples description.
 }
 \examples{
-examples/xx.R
+inst/extdata/examples/ex_createQFeatures.R
 
 }
 \author{

@@ -30,7 +30,7 @@ aggQmetacell(qMeta, X, level, conds)
 aggregateMethods()
 }
 \arguments{
-\item{object}{An instance of class \link{QFeatures} or \link{SummarizedExperiment}.}
+\item{object}{An instance of class \code{QFeatures} or \code{SummarizedExperiment}}
 
 \item{i}{The index or name of the assay which features will be
 aggregated the create the new assay.}

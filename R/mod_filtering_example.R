@@ -32,14 +32,8 @@ NULL
 #' @export
 #'
 mod_filterExample_ui <- function(id) {
-    if (!requireNamespace("shinyBS", quietly = TRUE)) {
-        stop("Please install shinyBS: BiocManager::install('shinyBS')")
-    }
-    
-    if (!requireNamespace("DT", quietly = TRUE)) {
-        stop("Please install DT: BiocManager::install('DT')")
-    }
-    
+  pkgs.require(c("shinyBS", "DT"))
+  
     ns <- NS(id)
 
     fluidPage(
@@ -90,14 +84,8 @@ mod_filterExample_server <- function(id,
     objAfter,
     query) {
     
-    if (!requireNamespace("DT", quietly = TRUE)) {
-        stop("Please install DT: BiocManager::install('DT')")
-    }
     
-    if (!requireNamespace("grDevices", quietly = TRUE)) {
-        stop("Please install grDevices: BiocManager::install('grDevices')")
-    }
-    
+  pkgs.require(c("grDevices", "DT"))
 
     moduleServer(
         id,
@@ -106,8 +94,8 @@ mod_filterExample_server <- function(id,
 
             observe({
                 req(objBefore(), objAfter())
-                id.Before <- SummarizedExperiment::rowData(objBefore())[, idcol(objBefore())]
-                id.After <- SummarizedExperiment::rowData(objAfter())[, idcol(objAfter())]
+                id.Before <- rowData(objBefore())[, idcol(objBefore())]
+                id.After <- rowData(objAfter())[, idcol(objAfter())]
                 indices(which(is.na(match(id.Before, id.After))))
             })
 
@@ -161,17 +149,15 @@ mod_filterExample_server <- function(id,
             output$example_tab_filtered <- DT::renderDataTable({
 
                 # Build df to integrate qMetacell values
-                .id <- DaparToolshed::idcol(objBefore())
+                .id <- idcol(objBefore())
                 df <- cbind(
-                    keyId = SummarizedExperiment::rowData(objBefore())[, .id],
-                    round(SummarizedExperiment::assay(objBefore()),
-                        digits = 3
-                    ),
-                    DaparToolshed::qMetacell(objBefore())
+                    keyId = rowData(objBefore())[, .id],
+                    round(assay(objBefore()), digits = 3),
+                    qMetacell(objBefore())
                 )
 
                 # browser()
-                colors <- DaparToolshed::custom_qMetacell_colors()
+                colors <- custom_qMetacell_colors()
                 c.tags <- names(colors)
                 c.colors <- unname(unlist(colors))
                 range.invisible <- c(((2 + (ncol(df) - 1) / 2)):ncol(df))

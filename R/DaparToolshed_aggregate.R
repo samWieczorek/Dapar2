@@ -16,7 +16,7 @@
 ##' aggregateMethods()]. This function compiles both methods from the 
 ##' packages `DaparToolshed` and `QFeatures`.
 ##'
-##' @param object An instance of class [QFeatures] or [SummarizedExperiment].
+##' @param object An instance of class `QFeatures` or `SummarizedExperiment`
 ##'
 ##' @param i The index or name of the assay which features will be
 ##'     aggregated the create the new assay.
@@ -155,7 +155,7 @@ setMethod(
 
     ## Remove the qMetacell that should be dropped anyway and not be aggregated
     ## within QFeatures::aggregateFeatures
-    SummarizedExperiment::rowData(object)[["qMetacell"]] <- NULL
+    rowData(object)[["qMetacell"]] <- NULL
 
     ## Create the aggregated assay
     aggAssay <- aggregateFeatures(object, fcol, fun, ...)
@@ -170,9 +170,9 @@ setMethod(
     .allPep <- t(as.matrix(X)) %*% !is.na(assay(object))
     .specPep <- t(as.matrix(X.spec)) %*% !is.na(assay(object))
     .sharedPep <- t(as.matrix(X.shared)) %*% !is.na(assay(object))
-    SummarizedExperiment::rowData(aggAssay)[["allPeptidesUsed"]] <-.allPep
-    SummarizedExperiment::rowData(aggAssay)[["specPeptidesUsed"]] <- .specPep
-    SummarizedExperiment::rowData(aggAssay)[["sharedPeptidesUsed"]] <- .sharedPep
+    rowData(aggAssay)[["allPeptidesUsed"]] <-.allPep
+    rowData(aggAssay)[["specPeptidesUsed"]] <- .specPep
+    rowData(aggAssay)[["sharedPeptidesUsed"]] <- .sharedPep
 
 
     ## Enrich the new assay

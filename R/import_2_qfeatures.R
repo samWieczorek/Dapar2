@@ -1,25 +1,25 @@
-#' @title Creates an object of class \code{QFeatures} from text file.
+#' @title Creates an object of class `QFeatures` from text file.
 #'
 #' @description
 #'
-#' Creates an object of class \code{QFeatures} from a
+#' Creates an object of class `QFeatures` from a
 #' single tabulated-like file for quantitative and meta-data and a dataframe
 #' for the samples description.
 #'
 #' @param data The name of a tab-separated file that contains the data.
 #'
-#' @param file `character(1)`. The name of a file xxx
+#' @param file A `character(1)`. The name of a file xxx
 #'
 #' @param sample A dataframe describing the samples (in lines).
 #'
 #' @param indQData A vector of string where each element is the name
 #' of a column in designTable that have to be integrated in
-#' the \code{rowData()} table of the \code{QFeatures} object.
+#' the `rowData()` table of the `QFeatures` object.
 #'
 #' @param keyId A `character(1)` or `numeric(1)` which is the indice of the 
 #' column containing the ID of entities (peptides or proteins)
 #'
-#' @param indQMetacell xxxxxxxxxxx
+#' @param indexForMetacell xxxxxxxxxxx
 #'
 #' @param force.na A `boolean` that indicates if the '0' and 'NaN' values of
 #' quantitative values  must be replaced by 'NA' (Default is FALSE)
@@ -30,30 +30,28 @@
 #' is the name of a column in rowData. It contains the id of parent proteins 
 #' and is used to generate adjacency matrix and process to aggregation.
 #'
+#' @param analysis A `character(1)` which is the name of the MS study.
+#'
 #' @param processes A vector of A `character()` which contains the name of 
 #' processes which has already been run on the data. Default is 'original'.
 #'
 #' @param typePipeline A `character(1)` The type of pipeline used with this 
 #' dataset. The list of predefined pipelines in DaparToolshed can be obtained 
-#' with the function \code{pipelines()}. Default value is NULL
-#'
-#' @param analysis A `character(1)` which is the name of the MS study.
+#' with the function `pipelines()`. Default value is NULL
 #'
 #' @param software A `character(1)`
 #'
 #' @param name A `character(1)` which is the name of the assay in the 
 #' QFeatures object. Default is 'original'
 #'
-#' @return An instance of class \code{QFeatures}.
+#' @return An instance of class `QFeatures`.
 #'
 #' @author Samuel Wieczorek
 #'
-#' @examples examples/xx.R
+#' @examples inst/extdata/examples/ex_createQFeatures.R
 #'
 #' @importFrom QFeatures readQFeatures
-#' @importFrom PSMatch makeAdjacencyMatrix
 #' @importFrom utils installed.packages read.table
-#' @importFrom SummarizedExperiment colData
 #'
 #' @export
 #'
@@ -75,7 +73,7 @@ createQFeatures <- function(data = NULL,
                             name = "original") {
 
 
-  pkgs.require(c('SummarizedExperiment', 'QFeatures'))
+  pkgs.require('QFeatures')
   
     # Check parameters validity
     if (missing(data) && missing(file)) {
@@ -174,13 +172,13 @@ createQFeatures <- function(data = NULL,
     sample <- lapply(sample, function(x) {ReplaceSpecialChars(x)})
     design.qf(obj) <- sample
 
-
+    
     # Get the metacell info
     tmp.qMetacell <- NULL
     if (!is.null(indexForMetacell)) {
       tmp.qMetacell <- data[, indexForMetacell]
-      tmp.qMetacell <- apply(tmp.qMetacell, 2, tolower)
-      tmp.qMetacell <- apply(tmp.qMetacell, 2, function(x) gsub("\\s", "", x))
+      #tmp.qMetacell <- apply(tmp.qMetacell, 2, tolower)
+      #tmp.qMetacell <- apply(tmp.qMetacell, 2, function(x) gsub("\\s", "", x))
       tmp.qMetacell <- as.data.frame(tmp.qMetacell, stringsAsFactors = FALSE)
       colnames(tmp.qMetacell) <- gsub(".", "_", colnames(tmp.qMetacell), fixed = TRUE)
     
@@ -188,7 +186,7 @@ createQFeatures <- function(data = NULL,
     
     qMetacell <- BuildMetacell(from = software,
                                level = typeDataset,
-                               qdata = SummarizedExperiment::assay(obj),
+                               qdata = assay(obj),
                                conds = colData(obj)$Condition,
                                df = tmp.qMetacell
                                )
@@ -219,13 +217,21 @@ createQFeatures <- function(data = NULL,
     # Fill the metadata for the first assay
     typeDataset(obj[["original"]]) <- typeDataset
     if (tolower(typeDataset) == 'peptide')
-            parentProtId(obj[["original"]]) <- parentProtId
+            
     idcol(obj[["original"]]) <- keyId
 
     if (tolower(typeDataset) == "peptide") {
-        X <- PSMatch::makeAdjacencyMatrix(rowData(obj[[1]])[, parentProtId])
-        rownames(X) <- rownames(rowData(obj[[1]]))
-        QFeatures::adjacencyMatrix(obj[[1]]) <- X
+      pkgs.require('PSMatch')
+      parentProtId(obj[["original"]]) <- parentProtId
+      # Create the adjacency matrix
+      #X <- PSMatch::makeAdjacencyMatrix(rowData(obj[[1]])[, parentProtId])
+      #rownames(X) <- rownames(rowData(obj[[1]]))
+      #adjacencyMatrix(obj[[1]]) <- X
+      
+      # Create the connected components
+      #ConnectedComp(obj[[1]]) <- PSMatch::ConnectedComponents(X)
+      
+        
     }
 
     return(obj)

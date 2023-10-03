@@ -11,6 +11,9 @@
 \alias{GetUniqueTags,SummarizedExperiment-method}
 \alias{.GetMetadataSlot}
 \alias{.GetRowdataSlot}
+\alias{ConnectedComp,QFeatures-method}
+\alias{ConnectedComp,SummarizedExperiment-method}
+\alias{ConnectedComp<-}
 \alias{typeDataset,QFeatures-method}
 \alias{typeDataset,SummarizedExperiment-method}
 \alias{typeDataset<-}
@@ -53,6 +56,12 @@ qMetacell(object, i, slotName = "qMetacell") <- value
 .GetMetadataSlot(object, slotName = NULL)
 
 .GetRowdataSlot(object, slotName = NULL)
+
+\S4method{ConnectedComp}{QFeatures}(object, i, slotName = "ConnectedComp")
+
+\S4method{ConnectedComp}{SummarizedExperiment}(object, slotName = "ConnectedComp")
+
+ConnectedComp(object, i, slotName = "ConnectedComp") <- value
 
 \S4method{typeDataset}{QFeatures}(object, i, slotName = "typeDataset")
 
@@ -106,18 +115,11 @@ names_metacell(object, i, slotName = "names_metacell") <- value
 \item{i}{The index or name of the assays to extract the quantitative
 metadata from. All must have a rowdata variable named as \code{slotName}}
 
+\item{...}{xxx}
+
 \item{slotName}{xxx}
 
 \item{value}{xxx}
-
-\item{obj}{An object of class \code{QFeatures}}
-
-\item{level}{xxx}
-
-\item{onlyPresent}{A boolean that indicates if one wants a list with only the tags
-present in the dataset.}
-
-\item{all}{A boolean that indicates if one wants the whole list}
 }
 \value{
 A vector of tags..
@@ -143,7 +145,7 @@ NA
 NA
 }
 \description{
-This function gives the list of metacell tags available in DAPAR.
+This function gives the list of metacell tags available.
 \itemize{
 \item onlyPresent: In this case, the function gives the tags found in a dataset.
 In addition, and w.r.t to the hierarchy of tags, if all leaves of a node are

@@ -7,7 +7,7 @@
 #' @author Thomas Burger, Samuel Wieczorek
 #'
 #' @examples
-#' data(Exp1_R25_pept, package="DAPARdata")
+#' data(Exp1_R25_pept, package="DaparToolshedData")
 #' test.design(Biobase::pData(Exp1_R25_pept)[, seq_len(3)])
 #'
 #' @export
@@ -103,7 +103,7 @@ test.design <- function(tab) {
 #' @author Samuel Wieczorek
 #'
 #' @examples
-#' data(Exp1_R25_pept, package="DAPARdata")
+#' data(Exp1_R25_pept, package="DaparToolshedData")
 #' check.conditions(Biobase::pData(Exp1_R25_pept)$Condition)
 #'
 #' @export
@@ -148,7 +148,7 @@ check.conditions <- function(conds) {
 #' @author Thomas Burger, Samuel Wieczorek
 #'
 #' @examples
-#' data(Exp1_R25_pept, package="DAPARdata")
+#' data(Exp1_R25_pept, package="DaparToolshedData")
 #' check.design(Biobase::pData(Exp1_R25_pept)[, seq_len(3)])
 #'
 #' @export

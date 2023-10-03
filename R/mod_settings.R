@@ -94,18 +94,13 @@ mod_settings_ui <- function(id) {
 #'
 #' @import highcharter
 #' @importFrom shinyjs onclick toggle
-#' @importFrom SummarizedExperiment colData
 #'
 #'
 mod_settings_server <- function(id, obj) {
-    if (!requireNamespace("colourpicker", quietly = TRUE)) {
-        stop("Please install colourpicker: 
-            BiocManager::install('colourpicker')")
-    }
-
-    if (!requireNamespace("shinyBS", quietly = TRUE)) {
-        stop("Please install shinyBS: BiocManager::install('shinyBS')")
-    }
+    
+  
+  pkgs.require(c("colourpicker", "shinyBS"))    
+  
     moduleServer(id, function(input, output, session) {
         ns <- session$ns
 
@@ -416,7 +411,7 @@ mod_settings_server <- function(id, obj) {
             df <- data.frame(y = abs(10 + stats::rnorm(length(.conds))))
 
             highcharter::highchart() %>%
-                DaparToolshed::dapar_hc_chart(chartType = "column") %>%
+                dapar_hc_chart(chartType = "column") %>%
                 highcharter::hc_add_series(data = df, 
                     type = "column", 
                     colorByPoint = TRUE) %>%

@@ -3,7 +3,7 @@
 #' @description  A shiny Module.
 #'
 #' @name dl
-#' @example examples/test_dl.R
+#' @example inst/extdata/examples/test_dl.R
 #'
 NULL
 

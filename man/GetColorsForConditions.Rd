@@ -19,7 +19,7 @@ A vector composed of HEX color code for the conditions
 xxxx
 }
 \examples{
-data(Exp1_R25_pept, package="DAPARdata")
+data(Exp1_R25_pept, package="DaparToolshedData")
 conditions <- Biobase::pData(Exp1_R25_pept)$Condition
 GetColorsForConditions(conditions, ExtendPalette(2))
 

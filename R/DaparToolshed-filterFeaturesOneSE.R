@@ -140,7 +140,7 @@ FunctionFilter <- function(name, ...) {
 }
 
 
-##' @param object An instance of class [QFeatures] or [SummarizedExperiment].
+##' @param object An instance of class `QFeatures` or `SummarizedExperiment`.
 ##'
 ##' @param i The index or name of the assay which features will be
 ##'     filtered the create the new assay.
@@ -149,8 +149,8 @@ FunctionFilter <- function(name, ...) {
 ##'     `newAssay`. Note that the function will fail if there's
 ##'     already an assay with `name`.
 ##'
-##' @param filters A `list()` containing instances of class [AnnotationFilter] 
-##' or [FunctionFilter]
+##' @param filters A `list()` containing instances of class `AnnotationFilter` 
+##' or `FunctionFilter`
 ##'
 ##' @exportMethod filterFeaturesOneSE
 ##' @importFrom S4Vectors metadata
@@ -212,7 +212,7 @@ setMethod(
     function(object, filters) {
         for (x in filters) {
             if (inherits(x, "AnnotationFilter")) {
-                .tmp <- SummarizedExperiment::rowData(object)
+                .tmp <- rowData(object)
                 sel <- if (AnnotationFilter::field(x) %in% names(.tmp)) {
                     do.call(
                         AnnotationFilter::condition(x),

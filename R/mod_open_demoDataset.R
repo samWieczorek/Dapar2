@@ -44,7 +44,6 @@ mod_open_demoDataset_ui <- function(id){
 #' 
 #' @importFrom BiocGenerics get
 #' @importFrom utils data
-#' @importFrom BiocManager install
 #' @importFrom shinyjs info
 #' @import QFeatures
 #' 
@@ -66,11 +65,7 @@ mod_open_demoDataset_server <- function(id){
     ### function for demo mode
     output$chooseDemoDataset <- renderUI({
       
-      if (!requireNamespace(.package, quietly = TRUE)) {
-        stop("Please install ", .package, ": 
-            BiocManager::install('", .package, "')")
-      }
-      
+      pkgs.require(.package)
       
       selectInput(ns("demoDataset"),
                   "Demo dataset",
@@ -87,7 +82,7 @@ mod_open_demoDataset_server <- function(id){
         incProgress(1/nSteps, detail = 'Loading dataset')
         utils::data(list=input$demoDataset, package=.package)
         rv.openDemo$dataRead <- BiocGenerics::get(input$demoDataset)
-        if (class(rv.openDemo$dataRead)!="QFeatures") {
+        if (!inherits(rv.openDemo$dataRead, "QFeatures")) {
           shinyjs::info("Warning : this file is not a QFeatures file ! 
                       Please choose another one.")
           return(NULL)

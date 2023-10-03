@@ -1,29 +1,34 @@
-#' @title Exports a \code{QFeatures} object to a Excel file.
+#' @title Exports a `QFeatures` object to a Excel file.
 #'
 #' @description
 #'
 #' This function exports an instance of the class `QFeatures` to a Excel file.
 #' The resulting file is composed of four sheets:
 #'
-#' - `quantitative data` which contains the content of [assay()] object whith a
+#' - `quantitative data` which contains the content of `assay()` object with a
 #' color code for each cell w.r.t. to cell quantitative metadata.
 #'
-#' - `metadata` which is the content of [rowData()] with only one-dimensionnal
+#' - `metadata` which is the content of `rowData()` with only one-dimensionnal
 #' data (i.e. the adjacencyMatrix and the qMetacell slots are not part of
 #' the sheet),
 #'
-#' - `exp. design` which is the content of [colData()]. Each condition in the 
+#' - `exp. design` which is the content of `colData()`. Each condition in the 
 #' table is colored with a different color,
 #'
-#' - `quantitative metadata` which is the content of [qMetacell()]. There is a 
+#' - `quantitative metadata` which is the content of `qMetacell()`. There is a 
 #' color code for the different tags.
 #'
 #'
-#' @param object An object of class \code{QFeatures}.
+#' @param object An object of class `QFeatures`.
 #' @param i xxx
 #' @param filename A character string for the name of the Excel file.
 #' @param exp.design xxx
 #' @param ... Additional arguments
+#' @param wb A workbook
+#' @param n A `integer(1)` which is the number of sheet in the workbook.
+#' @param tags xxx
+#' @param colors A `character()` which contains the HEX code for colors. 
+#' The size of this vector must be the same as the number of tags.
 #'
 #' @return A Excel file.
 #'
@@ -50,6 +55,10 @@ NULL
 #' @rdname QFeatures-excel
 setMethod(
     "write2excel", "QFeatures",
+    #' @param object xxx
+    #' @param i xxx
+    #' @param filename xxx
+    #' @param ... xxx
     function(object,
              i = NULL,
              filename = "newFile", ...) {
@@ -77,6 +86,11 @@ setMethod(
 #' @rdname QFeatures-excel
 setMethod(
     "write2excel", "SummarizedExperiment",
+    
+    #' @param object xxx
+    #' @param filename xxx
+    #' @param exp.design xxx
+    #' @param ... xxx
     function(object, filename, exp.design, ...) {
         .write2excel(object, filename, exp.design, ...)
     }
@@ -87,18 +101,19 @@ setMethod(
 
 
 
+#' @title xxx
+#' @description xxx
+#' 
 #' @param object xxx
 #' @param filename xxx
 #' @param exp.design xxx
 #'
 #' @rdname QFeatures-excel
+#' 
 .write2excel <- function(object, filename, exp.design) {
-    if (!requireNamespace("openxlsx", quietly = TRUE)) {
-        stop("Please install openxlsx: BiocManager::install('openxlsx')")
-    }
-    if (!requireNamespace("DaparViz", quietly = TRUE)) {
-        stop("Please install DaparViz: BiocManager::install('DaparViz')")
-    }
+    
+  pkgs.require(c("DaparViz", "openxlsx"))
+  
     name <- paste0(filename, ".xlsx", sep = "")
     wb <- openxlsx::createWorkbook(name)
     # Write the assay data to the first sheet
@@ -199,11 +214,6 @@ setMethod(
 }
 
 
-#' @param wb A workbook
-#' @param n A `integer(1)` which is the number of sheet in the workbook.
-#' @param tags xxx
-#' @param colors A `character()` which contains the HEX code for colors. 
-#' The size of this vector must be the same as the number of tags.
 #'
 #' @rdname QFeatures-excel
 #'

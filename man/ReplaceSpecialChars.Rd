@@ -15,7 +15,7 @@ names.
 }
 \description{
 Replace ".", ' ', '-' in \code{character()} by '_' to be compliant
-with functions of \link{Shinyjs}, \link{Shiny}
+with functions of \code{Shinyjs}, \code{Shiny}
 }
 \examples{
 

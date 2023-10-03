@@ -67,9 +67,7 @@ fudge2LRT <- function(lmm.res.h0,
     alpha = seq(0, 1, 0.05), 
     include.zero = TRUE) {
     
-    if (!requireNamespace("stats", quietly = TRUE)) {
-        stop("Please install stats: BiocManager::install('stats')")
-    }
+  pkgs.require("stats") 
     
     
     if (max(alpha) > 1 || min(alpha) < 0) {
@@ -253,9 +251,7 @@ LH1 <- function(X, y1, y2, j) {
 #'
 LH0.lm <- function(X, y1, y2) {
     
-    if (!requireNamespace("stats", quietly = TRUE)) {
-        stop("Please install stats: BiocManager::install('stats')")
-    }
+  pkgs.require("stats") 
     
     
     Ytilde <- matrix(c(as.vector(y1), as.vector(y2)), ncol = 1)
@@ -324,9 +320,7 @@ LH0.lm <- function(X, y1, y2) {
 #' NULL
 #'
 LH1.lm <- function(X, y1, y2, j) {
-    if (!requireNamespace("stats", quietly = TRUE)) {
-        stop("Please install stats: BiocManager::install('stats')")
-    }
+  pkgs.require("stats") 
     
     n1 <- ncol(y1)
     n2 <- ncol(y2)
@@ -424,14 +418,7 @@ LH1.lm <- function(X, y1, y2, j) {
 #'
 samLRT <- function(lmm.res.h0, lmm.res.h1, cc, n, p, s1) {
     
-    if (!requireNamespace("stats", quietly = TRUE)) {
-        stop("Please install stats: BiocManager::install('stats')")
-    }
-    
-    
-    if (!requireNamespace("lme4", quietly = TRUE)) {
-        stop("Please install lme4: BiocManager::install('lme4')")
-    }
+  pkgs.require(c("stats", "lme4")) 
     
     s <- lh1.sam <- llr.sam <- rep(NA, p)
     lh0.sam <- rep(NA, length(cc))
@@ -542,13 +529,7 @@ pepa.test <- function(X,
     global = FALSE, 
     use.lm = FALSE
 ) {
-    if (!requireNamespace("graph", quietly = TRUE)) {
-        stop("Please install graph: BiocManager::install('graph')")
-    }
-    
-    if (!requireNamespace("stats", quietly = TRUE)) {
-        stop("Please install stats: BiocManager::install('stats')")
-    }
+  pkgs.require(c("graph", "stats"))
     
     n <- n1 + n2
     

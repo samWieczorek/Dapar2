@@ -34,6 +34,12 @@ setGeneric("GetMetacellTags",
 
 
 
+
+setGeneric("ConnectedComp", 
+           function(object, ...) standardGeneric("ConnectedComp"))
+setGeneric("ConnectedComp<-", 
+           function(object, ..., value) standardGeneric("ConnectedComp<-"))
+
 setGeneric("qMetacell", 
     function(object, ...) standardGeneric("qMetacell"))
 setGeneric("qMetacell<-", 

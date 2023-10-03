@@ -4,6 +4,7 @@
 #' @description xxx
 #' @name mod_convert
 #' @author Samuel Wieczorek 
+#' @example inst/extdata/examples/ex_mod_convert.R
 NULL
 
 redBtnClass <- "btn-danger"
@@ -80,9 +81,7 @@ Convert_server <- function(id,
 ) {
   
   
-  if (!requireNamespace("openxlsx", quietly = TRUE)) {
-    stop("Please install openxlsx: BiocManager::install('openxlsx')")
-  }
+  pkgs.require("openxlsx")
   
   
   
@@ -219,7 +218,7 @@ Convert_server <- function(id,
     output$SelectFile_software_ui <- renderUI({
       widget <- radioButtons(ns("SelectFile_software"), 
                              "Software to import from",
-                             choices = setNames(nm = DAPAR::GetSoftAvailables()),
+                             choices = setNames(nm = GetSoftAvailables()),
                              selected = rv.widgets$SelectFile_software)
       
       toggleWidget(widget, rv$steps.enabled['SelectFile'] )
@@ -592,7 +591,9 @@ Convert_server <- function(id,
       req(as.logical(rv.widgets$ExpandFeatData_idMethod))
       rv.widgets$ExpandFeatData_quantCols
       
-      mod_inputGroup_server('inputGroup', rv.convert$tab, rv.widgets$ExpandFeatData_quantCols)
+      mod_inputGroup_server('inputGroup', 
+                            df = rv.convert$tab, 
+                            quantCols = rv.widgets$ExpandFeatData_quantCols)
       mod_inputGroup_ui(ns('inputGroup'))
     })
     
@@ -754,31 +755,3 @@ run_workflow("Convert", dataIn = data.frame())
 
 
 #--------------------------------------------------
-
-
-ui <- fluidPage(
-  nav_ui('Convert')
-  
-)
-
-
-  server <- function(input, output){
-    
-    rv <- reactiveValues(
-      dataIn = NULL,
-      dataOut = NULL
-    )
-    
-    observe({
-      rv$dataOut <- nav_server(id = 'Convert',
-                               dataIn = reactive({data.frame()}))
-    })
-    
-    observeEvent(rv$dataOut, {
-      print('toto')
-      browser()
-    })
-  }
-  
-  
-  shinyApp(ui, server)

@@ -1,17 +1,38 @@
+#' @title xxxx
+#'
+#' @description
+#' xxxx
+#'
+#' @name design-example
+#' 
+#' @param id xxx
+#' @param n xxx
+#' 
+#' @return NA
+#'
+#' @example inst/extdata/examples/ex_design_example.R
+#'
+NULL
 
+options(shiny.reactlog=TRUE) 
 
+#' @rdname design-example
+#' @import shiny
+#' @export
+#' 
 mod_designExample_ui <- function(id) {
   ns <- NS(id)
   rhandsontable::rHandsontableOutput(ns("examples"))
 }
 
 
-
+#' @rdname design-example
+#' @import shiny
+#' @export
+#' 
 mod_designExample_server <- function(id, n){
   
-  if (!requireNamespace("rhandsontable", quietly = TRUE)) {
-    stop("Please install rhandsontable: BiocManager::install('rhandsontable')")
-  }
+  pkgs.require("rhandsontable")
   
   
   example_2 <- function(){
@@ -107,14 +128,3 @@ mod_designExample_server <- function(id, n){
   })
 }
 
-
-
-################################################################
-ui <- tagList(
-  mod_designExample_ui("designEx")
-)
-
-server <- function(input, output, session) {
-  mod_designExample_server("designEx", 3)
-    }
-shinyApp(ui = ui, server = server)

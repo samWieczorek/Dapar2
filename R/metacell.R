@@ -64,7 +64,7 @@
 #' Conversion from Maxquant datasets
 #' 
 #' 
-#' @name q_metadata
+#' @name q_metacell
 #' 
 #' @examples 
 #' 
@@ -101,7 +101,7 @@ NULL
 #'
 #' @export
 #'
-#' @rdname q_metadata
+#' @rdname q_metacell
 #' 
 metacell.def <- function(level){
   if(missing(level))
@@ -188,7 +188,7 @@ metacell.def <- function(level){
 
 
 #' @export
-#' @rdname q_metadata
+#' @rdname q_metacell
 custom_metacell_colors <- function()
   list("Any" = "white",
        "Missing" = "#CF8205",
@@ -263,17 +263,15 @@ Children <- function(level, parent = NULL){
 #' @title List of metacell tags
 #'
 #' @description
-#' This function gives the list of metacell tags available in DAPAR.
+#' This function gives the list of metacell tags available.
 #' 
 #' - onlyPresent: In this case, the function gives the tags found in a dataset.
 #' In addition, and w.r.t to the hierarchy of tags, if all leaves of a node are
 #' present, then the tag corresponding to this node is added.
 #'
-#' @param obj An object of class \code{QFeatures}
-#' @param level xxx
-#' @param onlyPresent A boolean that indicates if one wants a list with only the tags
-#' present in the dataset.
-#' @param all A boolean that indicates if one wants the whole list
+#' @param object An object of class `QFeatures`
+#' @param i xxx
+#' @param ... xxx
 #'
 #' @return A vector of tags..
 #'
@@ -307,47 +305,38 @@ setMethod("GetMetacellTags", "QFeatures",
 #' @return NA
 setMethod("GetMetacellTags", "SummarizedExperiment",
   function(object, ...) {
-    .GetMetacellTags(object, ...)
+    .GetMetacellTags(qMetacell(object), ...)
     }
 )
 
 
-.GetMetacellTags <- function(obj = NULL,
+setMethod("GetMetacellTags", "data.frame",
+          function(object, ...) {
+            .GetMetacellTags(object, ...)
+          }
+)
+
+
+.GetMetacellTags <- function(object = NULL,
                             level = NULL,
-                            onlyPresent = FALSE, 
-                            all = FALSE) {
+                            onlyPresent = FALSE) {
   
-  if (is.null(obj))
-    stop('obj in NULL')
+  if (is.null(object))
+    stop('object in NULL')
   
   if (is.null(level))
     stop('level in NULL')
   
-  
-  if (!onlyPresent && !all){
-    if (!is.null(level) && is.null(obj))
-      all <- TRUE
-    if (is.null(level) && !is.null(obj))
-      onlyPresent <- TRUE
-    if ((!is.null(level) && !is.null(obj)) || (is.null(level) && is.null(obj)))
-      stop("At least, one of level or obj must be defined")
-  }
-  
-  if (onlyPresent && all)
-    stop("Only of 'onlyPresent' or 'all' must be TRUE")
-  
   if (is.null(level) && all)
-    stop("level must be defined")
-  
-  if (is.null(level) && !all)
-    all <- TRUE
-  
-  if (is.null(obj) && onlyPresent)
-    stop("`obj` must be defined")
-  
+    stop("level must be defined is 'onlyPresent' equals to FALSE")
+
+    
    ll <- NULL
   if(onlyPresent) {
-    ll <- unique(unlist(GetUniqueTags(obj)))
+    # Compute unique tags
+    tmp <- sapply(colnames(object), function(x) unique(object[,x]))
+    ll <- unique(as.vector(tmp))
+    
     # Check if parent must be added
     test <- match (Children(level, 'Any'), ll)
     if (length(test) == length(Children(level, 'Any')) && !all(is.na(test)))
@@ -369,7 +358,7 @@ setMethod("GetMetacellTags", "SummarizedExperiment",
     if (length(test) == length(Children(level, 'Combined tags')) && !all(is.na(test)))
       ll <- c(ll, 'Combined tags')
 
-  } else if (all) {
+  } else {
     ll <- metacell.def(level)$node[-which(metacell.def(level)$node =='Any')]
   }
   
@@ -388,10 +377,10 @@ setMethod("GetMetacellTags", "SummarizedExperiment",
 #' post processing protein qMetacell after aggregation)
 #' 
 #' @param conds A 1-col dataframe with the condition associated to each sample.
-#' @param df An object of class \code{SummarizedExperiment}
+#' @param df An object of class `SummarizedExperiment`
 #' @param level Type of entity/pipeline
 #' 
-#' @return An instance of class \code{QFeatures}.
+#' @return An instance of class `QFeatures`.
 #' 
 #' @author Samuel Wieczorek
 #' 
@@ -403,8 +392,7 @@ setMethod("GetMetacellTags", "SummarizedExperiment",
 #'
 #' @export
 #'
-#' @name Set_POV_MEC_tags
-#' @rdname q_metadata
+#' @rdname q_metacell
 #' 
 #' 
 Set_POV_MEC_tags <- function(conds, df, level){
@@ -450,8 +438,6 @@ Set_POV_MEC_tags <- function(conds, df, level){
 GetSoftAvailables <- function(){
   
   
-  library(DAPAR)
-  
   funcs <- ls('package:DaparToolshed')
   funcs <- funcs[grep('Metacell_', funcs)]
   funcs <- strsplit(funcs, 'Metacell_')
@@ -479,7 +465,7 @@ GetSoftAvailables <- function(){
 #' 
 #' @author Samuel Wieczorek
 #' 
-#' @example examples/ex_BuildMetacell.R
+#' @example inst/extdata/examples/ex_BuildMetacell.R
 #' 
 #' @export
 #' 
@@ -600,7 +586,7 @@ Metacell_generic <- function(qdata, conds, level) {
 #' @description
 #' Actually, this function uses the generic function to generate metacell info
 #' 
-#' @param qdata An object of class \code{MSnSet}
+#' @param qdata An object of class `MsnSet`
 #'
 #' @param conds xxx
 #'
@@ -613,10 +599,10 @@ Metacell_generic <- function(qdata, conds, level) {
 #' @author Samuel Wieczorek
 #'
 #' @examples
-#' file <- system.file("extdata", "Exp1_R25_pept.txt", package = "DAPARdata")
+#' file <- system.file("extdata", "Exp1_R25_pept.txt", package = "DaparToolshedData")
 #' data <- read.table(file, header = TRUE, sep = "\t", stringsAsFactors = FALSE)
 #' metadataFile <- system.file("extdata", "samples_Exp1_R25.txt",
-#'     package = "DAPARdata"
+#'     package = "DaparToolshedData"
 #' )
 #' metadata <- read.table(metadataFile,
 #'     header = TRUE, sep = "\t", as.is = TRUE,
@@ -665,7 +651,7 @@ Metacell_DIA_NN <- function(qdata, conds, df, level = NULL) {
 #' |  > 0         |   unknown col   | 1.0 |
 #' |--------------|-----------------|-----|
 #'
-#' @param qdata An object of class \code{MSnSet}
+#' @param qdata An object of class `MsnSet`
 #'
 #' @param conds xxx
 #'
@@ -678,10 +664,10 @@ Metacell_DIA_NN <- function(qdata, conds, df, level = NULL) {
 #' @author Samuel Wieczorek
 #'
 #' @examples
-#' file <- system.file("extdata", "Exp1_R25_pept.txt", package = "DAPARdata")
+#' file <- system.file("extdata", "Exp1_R25_pept.txt", package = "DaparToolshedData")
 #' data <- read.table(file, header = TRUE, sep = "\t", stringsAsFactors = FALSE)
 #' metadataFile <- system.file("extdata", "samples_Exp1_R25.txt",
-#'     package = "DAPARdata"
+#'     package = "DaparToolshedData"
 #' )
 #' metadata <- read.table(metadataFile,
 #'     header = TRUE, sep = "\t", as.is = TRUE,
@@ -749,7 +735,7 @@ Metacell_proline <- function(qdata, conds, df, level = NULL) {
 #' |  > 0       |       unknown col     |    1.0 |
 #' |------------|-----------------------|--------|
 #'
-#' @param qdata An object of class \code{MSnSet}
+#' @param qdata An object of class `MsnSet`
 #'
 #' @param conds xxx
 #'
@@ -762,10 +748,10 @@ Metacell_proline <- function(qdata, conds, df, level = NULL) {
 #' @author Samuel Wieczorek
 #'
 #' @examples
-#' file <- system.file("extdata", "Exp1_R25_pept.txt", package = "DAPARdata")
+#' file <- system.file("extdata", "Exp1_R25_pept.txt", package = "DaparToolshedData")
 #' data <- read.table(file, header = TRUE, sep = "\t", stringsAsFactors = FALSE)
 #' metadataFile <- system.file("extdata", "samples_Exp1_R25.txt",
-#'     package = "DAPARdata"
+#'     package = "DaparToolshedData"
 #' )
 #' metadata <- read.table(metadataFile,
 #'     header = TRUE, sep = "\t", as.is = TRUE,
@@ -826,7 +812,7 @@ Metacell_maxquant <- function(qdata, conds, df, level = NULL) {
 
 
 
-#' @title Similar to the function \code{is.na} but focused on the equality
+#' @title Similar to the function `is.na()` but focused on the equality
 #' with the paramter 'type'.
 #'
 #' @param metadata A data.frame
@@ -930,7 +916,7 @@ GetMetacell <- function(obj) {
 #' 
 #' @return NA
 #' 
-#' @rdname q_metadata
+#' @rdname q_metacell
 #' 
 setMethod("UpdateMetacellAfterImputation", "SummarizedExperiment",
           function(object,
@@ -950,7 +936,7 @@ setMethod("UpdateMetacellAfterImputation", "SummarizedExperiment",
             
             ind <- match.metacell(metadata = qMetacell(object), 
                                    pattern = c('Missing', 'Missing POV', 'Missing MEC'), 
-                                   level = typeDataset(object) & !is.na(SummarizedExperiment::assay(object))
+                                   level = typeDataset(object) & !is.na(assay(object))
             )
             
             names.meta <- colnames(GetMetacell(obj))
@@ -984,7 +970,7 @@ setMethod("UpdateMetacellAfterImputation", "SummarizedExperiment",
 #' @export
 #' @return NA
 #' 
-#' @rdname q_metadata
+#' @rdname q_metacell
 #' 
 #' 
 search.metacell.tags <- function(pattern, level, depth = "1") {
@@ -1080,7 +1066,7 @@ search.metacell.tags <- function(pattern, level, depth = "1") {
 #' }
 #' 
 #' @export
-#' @rdname q_metadata
+#' @rdname q_metacell
 #' @importFrom utils combn
 #' 
 #' 
@@ -1194,11 +1180,13 @@ metacombine <- function(met, level) {
 #' @author Samuel Wieczorek
 #'
 #' @examples
-#' data(Exp1_R25_pept, package="DAPARdata")
+#' \dontrun{
+#' data(Exp1_R25_pept, package="DaparToolshedData")
 #' obj.pep <- Exp1_R25_pept[seq_len(10)]
 #' protID <- "Protein_group_IDs"
 #' X <- BuildAdjacencyMatrix(obj.pep, protID, FALSE)
 #' agg.meta <- AggregateMetacell(X, obj.pep)
+#' }
 #'
 #' @export
 #'

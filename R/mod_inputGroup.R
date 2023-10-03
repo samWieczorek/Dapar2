@@ -3,31 +3,20 @@
 #' @description  A shiny Module.
 #' 
 #' @param id A `character(1)` xxx
-#' @param title A `character()` xxx
-#' @param content A `character()` xxx 
+#' @param df xxx
+#' @param quanCols A vector of  
 #'
-#' @name mod_helpPopover
+#' @name mod_inputGroup
 #' 
-#' @return NA
+#' @return A shiny app
 #'
-#' @examples
-#' if (interactive()) {
-#'     ui <- mod_inputGroup_ui("help")
-#'
-#'     server <- function(input, output, session) {
-#'         mod_inputGroup_server("help",
-#'             title = "Foo",
-#'             content = "xxx"
-#'         )
-#'     }
-#'
-#'     shinyApp(ui = ui, server = server)
-#' }
+#' @example inst/extdata/examples/ex_mod_inputGroup.R
+#' 
 NULL
 
 
 
-#' @rdname mod_helpPopover
+#' @rdname mod_inputGroup
 #' @export
 #' @importFrom shiny NS tagList
 #' @importFrom shinyjs inlineCSS useShinyjs
@@ -43,14 +32,12 @@ mod_inputGroup_ui <- function(id) {
 
 
 #'
-#' @rdname mod_helpPopover
+#' @rdname mod_inputGroup
 #'
 #' @export
 #'
 mod_inputGroup_server <- function(id, df, quantCols) {
-  if (!requireNamespace("shinyBS", quietly = TRUE)) {
-    stop("Please install shinyBS: BiocManager::install('shinyBS')")
-  }
+  pkgs.require("shinyBS")
 
   moduleServer(id, function(input, output, session) {
     ns <- session$ns

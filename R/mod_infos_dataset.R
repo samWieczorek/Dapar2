@@ -2,29 +2,15 @@
 #' @description  A shiny Module.
 #' 
 #' @param id shiny id
-#' @param obj object mae
+#' @param obj An instance of the class `QFeatures`.
+#' 
+#' @return A shiny app
 #'
 #' 
 #' @name mod_infos_dataset
 #' 
-#' @examples 
-#' if(interactive()){
-#' library(SummarizedExperiment)
-#' library(shinyjqui)
-#' library(DaparViz)
-#' library(shinyjs)
-#' library(shiny)
-#' 
-#' data(ft_na, package='DaparViz')
-#' 
-#' ui <- fluidPage(mod_infos_dataset_ui("mod_info"))
-#' 
-#' server <- function(input, output, session) {
-#'   mod_infos_dataset_server("mod_info", reactive({ft_na}))
-#' }
-#' 
-#' shinyApp(ui, server)
-#' }
+#' @example inst/extdata/examples/ex_mod_infos_dataset.R
+
 NULL
 
 
@@ -71,7 +57,6 @@ mod_infos_dataset_ui <- function(id){
 #' 
 #' @keywords internal
 #' 
-#' @importFrom MultiAssayExperiment experiments colData
 #' @importFrom tibble as_tibble
 #' 
 mod_infos_dataset_server <- function(id, obj){
@@ -82,7 +67,7 @@ mod_infos_dataset_server <- function(id, obj){
     
     observe({
       req(obj())
-      if (class(obj()) != 'QFeatures')
+      if (!inherits(obj(),'QFeatures'))
       {
         warning("'obj' is not of class 'QFeatures'")
         return(NULL)
@@ -94,9 +79,9 @@ mod_infos_dataset_server <- function(id, obj){
                              data.frame(colData(obj()))
                              }),
                            full_style = reactive({req(obj())
-                             list(cols = colnames(MultiAssayExperiment::colData(obj())),
-                                  vals = colnames(MultiAssayExperiment::colData(obj()))[2],
-                                  unique = unique(MultiAssayExperiment::colData(obj())$Condition),
+                             list(cols = colnames(colData(obj())),
+                                  vals = colnames(colData(obj()))[2],
+                                  unique = unique(colData(obj())$Condition),
                                   pal = RColorBrewer::brewer.pal(3,'Dark2')[1:2])
                            })
       )
@@ -124,7 +109,7 @@ mod_infos_dataset_server <- function(id, obj){
     
     output$title <- renderUI({
       req(obj())
-      name <- MultiAssayExperiment::metadata(obj())$analysis
+      name <- metadata(obj())$analysis
       tagList(
           h3("Dataset summary"),
         p(paste0("Name of analysis:",name$analysis))
@@ -137,7 +122,7 @@ mod_infos_dataset_server <- function(id, obj){
       req(obj())
       selectInput(ns("selectInputSE"),
                   "Select a dataset for further information",
-                  choices = c("None",names(MultiAssayExperiment::experiments(obj())))
+                  choices = c("None",names(experiments(obj())))
       )
     })
     
@@ -147,13 +132,13 @@ mod_infos_dataset_server <- function(id, obj){
       req(obj())
       nb_assay <- length(obj())
       names_assay <- unlist(names(obj()))
-      pipeline <- MultiAssayExperiment::metadata(obj())$pipelineType
+      pipeline <- metadata(obj())$pipelineType
       
       columns <- c("Number of assay(s)",
                    "List of assay(s)",
                    "Pipeline Type")
       
-      vals <- c( if(is.null(MultiAssayExperiment::metadata(obj())$pipelineType)) '-' else MultiAssayExperiment::metadata(obj())$pipelineType,
+      vals <- c( if(is.null(metadata(obj())$pipelineType)) '-' else metadata(obj())$pipelineType,
                  length(obj()),
                  if (length(obj())==0) '-' else HTML(paste0('<ul>', paste0('<li>', names_assay, "</li>", collapse=""), '</ul>', collapse=""))
       )
@@ -178,10 +163,10 @@ mod_infos_dataset_server <- function(id, obj){
         #browser()
         
         .se <- obj()[[input$selectInputSE]]
-        #data <- MultiAssayExperiment::experiments(obj())[[input$selectInputSE]]
+        #data <- experiments(obj())[[input$selectInputSE]]
         
         
-        typeOfData <- MultiAssayExperiment::metadata(.se)$typeDataset
+        typeOfData <- metadata(.se)$typeDataset
         nLines <- nrow(.se)
         .nNA <- QFeatures::nNA(.se)
         percentMV <- round(.nNA$nNA[,'pNA'], digits = 2)
@@ -195,13 +180,13 @@ mod_infos_dataset_server <- function(id, obj){
         
         if (tolower(typeOfData) == 'peptide'){
           
-          if(length(MultiAssayExperiment::metadata(.se)$list.matAdj) > 0){
+          if(length(metadata(.se)$list.matAdj) > 0){
             adjMat.txt <- "<span style=\"color: lime\">OK</span>"
           } else{
             adjMat.txt <- "<span style=\"color: red\">Missing</span>"
           }
           
-          if(!is.null(MultiAssayExperiment::metadata(.se)$list.cc)){
+          if(!is.null(metadata(.se)$list.cc)){
             cc.txt <- "<span style=\"color: lime\">OK</span>"
           } else{
             cc.txt <- "<span style=\"color: red\">Missing</span>"
@@ -251,7 +236,7 @@ mod_infos_dataset_server <- function(id, obj){
     # 
     #   if (input$selectInputSE != "None" && isTRUE(input$properties_button)) {
     # 
-    #     data <- MultiAssayExperiment::experiments(obj())[[input$selectInputSE]]
+    #     data <- experiments(obj())[[input$selectInputSE]]
     #     metadata(data)
     #   }
     # })
@@ -264,7 +249,7 @@ mod_infos_dataset_server <- function(id, obj){
       
       if (input$selectInputSE != "None") {
         
-        data <- MultiAssayExperiment::experiments(obj())[[input$selectInputSE]]
+        data <- experiments(obj())[[input$selectInputSE]]
         print(class(data))
         mod_format_DT_server('dt2',
                              data = reactive({Get_SE_Summary()}),
@@ -320,7 +305,7 @@ mod_infos_dataset_server <- function(id, obj){
     
     NeedsUpdate <- reactive({
       req(obj())
-      PROSTAR.version <- MultiAssayExperiment::metadata(MultiAssayExperiment::experiments(obj()))$versions$Prostar_Version
+      PROSTAR.version <- metadata(experiments(obj()))$versions$Prostar_Version
       
       if(compareVersion(PROSTAR.version,"1.12.9") != -1 && !is.na(PROSTAR.version) && PROSTAR.version != "NA") {
         return (FALSE)
@@ -334,20 +319,4 @@ mod_infos_dataset_server <- function(id, obj){
   
   
 }
-
-
-library(SummarizedExperiment)
-library(shinyjqui)
-library(shinyjs)
-library(shiny)
-
-data(ft_na, package='DaparViz')
-
-ui <- fluidPage(mod_infos_dataset_ui("mod_info"))
-
-server <- function(input, output, session) {
-  mod_infos_dataset_server("mod_info", reactive({ft_na}))
-}
-
-shinyApp(ui, server)
 

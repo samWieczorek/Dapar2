@@ -10,19 +10,7 @@
 #' 
 #' @return NA
 #'
-#' @examples
-#' if (interactive()) {
-#'     ui <- mod_helpPopover_ui("help")
-#'
-#'     server <- function(input, output, session) {
-#'         mod_helpPopover_server("help",
-#'             title = "Foo",
-#'             content = "xxx"
-#'         )
-#'     }
-#'
-#'     shinyApp(ui = ui, server = server)
-#' }
+#' @example inst/extdata/examples/ex_mod_helpPopover.R
 NULL
 
 
@@ -61,9 +49,8 @@ mod_helpPopover_ui <- function(id) {
 #' @export
 #'
 mod_helpPopover_server <- function(id, title, content) {
-    if (!requireNamespace("shinyBS", quietly = TRUE)) {
-        stop("Please install shinyBS: BiocManager::install('shinyBS')")
-    }
+  pkgs.require("shinyBS")
+  
     moduleServer(id, function(input, output, session) {
         ns <- session$ns
 

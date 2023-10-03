@@ -59,19 +59,19 @@ This function builds an intermediate matrix with scores for each peptide
 based on 'fun' parameter. Once this matrix is built, one select the
 'n' peptides which have the higher score
 
-The list of filter functions is given by \code{\link[=adjMatFilters]{adjMatFilters()}}:
+The list of filter functions is given by \code{adjMatFilters()}:
 \itemize{
-\item \code{\link[=specPeptides]{specPeptides()}}: returns a new assay of class \link{SummazizedExperiment}
+\item \code{specPeptides()}: returns a new assay of class \code{SummazizedExperiment}
 with only specific peptides;
-\item \code{\link[=sharedpeptides]{sharedpeptides()}}: returns a new assay of class \link{SummazizedExperiment}
+\item \code{sharedpeptides()}: returns a new assay of class \code{SummazizedExperiment}
 with only shared peptides;
-\item \code{\link[=topnPeptides]{topnPeptides()}}: returns a new assay of class \link{SummazizedExperiment} with
+\item \code{opnPeptides()}: returns a new assay of class \code{SummazizedExperiment} with
 only the 'n' peptides which best satisfies the condition. The condition is
 represented by functions which calculates a score for each peptide among
-all samples. The list of these functions is given by \code{\link[=topnFunctions]{topnFunctions()}}:
-\item 
-\item 
-\item 
+all samples. The list of these functions is given by \code{topnFunctions()}:
+\item \code{rowMedians()}: xxx;
+\item \code{rowMeans()}: xxx;
+\item \code{rowSums()}: xxx;
 }
 }
 \examples{

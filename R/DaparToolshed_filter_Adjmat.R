@@ -24,24 +24,24 @@
 #' based on 'fun' parameter. Once this matrix is built, one select the 
 #' 'n' peptides which have the higher score
 #'
-#' The list of filter functions is given by [adjMatFilters()]:
+#' The list of filter functions is given by `adjMatFilters()`:
 #'
-#' - [specPeptides()]: returns a new assay of class [SummazizedExperiment] 
+#' - `specPeptides()`: returns a new assay of class `SummazizedExperiment` 
 #' with only specific peptides;
 #'
-#' - [sharedpeptides()]: returns a new assay of class [SummazizedExperiment] 
+#' - `sharedpeptides()`: returns a new assay of class `SummazizedExperiment` 
 #' with only shared peptides;
 #'
-#' - [topnPeptides()]: returns a new assay of class [SummazizedExperiment] with 
+#' - `opnPeptides()`: returns a new assay of class `SummazizedExperiment` with 
 #' only the 'n' peptides which best satisfies the condition. The condition is 
 #' represented by functions which calculates a score for each peptide among 
-#' all samples. The list of these functions is given by [topnFunctions()]:
+#' all samples. The list of these functions is given by `topnFunctions()`:
 #'
-#' - [rowMedians()]: xxx;
+#' - `rowMedians()`: xxx;
 #'
-#' - [rowMeans()]: xxx;
+#' - `rowMeans()`: xxx;
 #'
-#' - [rowSums()]: xxx;
+#' - `rowSums()`: xxx;
 #'
 #'
 #' @seealso The [QFeatures-filtering-oneSE] man page for the 
@@ -177,10 +177,12 @@ subAdjMat_sharedPeptides <- function(X) {
 }
 
 #'
-#' @importFrom PSMatch makePeptideProteinVector
 #' @noRd
 .UpdateSEBasedOnAdjmat <- function(object, X) {
-    SummarizedExperiment::rowData(object)$adjacencyMatrix <- X
+  
+  pkgs.require('PSMatch')
+  
+    rowData(object)$adjacencyMatrix <- X
     # Identify and delete the empty lines in the dataset
     emptyLines <- which(rowSums(as.matrix(X)) == 0)
     if (length(emptyLines) > 0) {
@@ -194,10 +196,10 @@ subAdjMat_sharedPeptides <- function(X) {
 
     if (length(emptyCols) > 0) {
         X <- X[, -emptyCols]
-        SummarizedExperiment::rowData(object)$adjacencyMatrix <- X
+        rowData(object)$adjacencyMatrix <- X
         idcol <- S4Vectors::metadata(object)$parentProtId
-        .val <- makePeptideProteinVector(X)
-        SummarizedExperiment::rowData(object)[, idcol] <- .val
+        .val <- PSMatch::makePeptideProteinVector(X)
+        rowData(object)[, idcol] <- .val
     }
 
     return(object)
@@ -215,11 +217,11 @@ topnFunctions <- function() {
 #' @rdname adjacency-matrix-filter
 topnPeptides <- function(object, fun, top) {
     stopifnot(inherits(object, "SummarizedExperiment"))
-    .names <- names(SummarizedExperiment::rowData(object))
+    .names <- names(rowData(object))
     stopifnot("adjacencyMatrix" %in% .names)
 
     X <- adjacencyMatrix(object)
-    qData <- SummarizedExperiment::assay(object)
+    qData <- assay(object)
     X.topn <- subAdjMat_topnPeptides(X, qData, fun, top)
     object <- .UpdateSEBasedOnAdjmat(object, X.topn)
     return(object)

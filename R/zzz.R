@@ -1,8 +1,10 @@
 .onLoad <- function(libname, pkgname) {
-    shiny::addResourcePath(
-        prefix = "images",
-        directoryPath = system.file("images",package = "DaparToolshed")
-    )
+    # shiny::addResourcePath(
+    #     prefix = "images",
+    #     directoryPath = system.file("images",package = "DaparToolshed")
+    # )
+  
+  library(QFeatures)
 }
 
 .onUnload <- function(libname, pkgname) {

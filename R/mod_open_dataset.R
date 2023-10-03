@@ -86,9 +86,9 @@ mod_open_dataset_server <- function(id){
     #       )
     #     )
     #   } else {
-    #     m <- match.metacell(DAPAR::GetMetacell(rv$current.obj),
+    #     m <- match.metacell(GetMetacell(rv$current.obj),
     #       pattern = "Missing",
-    #       level = DAPAR::GetTypeofData(rv$current.obj)
+    #       level = GetTypeofData(rv$current.obj)
     #     )
     #     NA.count <- length(which(m))
     #     nb.empty.lines <- sum(apply(m, 1, all))
@@ -136,7 +136,7 @@ mod_open_dataset_server <- function(id){
             rv.openqf$dataRead <- readRDS(input$file$datapath)
           }
           
-          if (class(rv.openqf$dataRead)[1] != "QFeatures") {
+          if (!inherits(rv.openqf$dataRead,'QFeatures')) {
             warning(warn.wrong.file)
           }
           

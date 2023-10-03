@@ -27,13 +27,13 @@ already an assay with \code{name}.}
 
 \item{...}{Additional arguments}
 
-\item{object}{An instance of class \link{QFeatures} or \link{SummarizedExperiment}.}
+\item{object}{An instance of class \code{QFeatures} or \code{SummarizedExperiment}.}
 
 \item{i}{The index or name of the assay which features will be
 filtered the create the new assay.}
 
-\item{filters}{A \code{list()} containing instances of class \link{AnnotationFilter}
-or \link{FunctionFilter}}
+\item{filters}{A \code{list()} containing instances of class \code{AnnotationFilter}
+or \code{FunctionFilter}}
 }
 \value{
 A filtered \code{QFeature} object

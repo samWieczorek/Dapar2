@@ -71,7 +71,7 @@ ExtendPalette <- function(n = NULL, base = "Set1") {
 #' @author Samuel Wieczorek
 #'
 #' @examples
-#' data(Exp1_R25_pept, package="DAPARdata")
+#' data(Exp1_R25_pept, package="DaparToolshedData")
 #' conditions <- Biobase::pData(Exp1_R25_pept)$Condition
 #' GetColorsForConditions(conditions, ExtendPalette(2))
 #'

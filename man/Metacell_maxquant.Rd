@@ -7,7 +7,7 @@
 Metacell_maxquant(qdata, conds, df, level = NULL)
 }
 \arguments{
-\item{qdata}{An object of class \code{MSnSet}}
+\item{qdata}{An object of class \code{MsnSet}}
 
 \item{conds}{xxx}
 
@@ -30,10 +30,10 @@ Initial conversion rules for maxquant
 |------------|-----------------------|--------|
 }
 \examples{
-file <- system.file("extdata", "Exp1_R25_pept.txt", package = "DAPARdata")
+file <- system.file("extdata", "Exp1_R25_pept.txt", package = "DaparToolshedData")
 data <- read.table(file, header = TRUE, sep = "\t", stringsAsFactors = FALSE)
 metadataFile <- system.file("extdata", "samples_Exp1_R25.txt",
-    package = "DAPARdata"
+    package = "DaparToolshedData"
 )
 metadata <- read.table(metadataFile,
     header = TRUE, sep = "\t", as.is = TRUE,

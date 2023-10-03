@@ -1,6 +1,25 @@
+#' @title xxxx
+#'
+#' @description
+#' xxxx
+#'
+#' @name build-design
+#' 
+#' @param id xxx
+#' @param quantCols xxx
+#' 
+#' @return NA
+#'
+#' @example inst/extdata/examples/ex_build_design.R
+#'
+NULL
 
+options(shiny.reactlog=TRUE) 
 
-
+#' @rdname build-design
+#' @import shiny
+#' @export
+#' 
 mod_buildDesign_ui <- function(id) {
   ns <- NS(id)
   tagList(
@@ -39,12 +58,12 @@ mod_buildDesign_ui <- function(id) {
 }
 
 
-
+#' @rdname build-design
+#' 
 mod_buildDesign_server <- function(id,
                                    quantCols) {
-  if (!requireNamespace("shinyBS", quietly = TRUE)) {
-    stop("Please install shinyBS: BiocManager::install('shinyBS')")
-  }
+  pkgs.require("shinyBS")
+  
   moduleServer(id, function(input, output, session) {
     ns <- session$ns
     
@@ -436,25 +455,6 @@ mod_buildDesign_server <- function(id,
 
 
 
-
-
-
-
-
-################################################################
-ui <- tagList(
-  mod_buildDesign_ui("designEx"),
-  
-)
-
-server <- function(input, output, session) {
-  design <- mod_buildDesign_server("designEx", c('a', 'a', 'a', 'b', 'b', 'b'))
-  
-  observeEvent(design()$trigger, {
-    print(design()$design)
-  })
-}
-shinyApp(ui = ui, server = server)
 
 
 

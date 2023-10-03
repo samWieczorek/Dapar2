@@ -1,8 +1,30 @@
-
+#' @title xxxx
+#'
+#' @description
+#' xxxx
+#'
+#' @name query-metacell
+#' 
+#' @param id xxx
+#' @param obj xxx
+#' @param filters xxx
+#' @param val_vs_percent xxx
+#' @param operator xxx
+#' @param reset xxx
+#' @param op_names xxx
+#' 
+#' @return NA
+#'
+#' @example inst/extdata/examples/ex_mod_query_metacell.R
+#'
+NULL
 
 options(shiny.reactlog=TRUE) 
 
-
+#' @rdname query-metacell
+#' @import shiny
+#' @export
+#' 
 mod_query_metacell_ui <- function(id) {
     ns <- NS(id)
     tagList(
@@ -23,7 +45,10 @@ mod_query_metacell_ui <- function(id) {
 
 
 
-
+#' @rdname query-metacell
+#' @import shiny
+#' @export
+#' 
 mod_query_metacell_server <- function(id,
                                       obj = reactive({NULL}),
                                       filters = reactive({NULL}),
@@ -33,13 +58,7 @@ mod_query_metacell_server <- function(id,
                                       op_names = reactive({NULL})
                                       ){
     
-    if (!requireNamespace("shinyjs", quietly = TRUE)) {
-        stop("Please install shinyjs: BiocManager::install('shinyjs')")
-    }
-    
-    if (!requireNamespace("shinyBS", quietly = TRUE)) {
-        stop("Please install shinyBS: BiocManager::install('shinyBS')")
-    }
+  pkgs.require(c("shinyjs", "shinyBS"))    
     
     rv.widgets <- reactiveValues(
         MetacellTag = NULL,
@@ -270,7 +289,7 @@ mod_query_metacell_server <- function(id,
                         column(8,
                             selectInput(ns("choose_metacellFilter_operator"),
                                         "Choose operator()",
-                                        choices = setNames(nm = DAPAR::SymFilteringOperators()),
+                                        choices = setNames(nm = SymFilteringOperators()),
                                         selected = rv.widgets$metacellFilter_operator,
                                         width = "100px"
                                         ),
@@ -412,7 +431,7 @@ mod_query_metacell_server <- function(id,
                 )
                 
                 
-                DAPAR::GetIndices_MetacellFiltering(
+                GetIndices_MetacellFiltering(
                     obj = obj(),
                     level = typeDataset(obj()),
                     pattern = rv.widgets$MetacellTag,
@@ -451,47 +470,4 @@ mod_query_metacell_server <- function(id,
 }
 
 
-
-
-# Example
-# 
-library(shinyBS)
-
-    ui <- fluidPage(
-    tagList(
-        shinyjs::useShinyjs(),
-        actionButton('external_reset', 'Reset'),
-        mod_query_metacell_ui('query'),
-        uiOutput('res'),
-        shinyjs::disabled(actionButton('perform', 'Perform')),
-        
-    )
-)
-
-server <- function(input, output) {
-    
-    
-    
-    utils::data("Exp1_R25_prot", package='DaparToolShedData')
-    
-    tmp <- mod_query_metacell_server('query', 
-                                     obj = reactive({Exp1_R25_prot}),
-                                     reset = reactive({input$external_reset + input$perform}),
-                                     op_names = reactive({c('Push p-value', 'Keep original p-value')})
-                                     )
- 
-    observeEvent(tmp()$trigger, {
-        #print(tmp()$indices)
-        shinyjs::toggleState("perform",
-                             condition = length(tmp()$indices) > 0
-        )
-        
-    })
-    
-    output$res <- renderUI({
-        p(paste0(tmp()$params$MetacellTag, collapse='\n'))
-    })
-}
-
-shinyApp(ui = ui, server = server)
 

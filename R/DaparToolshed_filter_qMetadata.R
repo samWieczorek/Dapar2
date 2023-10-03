@@ -217,7 +217,7 @@ qMetacellWholeLine <- function(object, cmd, pattern) {
 
 
     stopifnot(inherits(object, "SummarizedExperiment"))
-    stopifnot("qMetacell" %in% names(SummarizedExperiment::rowData(object)))
+    stopifnot("qMetacell" %in% names(rowData(object)))
     stopifnot(!is.null(cmd) || (cmd %in% c("keep", "delete")))
 
     indices <- NULL

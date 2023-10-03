@@ -5,13 +5,18 @@
 #' @param ll.deps A `character()` vector which contains packages names
 #' 
 #' @examples 
-#' pkgs.require('DAPAR')
+#' pkgs.require('QFeatures')
 #' 
 #' @export
 #' 
 #' @author Samuel Wieczorek
 #' 
 pkgs.require <- function(ll.deps){
+  
+  if (!requireNamespace('BiocManager', quietly = TRUE)) {
+    stop(paste0("Please run install.packages('BiocManager')"))
+  }
+  
   lapply(ll.deps, function(x) {
     if (!requireNamespace(x, quietly = TRUE)) {
       stop(paste0("Please install ", x, ": BiocManager::install('", x, "')"))
@@ -26,7 +31,7 @@ pkgs.require <- function(ll.deps){
 #' @description
 #'
 #' Replace ".", ' ', '-' in `character()` by '_' to be compliant
-#' with functions of \link{Shinyjs}, \link{Shiny}
+#' with functions of `Shinyjs`, `Shiny`
 #'
 #' @param x A `character()` to be processed
 #'
@@ -62,8 +67,8 @@ ReplaceSpecialChars <- function(x) {
 #' Prostar suite and which propose data processing. This information
 #' can be useful if the user wants to publish its works or to
 #' rerun a data processing pipeline tin a given set of conditions.
-#' The packages which are concerned are \link{Prostar}, \link{DaparToolshed}
-#' and \link{DaparToolshedData}
+#' The packages which are concerned are `Prostar`, `DaparToolshed`
+#' and `DaparToolshedData`
 #'
 #' @return A `list(3)`
 #'
@@ -77,37 +82,37 @@ ReplaceSpecialChars <- function(x) {
 #' @export
 #'
 ProstarVersions <- function() {
-    Prostar <- DaparToolshed <- DaparToolshedData <- MagellanNTK <- NA
+    v.Prostar <- v.DaparToolshed <- v.DaparToolshedData <- v.MagellanNTK <- NA
 
     # tryCatch(
     #     {
     #         find.package("Prostar.2.0")
-    #         Prostar <- Biobase::package.version("Prostar.2.0")
+    #         v.Prostar <- Biobase::package.version("Prostar.2.0")
     #     },
-    #     error = function(e) Prostar <- NA
+    #     error = function(e) v.Prostar <- NA
     # )
 
     tryCatch(
         {
             find.package("DaparToolshed")
-            DaparToolshed <- Biobase::package.version("DaparToolshed")
+          v.DaparToolshed <- Biobase::package.version("DaparToolshed")
         },
-        error = function(e) DaparToolshed <- NA
+        error = function(e) v.DaparToolshed <- NA
     )
 
     tryCatch(
         {
             find.package("DaparToolshedData")
-            DaparToolshed <- Biobase::package.version("DaparToolshedData")
+          v.DaparToolshed <- Biobase::package.version("DaparToolshedData")
         },
-        error = function(e) DaparToolshedData <- NA
+        error = function(e) v.DaparToolshedData <- NA
     )
 
 
     list(
-        Prostar = Prostar,
-        DaparToolshed = DaparToolshed,
-        DaparToolshedData = DaparToolshedData
+        Prostar = v.Prostar,
+        DaparToolshed = v.DaparToolshed,
+        DaparToolshedData = v.DaparToolshedData
     )
 }
 
@@ -148,7 +153,7 @@ nEmptyLines <- function(df) {
 
 
 
-#' @title Similar to the function \code{is.na} but focused on the equality 
+#' @title Similar to the function `is.na()` but focused on the equality 
 #' with the paramter 'type'.
 #'
 #' @param data A data.frame
@@ -181,7 +186,7 @@ is.OfType <- function(data, type) {
 
 #' @title Returns the possible number of values in lines in the data
 #'
-#' @param object An object of class \code{QFeatures}
+#' @param object An object of class `QFeatures`
 #'
 #' @param conds xxxx
 #'
@@ -198,7 +203,6 @@ is.OfType <- function(data, type) {
 #' @export
 #'
 #' @importFrom S4Vectors sort
-#' @importFrom SummarizedExperiment colData
 #'
 getListNbValuesInLines <- function(object, conds, type = "WholeMatrix") {
     if (is.null(object)) {
@@ -211,7 +215,7 @@ getListNbValuesInLines <- function(object, conds, type = "WholeMatrix") {
             'WholeMatrix', 'AtLeastOneCond', 'AllCond'")
     }
 
-    data <- as.data.frame(SummarizedExperiment::assay(object))
+    data <- as.data.frame(assay(object))
     switch(type,
         WholeMatrix = {
             ll <- unique(ncol(data) - apply(is.na(data), 1, sum))
@@ -247,7 +251,7 @@ getListNbValuesInLines <- function(object, conds, type = "WholeMatrix") {
 #'
 #' This function retrieves the indices of non-zero elements in sparse matrices
 #' of class dgCMatrix from package Matrix. This function is largely inspired 
-#' from the package \code{RINGO}
+#' from the package `RINGO`.
 #'
 #' @param x A sparse matrix of class dgCMatrix
 #'

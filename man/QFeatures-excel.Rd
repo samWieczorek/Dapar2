@@ -23,7 +23,7 @@ addColors(wb, n, tags, colors)
 
 \item{filename}{xxx}
 
-\item{...}{Additional arguments}
+\item{...}{xxx}
 
 \item{exp.design}{xxx}
 
@@ -43,16 +43,18 @@ A Excel file.
 This function exports an instance of the class \code{QFeatures} to a Excel file.
 The resulting file is composed of four sheets:
 \itemize{
-\item \verb{quantitative data} which contains the content of \code{\link[=assay]{assay()}} object whith a
+\item \verb{quantitative data} which contains the content of \code{assay()} object with a
 color code for each cell w.r.t. to cell quantitative metadata.
-\item \code{metadata} which is the content of \code{\link[=rowData]{rowData()}} with only one-dimensionnal
+\item \code{metadata} which is the content of \code{rowData()} with only one-dimensionnal
 data (i.e. the adjacencyMatrix and the qMetacell slots are not part of
 the sheet),
-\item \verb{exp. design} which is the content of \code{\link[=colData]{colData()}}. Each condition in the
+\item \verb{exp. design} which is the content of \code{colData()}. Each condition in the
 table is colored with a different color,
-\item \verb{quantitative metadata} which is the content of \code{\link[=qMetacell]{qMetacell()}}. There is a
+\item \verb{quantitative metadata} which is the content of \code{qMetacell()}. There is a
 color code for the different tags.
 }
+
+xxx
 }
 \examples{
 data(ft, package='DaparToolshed')

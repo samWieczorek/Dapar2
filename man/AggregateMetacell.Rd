@@ -19,11 +19,13 @@ Execute a product two matrices: the first is an adjacency one  while the
 second if a simple dataframe
 }
 \examples{
-data(Exp1_R25_pept, package="DAPARdata")
+\dontrun{
+data(Exp1_R25_pept, package="DaparToolshedData")
 obj.pep <- Exp1_R25_pept[seq_len(10)]
 protID <- "Protein_group_IDs"
 X <- BuildAdjacencyMatrix(obj.pep, protID, FALSE)
 agg.meta <- AggregateMetacell(X, obj.pep)
+}
 
 }
 \author{

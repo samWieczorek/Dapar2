@@ -103,7 +103,7 @@
 #' #' obj <- Exp1_R25_pept[seq_len(1000),]
 #' #' obj <- addListAdjacencyMatrices(obj, 2)
 #' #' X <- as.matrix(GetAdjMat(obj[[2]])$all)
-#' #' conditions <- SummarizedExperiment::colData(obj)$Condition
+#' #' conditions <- colData(obj)$Condition
 #' #' aggIterParallel(assay(obj,2), X, conditions)
 #' #'
 #' #' @export
@@ -120,9 +120,7 @@
 #'   }
 #'
 #'
-#'   if (! requireNamespace("Matrix", quietly = TRUE)) {
-#'    stop("Please install Matrix: BiocManager::install('Matrix')")
-#'    }
+#'   pkgs.require("Matrix")
 #'
 #'
 #'   doParallel::registerDoParallel()

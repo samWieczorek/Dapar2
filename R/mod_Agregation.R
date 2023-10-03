@@ -77,9 +77,7 @@ mod_Agregation_server <- function(id,
     current.pos = reactive({1}),
     verbose = FALSE) {
 
-    if (!requireNamespace("DT", quietly = TRUE)) {
-        stop("Please install DT: BiocManager::install('DT')")
-    }
+  pkgs.require("DT")
     
     
     # This list contains the basic configuration of the process

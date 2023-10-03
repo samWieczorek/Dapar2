@@ -2,7 +2,7 @@
 % Please edit documentation in R/utils.R
 \name{is.OfType}
 \alias{is.OfType}
-\title{Similar to the function \code{is.na} but focused on the equality
+\title{Similar to the function \code{is.na()} but focused on the equality
 with the paramter 'type'.}
 \usage{
 is.OfType(data, type)
@@ -16,7 +16,7 @@ is.OfType(data, type)
 A boolean dataframe
 }
 \description{
-Similar to the function \code{is.na} but focused on the equality
+Similar to the function \code{is.na()} but focused on the equality
 with the paramter 'type'.
 }
 \examples{

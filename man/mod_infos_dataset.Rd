@@ -13,15 +13,17 @@ mod_infos_dataset_server(id, obj)
 \arguments{
 \item{id}{shiny id}
 
-\item{obj}{object mae}
+\item{obj}{An instance of the class \code{QFeatures}.}
+}
+\value{
+A shiny app
 }
 \description{
 A shiny Module.
 }
 \examples{
-if(interactive()){
-library(SummarizedExperiment)
-library(shinyjqui)
+
+library(QFeatures)
 library(DaparViz)
 library(shinyjs)
 library(shiny)
@@ -35,6 +37,6 @@ server <- function(input, output, session) {
 }
 
 shinyApp(ui, server)
-}
+
 }
 \keyword{internal}

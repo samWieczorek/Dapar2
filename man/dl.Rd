@@ -38,3 +38,6 @@ NA
 \description{
 A shiny Module.
 }
+\examples{
+a <- 1
+}

@@ -21,15 +21,13 @@ License: Artistic-2.0
 Depends: R (>= 4.3.0)
 Imports:
     Biobase,
+    DaparToolshedData,
     MagellanNTK,
     S4Vectors,
     BiocGenerics,
-    PSMatch,
     QFeatures,
     methods,
     MsCoreUtils,
-    SummarizedExperiment,
-    MultiAssayExperiment,
     AnnotationFilter,
     RColorBrewer,
     highcharter,
@@ -40,7 +38,10 @@ Imports:
     sos,
     stats,
     utils,
-    rhandsontable
+    rhandsontable,
+    shinyBS,
+    foreach,
+    tibble
 biocViews: 
     Proteomics,
     Normalization,
@@ -50,7 +51,11 @@ biocViews:
     GO,
     DataImport
 Suggests: 
+    BiocManager,
+    visNetwork,
+    igraph,
     knitr,
+    PSMatch,
     lme4,
     DT,
     DaparViz,
@@ -64,7 +69,6 @@ Suggests:
     apcluster,
     diptest,
     cluster,
-    shinyBS,
     rmarkdown,
     BiocStyle,
     testthat,
@@ -72,7 +76,6 @@ Suggests:
     factoextra,
     doParallel,
     dplyr,
-    foreach,
     colourpicker,
     openxlsx, 
     readxl,
@@ -84,11 +87,12 @@ Suggests:
     purrr,
     stringr, 
     gplots, 
-    tibble, 
     tidyr
 NeedsCompilation: no
 Collate:
     AllGenerics.R
+    mod_ds_metacell.R
+    plot_metacell.R
     doc-data.R
     DaparToolshed.R
     QFeatures_utils.R
@@ -131,6 +135,8 @@ Collate:
     mod_dl.R
     mod_open_dataset.R
     mod_open_demoDataset.R
+    get_pep_prot_cc.R
+    agregation.R
 RoxygenNote: 7.2.3
 Packaged: 2017-10-13 11:13:04 UTC; sw175264
 Encoding: UTF-8

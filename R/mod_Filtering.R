@@ -71,9 +71,7 @@ mod_Filtering_server <- function(id,
     current.pos = reactive({1}),
     verbose = FALSE) {
 
-    if (!requireNamespace("DT", quietly = TRUE)) {
-        stop("Please install DT: BiocManager::install('DT')")
-    }
+  pkgs.require("DT")
     
     # This list contains the basic configuration of the process
     config <- MagellanNTK::Config(
@@ -432,7 +430,7 @@ mod_Filtering_server <- function(id,
         output$Variablefiltering_cname_ui <- renderUI({
             .choices <- c(
                 "None",
-                colnames(SummarizedExperiment::rowData(mainAssay(rv$dataIn)))
+                colnames(rowData(mainAssay(rv$dataIn)))
             )
 
             widget <- selectInput(ns("Variablefiltering_cname"),

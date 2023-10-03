@@ -1,82 +1,44 @@
-# This css is adapted from: https://codepen.io/willpower/pen/pJKdej
-css <- "
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
-
-body {
-    padding: 00px;
-    font-family: helvetica, arial, sans-serif;
-}
-
-ul {
-    margin: -10px 0px 30px 20px;
-}
-
-.wtree li {
-    list-style-type: none;
-    margin: 0px 0 -10px 10px;
-    position: relative;
-}
-.wtree li:before {
-    content: '';
-    position: absolute;
-    top: -15px;
-    left: -25px;
-    border-left: 1px solid #ddd;
-    border-bottom: 1px solid #ddd;
-    width: 20px;
-    height: 30px;
-}
-.wtree li:after {
-    position: absolute;
-    content: '';
-    top: 15px;
-    left: -25px;
-    border-left: 1px solid #ddd;
-    border-top: 1px solid #ddd;
-    width: 20px;
-    height: 100%;
-}
-.wtree li:last-child:after {
-    display: none;
-    padding: 0px 0px 10px 0px;
-}
-.wtree li span {
-    display: inline-block;
-    border: 0px solid #ddd;
-    border-radius: 10px;
-    text-align: center;
-    vertical-align: middle;
-    padding: 0px 5px 0px 0px;
-    color: #888;
-    text-decoration: none;
-    width: 150px;
-}"
+#' @title Displays a correlation matrix of the quantitative data of a
+#' numeric matrix.
+#'
+#' @description
+#' xxxx
+#' 
+#' @param id xxx
+#' @param type xxx
+#' @param reset xxx
+#'
+#' @name metacell-tree
+#' 
+#' @return NA
+#'
+#' @example inst/extdata/examples/ex_mod_metacell_tree.R
+#'
+NULL
 
 
-#' @export
+
 #' @import shinyBS
+#' @import highcharter
+#' @import shinyjs
+#' 
+#' @rdname metacell-tree
+#' 
+#' @export
 #' 
 mod_metacell_tree_ui <- function(id) {
     ns <- NS(id)
-    if (!requireNamespace("shinyBS", quietly = TRUE)) {
-      stop("Please install shinyBS: BiocManager::install('shinyBS')")
-    }
+   require(shinyBS)
     tagList(
         shinyjs::useShinyjs(),
-        #h4('Cells metadata tags'),
-        #div(style="align: center;display:inline-block; vertical-align: top;",
         fluidRow(
             column(width=6, 
                    actionButton(ns("openModalBtn"),
                    tagList(
-                       p('Select tags'),
+                       #p('Select tags'),
                        tags$img(src = "images/metacelltree.png", height = "50px"))
                    ),
-                   shinyBS::bsTooltip(ns("openModalBtn"), "Click to open tags selection tool",
+                   bsTooltip(ns("openModalBtn"), "Click to open tags selection tool",
                              "right", options = list(container = "body"))),
             column(width=6, uiOutput(ns('selectedNodes'))
             )
@@ -89,22 +51,18 @@ mod_metacell_tree_ui <- function(id) {
 
 
 
-#' @export
 #' @import shinyBS
-#' @import shinyjs
-#'
+#' @import highcharter
+#' 
+#' @rdname metacell-tree
+#' 
+#' @export
+#' 
 mod_metacell_tree_server <- function(id, 
-                                     obj = reactive({NULL}),
+                                     type = reactive({NULL}),
                                      reset = reactive({NULL})) {
    
-    if (!requireNamespace("shinyBS", quietly = TRUE)) {
-        stop("Please install shinyBS: BiocManager::install('shinyBS')")
-    }
-    
-    if (!requireNamespace("shinyjs", quietly = TRUE)) {
-        stop("Please install shinyjs: BiocManager::install('shinyjs')")
-    }
-    
+  pkgs.require(c("shinyBS", "shinyjs"))
     
     
     convertWidgetName <- function(name){
@@ -139,14 +97,6 @@ mod_metacell_tree_server <- function(id,
 
     moduleServer(id, function(input, output, session) {
         ns <- session$ns
-        
-        if (!requireNamespace("shinyBS", quietly = TRUE))
-            stop("Please install shinyBS: BiocManager::install('shinyBS')")
-
-        
-        if (!requireNamespace("shinyjs", quietly = TRUE))
-            stop("Please install shinyjs: BiocManager::install('shinyjs')")
-        
         
         dataOut <- reactiveValues(
             trigger = NULL,
@@ -213,9 +163,10 @@ mod_metacell_tree_server <- function(id,
 
         
         init_tree <- function(){
-            req(typeDataset(obj()))
-            #print('------------ init_tree() ---------------')
-            rv$meta <- DAPAR::metacell.def(typeDataset(obj()))
+          
+            req(type())
+
+          rv$meta <- metacell.def(type())
             rv$mapping <- BuildMapping(rv$meta)$names
             rv$bg_colors <- BuildMapping(rv$meta)$colors
             
@@ -234,15 +185,15 @@ mod_metacell_tree_server <- function(id,
             # dataOut$trigger <- as.numeric(Sys.time())
             # dataOut$values <- NULL
             
-            if (!is.null(typeDataset(obj())))
+            if (!is.null(type()))
                 init_tree()
             dataOut$trigger <- as.numeric(Sys.time())
             dataOut$values <- NULL
             }) 
         
-        observeEvent(input$openModalBtn, {
+        observeEvent(input$openModalBtn,{
             
-            #print('------------ observeEvent(input$openModalBtn ---------------')
+            print('------------ observeEvent(input$openModalBtn ---------------')
             init_tree()
             update_CB()
             updateRadioButtons(session, 'checkbox_mode', selected = 'single')
@@ -266,23 +217,22 @@ observeEvent(input$lastModalClose,  ignoreInit = FALSE, ignoreNULL = TRUE, {
 
 
 observeEvent(id, ignoreInit = FALSE, {
-    #print('------------ observeEvent(id ---------------')
-    
-    if (!is.null(typeDataset(obj())))
+  req(type())
+  #if (!is.null(type()))
         init_tree()
-    dataOut$trigger <- as.numeric(Sys.time())
-    dataOut$values <- NULL
+
+  dataOut$trigger <- as.numeric(Sys.time())
+  dataOut$values <- NULL
 }, priority = 1000)
 
 
 
 observeEvent(req(input$cleartree), ignoreInit = TRUE, {
-    #print('------------ req(input$cleartree) ---------------')
     
-    update_CB()
-    updateRadioButtons(session, 'checkbox_mode', selected = 'single')
+  update_CB()
+  updateRadioButtons(session, 'checkbox_mode', selected = 'single')
     
-    rv$autoChanged <- TRUE
+  rv$autoChanged <- TRUE
 })
 
 
@@ -314,7 +264,7 @@ observeEvent(input$checkbox_mode, {
 
 output$tree <- renderUI({
     div(style = "overflow-y: auto;",
-        uiOutput(ns(paste0('metacell_tree_', typeDataset(obj()))))
+        uiOutput(ns(paste0('metacell_tree_', type())))
     )
 })
 
@@ -494,7 +444,7 @@ update_CB <- function(nametokeep=NULL){
 
 
 somethingChanged <- reactive({
-    events <- unlist(lapply(names(rv$mapping), function(x) input[[x]]))
+  events <- unlist(lapply(names(rv$mapping), function(x) input[[x]]))
     compare <- rv$tags == events
     length(which(compare==FALSE))>0
 })
@@ -508,7 +458,7 @@ observeEvent(somethingChanged(), ignoreInit = TRUE, {
         rv$autoChanged <- FALSE
         return (NULL)
     }
-    #browser()
+    
     # Get the values of widgets corresponding to nodes in the tree
     events <- unlist(lapply(names(rv$mapping), function(x) input[[x]]))
     
@@ -528,13 +478,13 @@ observeEvent(somethingChanged(), ignoreInit = TRUE, {
                    update_CB(newSelection)
                    },
                subtree = {
-                   level <- typeDataset(obj())
+                   level <- type()
                    # As the leaves are disabled, this selection is a node
                    # by default, all its children must be also selected
                    for (i in newSelection){
                        if (i %in% metacell.def(level)$parent) {
                            #browser()
-                           childrens <- DAPAR::Children(level, i)
+                           childrens <- Children(level, i)
                            if (!is.null(childrens) && length(childrens)>0){
                                lapply(childrens, function(x){
                                    updateCheckboxInput(session, 
@@ -567,21 +517,63 @@ reactive({dataOut})
 
 
 
-# Example
-#
-ui <- fluidPage(
-    tagList(
-        mod_metacell_tree_ui('tree'),
-        uiOutput('res')
-    )
-)
 
-server <- function(input, output) {
-    
-    utils::data('Exp1_R25_prot')
-    tags <- mod_metacell_tree_server('tree', obj = reactive({Exp1_R25_prot}))
-
+# This css is adapted from: https://codepen.io/willpower/pen/pJKdej
+css <- "
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
 }
 
-shinyApp(ui = ui, server = server)
+body {
+    padding: 00px;
+    font-family: helvetica, arial, sans-serif;
+}
+
+ul {
+    margin: -10px 0px 30px 20px;
+}
+
+.wtree li {
+    list-style-type: none;
+    margin: 0px 0 -10px 10px;
+    position: relative;
+}
+.wtree li:before {
+    content: '';
+    position: absolute;
+    top: -15px;
+    left: -25px;
+    border-left: 1px solid #ddd;
+    border-bottom: 1px solid #ddd;
+    width: 20px;
+    height: 30px;
+}
+.wtree li:after {
+    position: absolute;
+    content: '';
+    top: 15px;
+    left: -25px;
+    border-left: 1px solid #ddd;
+    border-top: 1px solid #ddd;
+    width: 20px;
+    height: 100%;
+}
+.wtree li:last-child:after {
+    display: none;
+    padding: 0px 0px 10px 0px;
+}
+.wtree li span {
+    display: inline-block;
+    border: 0px solid #ddd;
+    border-radius: 10px;
+    text-align: center;
+    vertical-align: middle;
+    padding: 0px 5px 0px 0px;
+    color: #888;
+    text-decoration: none;
+    width: 150px;
+}"
+
 

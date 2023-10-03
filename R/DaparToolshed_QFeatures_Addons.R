@@ -6,6 +6,8 @@
 #' they are stored in the global metadata. This function is used whenever it i
 #' s necessary to (re)detect MEC and POV (new dataset or when post processing 
 #' protein qMetacell after aggregation)
+#' 
+#' @name QFeatures-accessors
 #'
 #' @param object An instance of class `SummarizedExperiment` or `QFeatures`.
 #'
@@ -42,7 +44,6 @@
 #'     matrix (class `dgCMatrix`) as defined in the `Matrix` package,
 #'     as generaled by the [sparseMatrix()] constructor.
 #'
-#' @name QFeatures-accessors
 #'
 #' @examples
 #' data(ft, package='DaparToolshed')
@@ -234,7 +235,56 @@ setMethod(
 #' @return NA
 #' @rdname QFeatures-accessors
 .GetRowdataSlot <- function(object, slotName = NULL) {
-    SummarizedExperiment::rowData(object)[[slotName]]
+    rowData(object)[[slotName]]
+}
+
+
+#---------------------------------------------------------------------------
+
+#' @exportMethod typeDataset
+#' @rdname QFeatures-accessors
+setMethod("ConnectedComp", "QFeatures",
+          function(object, i, slotName = "ConnectedComp") {
+            lapply(object[[i]],
+                   .GetMetadataSlot,
+                   slotName = slotName
+            )
+          }
+)
+
+
+#' @export
+#' @rdname QFeatures-accessors
+setMethod("ConnectedComp", "SummarizedExperiment",
+          function(object, slotName = "ConnectedComp") {
+            .GetMetadataSlot(object, slotName)
+          }
+)
+
+
+#' @export
+#' @rdname QFeatures-accessors
+"ConnectedComp<-" <- function(object, i, slotName = "ConnectedComp", value) {
+  if (inherits(object, "SummarizedExperiment")) {
+    S4Vectors::metadata(object)[[slotName]] <- value
+    return(object)
+  }
+  stopifnot(inherits(object, "QFeatures"))
+  
+  if (length(i) != 1) {
+    stop("'i' must be of length one. Repeat the call to add a matrix to 
+            multiple assays.")
+  }
+  if (is.numeric(i) && i > length(object)) {
+    stop("Subscript is out of bounds.")
+  }
+  if (is.character(i) && !(i %in% names(object))) {
+    stop("Assay '", i, "' not found.")
+  }
+  
+  se <- object[[i]]
+  S4Vectors::metadata(object[[i]])[[slotName]] <- value
+  return(object)
 }
 
 
@@ -458,7 +508,7 @@ setMethod(
 setMethod(
     "design.qf", "QFeatures",
     function(object, slotName = "design") {
-        SummarizedExperiment::colData(object)
+        colData(object)
     }
 )
 
@@ -468,7 +518,7 @@ setMethod(
 #' @rdname QFeatures-accessors
 "design.qf<-" <- function(object, slotName = "design", value) {
     stopifnot(inherits(object, "QFeatures"))
-    SummarizedExperiment::colData(object)@listData <- value
+    colData(object)@listData <- value
     return(object)
 }
 
